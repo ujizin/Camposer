@@ -1,0 +1,47 @@
+[versions]
+
+kotlin = "1.7.0"
+androidx-core = "1.9.0"
+camerax = "1.1.0"
+compose = "1.2.0"
+appcompat = "1.4.0"
+material = "1.6.1"
+material3 = "1.0.0-alpha14"
+lifecycle = "2.4.0"
+
+[libraries]
+
+androidx-core = { module = "androidx.core:core", version.ref = "androidx-core" }
+
+lifecycle = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle"}
+
+compose-activity = { module = "androidx.activity:activity-compose", version.ref = "appcompat" }
+
+compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "compose" }
+compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
+compose-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
+compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
+compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
+
+material = { module = "com.google.android.material:material", version.ref = "material" }
+
+camerax-core = { module = "androidx.camera:camera-core", version.ref = "camerax" }
+camerax-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "camerax" }
+camerax-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "camerax" }
+camerax-view = { module = "androidx.camera:camera-view", version.ref = "camerax" }
+
+[bundles]
+
+compose = [
+    "compose-runtime",
+    "compose-ui",
+    "compose-tooling-preview",
+    "compose-foundation"
+]
+
+camerax = [
+    "camerax-core",
+    "camerax-camera2",
+    "camerax-lifecycle",
+    "camerax-view"
+]

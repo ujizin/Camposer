@@ -1,5 +1,5 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
 }
 
@@ -8,13 +8,11 @@ android {
     compileSdk 33
 
     defaultConfig {
-        applicationId "br.com.devlucasyuji.camposer"
         minSdk 24
         targetSdk 33
-        versionCode 1
-        versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
     }
 
     buildTypes {
@@ -40,14 +38,9 @@ android {
 }
 
 dependencies {
-
     implementation libs.androidx.core
     implementation libs.bundles.compose
+    implementation libs.lifecycle
+    api libs.bundles.camerax
 
-    implementation libs.compose.activity
-    implementation libs.compose.material3
-
-    implementation libs.material
-
-    implementation project(":camposer")
 }
