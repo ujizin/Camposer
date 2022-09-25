@@ -10,6 +10,7 @@ import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.video.ExperimentalVideo
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.Saver
@@ -25,6 +26,7 @@ import java.util.concurrent.Executor
  * CameraState to [CameraPreview] composable
  * */
 
+@Immutable
 internal data class CameraStore(
     val cameraSelector: CameraSelector = CameraSelector.Back,
     val scaleType: ScaleType = ScaleType.FillCenter,
@@ -104,7 +106,7 @@ class CameraState internal constructor(
 
     var isPinchToZoomEnabled = true
         internal set(value) {
-            controller.isPinchToZoomEnabled = field
+            controller.isPinchToZoomEnabled = value
             field = value
         }
 
@@ -198,16 +200,6 @@ class CameraState internal constructor(
                 put(MediaStore.Images.Media.RELATIVE_PATH, relativePath)
             }
         }
-
-    /**
-     * Toggle camera, it can be front or back camera
-     * */
-    fun toggleCamera() {
-        cameraSelector = when (cameraSelector) {
-            CameraSelector.Front -> CameraSelector.Back
-            else -> CameraSelector.Front
-        }
-    }
 
     /**
      * Toggle Flash, it can be on or off, this case auto is ignored.

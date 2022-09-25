@@ -11,5 +11,11 @@ enum class CameraSelector(
     internal var selector: CameraXSelector
 ) {
     Front(CameraXSelector.DEFAULT_FRONT_CAMERA),
-    Back(CameraXSelector.DEFAULT_BACK_CAMERA)
+    Back(CameraXSelector.DEFAULT_BACK_CAMERA);
+
+    val reverse: CameraSelector
+        get() = when (this) {
+            Front -> Back
+            Back -> Front
+        }
 }

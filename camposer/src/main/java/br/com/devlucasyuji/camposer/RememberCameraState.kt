@@ -3,7 +3,6 @@ package br.com.devlucasyuji.camposer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 
 @Composable
 fun rememberCameraState(): CameraState {

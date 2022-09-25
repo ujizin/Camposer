@@ -1,7 +1,9 @@
 package br.com.devlucasyuji.camposer
 
+import android.graphics.Bitmap
 import android.view.ViewGroup
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -13,12 +15,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import br.com.devlucasyuji.camposer.androidview.setOnTapClickListener
 import br.com.devlucasyuji.camposer.extensions.observeLatest
 import br.com.devlucasyuji.camposer.focus.FocusTap
 import br.com.devlucasyuji.camposer.focus.SquareCornerFocus
 import kotlinx.coroutines.delay
+
 
 /**
  * Creates a Camera Preview's composable.
@@ -37,6 +41,22 @@ fun CameraPreview(
     isFocusOnTapEnabled: Boolean = cameraState.isFocusOnTapEnabled,
     isPinchToZoomEnabled: Boolean = cameraState.isPinchToZoomEnabled,
     zoomRatio: Float = cameraState.currentZoomRatio,
+    onSwipeToFront: @Composable (Bitmap) -> Unit = { bitmap ->
+        BlurImage(
+            modifier = Modifier.fillMaxSize(),
+            bitmap = bitmap,
+            radius = 20.dp,
+            contentDescription = null
+        )
+    },
+    onSwipeToBack: @Composable (Bitmap) -> Unit = { bitmap ->
+        BlurImage(
+            modifier = Modifier.fillMaxSize(),
+            bitmap = bitmap,
+            radius = 20.dp,
+            contentDescription = null
+        )
+    },
     onZoomRatioChanged: ((Float) -> Unit)? = null,
     focusTapContent: @Composable () -> Unit = { SquareCornerFocus() },
     content: @Composable () -> Unit = {},
@@ -65,6 +85,8 @@ fun CameraPreview(
         zoomRatio = zoomRatio,
         onZoomRatioChanged = onZoomRatioChanged,
         focusTapContent = focusTapContent,
+        onSwipeToFront = onSwipeToFront,
+        onSwipeToBack = onSwipeToBack,
         content = content
     )
 }
@@ -82,18 +104,22 @@ internal fun CameraPreviewImpl(
     isPinchToZoomEnabled: Boolean,
     zoomRatio: Float,
     onZoomRatioChanged: ((Float) -> Unit)?,
+    onSwipeToFront: @Composable (Bitmap) -> Unit,
+    onSwipeToBack: @Composable (Bitmap) -> Unit,
     focusTapContent: @Composable () -> Unit,
     content: @Composable () -> Unit
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     var tapOffset by remember { mutableStateOf(Offset.Zero) }
+    var switchCamera by remember { mutableStateOf(false) }
+    var latestBitmap by remember { mutableStateOf<Bitmap?>(null) }
+
+    val cameraSelectorState by rememberUpdatedState(cameraSelector)
 
     LaunchedEffect(cameraIsInitialized) {
         if (cameraIsInitialized) {
             cameraState.controller.zoomState.observeLatest(lifecycleOwner) { zoom ->
-                cameraState.dispatchZoom(zoom.zoomRatio) {
-                    onZoomRatioChanged?.invoke(it)
-                }
+                cameraState.dispatchZoom(zoom.zoomRatio, onZoomRatioChanged ?: {})
             }
         }
     }
@@ -107,12 +133,18 @@ internal fun CameraPreviewImpl(
             controller = cameraState.controller.apply {
                 bindToLifecycle(lifecycleOwner)
             }
+
+            previewStreamState.observe(lifecycleOwner) { state ->
+                switchCamera = state == PreviewView.StreamState.IDLE
+            }
         }
     }, update = { previewView ->
-        previewView.scaleType = scaleType.type
-        previewView.setOnTapClickListener {
-            if (isFocusOnTapEnabled) tapOffset = it
+        with(previewView) {
+            this.scaleType = scaleType.type
+            setOnTapClickListener { if (isFocusOnTapEnabled) tapOffset = it }
+            if (cameraSelector != cameraState.cameraSelector) latestBitmap = bitmap
         }
+
         if (cameraIsInitialized) {
             with(cameraState) {
                 this.cameraSelector = cameraSelector
@@ -133,6 +165,15 @@ internal fun CameraPreviewImpl(
             tapOffset = Offset.Zero
         },
     ) { focusTapContent() }
+
+    if (switchCamera) {
+        latestBitmap?.let {
+            when (cameraSelectorState) {
+                CameraSelector.Front -> onSwipeToFront(it)
+                CameraSelector.Back -> onSwipeToBack(it)
+            }
+        }
+    }
 
     content()
 }
