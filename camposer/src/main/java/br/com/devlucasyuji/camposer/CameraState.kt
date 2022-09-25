@@ -8,6 +8,8 @@ import android.provider.MediaStore
 import android.util.Log
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
+import androidx.camera.core.TorchState
+import androidx.camera.core.ZoomState
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.video.ExperimentalVideo
 import androidx.compose.runtime.Immutable
@@ -17,54 +19,72 @@ import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleOwner
+import br.com.devlucasyuji.camposer.extensions.asContext
 import br.com.devlucasyuji.camposer.extensions.roundTo
+import br.com.devlucasyuji.camposer.extensions.roundedZoomRatio
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.Executor
 
-/**
- * CameraState to [CameraPreview] composable
- * */
-
 @Immutable
 internal data class CameraStore(
-    val cameraSelector: CameraSelector = CameraSelector.Back,
+    val camSelector: CamSelector = CamSelector.Back,
     val scaleType: ScaleType = ScaleType.FillCenter,
-    val flashMode: FlashMode = FlashMode.Off,
+    val flash: FlashMode = FlashMode.Off,
     val enableTorch: Boolean = false,
     val currentZoomRatio: Float = 1F,
     val isFocusOnTapEnabled: Boolean = true,
     val isPinchToZoomEnabled: Boolean = true
 )
 
+/**
+ * CameraState to [CameraPreview] composable
+ * */
 class CameraState internal constructor(
-    context: Context,
-    cameraStore: CameraStore
+    lifecycleOwner: LifecycleOwner,
+    cameraStore: CameraStore,
+    context: Context = lifecycleOwner.asContext()
 ) {
 
     /**
      * Main Executor to action as take picture or record.
      * */
-    private var mainExecutor: Executor
+    private val mainExecutor: Executor = ContextCompat.getMainExecutor(context)
 
     /**
      * Content resolver to picture and video.
      * */
-    private var contentResolver: ContentResolver
-
-    /**
-     * Range between min and max zoom ratio from the camera.
-     *
-     * Initialized at [CameraState.setupZoom]
-     * */
-    var zoomRange: Pair<Float, Float> = Pair(UNSET_VALUE, UNSET_VALUE)
-        private set
+    private val contentResolver: ContentResolver = context.contentResolver
 
     /**
      * Main controller from CameraX. useful in cases that haven't been release some feature yet.
      * */
-    lateinit var controller: LifecycleCameraController
+    internal val controller: LifecycleCameraController = LifecycleCameraController(context)
+
+    /**
+     * Get max zoom from camera.
+     * */
+    var maxZoom: Float by mutableStateOf(controller.zoomState.value?.maxZoomRatio ?: UNKNOWN_VALUE)
+        internal set
+
+    /**
+     * Get min zoom from camera.
+     * */
+    var minZoom: Float by mutableStateOf(controller.zoomState.value?.minZoomRatio ?: UNKNOWN_VALUE)
+        internal set
+
+    /**
+     * Get current zoom from camera.
+     * */
+    var currentZoom: Float by mutableStateOf(controller.zoomState.value?.roundedZoomRatio ?: 1F)
         private set
+
+    /**
+     * Check if zoom is supported.
+     * */
+    val isZoomSupported: Boolean
+        get() = maxZoom != 1F
 
     /**
      * Return if camera state is initialized or not.
@@ -73,48 +93,65 @@ class CameraState internal constructor(
         internal set
 
     /**
-     * Camera mode, it can be front or back.
-     * @see CameraSelector
+     * Get scale type from the camera.
      * */
-    var cameraSelector: CameraSelector = CameraSelector.Back
-        internal set(value) { // TODO add blur effect here?
+    internal var scaleType: ScaleType = ScaleType.FillCenter
+
+    /**
+     * Camera mode, it can be front or back.
+     * @see CamSelector
+     * */
+    internal var camSelector: CamSelector = CamSelector.Back
+        set(value) {
             when {
                 hasCamera(value) -> {
                     controller.cameraSelector = value.selector
                     field = value
                 }
-                else -> Log.e(TAG, "Device does not have ${value.name} camera")
+                else -> Log.e(TAG, "Device does not have ${value.selector} camera")
             }
         }
 
     /**
-     * Current zoom ratio of the camera.
+     * Get if focus on tap is enabled from cameraX.
      * */
-    var currentZoomRatio: Float = 1F
-        internal set(value) {
-            field = value.roundTo(1)
-        }
-
-    /**
-     * Get if focus on tap is enabled.
-     * */
-    var isFocusOnTapEnabled = true
-        internal set(value) {
+    internal var isFocusOnTapEnabled: Boolean
+        get() = controller.isTapToFocusEnabled
+        set(value) {
             controller.isTapToFocusEnabled = value
-            field = value
-        }
-
-    var isPinchToZoomEnabled = true
-        internal set(value) {
-            controller.isPinchToZoomEnabled = value
-            field = value
         }
 
     /**
-     * Get scale type from the camera.
+     * Get if pinch to zoom is enabled from cameraX.
      * */
-    var scaleType: ScaleType = ScaleType.FillCenter
-        internal set
+    internal var isPinchToZoomEnabled: Boolean
+        get() = controller.isPinchToZoomEnabled
+        set(value) {
+            controller.isPinchToZoomEnabled = value
+        }
+
+    /**
+     * Flash Mode from the camera.
+     * @see FlashMode
+     * */
+    internal var flashMode: FlashMode
+        get() = FlashMode.find(controller.imageCaptureFlashMode)
+        set(value) {
+            if (flashMode != value) {
+                controller.imageCaptureFlashMode = value.mode
+            }
+        }
+
+    /**
+     * Enabled/Disable torch from camera.
+     * */
+    internal var enableTorch: Boolean
+        get() = controller.torchState.value == TorchState.ON
+        set(value) {
+            if (enableTorch != value) {
+                controller.enableTorch(value)
+            }
+        }
 
     /**
      * Return true if it's recording.
@@ -123,34 +160,21 @@ class CameraState internal constructor(
         @ExperimentalVideo
         get() = controller.isRecording
 
-    /**
-     * Flash Mode from the camera.
-     * @see FlashMode
-     * */
-    var flashMode: FlashMode = FlashMode.Off
-        internal set(value) {
-            controller.imageCaptureFlashMode = value.mode
-            field = value
-        }
-
     init {
-        mainExecutor = ContextCompat.getMainExecutor(context)
-        controller = LifecycleCameraController(context)
-        contentResolver = context.contentResolver
-
         controller.initializationFuture.addListener({
-            cameraStore.let { store ->
-                currentZoomRatio = store.currentZoomRatio
-                scaleType = store.scaleType
-                flashMode = store.flashMode
-                cameraSelector = store.cameraSelector
-                enableTorch = store.enableTorch
-                isPinchToZoomEnabled = store.isPinchToZoomEnabled
-                isFocusOnTapEnabled = store.isFocusOnTapEnabled
-            }
-            setupZoom()
+            cameraStore.restoreSettings()
+            controller.torchState.observe(lifecycleOwner) { enableTorch = it == TorchState.ON }
             isInitialized = true
         }, mainExecutor)
+    }
+
+    private fun CameraStore.restoreSettings() {
+        this@CameraState.camSelector = camSelector
+        this@CameraState.isPinchToZoomEnabled = isPinchToZoomEnabled
+        this@CameraState.scaleType = scaleType
+        this@CameraState.isFocusOnTapEnabled = isFocusOnTapEnabled
+        this@CameraState.enableTorch = enableTorch
+        controller.setZoomRatio(currentZoomRatio)
     }
 
     /**
@@ -202,16 +226,6 @@ class CameraState internal constructor(
         }
 
     /**
-     * Toggle Flash, it can be on or off, this case auto is ignored.
-     * */
-    fun toggleFlash() {
-        flashMode = when (flashMode) {
-            FlashMode.On -> FlashMode.Off
-            else -> FlashMode.On
-        }
-    }
-
-    /**
      * Set zoom ratio to camera.
      * @param zoomRatio zoomRatio to be added
      * */
@@ -257,38 +271,21 @@ class CameraState internal constructor(
     }
 
     /**
-     * Enabled/Disable torch from camera.
-     * */
-    var enableTorch: Boolean = false
-        set(value) {
-            controller.enableTorch(value)
-            field = value
-        }
-
-    /**
      * Return if has camera selector or not.
      * */
-    fun hasCamera(cameraSelector: CameraSelector) = controller.hasCamera(cameraSelector.selector)
+    fun hasCamera(cameraSelector: CamSelector) = controller.hasCamera(cameraSelector.selector)
 
-    /**
-     *  Bind zoom values from live data.
-     * */
-    private fun setupZoom() {
-        if (zoomRange == Pair(UNSET_VALUE, UNSET_VALUE)) {
-            val zoomState = controller.zoomState.value ?: return
-            zoomRange = Pair(zoomState.minZoomRatio, zoomState.maxZoomRatio)
-        }
-    }
-
-    internal fun dispatchZoom(zoom: Float, block: (Float) -> Unit?) {
-        currentZoomRatio = zoom.roundTo(1)
-        block(currentZoomRatio)
+    internal fun dispatchZoom(zoom: ZoomState, block: (Float) -> Unit?) {
+        minZoom = zoom.minZoomRatio
+        maxZoom = zoom.maxZoomRatio
+        currentZoom = zoom.roundedZoomRatio
+        block(currentZoom)
     }
 
     companion object {
         private val TAG = this::class.java.name
 
-        private const val UNSET_VALUE = -1F
+        private const val UNKNOWN_VALUE = -1F
         private const val DEFAULT_DATE_FORMAT = "YYYY-HH:MM:SS"
         private const val JPEG_MIME_TYPE = "image/jpeg"
         private const val VIDEO_MIME_TYPE = "video/avc"
@@ -297,25 +294,26 @@ class CameraState internal constructor(
         private const val RELATIVE_PATH = "Pictures/Camposer"
 
         @Suppress("UNCHECKED_CAST")
-        fun getSaver(context: Context): Saver<CameraState, *> = listSaver(save = {
-            listOf(
-                it.cameraSelector,
-                it.scaleType,
-                it.flashMode,
-                it.enableTorch,
-                it.currentZoomRatio
-            )
-        }, restore = {
-            CameraState(
-                context,
-                CameraStore(
-                    cameraSelector = it[0] as CameraSelector,
-                    scaleType = it[1] as ScaleType,
-                    flashMode = it[2] as FlashMode,
-                    enableTorch = it[3] as Boolean,
-                    currentZoomRatio = it[4] as Float,
+        internal fun getSaver(lifecycleOwner: LifecycleOwner): Saver<CameraState, *> =
+            listSaver(save = {
+                listOf(
+//                it.cameraSelector,
+                    it.scaleType,
+                    it.flashMode,
+                    it.enableTorch,
+                    it.currentZoom
                 )
-            )
-        })
+            }, restore = {
+                CameraState(
+                    lifecycleOwner,
+                    CameraStore(
+//                    cameraSelector = it[0] as CameraSelector,
+                        scaleType = it[0] as ScaleType,
+                        flash = it[1] as FlashMode,
+                        enableTorch = it[2] as Boolean,
+                        currentZoomRatio = it[3] as Float,
+                    )
+                )
+            })
     }
 }

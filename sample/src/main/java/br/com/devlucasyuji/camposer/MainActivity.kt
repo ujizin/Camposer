@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,8 +45,9 @@ class MainActivity : ComponentActivity() {
 fun Camera() {
     val context = LocalContext.current
     val cameraState = rememberCameraState()
-    var zoom by remember { mutableStateOf(4F) }
-    var cameraSelector by remember { mutableStateOf(CameraSelector.Front) }
+
+    var cameraSelector by rememberCameraSelector(customBackCamSelector())
+    val currentZoom by rememberUpdatedState(cameraState.currentZoom)
     var flashMode by remember { mutableStateOf(FlashMode.Off) }
     var isPinchToZoomEnabled by remember { mutableStateOf(true) }
     var isFocusOnTapEnabled by remember { mutableStateOf(true) }
@@ -54,19 +56,18 @@ fun Camera() {
     CameraPreview(
         Modifier.fillMaxSize(),
         cameraState = cameraState,
-        zoomRatio = zoom,
+        zoomRatio = 2F,
         flashMode = flashMode,
         isFocusOnTapEnabled = isFocusOnTapEnabled,
         isPinchToZoomEnabled = isPinchToZoomEnabled,
-        cameraSelector = cameraSelector,
         enableTorch = enableTorch,
-        onZoomRatioChanged = { zoom = it }
+        camSelector = cameraSelector,
     ) {
         Box(Modifier.fillMaxSize()) {
             CameraDebugMode(
-                zoom = zoom,
+                zoom = currentZoom,
                 flashMode = flashMode,
-                cameraSelector = cameraSelector,
+                camSelector = cameraSelector,
                 isPinchToZoomEnabled = isPinchToZoomEnabled,
                 isFocusOnTapEnabled = isFocusOnTapEnabled,
                 enableTorch = enableTorch
@@ -88,7 +89,9 @@ fun Camera() {
                 ) { Text("Pic") }
 
                 RoundButton(
-                    modifier = RoundedModifier.clickable { cameraSelector = cameraSelector.reverse }
+                    modifier = RoundedModifier.clickable {
+                        cameraSelector = cameraSelector.customReverse
+                    }
                 ) { Text("Switch") }
 
                 RoundButton(
@@ -134,7 +137,7 @@ private val RoundedModifier
 fun CameraDebugMode(
     zoom: Float,
     flashMode: FlashMode,
-    cameraSelector: CameraSelector,
+    camSelector: CamSelector,
     enableTorch: Boolean,
     isPinchToZoomEnabled: Boolean,
     isFocusOnTapEnabled: Boolean,
@@ -146,7 +149,7 @@ fun CameraDebugMode(
             Text("Camera Debug Mode:")
             Text("Zoom: $zoom")
             Text("Flash mode: $flashMode")
-            Text("Camera selector: $cameraSelector")
+            Text("Camera selector: $camSelector")
             Text("Torch: $enableTorch")
             Text("Pinch to zoom: $isPinchToZoomEnabled")
             Text("Tap on focus: $isFocusOnTapEnabled")

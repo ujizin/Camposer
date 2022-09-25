@@ -1,5 +1,6 @@
 package br.com.devlucasyuji.camposer
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.view.ViewGroup
 import androidx.camera.view.PreviewView
@@ -22,7 +23,7 @@ import br.com.devlucasyuji.camposer.extensions.observeLatest
 import br.com.devlucasyuji.camposer.focus.FocusTap
 import br.com.devlucasyuji.camposer.focus.SquareCornerFocus
 import kotlinx.coroutines.delay
-
+import androidx.camera.core.CameraSelector as CameraXSelector
 
 /**
  * Creates a Camera Preview's composable.
@@ -34,13 +35,13 @@ import kotlinx.coroutines.delay
 fun CameraPreview(
     modifier: Modifier = Modifier,
     cameraState: CameraState = rememberCameraState(),
-    cameraSelector: CameraSelector = cameraState.cameraSelector,
+    camSelector: CamSelector = cameraState.camSelector,
     flashMode: FlashMode = cameraState.flashMode,
     scaleType: ScaleType = cameraState.scaleType,
     enableTorch: Boolean = cameraState.enableTorch,
     isFocusOnTapEnabled: Boolean = cameraState.isFocusOnTapEnabled,
     isPinchToZoomEnabled: Boolean = cameraState.isPinchToZoomEnabled,
-    zoomRatio: Float = cameraState.currentZoomRatio,
+    zoomRatio: Float = cameraState.currentZoom,
     onSwipeToFront: @Composable (Bitmap) -> Unit = { bitmap ->
         BlurImage(
             modifier = Modifier.fillMaxSize(),
@@ -63,7 +64,7 @@ fun CameraPreview(
 ) {
     val cameraIsInitialized by rememberUpdatedState(cameraState.isInitialized)
     val zoomHasChanged by remember(zoomRatio) {
-        derivedStateOf { cameraIsInitialized && cameraState.currentZoomRatio != zoomRatio }
+        derivedStateOf { cameraIsInitialized && cameraState.currentZoom != zoomRatio }
     }
 
     LaunchedEffect(zoomHasChanged) {
@@ -76,13 +77,12 @@ fun CameraPreview(
         modifier = modifier,
         cameraState = cameraState,
         cameraIsInitialized = cameraIsInitialized,
-        cameraSelector = cameraSelector,
+        camSelector = camSelector,
         flashMode = flashMode,
         scaleType = scaleType,
         enableTorch = enableTorch,
         isFocusOnTapEnabled = isFocusOnTapEnabled,
         isPinchToZoomEnabled = isPinchToZoomEnabled,
-        zoomRatio = zoomRatio,
         onZoomRatioChanged = onZoomRatioChanged,
         focusTapContent = focusTapContent,
         onSwipeToFront = onSwipeToFront,
@@ -91,18 +91,18 @@ fun CameraPreview(
     )
 }
 
+@SuppressLint("RestrictedApi")
 @Composable
 internal fun CameraPreviewImpl(
     modifier: Modifier,
     cameraState: CameraState,
     cameraIsInitialized: Boolean,
-    cameraSelector: CameraSelector,
+    camSelector: CamSelector,
     flashMode: FlashMode,
     scaleType: ScaleType,
     enableTorch: Boolean,
     isFocusOnTapEnabled: Boolean,
     isPinchToZoomEnabled: Boolean,
-    zoomRatio: Float,
     onZoomRatioChanged: ((Float) -> Unit)?,
     onSwipeToFront: @Composable (Bitmap) -> Unit,
     onSwipeToBack: @Composable (Bitmap) -> Unit,
@@ -114,12 +114,12 @@ internal fun CameraPreviewImpl(
     var switchCamera by remember { mutableStateOf(false) }
     var latestBitmap by remember { mutableStateOf<Bitmap?>(null) }
 
-    val cameraSelectorState by rememberUpdatedState(cameraSelector)
+    val cameraSelectorState by rememberUpdatedState(camSelector)
 
     LaunchedEffect(cameraIsInitialized) {
         if (cameraIsInitialized) {
             cameraState.controller.zoomState.observeLatest(lifecycleOwner) { zoom ->
-                cameraState.dispatchZoom(zoom.zoomRatio, onZoomRatioChanged ?: {})
+                cameraState.dispatchZoom(zoom, onZoomRatioChanged ?: {})
             }
         }
     }
@@ -142,18 +142,17 @@ internal fun CameraPreviewImpl(
         with(previewView) {
             this.scaleType = scaleType.type
             setOnTapClickListener { if (isFocusOnTapEnabled) tapOffset = it }
-            if (cameraSelector != cameraState.cameraSelector) latestBitmap = bitmap
+            if (camSelector != cameraState.camSelector) latestBitmap = bitmap
         }
 
         if (cameraIsInitialized) {
             with(cameraState) {
-                this.cameraSelector = cameraSelector
-                this.flashMode = flashMode
+                this.camSelector = camSelector
                 this.scaleType = scaleType
-                this.enableTorch = enableTorch
-                this.currentZoomRatio = zoomRatio
                 this.isFocusOnTapEnabled = isFocusOnTapEnabled
                 this.isPinchToZoomEnabled = isPinchToZoomEnabled
+                this.flashMode = flashMode
+                this.enableTorch = enableTorch
             }
         }
     })
@@ -168,9 +167,10 @@ internal fun CameraPreviewImpl(
 
     if (switchCamera) {
         latestBitmap?.let {
-            when (cameraSelectorState) {
-                CameraSelector.Front -> onSwipeToFront(it)
-                CameraSelector.Back -> onSwipeToBack(it)
+            when (cameraSelectorState.selector.lensFacing) {
+                CameraXSelector.LENS_FACING_FRONT -> onSwipeToFront(it)
+                CameraXSelector.LENS_FACING_BACK -> onSwipeToBack(it)
+                else -> Unit
             }
         }
     }

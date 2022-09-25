@@ -127,7 +127,6 @@ fun CircleFocus(
             .border(borderStroke, CircleShape)
             .then(modifier),
     )
-
 }
 
 @Composable

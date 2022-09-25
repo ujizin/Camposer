@@ -14,4 +14,8 @@ enum class FlashMode(internal val mode: Int) {
         On -> Off
         else -> On
     }
+
+    companion object {
+        fun find(mode: Int) = values().firstOrNull { it.mode == mode } ?: Off
+    }
 }
