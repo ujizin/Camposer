@@ -29,6 +29,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import br.com.devlucasyuji.camposer.state.CamSelector
+import br.com.devlucasyuji.camposer.state.FlashMode
+import br.com.devlucasyuji.camposer.state.rememberCameraSelector
+import br.com.devlucasyuji.camposer.state.rememberCameraState
+import br.com.devlucasyuji.camposer.state.rememberCurrentZoom
+import br.com.devlucasyuji.camposer.state.rememberFlashMode
+import br.com.devlucasyuji.camposer.state.rememberTorch
 
 class MainActivity : ComponentActivity() {
 
@@ -47,16 +54,18 @@ fun Camera() {
     val cameraState = rememberCameraState()
 
     var cameraSelector by rememberCameraSelector(customBackCamSelector())
-    val currentZoom by rememberUpdatedState(cameraState.currentZoom)
-    var flashMode by remember { mutableStateOf(FlashMode.Off) }
+    var flashMode by cameraState.rememberFlashMode(FlashMode.Off)
+    var enableTorch by cameraState.rememberTorch(false)
+    val currentZoom by cameraState.rememberCurrentZoom()
+
+    val hasFlashUnit by rememberUpdatedState(cameraState.hasFlashUnit)
+
     var isPinchToZoomEnabled by remember { mutableStateOf(true) }
     var isFocusOnTapEnabled by remember { mutableStateOf(true) }
-    var enableTorch by remember { mutableStateOf(false) }
 
     CameraPreview(
         Modifier.fillMaxSize(),
         cameraState = cameraState,
-        zoomRatio = 2F,
         flashMode = flashMode,
         isFocusOnTapEnabled = isFocusOnTapEnabled,
         isPinchToZoomEnabled = isPinchToZoomEnabled,
@@ -70,7 +79,8 @@ fun Camera() {
                 camSelector = cameraSelector,
                 isPinchToZoomEnabled = isPinchToZoomEnabled,
                 isFocusOnTapEnabled = isFocusOnTapEnabled,
-                enableTorch = enableTorch
+                enableTorch = enableTorch,
+                hasFlashUnit = hasFlashUnit
             )
 
             Column(
@@ -141,6 +151,7 @@ fun CameraDebugMode(
     enableTorch: Boolean,
     isPinchToZoomEnabled: Boolean,
     isFocusOnTapEnabled: Boolean,
+    hasFlashUnit: Boolean
 ) {
     Column(
         Modifier.background(Color.Black.copy(alpha = 0.5F))
@@ -153,6 +164,7 @@ fun CameraDebugMode(
             Text("Torch: $enableTorch")
             Text("Pinch to zoom: $isPinchToZoomEnabled")
             Text("Tap on focus: $isFocusOnTapEnabled")
+            Text("Has flash: $hasFlashUnit")
         }
     }
 }

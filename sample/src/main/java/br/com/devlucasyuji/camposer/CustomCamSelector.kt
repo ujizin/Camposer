@@ -1,6 +1,8 @@
 package br.com.devlucasyuji.camposer
 
 import androidx.camera.core.CameraSelector
+import br.com.devlucasyuji.camposer.state.CamSelector
+import br.com.devlucasyuji.camposer.state.customCamSelector
 
 fun customBackCamSelector(): CamSelector = customCamSelector {
     CameraSelector.Builder()

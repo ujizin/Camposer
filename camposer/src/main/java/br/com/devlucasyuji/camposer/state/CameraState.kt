@@ -1,4 +1,4 @@
-package br.com.devlucasyuji.camposer
+package br.com.devlucasyuji.camposer.state
 
 import android.content.ContentResolver
 import android.content.ContentValues
@@ -21,7 +21,6 @@ import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import br.com.devlucasyuji.camposer.extensions.asContext
-import br.com.devlucasyuji.camposer.extensions.roundTo
 import br.com.devlucasyuji.camposer.extensions.roundedZoomRatio
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -65,19 +64,25 @@ class CameraState internal constructor(
     /**
      * Get max zoom from camera.
      * */
-    var maxZoom: Float by mutableStateOf(controller.zoomState.value?.maxZoomRatio ?: UNKNOWN_VALUE)
+    var maxZoom: Float by mutableStateOf(
+        controller.zoomState.value?.maxZoomRatio ?: INITIAL_ZOOM_VALUE
+    )
         internal set
 
     /**
      * Get min zoom from camera.
      * */
-    var minZoom: Float by mutableStateOf(controller.zoomState.value?.minZoomRatio ?: UNKNOWN_VALUE)
+    var minZoom: Float by mutableStateOf(
+        controller.zoomState.value?.minZoomRatio ?: INITIAL_ZOOM_VALUE
+    )
         internal set
 
     /**
      * Get current zoom from camera.
      * */
-    var currentZoom: Float by mutableStateOf(controller.zoomState.value?.roundedZoomRatio ?: 1F)
+    var currentZoom: Float by mutableStateOf(
+        controller.zoomState.value?.roundedZoomRatio ?: INITIAL_ZOOM_VALUE
+    )
         private set
 
     /**
@@ -93,9 +98,20 @@ class CameraState internal constructor(
         internal set
 
     /**
+     * Verify if camera has flash or not.
+     * */
+    var hasFlashUnit by mutableStateOf(controller.cameraInfo?.hasFlashUnit() ?: false)
+
+    /**
      * Get scale type from the camera.
      * */
     internal var scaleType: ScaleType = ScaleType.FillCenter
+
+
+    /**
+     * Get implementation mode from the camera.
+     * */
+    internal var implementationMode: ImplementationMode = ImplementationMode.Performance
 
     /**
      * Camera mode, it can be front or back.
@@ -105,12 +121,23 @@ class CameraState internal constructor(
         set(value) {
             when {
                 hasCamera(value) -> {
-                    controller.cameraSelector = value.selector
-                    field = value
+                    if (controller.cameraSelector != value.selector) {
+                        controller.cameraSelector = value.selector
+                        field = value
+                        resetCamera()
+                    }
                 }
+
                 else -> Log.e(TAG, "Device does not have ${value.selector} camera")
             }
         }
+
+    private fun resetCamera() = with(controller) {
+        setZoomRatio(INITIAL_ZOOM_VALUE)
+        hasFlashUnit = controller.cameraInfo?.hasFlashUnit() ?: false
+        flashMode = FlashMode.Off
+        enableTorch = false
+    }
 
     /**
      * Get if focus on tap is enabled from cameraX.
@@ -137,7 +164,7 @@ class CameraState internal constructor(
     internal var flashMode: FlashMode
         get() = FlashMode.find(controller.imageCaptureFlashMode)
         set(value) {
-            if (flashMode != value) {
+            if (flashMode != value && !hasFlashUnit && flashMode != FlashMode.Off) {
                 controller.imageCaptureFlashMode = value.mode
             }
         }
@@ -149,7 +176,7 @@ class CameraState internal constructor(
         get() = controller.torchState.value == TorchState.ON
         set(value) {
             if (enableTorch != value) {
-                controller.enableTorch(value)
+                controller.enableTorch(hasFlashUnit && value)
             }
         }
 
@@ -157,8 +184,7 @@ class CameraState internal constructor(
      * Return true if it's recording.
      * */
     val isRecording: Boolean
-        @ExperimentalVideo
-        get() = controller.isRecording
+        @ExperimentalVideo get() = controller.isRecording
 
     init {
         controller.initializationFuture.addListener({
@@ -174,7 +200,7 @@ class CameraState internal constructor(
         this@CameraState.scaleType = scaleType
         this@CameraState.isFocusOnTapEnabled = isFocusOnTapEnabled
         this@CameraState.enableTorch = enableTorch
-        controller.setZoomRatio(currentZoomRatio)
+        setZoomRatio(currentZoomRatio)
     }
 
     /**
@@ -183,8 +209,7 @@ class CameraState internal constructor(
      *  @param onResult Callback called when [PhotoResult] is ready
      * */
     fun takePicture(name: String? = null, onResult: (PhotoResult) -> Unit) {
-        controller.takePicture(
-            createOutputFile(name),
+        controller.takePicture(createOutputFile(name),
             mainExecutor,
             object : ImageCapture.OnImageSavedCallback {
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
@@ -230,7 +255,7 @@ class CameraState internal constructor(
      * @param zoomRatio zoomRatio to be added
      * */
     fun setZoomRatio(zoomRatio: Float) {
-        controller.setZoomRatio(zoomRatio)
+        controller.setZoomRatio(zoomRatio.coerceIn(minZoom, maxZoom))
     }
 
     /**
@@ -271,9 +296,10 @@ class CameraState internal constructor(
     }
 
     /**
-     * Return if has camera selector or not.
+     * Return if has camera selector or not, camera must be initialized, otherwise result is false.
      * */
-    fun hasCamera(cameraSelector: CamSelector) = controller.hasCamera(cameraSelector.selector)
+    fun hasCamera(cameraSelector: CamSelector) =
+        isInitialized && controller.hasCamera(cameraSelector.selector)
 
     internal fun dispatchZoom(zoom: ZoomState, block: (Float) -> Unit?) {
         minZoom = zoom.minZoomRatio
@@ -285,7 +311,7 @@ class CameraState internal constructor(
     companion object {
         private val TAG = this::class.java.name
 
-        private const val UNKNOWN_VALUE = -1F
+        private const val INITIAL_ZOOM_VALUE = 1F
         private const val DEFAULT_DATE_FORMAT = "YYYY-HH:MM:SS"
         private const val JPEG_MIME_TYPE = "image/jpeg"
         private const val VIDEO_MIME_TYPE = "video/avc"
@@ -298,15 +324,11 @@ class CameraState internal constructor(
             listSaver(save = {
                 listOf(
 //                it.cameraSelector,
-                    it.scaleType,
-                    it.flashMode,
-                    it.enableTorch,
-                    it.currentZoom
+                    it.scaleType, it.flashMode, it.enableTorch, it.currentZoom
                 )
             }, restore = {
                 CameraState(
-                    lifecycleOwner,
-                    CameraStore(
+                    lifecycleOwner, CameraStore(
 //                    cameraSelector = it[0] as CameraSelector,
                         scaleType = it[0] as ScaleType,
                         flash = it[1] as FlashMode,

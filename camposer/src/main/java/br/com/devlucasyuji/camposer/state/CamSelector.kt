@@ -1,12 +1,8 @@
-package br.com.devlucasyuji.camposer
+package br.com.devlucasyuji.camposer.state
 
 import android.annotation.SuppressLint
 import androidx.camera.core.CameraSelector
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 
 /**
  * Selector from Camera.
@@ -56,21 +52,3 @@ sealed class CamSelector(
             else -> this
         }
 }
-
-@Composable
-fun rememberCameraSelector(
-    selector: CamSelector = CamSelector.Back
-): MutableState<CamSelector> = remember {
-    mutableStateOf(selector)
-}
-
-@Composable
-fun rememberCameraSelector(
-    block: () -> CameraSelector
-): MutableState<CamSelector> = remember {
-    mutableStateOf(customCamSelector(block))
-}
-
-fun customCamSelector(
-    block: () -> CameraSelector
-): CamSelector = CamSelector.CustomSelector(block())

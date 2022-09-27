@@ -22,6 +22,12 @@ import br.com.devlucasyuji.camposer.androidview.setOnTapClickListener
 import br.com.devlucasyuji.camposer.extensions.observeLatest
 import br.com.devlucasyuji.camposer.focus.FocusTap
 import br.com.devlucasyuji.camposer.focus.SquareCornerFocus
+import br.com.devlucasyuji.camposer.state.CamSelector
+import br.com.devlucasyuji.camposer.state.CameraState
+import br.com.devlucasyuji.camposer.state.FlashMode
+import br.com.devlucasyuji.camposer.state.ImplementationMode
+import br.com.devlucasyuji.camposer.state.ScaleType
+import br.com.devlucasyuji.camposer.state.rememberCameraState
 import kotlinx.coroutines.delay
 import androidx.camera.core.CameraSelector as CameraXSelector
 
@@ -39,9 +45,11 @@ fun CameraPreview(
     flashMode: FlashMode = cameraState.flashMode,
     scaleType: ScaleType = cameraState.scaleType,
     enableTorch: Boolean = cameraState.enableTorch,
+    implementationMode: ImplementationMode = cameraState.implementationMode,
     isFocusOnTapEnabled: Boolean = cameraState.isFocusOnTapEnabled,
     isPinchToZoomEnabled: Boolean = cameraState.isPinchToZoomEnabled,
     zoomRatio: Float = cameraState.currentZoom,
+    onPreviewStreamChanged: () -> Unit = {},
     onSwipeToFront: @Composable (Bitmap) -> Unit = { bitmap ->
         BlurImage(
             modifier = Modifier.fillMaxSize(),
@@ -81,10 +89,12 @@ fun CameraPreview(
         flashMode = flashMode,
         scaleType = scaleType,
         enableTorch = enableTorch,
+        implementationMode = implementationMode,
         isFocusOnTapEnabled = isFocusOnTapEnabled,
         isPinchToZoomEnabled = isPinchToZoomEnabled,
         onZoomRatioChanged = onZoomRatioChanged,
         focusTapContent = focusTapContent,
+        onPreviewStreamChanged = onPreviewStreamChanged,
         onSwipeToFront = onSwipeToFront,
         onSwipeToBack = onSwipeToBack,
         content = content
@@ -101,9 +111,11 @@ internal fun CameraPreviewImpl(
     flashMode: FlashMode,
     scaleType: ScaleType,
     enableTorch: Boolean,
+    implementationMode: ImplementationMode,
     isFocusOnTapEnabled: Boolean,
     isPinchToZoomEnabled: Boolean,
     onZoomRatioChanged: ((Float) -> Unit)?,
+    onPreviewStreamChanged: () -> Unit,
     onSwipeToFront: @Composable (Bitmap) -> Unit,
     onSwipeToBack: @Composable (Bitmap) -> Unit,
     focusTapContent: @Composable () -> Unit,
@@ -127,6 +139,7 @@ internal fun CameraPreviewImpl(
     AndroidView(modifier = modifier, factory = { context ->
         PreviewView(context).apply {
             this.scaleType = scaleType.type
+            this.implementationMode = implementationMode.value
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
             )
@@ -141,6 +154,7 @@ internal fun CameraPreviewImpl(
     }, update = { previewView ->
         with(previewView) {
             this.scaleType = scaleType.type
+            this.implementationMode = implementationMode.value
             setOnTapClickListener { if (isFocusOnTapEnabled) tapOffset = it }
             if (camSelector != cameraState.camSelector) latestBitmap = bitmap
         }
@@ -149,6 +163,7 @@ internal fun CameraPreviewImpl(
             with(cameraState) {
                 this.camSelector = camSelector
                 this.scaleType = scaleType
+                this.implementationMode = implementationMode
                 this.isFocusOnTapEnabled = isFocusOnTapEnabled
                 this.isPinchToZoomEnabled = isPinchToZoomEnabled
                 this.flashMode = flashMode
@@ -171,6 +186,9 @@ internal fun CameraPreviewImpl(
                 CameraXSelector.LENS_FACING_FRONT -> onSwipeToFront(it)
                 CameraXSelector.LENS_FACING_BACK -> onSwipeToBack(it)
                 else -> Unit
+            }
+            LaunchedEffect(latestBitmap) {
+                onPreviewStreamChanged()
             }
         }
     }

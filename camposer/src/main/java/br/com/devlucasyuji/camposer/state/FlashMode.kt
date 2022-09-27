@@ -1,4 +1,4 @@
-package br.com.devlucasyuji.camposer
+package br.com.devlucasyuji.camposer.state
 
 import androidx.camera.core.ImageCapture
 

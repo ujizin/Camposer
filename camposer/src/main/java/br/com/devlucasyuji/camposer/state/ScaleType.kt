@@ -1,4 +1,4 @@
-package br.com.devlucasyuji.camposer
+package br.com.devlucasyuji.camposer.state
 
 import androidx.compose.runtime.Immutable
 import androidx.camera.view.PreviewView.ScaleType as CameraScaleType
