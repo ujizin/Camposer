@@ -6,10 +6,13 @@ import android.content.Context
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
+import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.TorchState
 import androidx.camera.core.ZoomState
+import androidx.camera.view.CameraController.IMAGE_ANALYSIS
+import androidx.camera.view.CameraController.OutputSize
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.video.ExperimentalVideo
 import androidx.compose.runtime.Immutable
@@ -107,7 +110,6 @@ class CameraState internal constructor(
      * */
     internal var scaleType: ScaleType = ScaleType.FillCenter
 
-
     /**
      * Get implementation mode from the camera.
      * */
@@ -132,12 +134,66 @@ class CameraState internal constructor(
             }
         }
 
-    private fun resetCamera() = with(controller) {
-        setZoomRatio(INITIAL_ZOOM_VALUE)
-        hasFlashUnit = controller.cameraInfo?.hasFlashUnit() ?: false
-        flashMode = FlashMode.Off
-        enableTorch = false
-    }
+    /**
+     * Get Image Analyzer from camera.
+     * */
+    internal var imageAnalyzer: ImageAnalysis.Analyzer? = null
+        set(value) {
+            field = value
+            with(controller) {
+                clearImageAnalysisAnalyzer()
+                setImageAnalysisAnalyzer(mainExecutor, value ?: return)
+            }
+        }
+
+    /**
+     * CameraX's use cases captures.
+     * */
+    private val useCases: MutableSet<Int> = mutableSetOf()
+
+    /**
+     * Enable/Disable Image analysis from the camera.
+     * */
+    internal var isImageAnalysisEnabled: Boolean
+        get() = controller.isImageAnalysisEnabled
+        set(value) {
+            useCases.setUseCase(value, IMAGE_ANALYSIS)
+        }
+
+    /**
+     * Image analysis backpressure strategy, use [rememberImageAnalyzer] to set value.
+     * */
+    internal var imageAnalysisBackpressureStrategy: Int
+        get() = controller.imageAnalysisBackpressureStrategy
+        set(value) {
+            if (imageAnalysisBackpressureStrategy != value) {
+                controller.imageAnalysisBackpressureStrategy = value
+            }
+        }
+
+    /**
+     * Image analysis target size, use [rememberImageAnalyzer] to set value.
+     * @see rememberImageAnalyzer
+     * */
+    internal var imageAnalysisTargetSize: OutputSize?
+        get() = controller.imageAnalysisTargetSize
+        set(value) {
+            if (imageAnalysisTargetSize != value) {
+                controller.imageAnalysisTargetSize = value
+            }
+        }
+
+    /**
+     * Image analysis image queue depth, use [rememberImageAnalyzer] to set value.
+     * @see rememberImageAnalyzer
+     * */
+    internal var imageAnalysisImageQueueDepth: Int
+        get() = controller.imageAnalysisImageQueueDepth
+        set(value) {
+            if (imageAnalysisImageQueueDepth != value) {
+                controller.imageAnalysisImageQueueDepth = value
+            }
+        }
 
     /**
      * Get if focus on tap is enabled from cameraX.
@@ -194,15 +250,6 @@ class CameraState internal constructor(
         }, mainExecutor)
     }
 
-    private fun CameraStore.restoreSettings() {
-        this@CameraState.camSelector = camSelector
-        this@CameraState.isPinchToZoomEnabled = isPinchToZoomEnabled
-        this@CameraState.scaleType = scaleType
-        this@CameraState.isFocusOnTapEnabled = isFocusOnTapEnabled
-        this@CameraState.enableTorch = enableTorch
-        setZoomRatio(currentZoomRatio)
-    }
-
     /**
      *  Take a picture on the camera.
      *
@@ -239,32 +286,11 @@ class CameraState internal constructor(
     ).build()
 
     /**
-     * Get content values to output file.
-     * */
-    private fun getContentValues(name: String, mimeType: String, relativePath: String) =
-        ContentValues().apply {
-            put(MediaStore.MediaColumns.DISPLAY_NAME, name)
-            put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                put(MediaStore.Images.Media.RELATIVE_PATH, relativePath)
-            }
-        }
-
-    /**
      * Set zoom ratio to camera.
      * @param zoomRatio zoomRatio to be added
      * */
-    fun setZoomRatio(zoomRatio: Float) {
+    internal fun setZoomRatio(zoomRatio: Float) {
         controller.setZoomRatio(zoomRatio.coerceIn(minZoom, maxZoom))
-    }
-
-    /**
-     * Set linear ratio zoom to camera.
-     *
-     * @param linearZoom linearZoom to be added
-     * */
-    fun setLinearRatio(linearZoom: Float) {
-        controller.setLinearZoom(linearZoom)
     }
 
     /**
@@ -274,7 +300,6 @@ class CameraState internal constructor(
     fun startRecording() {
 //        controller.startRecording()
     }
-
 
     /**
      * Stop recording camera.
@@ -306,6 +331,40 @@ class CameraState internal constructor(
         maxZoom = zoom.maxZoomRatio
         currentZoom = zoom.roundedZoomRatio
         block(currentZoom)
+    }
+
+    private fun CameraStore.restoreSettings() {
+        this@CameraState.camSelector = camSelector
+        this@CameraState.isPinchToZoomEnabled = isPinchToZoomEnabled
+        this@CameraState.scaleType = scaleType
+        this@CameraState.isFocusOnTapEnabled = isFocusOnTapEnabled
+        this@CameraState.enableTorch = enableTorch
+        setZoomRatio(currentZoomRatio)
+    }
+
+    private fun resetCamera() {
+        controller.setZoomRatio(INITIAL_ZOOM_VALUE)
+        hasFlashUnit = controller.cameraInfo?.hasFlashUnit() ?: false
+        flashMode = FlashMode.Off
+        enableTorch = false
+    }
+
+    /**
+     * Get content values to output file.
+     * */
+    private fun getContentValues(name: String, mimeType: String, relativePath: String) =
+        ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, name)
+            put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                put(MediaStore.Images.Media.RELATIVE_PATH, relativePath)
+            }
+        }
+
+    private fun MutableSet<Int>.setUseCase(value: Boolean, useCase: Int) {
+        if (value) add(useCase) else remove(useCase)
+        val useCases = fold(0) { acc, current -> acc or current }
+        controller.setEnabledUseCases(useCases)
     }
 
     companion object {

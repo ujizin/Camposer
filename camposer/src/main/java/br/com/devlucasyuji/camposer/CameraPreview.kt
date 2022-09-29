@@ -25,6 +25,7 @@ import br.com.devlucasyuji.camposer.focus.SquareCornerFocus
 import br.com.devlucasyuji.camposer.state.CamSelector
 import br.com.devlucasyuji.camposer.state.CameraState
 import br.com.devlucasyuji.camposer.state.FlashMode
+import br.com.devlucasyuji.camposer.state.ImageAnalyzer
 import br.com.devlucasyuji.camposer.state.ImplementationMode
 import br.com.devlucasyuji.camposer.state.ScaleType
 import br.com.devlucasyuji.camposer.state.rememberCameraState
@@ -45,7 +46,9 @@ fun CameraPreview(
     flashMode: FlashMode = cameraState.flashMode,
     scaleType: ScaleType = cameraState.scaleType,
     enableTorch: Boolean = cameraState.enableTorch,
+    imageAnalyzer: ImageAnalyzer? = null,
     implementationMode: ImplementationMode = cameraState.implementationMode,
+    isImageAnalysisEnabled: Boolean = imageAnalyzer != null && cameraState.isImageAnalysisEnabled,
     isFocusOnTapEnabled: Boolean = cameraState.isFocusOnTapEnabled,
     isPinchToZoomEnabled: Boolean = cameraState.isPinchToZoomEnabled,
     zoomRatio: Float = cameraState.currentZoom,
@@ -89,6 +92,8 @@ fun CameraPreview(
         flashMode = flashMode,
         scaleType = scaleType,
         enableTorch = enableTorch,
+        imageAnalyzer = imageAnalyzer,
+        isImageAnalysisEnabled = isImageAnalysisEnabled,
         implementationMode = implementationMode,
         isFocusOnTapEnabled = isFocusOnTapEnabled,
         isPinchToZoomEnabled = isPinchToZoomEnabled,
@@ -112,6 +117,8 @@ internal fun CameraPreviewImpl(
     scaleType: ScaleType,
     enableTorch: Boolean,
     implementationMode: ImplementationMode,
+    imageAnalyzer: ImageAnalyzer?,
+    isImageAnalysisEnabled: Boolean,
     isFocusOnTapEnabled: Boolean,
     isPinchToZoomEnabled: Boolean,
     onZoomRatioChanged: ((Float) -> Unit)?,
@@ -138,8 +145,6 @@ internal fun CameraPreviewImpl(
 
     AndroidView(modifier = modifier, factory = { context ->
         PreviewView(context).apply {
-            this.scaleType = scaleType.type
-            this.implementationMode = implementationMode.value
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
             )
@@ -152,23 +157,21 @@ internal fun CameraPreviewImpl(
             }
         }
     }, update = { previewView ->
-        with(previewView) {
-            this.scaleType = scaleType.type
-            this.implementationMode = implementationMode.value
-            setOnTapClickListener { if (isFocusOnTapEnabled) tapOffset = it }
-            if (camSelector != cameraState.camSelector) latestBitmap = bitmap
-        }
+        previewView.scaleType = scaleType.type
+        previewView.implementationMode = implementationMode.value
+        previewView.setOnTapClickListener { if (isFocusOnTapEnabled) tapOffset = it }
+        if (camSelector != cameraState.camSelector) latestBitmap = previewView.bitmap
 
         if (cameraIsInitialized) {
-            with(cameraState) {
-                this.camSelector = camSelector
-                this.scaleType = scaleType
-                this.implementationMode = implementationMode
-                this.isFocusOnTapEnabled = isFocusOnTapEnabled
-                this.isPinchToZoomEnabled = isPinchToZoomEnabled
-                this.flashMode = flashMode
-                this.enableTorch = enableTorch
-            }
+            cameraState.camSelector = camSelector
+            cameraState.scaleType = scaleType
+            cameraState.isImageAnalysisEnabled = isImageAnalysisEnabled
+            cameraState.imageAnalyzer = imageAnalyzer?.analyzer
+            cameraState.implementationMode = implementationMode
+            cameraState.isFocusOnTapEnabled = isFocusOnTapEnabled
+            cameraState.isPinchToZoomEnabled = isPinchToZoomEnabled
+            cameraState.flashMode = flashMode
+            cameraState.enableTorch = enableTorch
         }
     })
 
