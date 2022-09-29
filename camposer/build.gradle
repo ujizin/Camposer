@@ -41,6 +41,7 @@ dependencies {
     implementation libs.androidx.core
     implementation libs.bundles.compose
     implementation libs.lifecycle
-    api libs.bundles.camerax
 
+    implementation libs.bundles.internal.camerax
+    api libs.camerax.core
 }

@@ -39,8 +39,7 @@ compose = [
     "compose-foundation"
 ]
 
-camerax = [
-    "camerax-core",
+internal-camerax = [
     "camerax-camera2",
     "camerax-lifecycle",
     "camerax-view"
