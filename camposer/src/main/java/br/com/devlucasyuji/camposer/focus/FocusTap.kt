@@ -24,14 +24,13 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layout
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
 
 
 @Composable
-fun FocusTap(
+internal fun FocusTap(
     modifier: Modifier = Modifier,
     offset: Offset,
     onAfterFocus: suspend () -> Unit = {},
@@ -39,8 +38,8 @@ fun FocusTap(
 ) {
     val isFocused by remember(offset) { derivedStateOf { offset != Offset.Zero } }
     if (isFocused) {
-        val focusMovable = movableContentOf {
-            with(LocalDensity.current) {
+        val focusMovable = remember(offset) {
+            movableContentOf {
                 Box(
                     Modifier
                         .then(modifier)
