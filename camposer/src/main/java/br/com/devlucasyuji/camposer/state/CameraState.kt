@@ -25,6 +25,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import br.com.devlucasyuji.camposer.extensions.asContext
 import br.com.devlucasyuji.camposer.extensions.roundedZoomRatio
+import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.Executor
@@ -87,6 +88,17 @@ class CameraState internal constructor(
         controller.zoomState.value?.roundedZoomRatio ?: INITIAL_ZOOM_VALUE
     )
         private set
+
+    /**
+     * Check if pinch to zoom is in progress.
+     * */
+    var isPinchZoomInProgress by mutableStateOf(false)
+
+    /**
+     * Check if camera is streaming or not.
+     * */
+    var isStreaming by mutableStateOf(false)
+        internal set
 
     /**
      * Check if zoom is supported.
@@ -256,7 +268,8 @@ class CameraState internal constructor(
      *  @param onResult Callback called when [PhotoResult] is ready
      * */
     fun takePicture(name: String? = null, onResult: (PhotoResult) -> Unit) {
-        controller.takePicture(createOutputFile(name),
+        controller.takePicture(
+            createOutputFile(name),
             mainExecutor,
             object : ImageCapture.OnImageSavedCallback {
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
@@ -367,9 +380,16 @@ class CameraState internal constructor(
         controller.setEnabledUseCases(useCases)
     }
 
+    internal suspend fun updatePinchZoomInProgress() {
+        isPinchZoomInProgress = true
+        delay(PINCH_ZOOM_IN_PROGRESS_DELAY)
+        isPinchZoomInProgress = false
+    }
+
     companion object {
         private val TAG = this::class.java.name
 
+        private const val PINCH_ZOOM_IN_PROGRESS_DELAY = 1000L
         private const val INITIAL_ZOOM_VALUE = 1F
         private const val DEFAULT_DATE_FORMAT = "YYYY-HH:MM:SS"
         private const val JPEG_MIME_TYPE = "image/jpeg"

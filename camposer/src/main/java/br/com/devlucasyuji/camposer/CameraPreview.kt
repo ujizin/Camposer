@@ -18,6 +18,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.Lifecycle
 import br.com.devlucasyuji.camposer.androidview.setOnTapClickListener
 import br.com.devlucasyuji.camposer.extensions.observeLatest
 import br.com.devlucasyuji.camposer.focus.FocusTap
@@ -36,6 +37,23 @@ import androidx.camera.core.CameraSelector as CameraXSelector
  * Creates a Camera Preview's composable.
  *
  * @param cameraState camera state hold some states and camera's controller, it can be useful to given action like [CameraState.takePicture]
+ * @param camSelector camera selector to be added, default is back
+ * @param flashMode flash mode to be added, default is off
+ * @param scaleType scale type to be added, default is fill center
+ * @param enableTorch enable torch from camera, default is false.
+ * @param zoomRatio zoom ratio to be added, default is 1.0
+ * @param imageAnalyzer image analyzer from camera, see [ImageAnalyzer]
+ * @param implementationMode implementation mode to be added, default is performance
+ * @param isImageAnalysisEnabled enable image analysis, default is false if does not have image analyzer
+ * @param isFocusOnTapEnabled turn on feature focus on tap if true
+ * @param isPinchToZoomEnabled turn on feature pinch to zoom if true
+ * @param onPreviewStreamChanged dispatch when preview is switching to front or back
+ * @param onSwitchToFront composable preview when change camera to front and it's not been streaming yet
+ * @param onSwitchToBack composable preview when change camera to back and it's not been streaming yet
+ * @param onZoomRatioChanged dispatch when zoom is changed by pinch to zoom
+ * @param focusTapContent content of focus tap, default is [SquareCornerFocus]
+ * @param content content composable within of camera preview.
+ * @see ImageAnalyzer
  * @see CameraState
  * */
 @Composable
@@ -46,14 +64,14 @@ fun CameraPreview(
     flashMode: FlashMode = cameraState.flashMode,
     scaleType: ScaleType = cameraState.scaleType,
     enableTorch: Boolean = cameraState.enableTorch,
+    zoomRatio: Float = cameraState.currentZoom,
     imageAnalyzer: ImageAnalyzer? = null,
     implementationMode: ImplementationMode = cameraState.implementationMode,
     isImageAnalysisEnabled: Boolean = imageAnalyzer != null && cameraState.isImageAnalysisEnabled,
     isFocusOnTapEnabled: Boolean = cameraState.isFocusOnTapEnabled,
     isPinchToZoomEnabled: Boolean = cameraState.isPinchToZoomEnabled,
-    zoomRatio: Float = cameraState.currentZoom,
     onPreviewStreamChanged: () -> Unit = {},
-    onSwipeToFront: @Composable (Bitmap) -> Unit = { bitmap ->
+    onSwitchToFront: @Composable (Bitmap) -> Unit = { bitmap ->
         BlurImage(
             modifier = Modifier.fillMaxSize(),
             bitmap = bitmap,
@@ -61,7 +79,7 @@ fun CameraPreview(
             contentDescription = null
         )
     },
-    onSwipeToBack: @Composable (Bitmap) -> Unit = { bitmap ->
+    onSwitchToBack: @Composable (Bitmap) -> Unit = { bitmap ->
         BlurImage(
             modifier = Modifier.fillMaxSize(),
             bitmap = bitmap,
@@ -74,13 +92,16 @@ fun CameraPreview(
     content: @Composable () -> Unit = {},
 ) {
     val cameraIsInitialized by rememberUpdatedState(cameraState.isInitialized)
-    val zoomHasChanged by remember(zoomRatio) {
+    val manualZoomHasChanged by remember(zoomRatio) {
         derivedStateOf { cameraIsInitialized && cameraState.currentZoom != zoomRatio }
     }
 
-    LaunchedEffect(zoomHasChanged) {
-        if (zoomHasChanged) {
-            cameraState.setZoomRatio(zoomRatio)
+    LaunchedEffect(zoomRatio, manualZoomHasChanged) {
+        with(cameraState) {
+            when {
+                manualZoomHasChanged -> setZoomRatio(zoomRatio)
+                cameraIsInitialized -> updatePinchZoomInProgress()
+            }
         }
     }
 
@@ -100,8 +121,8 @@ fun CameraPreview(
         onZoomRatioChanged = onZoomRatioChanged,
         focusTapContent = focusTapContent,
         onPreviewStreamChanged = onPreviewStreamChanged,
-        onSwipeToFront = onSwipeToFront,
-        onSwipeToBack = onSwipeToBack,
+        onSwipeToFront = onSwitchToFront,
+        onSwipeToBack = onSwitchToBack,
         content = content
     )
 }
@@ -129,11 +150,10 @@ internal fun CameraPreviewImpl(
     content: @Composable () -> Unit
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
+    val lifecycleEvent by lifecycleOwner.lifecycle.observeAsState()
     var tapOffset by remember { mutableStateOf(Offset.Zero) }
-    var switchCamera by remember { mutableStateOf(false) }
+    val isCameraSwitching by rememberUpdatedState(!cameraState.isStreaming)
     var latestBitmap by remember { mutableStateOf<Bitmap?>(null) }
-
-    val cameraSelectorState by rememberUpdatedState(camSelector)
 
     LaunchedEffect(cameraIsInitialized) {
         if (cameraIsInitialized) {
@@ -153,14 +173,18 @@ internal fun CameraPreviewImpl(
             }
 
             previewStreamState.observe(lifecycleOwner) { state ->
-                switchCamera = state == PreviewView.StreamState.IDLE
+                cameraState.isStreaming = state == PreviewView.StreamState.STREAMING
             }
         }
     }, update = { previewView ->
         previewView.scaleType = scaleType.type
         previewView.implementationMode = implementationMode.value
         previewView.setOnTapClickListener { if (isFocusOnTapEnabled) tapOffset = it }
-        if (camSelector != cameraState.camSelector) latestBitmap = previewView.bitmap
+        latestBitmap = when {
+            lifecycleEvent == Lifecycle.Event.ON_STOP -> null
+            camSelector != cameraState.camSelector -> previewView.bitmap
+            else -> latestBitmap
+        }
 
         if (cameraIsInitialized) {
             cameraState.camSelector = camSelector
@@ -183,9 +207,9 @@ internal fun CameraPreviewImpl(
         },
     ) { focusTapContent() }
 
-    if (switchCamera) {
+    if (isCameraSwitching) {
         latestBitmap?.let {
-            when (cameraSelectorState.selector.lensFacing) {
+            when (camSelector.selector.lensFacing) {
                 CameraXSelector.LENS_FACING_FRONT -> onSwipeToFront(it)
                 CameraXSelector.LENS_FACING_BACK -> onSwipeToBack(it)
                 else -> Unit

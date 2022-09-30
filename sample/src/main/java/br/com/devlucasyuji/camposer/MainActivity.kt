@@ -35,6 +35,7 @@ import br.com.devlucasyuji.camposer.state.rememberCameraSelector
 import br.com.devlucasyuji.camposer.state.rememberCameraState
 import br.com.devlucasyuji.camposer.state.rememberCurrentZoom
 import br.com.devlucasyuji.camposer.state.rememberFlashMode
+import br.com.devlucasyuji.camposer.state.rememberImageAnalyzer
 import br.com.devlucasyuji.camposer.state.rememberTorch
 
 class MainActivity : ComponentActivity() {
@@ -62,11 +63,15 @@ fun Camera() {
 
     var isPinchToZoomEnabled by remember { mutableStateOf(true) }
     var isFocusOnTapEnabled by remember { mutableStateOf(true) }
+    var imageAnalyzer = cameraState.rememberImageAnalyzer() {
+
+    }
 
     CameraPreview(
         Modifier.fillMaxSize(),
         cameraState = cameraState,
         flashMode = flashMode,
+        imageAnalyzer = imageAnalyzer,
         isFocusOnTapEnabled = isFocusOnTapEnabled,
         isPinchToZoomEnabled = isPinchToZoomEnabled,
         enableTorch = enableTorch,
@@ -97,10 +102,12 @@ fun Camera() {
                             }
                         }
                 ) { Text("Pic") }
-
+                val isStreaming by rememberUpdatedState(newValue = cameraState.isStreaming)
                 RoundButton(
                     modifier = RoundedModifier.clickable {
-                        cameraSelector = cameraSelector.customReverse
+                        if (isStreaming) {
+                            cameraSelector = cameraSelector.customReverse
+                        }
                     }
                 ) { Text("Switch") }
 
@@ -132,6 +139,12 @@ fun Camera() {
                     Text("Flash")
                 }
             }
+        }
+    }
+    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        val isZoomPinchToZoom by rememberUpdatedState(cameraState.isPinchZoomInProgress)
+        if (isZoomPinchToZoom) {
+            Text("$currentZoom")
         }
     }
 }
