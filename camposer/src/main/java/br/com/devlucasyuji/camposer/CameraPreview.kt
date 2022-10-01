@@ -44,7 +44,7 @@ import androidx.camera.core.CameraSelector as CameraXSelector
  * @param zoomRatio zoom ratio to be added, default is 1.0
  * @param imageAnalyzer image analyzer from camera, see [ImageAnalyzer]
  * @param implementationMode implementation mode to be added, default is performance
- * @param isImageAnalysisEnabled enable image analysis, default is false if does not have image analyzer
+ * @param isImageAnalysisEnabled enable or disable image analysis
  * @param isFocusOnTapEnabled turn on feature focus on tap if true
  * @param isPinchToZoomEnabled turn on feature pinch to zoom if true
  * @param onPreviewStreamChanged dispatch when preview is switching to front or back
@@ -67,7 +67,7 @@ fun CameraPreview(
     zoomRatio: Float = cameraState.currentZoom,
     imageAnalyzer: ImageAnalyzer? = null,
     implementationMode: ImplementationMode = cameraState.implementationMode,
-    isImageAnalysisEnabled: Boolean = imageAnalyzer != null && cameraState.isImageAnalysisEnabled,
+    isImageAnalysisEnabled: Boolean = cameraState.isImageAnalysisEnabled,
     isFocusOnTapEnabled: Boolean = cameraState.isFocusOnTapEnabled,
     isPinchToZoomEnabled: Boolean = cameraState.isPinchToZoomEnabled,
     onPreviewStreamChanged: () -> Unit = {},
@@ -103,6 +103,7 @@ fun CameraPreview(
                 cameraIsInitialized -> updatePinchZoomInProgress()
             }
         }
+        return@LaunchedEffect
     }
 
     CameraPreviewImpl(

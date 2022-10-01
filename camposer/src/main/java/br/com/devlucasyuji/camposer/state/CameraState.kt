@@ -3,7 +3,7 @@ package br.com.devlucasyuji.camposer.state
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
-import android.os.Build
+import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import androidx.camera.core.ImageAnalysis
@@ -12,6 +12,7 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.TorchState
 import androidx.camera.core.ZoomState
 import androidx.camera.view.CameraController.IMAGE_ANALYSIS
+import androidx.camera.view.CameraController.IMAGE_CAPTURE
 import androidx.camera.view.CameraController.OutputSize
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.video.ExperimentalVideo
@@ -26,8 +27,7 @@ import androidx.lifecycle.LifecycleOwner
 import br.com.devlucasyuji.camposer.extensions.asContext
 import br.com.devlucasyuji.camposer.extensions.roundedZoomRatio
 import kotlinx.coroutines.delay
-import java.text.SimpleDateFormat
-import java.util.Locale
+import java.io.File
 import java.util.concurrent.Executor
 
 @Immutable
@@ -118,6 +118,15 @@ class CameraState internal constructor(
     var hasFlashUnit by mutableStateOf(controller.cameraInfo?.hasFlashUnit() ?: false)
 
     /**
+     * Capture mode to be added on camera.
+     * */
+    private var captureMode: Int = IMAGE_CAPTURE
+        set(value) {
+            field = value
+            updateUseCases()
+        }
+
+    /**
      * Get scale type from the camera.
      * */
     internal var scaleType: ScaleType = ScaleType.FillCenter
@@ -169,8 +178,13 @@ class CameraState internal constructor(
     internal var isImageAnalysisEnabled: Boolean
         get() = controller.isImageAnalysisEnabled
         set(value) {
-            useCases.setUseCase(value, IMAGE_ANALYSIS)
+            if (value) useCases += IMAGE_ANALYSIS else useCases -= IMAGE_ANALYSIS
+            updateUseCases()
         }
+
+    private fun updateUseCases() {
+        controller.setEnabledUseCases(captureMode or useCases.sumOr())
+    }
 
     /**
      * Image analysis backpressure strategy, use [rememberImageAnalyzer] to set value.
@@ -263,17 +277,55 @@ class CameraState internal constructor(
     }
 
     /**
-     *  Take a picture on the camera.
+     *  Take a picture with the camera.
      *
+     *  @param saveCollection Uri collection where photo will be saved.
+     *  @param contentValues Content values of the photo.
      *  @param onResult Callback called when [PhotoResult] is ready
      * */
-    fun takePicture(name: String? = null, onResult: (PhotoResult) -> Unit) {
+    fun takePicture(
+        contentValues: ContentValues,
+        saveCollection: Uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+        onResult: (PhotoResult) -> Unit,
+    ) {
+        takePicture(
+            outputFileOptions = ImageCapture.OutputFileOptions.Builder(
+                contentResolver,
+                saveCollection,
+                contentValues
+            ).build(),
+            onResult = onResult
+        )
+    }
+
+    /**
+     * Take a picture with the camera.
+     * @param file file where photo will be saved
+     * @param onResult Callback called when [PhotoResult] is ready
+     * */
+    fun takePicture(
+        file: File,
+        onResult: (PhotoResult) -> Unit
+    ) {
+        takePicture(ImageCapture.OutputFileOptions.Builder(file).build(), onResult)
+    }
+
+    /**
+     * Take a picture with the camera.
+     *
+     * @param outputFileOptions Output file options of the photo.
+     * @param onResult Callback called when [PhotoResult] is ready
+     * */
+    fun takePicture(
+        outputFileOptions: ImageCapture.OutputFileOptions,
+        onResult: (PhotoResult) -> Unit,
+    ) {
         controller.takePicture(
-            createOutputFile(name),
+            outputFileOptions,
             mainExecutor,
             object : ImageCapture.OnImageSavedCallback {
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    onResult(PhotoResult.Success)
+                    onResult(PhotoResult.Success(outputFileResults.savedUri))
                 }
 
                 override fun onError(exception: ImageCaptureException) {
@@ -281,22 +333,6 @@ class CameraState internal constructor(
                 }
             })
     }
-
-    /**
-     * Create output file directory to camera.
-     * */
-    private fun createOutputFile(
-        name: String?,
-        contentValues: ContentValues = getContentValues(
-            name = name ?: SimpleDateFormat(
-                DEFAULT_DATE_FORMAT, Locale.US
-            ).format(System.currentTimeMillis()),
-            mimeType = JPEG_MIME_TYPE,
-            relativePath = RELATIVE_PATH
-        ),
-    ): ImageCapture.OutputFileOptions = ImageCapture.OutputFileOptions.Builder(
-        contentResolver, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues
-    ).build()
 
     /**
      * Set zoom ratio to camera.
@@ -361,23 +397,8 @@ class CameraState internal constructor(
         flashMode = FlashMode.Off
         enableTorch = false
     }
-
-    /**
-     * Get content values to output file.
-     * */
-    private fun getContentValues(name: String, mimeType: String, relativePath: String) =
-        ContentValues().apply {
-            put(MediaStore.MediaColumns.DISPLAY_NAME, name)
-            put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                put(MediaStore.Images.Media.RELATIVE_PATH, relativePath)
-            }
-        }
-
-    private fun MutableSet<Int>.setUseCase(value: Boolean, useCase: Int) {
-        if (value) add(useCase) else remove(useCase)
-        val useCases = fold(0) { acc, current -> acc or current }
-        controller.setEnabledUseCases(useCases)
+    private fun Set<Int>.sumOr(initial: Int = 0): Int = fold(initial) { acc, current ->
+        acc or current
     }
 
     internal suspend fun updatePinchZoomInProgress() {
@@ -388,15 +409,8 @@ class CameraState internal constructor(
 
     companion object {
         private val TAG = this::class.java.name
-
         private const val PINCH_ZOOM_IN_PROGRESS_DELAY = 1000L
         private const val INITIAL_ZOOM_VALUE = 1F
-        private const val DEFAULT_DATE_FORMAT = "YYYY-HH:MM:SS"
-        private const val JPEG_MIME_TYPE = "image/jpeg"
-        private const val VIDEO_MIME_TYPE = "video/avc"
-
-        // FIXME set app name from the app or searching another way to set name
-        private const val RELATIVE_PATH = "Pictures/Camposer"
 
         @Suppress("UNCHECKED_CAST")
         internal fun getSaver(lifecycleOwner: LifecycleOwner): Saver<CameraState, *> =
