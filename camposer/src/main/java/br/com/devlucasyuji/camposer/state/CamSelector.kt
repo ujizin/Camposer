@@ -10,7 +10,7 @@ import androidx.compose.runtime.Immutable
  * @param selector Camera selector by CameraX
  * */
 sealed class CamSelector(
-    internal var selector: CameraSelector
+    internal val selector: CameraSelector
 ) {
     /**
      * Default front camera from CameraX.

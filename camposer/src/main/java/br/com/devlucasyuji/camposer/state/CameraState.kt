@@ -12,10 +12,12 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.TorchState
 import androidx.camera.core.ZoomState
 import androidx.camera.view.CameraController.IMAGE_ANALYSIS
-import androidx.camera.view.CameraController.IMAGE_CAPTURE
 import androidx.camera.view.CameraController.OutputSize
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.video.ExperimentalVideo
+import androidx.camera.view.video.OnVideoSavedCallback
+import androidx.camera.view.video.OutputFileOptions
+import androidx.camera.view.video.OutputFileResults
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,7 +34,6 @@ import java.util.concurrent.Executor
 
 @Immutable
 internal data class CameraStore(
-    val camSelector: CamSelector = CamSelector.Back,
     val scaleType: ScaleType = ScaleType.FillCenter,
     val flash: FlashMode = FlashMode.Off,
     val enableTorch: Boolean = false,
@@ -120,10 +121,12 @@ class CameraState internal constructor(
     /**
      * Capture mode to be added on camera.
      * */
-    private var captureMode: Int = IMAGE_CAPTURE
+    internal var captureMode: CaptureMode = CaptureMode.Image
         set(value) {
-            field = value
-            updateUseCases()
+            if (field != value) {
+                field = value
+                updateUseCases()
+            }
         }
 
     /**
@@ -178,12 +181,15 @@ class CameraState internal constructor(
     internal var isImageAnalysisEnabled: Boolean
         get() = controller.isImageAnalysisEnabled
         set(value) {
-            if (value) useCases += IMAGE_ANALYSIS else useCases -= IMAGE_ANALYSIS
-            updateUseCases()
+            if (isImageAnalysisEnabled != value) {
+                if (value) useCases += IMAGE_ANALYSIS else useCases -= IMAGE_ANALYSIS
+                updateUseCases()
+            }
         }
 
     private fun updateUseCases() {
-        controller.setEnabledUseCases(captureMode or useCases.sumOr())
+        controller.setEnabledUseCases(0)
+        controller.setEnabledUseCases(captureMode.value or useCases.sumOr())
     }
 
     /**
@@ -265,8 +271,8 @@ class CameraState internal constructor(
     /**
      * Return true if it's recording.
      * */
-    val isRecording: Boolean
-        @ExperimentalVideo get() = controller.isRecording
+    var isRecording: Boolean by mutableStateOf(controller.isRecording)
+        private set
 
     init {
         controller.initializationFuture.addListener({
@@ -279,14 +285,14 @@ class CameraState internal constructor(
     /**
      *  Take a picture with the camera.
      *
-     *  @param saveCollection Uri collection where photo will be saved.
+     *  @param saveCollection Uri collection where the photo will be saved.
      *  @param contentValues Content values of the photo.
-     *  @param onResult Callback called when [PhotoResult] is ready
+     *  @param onResult Callback called when [ImageCaptureResult] is ready
      * */
     fun takePicture(
         contentValues: ContentValues,
         saveCollection: Uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-        onResult: (PhotoResult) -> Unit,
+        onResult: (ImageCaptureResult) -> Unit,
     ) {
         takePicture(
             outputFileOptions = ImageCapture.OutputFileOptions.Builder(
@@ -300,12 +306,12 @@ class CameraState internal constructor(
 
     /**
      * Take a picture with the camera.
-     * @param file file where photo will be saved
-     * @param onResult Callback called when [PhotoResult] is ready
+     * @param file file where the photo will be saved
+     * @param onResult Callback called when [ImageCaptureResult] is ready
      * */
     fun takePicture(
         file: File,
-        onResult: (PhotoResult) -> Unit
+        onResult: (ImageCaptureResult) -> Unit
     ) {
         takePicture(ImageCapture.OutputFileOptions.Builder(file).build(), onResult)
     }
@@ -314,24 +320,28 @@ class CameraState internal constructor(
      * Take a picture with the camera.
      *
      * @param outputFileOptions Output file options of the photo.
-     * @param onResult Callback called when [PhotoResult] is ready
+     * @param onResult Callback called when [ImageCaptureResult] is ready
      * */
     fun takePicture(
         outputFileOptions: ImageCapture.OutputFileOptions,
-        onResult: (PhotoResult) -> Unit,
+        onResult: (ImageCaptureResult) -> Unit,
     ) {
-        controller.takePicture(
-            outputFileOptions,
-            mainExecutor,
-            object : ImageCapture.OnImageSavedCallback {
-                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    onResult(PhotoResult.Success(outputFileResults.savedUri))
-                }
+        try {
+            controller.takePicture(
+                outputFileOptions,
+                mainExecutor,
+                object : ImageCapture.OnImageSavedCallback {
+                    override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                        onResult(ImageCaptureResult.Success(outputFileResults.savedUri))
+                    }
 
-                override fun onError(exception: ImageCaptureException) {
-                    onResult(PhotoResult.Error(exception))
-                }
-            })
+                    override fun onError(exception: ImageCaptureException) {
+                        onResult(ImageCaptureResult.Error(exception))
+                    }
+                })
+        } catch (exception: Exception) {
+            onResult(ImageCaptureResult.Error(exception))
+        }
     }
 
     /**
@@ -344,10 +354,77 @@ class CameraState internal constructor(
 
     /**
      * Start recording camera.
+     *
+     * @param file file where the video will be saved
+     * @param onResult Callback called when [VideoCaptureResult] is ready
      * */
-    // TODO add start recording
-    fun startRecording() {
-//        controller.startRecording()
+    @ExperimentalVideo
+    fun startRecording(file: File, onResult: (VideoCaptureResult) -> Unit) {
+        startRecording(OutputFileOptions.builder(file).build(), onResult)
+    }
+
+    /**
+     * Start recording camera.
+     *
+     *  @param saveCollection Uri collection where the video will be saved.
+     *  @param contentValues Content values of the video.
+     *  @param onResult Callback called when [VideoCaptureResult] is ready
+     *  */
+    @ExperimentalVideo
+    fun startRecording(
+        saveCollection: Uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+        contentValues: ContentValues,
+        onResult: (VideoCaptureResult) -> Unit,
+    ) {
+        startRecording(
+            OutputFileOptions.builder(contentResolver, saveCollection, contentValues).build(),
+            onResult
+        )
+    }
+
+    /**
+     * Start recording camera.
+     *
+     * @param outputFileOptions Output file options of the video.
+     * @param onResult Callback called when [VideoCaptureResult] is ready
+     * */
+    @ExperimentalVideo
+    fun startRecording(
+        outputFileOptions: OutputFileOptions,
+        onResult: (VideoCaptureResult) -> Unit,
+    ) {
+        try {
+            isRecording = true
+            controller.startRecording(
+                outputFileOptions,
+                mainExecutor,
+                object : OnVideoSavedCallback {
+                    override fun onVideoSaved(outputFileResults: OutputFileResults) {
+                        isRecording = false
+                        VideoCaptureResult.Success(outputFileResults.savedUri)
+                    }
+
+                    override fun onError(
+                        videoCaptureError: Int,
+                        message: String,
+                        cause: Throwable?
+                    ) {
+                        isRecording = false
+                        VideoCaptureResult.Error(videoCaptureError, message, cause)
+                    }
+                })
+        } catch (exception: Exception) {
+            isRecording = false
+            onResult(
+                VideoCaptureResult.Error(
+                    OnVideoSavedCallback.ERROR_UNKNOWN,
+                    if (!controller.isVideoCaptureEnabled) {
+                        "Video capture is not enabled, please set captureMode as CaptureMode.Video"
+                    } else "${exception.message}",
+                    exception
+                )
+            )
+        }
     }
 
     /**
@@ -362,10 +439,28 @@ class CameraState internal constructor(
      * Toggle recording camera.
      * */
     @ExperimentalVideo
-    fun toggleRecording() {
+    fun toggleRecording(
+        contentValues: ContentValues,
+        saveCollection: Uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+        onResult: (VideoCaptureResult) -> Unit
+    ) {
         when (isRecording) {
             true -> stopRecording()
-            false -> startRecording()
+            false -> startRecording(saveCollection, contentValues, onResult)
+        }
+    }
+
+    /**
+     * Toggle recording camera.
+     * */
+    @ExperimentalVideo
+    fun toggleRecording(
+        outputFileOptions: OutputFileOptions,
+        onResult: (VideoCaptureResult) -> Unit
+    ) {
+        when (isRecording) {
+            true -> stopRecording()
+            false -> startRecording(outputFileOptions, onResult)
         }
     }
 
@@ -386,6 +481,7 @@ class CameraState internal constructor(
         this@CameraState.camSelector = camSelector
         this@CameraState.isPinchToZoomEnabled = isPinchToZoomEnabled
         this@CameraState.scaleType = scaleType
+        this@CameraState.flashMode = flashMode
         this@CameraState.isFocusOnTapEnabled = isFocusOnTapEnabled
         this@CameraState.enableTorch = enableTorch
         setZoomRatio(currentZoomRatio)
@@ -397,6 +493,7 @@ class CameraState internal constructor(
         flashMode = FlashMode.Off
         enableTorch = false
     }
+
     private fun Set<Int>.sumOr(initial: Int = 0): Int = fold(initial) { acc, current ->
         acc or current
     }
@@ -416,17 +513,22 @@ class CameraState internal constructor(
         internal fun getSaver(lifecycleOwner: LifecycleOwner): Saver<CameraState, *> =
             listSaver(save = {
                 listOf(
-//                it.cameraSelector,
-                    it.scaleType, it.flashMode, it.enableTorch, it.currentZoom
+                    it.scaleType,
+                    it.flashMode,
+                    it.enableTorch,
+                    it.currentZoom,
+                    it.isFocusOnTapEnabled,
+                    it.isPinchToZoomEnabled
                 )
             }, restore = {
                 CameraState(
                     lifecycleOwner, CameraStore(
-//                    cameraSelector = it[0] as CameraSelector,
                         scaleType = it[0] as ScaleType,
                         flash = it[1] as FlashMode,
                         enableTorch = it[2] as Boolean,
                         currentZoomRatio = it[3] as Float,
+                        isFocusOnTapEnabled = it[4] as Boolean,
+                        isPinchToZoomEnabled = it[5] as Boolean,
                     )
                 )
             })

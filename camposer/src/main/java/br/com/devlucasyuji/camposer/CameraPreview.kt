@@ -25,6 +25,7 @@ import br.com.devlucasyuji.camposer.focus.FocusTap
 import br.com.devlucasyuji.camposer.focus.SquareCornerFocus
 import br.com.devlucasyuji.camposer.state.CamSelector
 import br.com.devlucasyuji.camposer.state.CameraState
+import br.com.devlucasyuji.camposer.state.CaptureMode
 import br.com.devlucasyuji.camposer.state.FlashMode
 import br.com.devlucasyuji.camposer.state.ImageAnalyzer
 import br.com.devlucasyuji.camposer.state.ImplementationMode
@@ -38,6 +39,7 @@ import androidx.camera.core.CameraSelector as CameraXSelector
  *
  * @param cameraState camera state hold some states and camera's controller, it can be useful to given action like [CameraState.takePicture]
  * @param camSelector camera selector to be added, default is back
+ * @param captureMode camera capture mode, default is image
  * @param flashMode flash mode to be added, default is off
  * @param scaleType scale type to be added, default is fill center
  * @param enableTorch enable torch from camera, default is false.
@@ -61,6 +63,7 @@ fun CameraPreview(
     modifier: Modifier = Modifier,
     cameraState: CameraState = rememberCameraState(),
     camSelector: CamSelector = cameraState.camSelector,
+    captureMode: CaptureMode = cameraState.captureMode,
     flashMode: FlashMode = cameraState.flashMode,
     scaleType: ScaleType = cameraState.scaleType,
     enableTorch: Boolean = cameraState.enableTorch,
@@ -111,6 +114,7 @@ fun CameraPreview(
         cameraState = cameraState,
         cameraIsInitialized = cameraIsInitialized,
         camSelector = camSelector,
+        captureMode = captureMode,
         flashMode = flashMode,
         scaleType = scaleType,
         enableTorch = enableTorch,
@@ -135,6 +139,7 @@ internal fun CameraPreviewImpl(
     cameraState: CameraState,
     cameraIsInitialized: Boolean,
     camSelector: CamSelector,
+    captureMode: CaptureMode,
     flashMode: FlashMode,
     scaleType: ScaleType,
     enableTorch: Boolean,
@@ -189,6 +194,7 @@ internal fun CameraPreviewImpl(
 
         if (cameraIsInitialized) {
             cameraState.camSelector = camSelector
+            cameraState.captureMode = captureMode
             cameraState.scaleType = scaleType
             cameraState.isImageAnalysisEnabled = isImageAnalysisEnabled
             cameraState.imageAnalyzer = imageAnalyzer?.analyzer

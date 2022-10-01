@@ -6,10 +6,10 @@ import androidx.compose.runtime.Immutable
 /**
  * Photo Result of take a picture.
  * */
-sealed interface PhotoResult {
+sealed interface ImageCaptureResult {
     @Immutable
-    data class Success(val savedUri: Uri?) : PhotoResult
+    data class Success(val savedUri: Uri?) : ImageCaptureResult
 
     @Immutable
-    data class Error(val throwable: Throwable) : PhotoResult
+    data class Error(val throwable: Throwable) : ImageCaptureResult
 }
