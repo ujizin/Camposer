@@ -54,7 +54,7 @@ fun customCamSelector(
 @Composable
 fun CameraState.rememberFlashMode(flashMode: FlashMode): MutableState<FlashMode> {
     val hasFlashUnit by rememberUpdatedState(hasFlashUnit)
-    return remember(hasFlashUnit) {
+    return rememberSaveable(hasFlashUnit, saver = ConditionalState.getSaver { hasFlashUnit }) {
         ConditionalState(flashMode, FlashMode.Off) { hasFlashUnit }
     }
 }
@@ -65,7 +65,7 @@ fun CameraState.rememberFlashMode(flashMode: FlashMode): MutableState<FlashMode>
 @Composable
 fun CameraState.rememberTorch(initialTorch: Boolean): MutableState<Boolean> {
     val hasFlashUnit by rememberUpdatedState(hasFlashUnit)
-    return remember(hasFlashUnit) {
+    return rememberSaveable(hasFlashUnit, saver = ConditionalState.getSaver { hasFlashUnit }) {
         ConditionalState(initialTorch, false) { hasFlashUnit }
     }
 }
