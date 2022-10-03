@@ -239,11 +239,7 @@ class CameraState internal constructor(
     /**
      * Get if pinch to zoom is enabled from cameraX.
      * */
-    internal var isPinchToZoomEnabled: Boolean
-        get() = controller.isPinchToZoomEnabled
-        set(value) {
-            controller.isPinchToZoomEnabled = value
-        }
+    internal var isPinchToZoomEnabled: Boolean = true
 
     /**
      * Flash Mode from the camera.
@@ -349,7 +345,7 @@ class CameraState internal constructor(
      * @param zoomRatio zoomRatio to be added
      * */
     internal fun setZoomRatio(zoomRatio: Float) {
-        controller.setZoomRatio(zoomRatio.coerceIn(minZoom, maxZoom))
+        controller.setZoomRatio(zoomRatio/*.coerceIn(minZoom, maxZoom)*/)
     }
 
     /**
@@ -488,7 +484,7 @@ class CameraState internal constructor(
     }
 
     private fun resetCamera() {
-        controller.setZoomRatio(INITIAL_ZOOM_VALUE)
+//        controller.setZoomRatio(INITIAL_ZOOM_VALUE)
         hasFlashUnit = controller.cameraInfo?.hasFlashUnit() ?: false
         flashMode = FlashMode.Off
         enableTorch = false

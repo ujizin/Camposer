@@ -7,7 +7,6 @@ import androidx.camera.view.PreviewView
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,8 +18,9 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
-import br.com.devlucasyuji.camposer.androidview.setOnTapClickListener
-import br.com.devlucasyuji.camposer.extensions.observeLatest
+import br.com.devlucasyuji.camposer.androidview.onCameraTouchEvent
+import br.com.devlucasyuji.camposer.extensions.clamped
+import br.com.devlucasyuji.camposer.extensions.roundTo
 import br.com.devlucasyuji.camposer.focus.FocusTap
 import br.com.devlucasyuji.camposer.focus.SquareCornerFocus
 import br.com.devlucasyuji.camposer.state.CamSelector
@@ -90,24 +90,11 @@ fun CameraPreview(
             contentDescription = null
         )
     },
-    onZoomRatioChanged: ((Float) -> Unit)? = null,
+    onZoomRatioChanged: (Float) -> Unit = {},
     focusTapContent: @Composable () -> Unit = { SquareCornerFocus() },
     content: @Composable () -> Unit = {},
 ) {
     val cameraIsInitialized by rememberUpdatedState(cameraState.isInitialized)
-    val manualZoomHasChanged by remember(zoomRatio) {
-        derivedStateOf { cameraIsInitialized && cameraState.currentZoom != zoomRatio }
-    }
-
-    LaunchedEffect(zoomRatio, manualZoomHasChanged) {
-        with(cameraState) {
-            when {
-                manualZoomHasChanged -> setZoomRatio(zoomRatio)
-                cameraIsInitialized -> updatePinchZoomInProgress()
-            }
-        }
-        return@LaunchedEffect
-    }
 
     CameraPreviewImpl(
         modifier = modifier,
@@ -118,6 +105,7 @@ fun CameraPreview(
         flashMode = flashMode,
         scaleType = scaleType,
         enableTorch = enableTorch,
+        zoomRatio = zoomRatio,
         imageAnalyzer = imageAnalyzer,
         isImageAnalysisEnabled = isImageAnalysisEnabled,
         implementationMode = implementationMode,
@@ -143,12 +131,13 @@ internal fun CameraPreviewImpl(
     flashMode: FlashMode,
     scaleType: ScaleType,
     enableTorch: Boolean,
+    zoomRatio: Float,
     implementationMode: ImplementationMode,
     imageAnalyzer: ImageAnalyzer?,
     isImageAnalysisEnabled: Boolean,
     isFocusOnTapEnabled: Boolean,
     isPinchToZoomEnabled: Boolean,
-    onZoomRatioChanged: ((Float) -> Unit)?,
+    onZoomRatioChanged: (Float) -> Unit,
     onPreviewStreamChanged: () -> Unit,
     onSwipeToFront: @Composable (Bitmap) -> Unit,
     onSwipeToBack: @Composable (Bitmap) -> Unit,
@@ -160,14 +149,6 @@ internal fun CameraPreviewImpl(
     var tapOffset by remember { mutableStateOf(Offset.Zero) }
     val isCameraSwitching by rememberUpdatedState(!cameraState.isStreaming)
     var latestBitmap by remember { mutableStateOf<Bitmap?>(null) }
-
-    LaunchedEffect(cameraIsInitialized) {
-        if (cameraIsInitialized) {
-            cameraState.controller.zoomState.observeLatest(lifecycleOwner) { zoom ->
-                cameraState.dispatchZoom(zoom, onZoomRatioChanged ?: {})
-            }
-        }
-    }
 
     AndroidView(modifier = modifier, factory = { context ->
         PreviewView(context).apply {
@@ -183,13 +164,24 @@ internal fun CameraPreviewImpl(
             }
         }
     }, update = { previewView ->
-        previewView.scaleType = scaleType.type
-        previewView.implementationMode = implementationMode.value
-        previewView.setOnTapClickListener { if (isFocusOnTapEnabled) tapOffset = it }
-        latestBitmap = when {
-            lifecycleEvent == Lifecycle.Event.ON_STOP -> null
-            camSelector != cameraState.camSelector -> previewView.bitmap
-            else -> latestBitmap
+        with(previewView) {
+            this.scaleType = scaleType.type
+            this.implementationMode = implementationMode.value
+            onCameraTouchEvent(
+                onTap = { if (isFocusOnTapEnabled) tapOffset = it },
+                onScaleChanged = {
+                    if (isPinchToZoomEnabled) {
+                        // TODO pass min and max zoom as parameter
+                        val zoom = zoomRatio.clamped(it).roundTo(1).coerceIn(1F, 10F)
+                        onZoomRatioChanged(zoom)
+                    }
+                }
+            )
+            latestBitmap = when {
+                lifecycleEvent == Lifecycle.Event.ON_STOP -> null
+                camSelector != cameraState.camSelector -> bitmap
+                else -> latestBitmap
+            }
         }
 
         if (cameraIsInitialized) {
@@ -200,9 +192,10 @@ internal fun CameraPreviewImpl(
             cameraState.imageAnalyzer = imageAnalyzer?.analyzer
             cameraState.implementationMode = implementationMode
             cameraState.isFocusOnTapEnabled = isFocusOnTapEnabled
-            cameraState.isPinchToZoomEnabled = isPinchToZoomEnabled
+            cameraState.isPinchToZoomEnabled = false
             cameraState.flashMode = flashMode
             cameraState.enableTorch = enableTorch
+            cameraState.setZoomRatio(zoomRatio)
         }
     })
 
