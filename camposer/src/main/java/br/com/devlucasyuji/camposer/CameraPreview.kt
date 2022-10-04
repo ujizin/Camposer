@@ -147,7 +147,7 @@ internal fun CameraPreviewImpl(
     val lifecycleOwner = LocalLifecycleOwner.current
     val lifecycleEvent by lifecycleOwner.lifecycle.observeAsState()
     var tapOffset by remember { mutableStateOf(Offset.Zero) }
-    val isCameraSwitching by rememberUpdatedState(!cameraState.isStreaming)
+    val isCameraIdle by rememberUpdatedState(!cameraState.isStreaming)
     var latestBitmap by remember { mutableStateOf<Bitmap?>(null) }
 
     AndroidView(modifier = modifier, factory = { context ->
@@ -164,27 +164,27 @@ internal fun CameraPreviewImpl(
             }
         }
     }, update = { previewView ->
-        with(previewView) {
-            this.scaleType = scaleType.type
-            this.implementationMode = implementationMode.value
-            onCameraTouchEvent(
-                onTap = { if (isFocusOnTapEnabled) tapOffset = it },
-                onScaleChanged = {
-                    if (isPinchToZoomEnabled) {
-                        // TODO pass min and max zoom as parameter
-                        val zoom = zoomRatio.clamped(it).roundTo(1).coerceIn(1F, 10F)
-                        onZoomRatioChanged(zoom)
-                    }
-                }
-            )
-            latestBitmap = when {
-                lifecycleEvent == Lifecycle.Event.ON_STOP -> null
-                camSelector != cameraState.camSelector -> bitmap
-                else -> latestBitmap
-            }
-        }
-
         if (cameraIsInitialized) {
+            with(previewView) {
+                this.scaleType = scaleType.type
+                this.implementationMode = implementationMode.value
+                onCameraTouchEvent(
+                    onTap = { if (isFocusOnTapEnabled) tapOffset = it },
+                    onScaleChanged = {
+                        if (isPinchToZoomEnabled) {
+                            // TODO pass min and max zoom as parameter
+                            val zoom = zoomRatio.clamped(it).roundTo(1).coerceIn(1F, 10F)
+                            onZoomRatioChanged(zoom)
+                        }
+                    }
+                )
+                latestBitmap = when {
+                    lifecycleEvent == Lifecycle.Event.ON_STOP -> null
+                    camSelector != cameraState.camSelector -> bitmap
+                    else -> latestBitmap
+                }
+            }
+
             cameraState.camSelector = camSelector
             cameraState.captureMode = captureMode
             cameraState.scaleType = scaleType
@@ -207,7 +207,7 @@ internal fun CameraPreviewImpl(
         },
     ) { focusTapContent() }
 
-    if (isCameraSwitching) {
+    if (isCameraIdle) {
         latestBitmap?.let {
             when (camSelector.selector.lensFacing) {
                 CameraXSelector.LENS_FACING_FRONT -> onSwipeToFront(it)
@@ -216,6 +216,7 @@ internal fun CameraPreviewImpl(
             }
             LaunchedEffect(latestBitmap) {
                 onPreviewStreamChanged()
+                if (latestBitmap != null) onZoomRatioChanged(1F)
             }
         }
     }

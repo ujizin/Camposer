@@ -484,7 +484,6 @@ class CameraState internal constructor(
     }
 
     private fun resetCamera() {
-//        controller.setZoomRatio(INITIAL_ZOOM_VALUE)
         hasFlashUnit = controller.cameraInfo?.hasFlashUnit() ?: false
         flashMode = FlashMode.Off
         enableTorch = false
