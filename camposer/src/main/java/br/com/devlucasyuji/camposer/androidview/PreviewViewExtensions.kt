@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener
+import android.view.ViewConfiguration.getLongPressTimeout
 import androidx.camera.view.PreviewView
 import androidx.compose.ui.geometry.Offset
 
@@ -12,16 +13,16 @@ internal fun PreviewView.onCameraTouchEvent(
     onTap: (Offset) -> Unit,
     onScaleChanged: (Float) -> Unit,
 ) {
-    var isTapped = false
     val scaleGesture = ScaleGestureDetector(context, PinchToZoomGesture(onScaleChanged))
     setOnTouchListener { _, event ->
-        when (event.actionMasked) {
-            MotionEvent.ACTION_UP -> if (isTapped) onTap(Offset(event.x, event.y))
-            MotionEvent.ACTION_DOWN -> isTapped = true
-            else -> isTapped = false
+        val isSingleTouch = event.pointerCount == 1
+        val isUpEvent = event.action == MotionEvent.ACTION_UP
+        val notALongPress = (event.eventTime - event.downTime) < getLongPressTimeout()
+        if (isSingleTouch && isUpEvent && notALongPress) {
+            onTap(Offset(event.x, event.y))
         }
 
-        scaleGesture.onTouchEvent(event) || onTouchEvent(event)
+        scaleGesture.onTouchEvent(event) && onTouchEvent(event)
     }
 }
 
