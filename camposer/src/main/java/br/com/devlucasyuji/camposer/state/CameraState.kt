@@ -10,7 +10,6 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.TorchState
-import androidx.camera.core.ZoomState
 import androidx.camera.view.CameraController.IMAGE_ANALYSIS
 import androidx.camera.view.CameraController.OutputSize
 import androidx.camera.view.LifecycleCameraController
@@ -18,36 +17,21 @@ import androidx.camera.view.video.ExperimentalVideo
 import androidx.camera.view.video.OnVideoSavedCallback
 import androidx.camera.view.video.OutputFileOptions
 import androidx.camera.view.video.OutputFileResults
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.Saver
-import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import br.com.devlucasyuji.camposer.extensions.asContext
-import br.com.devlucasyuji.camposer.extensions.roundedZoomRatio
 import kotlinx.coroutines.delay
 import java.io.File
 import java.util.concurrent.Executor
-
-@Immutable
-internal data class CameraStore(
-    val scaleType: ScaleType = ScaleType.FillCenter,
-    val flash: FlashMode = FlashMode.Off,
-    val enableTorch: Boolean = false,
-    val currentZoomRatio: Float = 1F,
-    val isFocusOnTapEnabled: Boolean = true,
-    val isPinchToZoomEnabled: Boolean = true
-)
 
 /**
  * CameraState to [CameraPreview] composable
  * */
 class CameraState internal constructor(
     lifecycleOwner: LifecycleOwner,
-    cameraStore: CameraStore,
     context: Context = lifecycleOwner.asContext()
 ) {
 
@@ -83,14 +67,6 @@ class CameraState internal constructor(
         internal set
 
     /**
-     * Get current zoom from camera.
-     * */
-    var currentZoom: Float by mutableStateOf(
-        controller.zoomState.value?.roundedZoomRatio ?: INITIAL_ZOOM_VALUE
-    )
-        private set
-
-    /**
      * Check if pinch to zoom is in progress.
      * */
     var isPinchZoomInProgress by mutableStateOf(false)
@@ -116,7 +92,7 @@ class CameraState internal constructor(
     /**
      * Verify if camera has flash or not.
      * */
-    var hasFlashUnit by mutableStateOf(controller.cameraInfo?.hasFlashUnit() ?: false)
+    var hasFlashUnit by mutableStateOf(controller.cameraInfo?.hasFlashUnit() ?: true)
 
     /**
      * Capture mode to be added on camera.
@@ -227,6 +203,7 @@ class CameraState internal constructor(
             }
         }
 
+
     /**
      * Get if focus on tap is enabled from cameraX.
      * */
@@ -235,11 +212,6 @@ class CameraState internal constructor(
         set(value) {
             controller.isTapToFocusEnabled = value
         }
-
-    /**
-     * Get if pinch to zoom is enabled from cameraX.
-     * */
-    internal var isPinchToZoomEnabled: Boolean = true
 
     /**
      * Flash Mode from the camera.
@@ -272,9 +244,11 @@ class CameraState internal constructor(
 
     init {
         controller.initializationFuture.addListener({
-            cameraStore.restoreSettings()
             controller.torchState.observe(lifecycleOwner) { enableTorch = it == TorchState.ON }
             isInitialized = true
+
+            // Turn off is pinch to zoom and use manually
+            controller.isPinchToZoomEnabled = false
         }, mainExecutor)
     }
 
@@ -345,7 +319,7 @@ class CameraState internal constructor(
      * @param zoomRatio zoomRatio to be added
      * */
     internal fun setZoomRatio(zoomRatio: Float) {
-        controller.setZoomRatio(zoomRatio/*.coerceIn(minZoom, maxZoom)*/)
+        controller.setZoomRatio(zoomRatio.coerceIn(minZoom, maxZoom))
     }
 
     /**
@@ -466,27 +440,15 @@ class CameraState internal constructor(
     fun hasCamera(cameraSelector: CamSelector) =
         isInitialized && controller.hasCamera(cameraSelector.selector)
 
-    internal fun dispatchZoom(zoom: ZoomState, block: (Float) -> Unit?) {
-        minZoom = zoom.minZoomRatio
-        maxZoom = zoom.maxZoomRatio
-        currentZoom = zoom.roundedZoomRatio
-        block(currentZoom)
-    }
-
-    private fun CameraStore.restoreSettings() {
-        this@CameraState.camSelector = camSelector
-        this@CameraState.isPinchToZoomEnabled = isPinchToZoomEnabled
-        this@CameraState.scaleType = scaleType
-        this@CameraState.flashMode = flashMode
-        this@CameraState.isFocusOnTapEnabled = isFocusOnTapEnabled
-        this@CameraState.enableTorch = enableTorch
-        setZoomRatio(currentZoomRatio)
+    private fun resetZoom() {
+        val zoom = controller.zoomState.value
+        minZoom = zoom?.minZoomRatio ?: INITIAL_ZOOM_VALUE
+        maxZoom = zoom?.maxZoomRatio ?: INITIAL_ZOOM_VALUE
     }
 
     private fun resetCamera() {
         hasFlashUnit = controller.cameraInfo?.hasFlashUnit() ?: false
-        flashMode = FlashMode.Off
-        enableTorch = false
+        resetZoom()
     }
 
     private fun Set<Int>.sumOr(initial: Int = 0): Int = fold(initial) { acc, current ->
@@ -503,29 +465,5 @@ class CameraState internal constructor(
         private val TAG = this::class.java.name
         private const val PINCH_ZOOM_IN_PROGRESS_DELAY = 1000L
         private const val INITIAL_ZOOM_VALUE = 1F
-
-        @Suppress("UNCHECKED_CAST")
-        internal fun getSaver(lifecycleOwner: LifecycleOwner): Saver<CameraState, *> =
-            listSaver(save = {
-                listOf(
-                    it.scaleType,
-                    it.flashMode,
-                    it.enableTorch,
-                    it.currentZoom,
-                    it.isFocusOnTapEnabled,
-                    it.isPinchToZoomEnabled
-                )
-            }, restore = {
-                CameraState(
-                    lifecycleOwner, CameraStore(
-                        scaleType = it[0] as ScaleType,
-                        flash = it[1] as FlashMode,
-                        enableTorch = it[2] as Boolean,
-                        currentZoomRatio = it[3] as Float,
-                        isFocusOnTapEnabled = it[4] as Boolean,
-                        isPinchToZoomEnabled = it[5] as Boolean,
-                    )
-                )
-            })
     }
 }

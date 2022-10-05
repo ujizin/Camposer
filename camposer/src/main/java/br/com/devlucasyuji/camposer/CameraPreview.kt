@@ -67,12 +67,12 @@ fun CameraPreview(
     flashMode: FlashMode = cameraState.flashMode,
     scaleType: ScaleType = cameraState.scaleType,
     enableTorch: Boolean = cameraState.enableTorch,
-    zoomRatio: Float = cameraState.currentZoom,
+    zoomRatio: Float = 1F,
     imageAnalyzer: ImageAnalyzer? = null,
     implementationMode: ImplementationMode = cameraState.implementationMode,
     isImageAnalysisEnabled: Boolean = cameraState.isImageAnalysisEnabled,
     isFocusOnTapEnabled: Boolean = cameraState.isFocusOnTapEnabled,
-    isPinchToZoomEnabled: Boolean = cameraState.isPinchToZoomEnabled,
+    isPinchToZoomEnabled: Boolean = true,
     onPreviewStreamChanged: () -> Unit = {},
     onSwitchToFront: @Composable (Bitmap) -> Unit = { bitmap ->
         BlurImage(
@@ -94,12 +94,9 @@ fun CameraPreview(
     focusTapContent: @Composable () -> Unit = { SquareCornerFocus() },
     content: @Composable () -> Unit = {},
 ) {
-    val cameraIsInitialized by rememberUpdatedState(cameraState.isInitialized)
-
     CameraPreviewImpl(
         modifier = modifier,
         cameraState = cameraState,
-        cameraIsInitialized = cameraIsInitialized,
         camSelector = camSelector,
         captureMode = captureMode,
         flashMode = flashMode,
@@ -125,7 +122,6 @@ fun CameraPreview(
 internal fun CameraPreviewImpl(
     modifier: Modifier,
     cameraState: CameraState,
-    cameraIsInitialized: Boolean,
     camSelector: CamSelector,
     captureMode: CaptureMode,
     flashMode: FlashMode,
@@ -146,6 +142,7 @@ internal fun CameraPreviewImpl(
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val lifecycleEvent by lifecycleOwner.lifecycle.observeAsState()
+    val cameraIsInitialized by rememberUpdatedState(cameraState.isInitialized)
     var tapOffset by remember { mutableStateOf(Offset.Zero) }
     val isCameraIdle by rememberUpdatedState(!cameraState.isStreaming)
     var latestBitmap by remember { mutableStateOf<Bitmap?>(null) }
@@ -172,8 +169,9 @@ internal fun CameraPreviewImpl(
                     onTap = { if (isFocusOnTapEnabled) tapOffset = it },
                     onScaleChanged = {
                         if (isPinchToZoomEnabled) {
-                            // TODO pass min and max zoom as parameter
-                            val zoom = zoomRatio.clamped(it).roundTo(1).coerceIn(1F, 10F)
+                            val zoom = zoomRatio.clamped(it).roundTo(1)
+                                .coerceIn(cameraState.minZoom, cameraState.maxZoom)
+
                             onZoomRatioChanged(zoom)
                         }
                     }
@@ -192,7 +190,6 @@ internal fun CameraPreviewImpl(
             cameraState.imageAnalyzer = imageAnalyzer?.analyzer
             cameraState.implementationMode = implementationMode
             cameraState.isFocusOnTapEnabled = isFocusOnTapEnabled
-            cameraState.isPinchToZoomEnabled = false
             cameraState.flashMode = flashMode
             cameraState.enableTorch = enableTorch
             cameraState.setZoomRatio(zoomRatio)

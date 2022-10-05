@@ -5,12 +5,12 @@ import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageProxy
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalLifecycleOwner
 
 /**
@@ -19,9 +19,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 @Composable
 fun rememberCameraState(): CameraState {
     val lifecycleOwner = LocalLifecycleOwner.current
-    return rememberSaveable(saver = CameraState.getSaver(lifecycleOwner)) {
-        CameraState(lifecycleOwner, CameraStore())
-    }
+    return remember { CameraState(lifecycleOwner) }
 }
 
 /**
@@ -52,29 +50,29 @@ fun customCamSelector(
  * Flash mode's State to [CameraPreview] Composable.
  * */
 @Composable
-fun CameraState.rememberFlashMode(flashMode: FlashMode): MutableState<FlashMode> {
-    val hasFlashUnit by rememberUpdatedState(hasFlashUnit)
-    return rememberSaveable(hasFlashUnit, saver = ConditionalState.getSaver { hasFlashUnit }) {
-        ConditionalState(flashMode, FlashMode.Off) { hasFlashUnit }
-    }
-}
+fun CameraState.rememberFlashMode(
+    initialFlashMode: FlashMode,
+    useSaver: Boolean = true
+): MutableState<FlashMode> = rememberConditionalState(
+    initialValue = initialFlashMode,
+    defaultValue = FlashMode.Off,
+    useSaver = useSaver,
+    predicate = hasFlashUnit
+)
 
 /**
  * Torch's State to [CameraPreview] Composable.
  * */
 @Composable
-fun CameraState.rememberTorch(initialTorch: Boolean): MutableState<Boolean> {
-    val hasFlashUnit by rememberUpdatedState(hasFlashUnit)
-    return rememberSaveable(hasFlashUnit, saver = ConditionalState.getSaver { hasFlashUnit }) {
-        ConditionalState(initialTorch, false) { hasFlashUnit }
-    }
-}
-
-/**
- * Get current zoom's state.
- * */
-@Composable
-fun CameraState.rememberCurrentZoom(): State<Float> = rememberUpdatedState(currentZoom)
+fun CameraState.rememberTorch(
+    initialTorch: Boolean,
+    useSaver: Boolean = true
+): MutableState<Boolean> = rememberConditionalState(
+    initialValue = initialTorch,
+    defaultValue = false,
+    useSaver = useSaver,
+    predicate = hasFlashUnit
+)
 
 /**
  * Create instance remember of ImageAnalyzer.
