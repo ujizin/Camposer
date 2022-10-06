@@ -17,13 +17,13 @@ import androidx.camera.view.video.ExperimentalVideo
 import androidx.camera.view.video.OnVideoSavedCallback
 import androidx.camera.view.video.OutputFileOptions
 import androidx.camera.view.video.OutputFileResults
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import br.com.devlucasyuji.camposer.extensions.asContext
-import kotlinx.coroutines.delay
 import java.io.File
 import java.util.concurrent.Executor
 
@@ -67,11 +67,6 @@ class CameraState internal constructor(
         internal set
 
     /**
-     * Check if pinch to zoom is in progress.
-     * */
-    var isPinchZoomInProgress by mutableStateOf(false)
-
-    /**
      * Check if camera is streaming or not.
      * */
     var isStreaming by mutableStateOf(false)
@@ -80,8 +75,7 @@ class CameraState internal constructor(
     /**
      * Check if zoom is supported.
      * */
-    val isZoomSupported: Boolean
-        get() = maxZoom != 1F
+    val isZoomSupported: Boolean by derivedStateOf { maxZoom != 1F }
 
     /**
      * Return if camera state is initialized or not.
@@ -165,7 +159,11 @@ class CameraState internal constructor(
 
     private fun updateUseCases() {
         controller.setEnabledUseCases(0)
-        controller.setEnabledUseCases(captureMode.value or useCases.sumOr())
+        val useCases = when(captureMode) {
+            CaptureMode.Video -> captureMode.value
+            CaptureMode.Image -> useCases.sumOr(captureMode.value)
+        }
+        controller.setEnabledUseCases(useCases)
     }
 
     /**
@@ -245,10 +243,8 @@ class CameraState internal constructor(
     init {
         controller.initializationFuture.addListener({
             controller.torchState.observe(lifecycleOwner) { enableTorch = it == TorchState.ON }
+            startZoom()
             isInitialized = true
-
-            // Turn off is pinch to zoom and use manually
-            controller.isPinchToZoomEnabled = false
         }, mainExecutor)
     }
 
@@ -440,7 +436,10 @@ class CameraState internal constructor(
     fun hasCamera(cameraSelector: CamSelector) =
         isInitialized && controller.hasCamera(cameraSelector.selector)
 
-    private fun resetZoom() {
+    private fun startZoom() {
+        // Turn off is pinch to zoom and use manually
+        controller.isPinchToZoomEnabled = false
+
         val zoom = controller.zoomState.value
         minZoom = zoom?.minZoomRatio ?: INITIAL_ZOOM_VALUE
         maxZoom = zoom?.maxZoomRatio ?: INITIAL_ZOOM_VALUE
@@ -448,22 +447,15 @@ class CameraState internal constructor(
 
     private fun resetCamera() {
         hasFlashUnit = controller.cameraInfo?.hasFlashUnit() ?: false
-        resetZoom()
+        startZoom()
     }
 
     private fun Set<Int>.sumOr(initial: Int = 0): Int = fold(initial) { acc, current ->
         acc or current
     }
 
-    internal suspend fun updatePinchZoomInProgress() {
-        isPinchZoomInProgress = true
-        delay(PINCH_ZOOM_IN_PROGRESS_DELAY)
-        isPinchZoomInProgress = false
-    }
-
     companion object {
         private val TAG = this::class.java.name
-        private const val PINCH_ZOOM_IN_PROGRESS_DELAY = 1000L
         private const val INITIAL_ZOOM_VALUE = 1F
     }
 }
