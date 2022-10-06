@@ -67,12 +67,12 @@ internal fun <T : Any> rememberConditionalState(
     predicate: Boolean
 ): MutableState<T> {
     var current by remember { mutableStateOf(initialValue) }
-    return rememberSaveable(predicate, saver = remember {
-        when (useSaver) {
+    return rememberSaveable(
+        predicate, saver = when (useSaver) {
             true -> ConditionalState.getSaver()
             else -> ConditionalState.getNoSaver(current, defaultValue)
         }
-    }) {
+    ) {
         ConditionalState(current, defaultValue).apply {
             this.predicate = predicate
             current = value

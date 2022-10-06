@@ -1,9 +1,7 @@
 package br.com.devlucasyuji.camposer.state
 
-import androidx.compose.runtime.Immutable
 import androidx.camera.view.PreviewView.ScaleType as CameraScaleType
 
-@Immutable
 enum class ScaleType(val type: CameraScaleType) {
     FitStart(CameraScaleType.FIT_START),
     FitCenter(CameraScaleType.FIT_CENTER),

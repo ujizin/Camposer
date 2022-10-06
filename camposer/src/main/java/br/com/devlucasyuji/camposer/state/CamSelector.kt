@@ -2,7 +2,10 @@ package br.com.devlucasyuji.camposer.state
 
 import android.annotation.SuppressLint
 import androidx.camera.core.CameraSelector
-import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.listSaver
 
 /**
  * Selector from Camera.
@@ -12,6 +15,7 @@ import androidx.compose.runtime.Immutable
 sealed class CamSelector(
     internal val selector: CameraSelector
 ) {
+
     /**
      * Default front camera from CameraX.
      * */
@@ -22,25 +26,19 @@ sealed class CamSelector(
      * */
     object Back : CamSelector(CameraSelector.DEFAULT_BACK_CAMERA)
 
-    @Immutable
-    internal data class CustomSelector(
-        private val cameraSelector: CameraSelector
-    ) : CamSelector(cameraSelector) {
-
-        override fun toString() = "Custom ${lensFacing.name}"
+    enum class LensFacing(val value: Int) {
+        Back(CameraSelector.LENS_FACING_BACK),
+        Front(CameraSelector.LENS_FACING_FRONT)
     }
-
-    enum class LensFacing { Back, Front }
 
     /**
      * Return lens facing front or back.
      * */
-    val lensFacing: LensFacing
-        @SuppressLint("RestrictedApi")
-        get() = when (selector.lensFacing) {
-            CameraSelector.LENS_FACING_BACK -> LensFacing.Back
-            else -> LensFacing.Front
-        }
+    @SuppressLint("RestrictedApi")
+    val lensFacing: LensFacing = when (selector.lensFacing) {
+        CameraSelector.LENS_FACING_BACK -> LensFacing.Back
+        else -> LensFacing.Front
+    }
 
     /**
      * Reverse camera selector. Works only with default Front & Back Selector.
@@ -49,6 +47,19 @@ sealed class CamSelector(
         get() = when (this) {
             Front -> Back
             Back -> Front
-            else -> this
         }
+
+    companion object {
+        internal val Saver: Saver<MutableState<CamSelector>, *> = listSaver(
+            save = { listOf(it.value.lensFacing) },
+            restore = {
+                mutableStateOf(
+                    when (it[0]) {
+                        LensFacing.Front -> Front
+                        LensFacing.Back -> Back
+                    }
+                )
+            }
+        )
+    }
 }
