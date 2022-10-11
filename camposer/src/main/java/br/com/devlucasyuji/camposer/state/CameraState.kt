@@ -78,7 +78,7 @@ class CameraState internal constructor(
     val isZoomSupported: Boolean by derivedStateOf { maxZoom != 1F }
 
     /**
-     * Return if camera state is initialized or not.
+     * Check if camera state is initialized or not.
      * */
     var isInitialized: Boolean by mutableStateOf(false)
         internal set
@@ -116,7 +116,7 @@ class CameraState internal constructor(
     internal var camSelector: CamSelector = CamSelector.Back
         set(value) {
             when {
-                hasCamera(value) -> {
+                !isRecording && hasCamera(value) -> {
                     if (controller.cameraSelector != value.selector) {
                         controller.cameraSelector = value.selector
                         field = value
@@ -124,6 +124,7 @@ class CameraState internal constructor(
                     }
                 }
 
+                isRecording -> Log.e(TAG, "Device is recording, switch camera is unavailable")
                 else -> Log.e(TAG, "Device does not have ${value.selector} camera")
             }
         }
@@ -159,7 +160,7 @@ class CameraState internal constructor(
 
     private fun updateUseCases() {
         controller.setEnabledUseCases(0)
-        val useCases = when(captureMode) {
+        val useCases = when (captureMode) {
             CaptureMode.Video -> captureMode.value
             CaptureMode.Image -> useCases.sumOr(captureMode.value)
         }
@@ -262,11 +263,8 @@ class CameraState internal constructor(
     ) {
         takePicture(
             outputFileOptions = ImageCapture.OutputFileOptions.Builder(
-                contentResolver,
-                saveCollection,
-                contentValues
-            ).build(),
-            onResult = onResult
+                contentResolver, saveCollection, contentValues
+            ).build(), onResult = onResult
         )
     }
 
@@ -276,8 +274,7 @@ class CameraState internal constructor(
      * @param onResult Callback called when [ImageCaptureResult] is ready
      * */
     fun takePicture(
-        file: File,
-        onResult: (ImageCaptureResult) -> Unit
+        file: File, onResult: (ImageCaptureResult) -> Unit
     ) {
         takePicture(ImageCapture.OutputFileOptions.Builder(file).build(), onResult)
     }
@@ -293,8 +290,7 @@ class CameraState internal constructor(
         onResult: (ImageCaptureResult) -> Unit,
     ) {
         try {
-            controller.takePicture(
-                outputFileOptions,
+            controller.takePicture(outputFileOptions,
                 mainExecutor,
                 object : ImageCapture.OnImageSavedCallback {
                     override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
@@ -361,8 +357,7 @@ class CameraState internal constructor(
     ) {
         try {
             isRecording = true
-            controller.startRecording(
-                outputFileOptions,
+            controller.startRecording(outputFileOptions,
                 mainExecutor,
                 object : OnVideoSavedCallback {
                     override fun onVideoSaved(outputFileResults: OutputFileResults) {
@@ -371,9 +366,7 @@ class CameraState internal constructor(
                     }
 
                     override fun onError(
-                        videoCaptureError: Int,
-                        message: String,
-                        cause: Throwable?
+                        videoCaptureError: Int, message: String, cause: Throwable?
                     ) {
                         isRecording = false
                         VideoCaptureResult.Error(videoCaptureError, message, cause)
@@ -383,11 +376,9 @@ class CameraState internal constructor(
             isRecording = false
             onResult(
                 VideoCaptureResult.Error(
-                    OnVideoSavedCallback.ERROR_UNKNOWN,
-                    if (!controller.isVideoCaptureEnabled) {
+                    OnVideoSavedCallback.ERROR_UNKNOWN, if (!controller.isVideoCaptureEnabled) {
                         "Video capture is not enabled, please set captureMode as CaptureMode.Video"
-                    } else "${exception.message}",
-                    exception
+                    } else "${exception.message}", exception
                 )
             )
         }
