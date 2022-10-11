@@ -33,7 +33,7 @@ import kotlin.math.roundToInt
 internal fun FocusTap(
     modifier: Modifier = Modifier,
     offset: Offset,
-    onAfterFocus: suspend () -> Unit = {},
+    onFocus: suspend () -> Unit = {},
     focusContent: @Composable () -> Unit = {}
 ) {
     val isFocused by remember(offset) { derivedStateOf { offset != Offset.Zero } }
@@ -57,7 +57,7 @@ internal fun FocusTap(
             }
         }
         focusMovable()
-        LaunchedEffect(offset) { onAfterFocus() }
+        LaunchedEffect(offset) { onFocus() }
     }
 }
 

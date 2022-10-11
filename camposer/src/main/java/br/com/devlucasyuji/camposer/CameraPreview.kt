@@ -54,6 +54,7 @@ import androidx.camera.core.CameraSelector as CameraXSelector
  * @param onSwitchToBack composable preview when change camera to back and it's not been streaming yet
  * @param onZoomRatioChanged dispatch when zoom is changed by pinch to zoom
  * @param focusTapContent content of focus tap, default is [SquareCornerFocus]
+ * @param onFocus callback to use when on focus tap is triggered, call onComplete to [focusTapContent] gone.
  * @param content content composable within of camera preview.
  * @see ImageAnalyzer
  * @see CameraState
@@ -90,6 +91,10 @@ fun CameraPreview(
             contentDescription = null
         )
     },
+    onFocus: suspend (onComplete: () -> Unit) -> Unit = { onComplete ->
+        delay(1000L)
+        onComplete()
+    },
     onZoomRatioChanged: (Float) -> Unit = {},
     focusTapContent: @Composable () -> Unit = { SquareCornerFocus() },
     content: @Composable () -> Unit = {},
@@ -110,6 +115,7 @@ fun CameraPreview(
         isPinchToZoomEnabled = isPinchToZoomEnabled,
         onZoomRatioChanged = onZoomRatioChanged,
         focusTapContent = focusTapContent,
+        onFocus = onFocus,
         onPreviewStreamChanged = onPreviewStreamChanged,
         onSwipeToFront = onSwitchToFront,
         onSwipeToBack = onSwitchToBack,
@@ -135,6 +141,7 @@ internal fun CameraPreviewImpl(
     isPinchToZoomEnabled: Boolean,
     onZoomRatioChanged: (Float) -> Unit,
     onPreviewStreamChanged: () -> Unit,
+    onFocus: suspend (() -> Unit) -> Unit,
     onSwipeToFront: @Composable (Bitmap) -> Unit,
     onSwipeToBack: @Composable (Bitmap) -> Unit,
     focusTapContent: @Composable () -> Unit,
@@ -198,10 +205,7 @@ internal fun CameraPreviewImpl(
 
     FocusTap(
         offset = tapOffset,
-        onAfterFocus = {
-            delay(1000L)
-            tapOffset = Offset.Zero
-        },
+        onFocus = { onFocus { tapOffset = Offset.Zero } },
     ) { focusTapContent() }
 
     if (isCameraIdle) {

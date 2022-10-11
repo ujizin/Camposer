@@ -149,13 +149,13 @@ class CameraState internal constructor(
     /**
      * Enable/Disable Image analysis from the camera.
      * */
-    internal var isImageAnalysisEnabled: Boolean
-        get() = controller.isImageAnalysisEnabled
+    internal var isImageAnalysisEnabled: Boolean = true
         set(value) {
             if (isImageAnalysisEnabled != value) {
                 if (value) useCases += IMAGE_ANALYSIS else useCases -= IMAGE_ANALYSIS
                 updateUseCases()
             }
+            field = value
         }
 
     private fun updateUseCases() {
