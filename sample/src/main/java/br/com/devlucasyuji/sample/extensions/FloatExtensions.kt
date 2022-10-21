@@ -1,4 +1,4 @@
-package br.com.devlucasyuji.camposer.extensions
+package br.com.devlucasyuji.sample.extensions
 
 import java.util.Locale
 

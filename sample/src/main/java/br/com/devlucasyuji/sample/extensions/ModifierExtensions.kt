@@ -1,4 +1,4 @@
-package br.com.devlucasyuji.camposer.extensions
+package br.com.devlucasyuji.sample.extensions
 
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.Modifier

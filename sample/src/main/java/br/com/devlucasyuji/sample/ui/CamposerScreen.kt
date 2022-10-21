@@ -1,4 +1,4 @@
-package br.com.devlucasyuji.camposer.ui
+package br.com.devlucasyuji.sample.ui
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -43,9 +43,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.devlucasyuji.camposer.CameraPreview
-import br.com.devlucasyuji.camposer.R
-import br.com.devlucasyuji.camposer.extensions.noClickable
-import br.com.devlucasyuji.camposer.extensions.roundTo
+import br.com.devlucasyuji.sample.R
+import br.com.devlucasyuji.sample.extensions.noClickable
+import br.com.devlucasyuji.sample.extensions.roundTo
 import br.com.devlucasyuji.camposer.state.CamSelector
 import br.com.devlucasyuji.camposer.state.FlashMode
 import br.com.devlucasyuji.camposer.state.rememberCameraSelector

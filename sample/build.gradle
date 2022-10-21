@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'br.com.devlucasyuji.camposer'
+    namespace 'br.com.devlucasyuji.sample'
     compileSdk 33
 
     defaultConfig {
-        applicationId "br.com.devlucasyuji.camposer"
+        applicationId "br.com.devlucasyuji.sample"
         minSdk 24
         targetSdk 33
         versionCode 1
@@ -46,6 +46,8 @@ dependencies {
 
     implementation libs.compose.activity
     implementation libs.compose.material3
+
+    implementation libs.compose.viewmodel
 
     implementation libs.material
 

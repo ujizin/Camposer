@@ -1,4 +1,4 @@
-package br.com.devlucasyuji.camposer.ui
+package br.com.devlucasyuji.sample.ui
 
 import android.content.ContentValues
 import android.os.Build

@@ -1,9 +1,9 @@
-package br.com.devlucasyuji.camposer
+package br.com.devlucasyuji.sample
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import br.com.devlucasyuji.camposer.ui.CamposerScreen
+import br.com.devlucasyuji.sample.ui.CamposerScreen
 
 class MainActivity : ComponentActivity() {
 
