@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Camposer</string>
+    <string name="flash_off">flash off</string>
+    <string name="flash_on">flash on</string>
+    <string name="flash_auto">flash auto</string>
 </resources>

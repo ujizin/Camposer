@@ -219,7 +219,7 @@ class CameraState internal constructor(
     internal var flashMode: FlashMode
         get() = FlashMode.find(controller.imageCaptureFlashMode)
         set(value) {
-            if (flashMode != value && !hasFlashUnit && flashMode != FlashMode.Off) {
+            if (hasFlashUnit && flashMode != value) {
                 controller.imageCaptureFlashMode = value.mode
             }
         }
