@@ -1,7 +1,12 @@
 package br.com.devlucasyuji.sample.ui
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -30,7 +35,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
@@ -129,7 +133,7 @@ fun CameraSection(
             modifier = Modifier
                 .fillMaxWidth()
                 .noClickable()
-                .padding(top = 32.dp, bottom = 16.dp),
+                .padding(top = 32.dp, bottom = 16.dp, start = 24.dp, end = 24.dp),
             flashMode = flashMode,
             zoomRatio = zoomRatio,
             zoomHasChanged = zoomHasChanged,
@@ -157,27 +161,29 @@ private fun SettingsBox(
     onFlashModeChanged: (FlashMode) -> Unit,
     onZoomFinish: () -> Unit,
 ) {
-    val alpha by animateFloatAsState(targetValue = if (zoomHasChanged) 1F else 0F)
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceAround
-    ) {
+    Box(modifier = modifier) {
         FlashBox(
+            modifier = Modifier.align(Alignment.TopStart),
             flashMode = flashMode,
             onFlashModeChanged = onFlashModeChanged
         )
 
-        Text(
-            modifier = Modifier.alpha(alpha),
-            text = "${zoomRatio.roundTo(1)}X",
-            fontSize = 24.sp,
-            textAlign = TextAlign.Center,
-            color = Color.White,
-        )
-        Box(Modifier)
+        AnimatedVisibility(
+            modifier = Modifier.align(Alignment.TopCenter),
+            enter = fadeIn() + slideInVertically(),
+            exit = fadeOut() + slideOutVertically(),
+            visible = zoomHasChanged
+        ) {
+            Text(
+                text = "${zoomRatio.roundTo(1)}X",
+                fontSize = 24.sp,
+                textAlign = TextAlign.Center,
+                color = Color.White,
+            )
+        }
+        Box(modifier = Modifier.align(Alignment.TopEnd))
     }
-    LaunchedEffect(zoomRatio) {
+    LaunchedEffect(zoomRatio, zoomHasChanged) {
         delay(1_000)
         onZoomFinish()
     }
@@ -189,7 +195,6 @@ private fun FlashBox(
     flashMode: FlashMode,
     onFlashModeChanged: (FlashMode) -> Unit
 ) {
-
     Button(
         modifier = Modifier
             .clip(CircleShape),

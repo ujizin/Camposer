@@ -215,7 +215,7 @@ internal fun CameraPreviewImpl(
             }
             LaunchedEffect(latestBitmap) {
                 onPreviewStreamChanged()
-                if (latestBitmap != null) onZoomRatioChanged(1F)
+                if (latestBitmap != null) onZoomRatioChanged(cameraState.minZoom)
             }
         }
     }
