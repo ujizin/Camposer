@@ -1,5 +1,7 @@
 # Camposer
 
+<img src="assets/icon.png" width="200" />
+
 Tired to use CameraX with Jetpack Compose Interoperability? So Camposer was made for you, a camera using 100% Jetpack Compose which supports photos & videos.
 
 ## How it works
