@@ -33,7 +33,7 @@ fun rememberCameraSelector(
  * */
 @Composable
 fun CameraState.rememberFlashMode(
-    initialFlashMode: FlashMode,
+    initialFlashMode: FlashMode = FlashMode.Off,
     useSaver: Boolean = true
 ): MutableState<FlashMode> = rememberConditionalState(
     initialValue = initialFlashMode,

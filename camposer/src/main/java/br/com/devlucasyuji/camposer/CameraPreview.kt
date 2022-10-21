@@ -20,7 +20,6 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import br.com.devlucasyuji.camposer.androidview.onCameraTouchEvent
 import br.com.devlucasyuji.camposer.extensions.clamped
-import br.com.devlucasyuji.camposer.extensions.roundTo
 import br.com.devlucasyuji.camposer.focus.FocusTap
 import br.com.devlucasyuji.camposer.focus.SquareCornerFocus
 import br.com.devlucasyuji.camposer.state.CamSelector
@@ -176,9 +175,8 @@ internal fun CameraPreviewImpl(
                     onTap = { if (isFocusOnTapEnabled) tapOffset = it },
                     onScaleChanged = {
                         if (isPinchToZoomEnabled) {
-                            val zoom = zoomRatio.clamped(it).roundTo(1)
+                            val zoom = zoomRatio.clamped(it)
                                 .coerceIn(cameraState.minZoom, cameraState.maxZoom)
-
                             onZoomRatioChanged(zoom)
                         }
                     }
