@@ -10,8 +10,8 @@ Add CameraPreview composable
 val cameraState = rememberCameraState()
 var camSelector = rememberCamSelector(CamSelector.Back)
 CameraPreview(
-	cameraState = cameraState,
-	camSelector = camSelector,
+  cameraState = cameraState,
+  camSelector = camSelector,
 ) {
   // Camera Preview UI
 }
@@ -23,12 +23,12 @@ And that's it! For more information, check the `wiki`.
 
 ```Kotlin
 // Using content values
-cameraState.takePicture(contentValues,mediaURI) { result -> 
-	// result.savedUri
+cameraState.takePicture(contentValues,mediaURI) { result ->
+  /* ... */
 }
 
 // Using files
-cameraState.takePicture(file) { result -> /* result.savedUri */}
+cameraState.takePicture(file) { result -> /* ... */ }
 ```
 
 ### Start recording
@@ -36,21 +36,21 @@ cameraState.takePicture(file) { result -> /* result.savedUri */}
 ```Kotlin
 // Using content values
 cameraState.startRecording()
-cameraState.stopRecording(contentValues,mediaURI) { result -> 
-	// result.savedUri 
+cameraState.stopRecording(contentValues,mediaURI) { result ->
+  /* ... */
 }
 
 // Using file
 cameraState.startRecording()
-cameraState.stopRecording(file) { result -> /* result.savedUri */ }
+cameraState.stopRecording(file) { result -> /* ... */ }
 
 // Using content values + toggle
-cameraState.toggleRecording(contentValues,mediaURI) { result -> 
-	// result.savedUri
+cameraState.toggleRecording(contentValues,mediaURI) { result ->
+  /* ... */
 }
 
 // Using files + toggle
-cameraState.toggleRecording(file) { result -> /* result.savedUri */}
+cameraState.toggleRecording(file) { result -> /* ... */ }
 ```
 
 ### Switch cameras
@@ -74,14 +74,14 @@ If you want to use other configurations, you can see our `wiki`.
 
 ## Setup
 
-1. Add itpack to your `settings.gradle`
+1. Add Jitpack to your `settings.gradle`
 ```
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
-        // add jitpack here 👇🏽
+        // add Jitpack here
         maven { url 'https://jitpack.io' }
        ...
     }
