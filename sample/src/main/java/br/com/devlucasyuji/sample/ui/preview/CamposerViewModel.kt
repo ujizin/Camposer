@@ -6,6 +6,7 @@ import android.provider.MediaStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.devlucasyuji.camposer.state.ImageCaptureResult
+import br.com.devlucasyuji.camposer.state.VideoCaptureResult
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -41,14 +42,18 @@ class CamposerViewModel : ViewModel() {
         }
     }
 
-    fun onImageResult(captureResult: ImageCaptureResult) {
+    fun onImageResult(imageResult: ImageCaptureResult) {
         viewModelScope.launch {
-            if (captureResult is ImageCaptureResult.Success) {
+            if (imageResult is ImageCaptureResult.Success) {
                 _uiState.emit(UiState.CaptureSuccess)
                 delay(CAPTURED_PHOTO_DELAY)
                 _uiState.emit(UiState.Initial)
             }
         }
+    }
+
+    fun onVideoResult(videoResult: VideoCaptureResult) {
+
     }
 
     companion object {

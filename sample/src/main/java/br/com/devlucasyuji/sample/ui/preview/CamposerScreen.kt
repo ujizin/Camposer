@@ -1,5 +1,6 @@
 package br.com.devlucasyuji.sample.ui.preview
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.devlucasyuji.camposer.CameraPreview
 import br.com.devlucasyuji.camposer.state.CamSelector
+import br.com.devlucasyuji.camposer.state.CaptureMode
 import br.com.devlucasyuji.camposer.state.FlashMode
 import br.com.devlucasyuji.camposer.state.rememberCameraSelector
 import br.com.devlucasyuji.camposer.state.rememberCameraState
@@ -27,7 +29,7 @@ import br.com.devlucasyuji.camposer.state.rememberFlashMode
 import br.com.devlucasyuji.sample.extensions.noClickable
 import br.com.devlucasyuji.sample.ui.preview.components.ActionBox
 import br.com.devlucasyuji.sample.ui.preview.components.SettingsBox
-import br.com.devlucasyuji.sample.ui.preview.model.Option
+import br.com.devlucasyuji.sample.ui.preview.components.VideoBox
 
 @Composable
 fun CamposerScreen(viewModel: CamposerViewModel = viewModel()) {
@@ -37,6 +39,8 @@ fun CamposerScreen(viewModel: CamposerViewModel = viewModel()) {
     var zoomRatio by remember { mutableStateOf(cameraState.minZoom) }
     var zoomHasChanged by remember { mutableStateOf(false) }
     val hasFlashUnit by rememberUpdatedState(cameraState.hasFlashUnit)
+    var captureMode by remember { mutableStateOf(CaptureMode.Image) }
+    val isRecording by rememberUpdatedState(cameraState.isRecording)
 
     // FIXME add lifecycle aware
     val uiState by viewModel.uiState.collectAsState()
@@ -44,6 +48,7 @@ fun CamposerScreen(viewModel: CamposerViewModel = viewModel()) {
     CameraPreview(
         cameraState = cameraState,
         camSelector = camSelector,
+        captureMode = captureMode,
         flashMode = flashMode,
         zoomRatio = zoomRatio,
         onZoomRatioChanged = {
@@ -67,6 +72,8 @@ fun CamposerScreen(viewModel: CamposerViewModel = viewModel()) {
             zoomHasChanged = zoomHasChanged,
             zoomRatio = zoomRatio,
             flashMode = flashMode,
+            isRecording = isRecording,
+            captureMode = captureMode,
             hasFlashUnit = hasFlashUnit,
             onFlashModeChanged = { flashMode = it },
             onZoomFinish = { zoomHasChanged = false },
@@ -76,14 +83,18 @@ fun CamposerScreen(viewModel: CamposerViewModel = viewModel()) {
                     onResult = viewModel::onImageResult
                 )
             },
+            onRecording = {
+                cameraState.toggleRecording(
+                    viewModel.videoContentValues,
+                    onResult = viewModel::onVideoResult
+                )
+            },
             onSwitchCamera = {
                 if (cameraState.isStreaming) {
                     camSelector = camSelector.reverse
                 }
             },
-            onOptionChanged = {
-
-            }
+            onCaptureModeChanged = { captureMode = it }
         )
     }
 }
@@ -94,13 +105,20 @@ fun CameraSection(
     zoomHasChanged: Boolean,
     zoomRatio: Float,
     flashMode: FlashMode,
+    isRecording: Boolean,
+    captureMode: CaptureMode,
     hasFlashUnit: Boolean,
     onFlashModeChanged: (FlashMode) -> Unit,
     onZoomFinish: () -> Unit,
+    onRecording: () -> Unit,
     onTakePicture: () -> Unit,
     onSwitchCamera: () -> Unit,
-    onOptionChanged: (Option) -> Unit
+    onCaptureModeChanged: (CaptureMode) -> Unit
 ) {
+    VideoBox(
+        modifier = Modifier.padding(top = 8.dp),
+        isRecording = isRecording,
+    )
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.SpaceBetween,
@@ -122,9 +140,11 @@ fun CameraSection(
                 .fillMaxWidth()
                 .noClickable()
                 .padding(bottom = 32.dp, top = 16.dp),
+            captureMode = captureMode,
             onTakePicture = onTakePicture,
+            onRecording = onRecording,
             onSwitchCamera = onSwitchCamera,
-            onOptionChanged = onOptionChanged,
+            onOptionChanged = onCaptureModeChanged,
         )
     }
 }

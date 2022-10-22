@@ -6,6 +6,7 @@ import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
+import androidx.annotation.OptIn
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -332,7 +333,7 @@ class CameraState internal constructor(
      *  @param contentValues Content values of the video.
      *  @param onResult Callback called when [VideoCaptureResult] is ready
      *  */
-    @ExperimentalVideo
+    @OptIn(markerClass = [ExperimentalVideo::class])
     fun startRecording(
         saveCollection: Uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
         contentValues: ContentValues,
@@ -387,7 +388,7 @@ class CameraState internal constructor(
     /**
      * Stop recording camera.
      * */
-    @ExperimentalVideo
+    @OptIn(markerClass = [ExperimentalVideo::class])
     fun stopRecording() {
         controller.stopRecording()
     }
@@ -395,7 +396,6 @@ class CameraState internal constructor(
     /**
      * Toggle recording camera.
      * */
-    @ExperimentalVideo
     fun toggleRecording(
         contentValues: ContentValues,
         saveCollection: Uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
