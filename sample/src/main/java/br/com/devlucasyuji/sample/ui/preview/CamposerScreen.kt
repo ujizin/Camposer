@@ -12,6 +12,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,6 +36,8 @@ fun CamposerScreen(viewModel: CamposerViewModel = viewModel()) {
     var camSelector by rememberCameraSelector(CamSelector.Back)
     var zoomRatio by remember { mutableStateOf(cameraState.minZoom) }
     var zoomHasChanged by remember { mutableStateOf(false) }
+    val hasFlashUnit by rememberUpdatedState(cameraState.hasFlashUnit)
+
     // FIXME add lifecycle aware
     val uiState by viewModel.uiState.collectAsState()
 
@@ -64,6 +67,7 @@ fun CamposerScreen(viewModel: CamposerViewModel = viewModel()) {
             zoomHasChanged = zoomHasChanged,
             zoomRatio = zoomRatio,
             flashMode = flashMode,
+            hasFlashUnit = hasFlashUnit,
             onFlashModeChanged = { flashMode = it },
             onZoomFinish = { zoomHasChanged = false },
             onTakePicture = {
@@ -90,6 +94,7 @@ fun CameraSection(
     zoomHasChanged: Boolean,
     zoomRatio: Float,
     flashMode: FlashMode,
+    hasFlashUnit: Boolean,
     onFlashModeChanged: (FlashMode) -> Unit,
     onZoomFinish: () -> Unit,
     onTakePicture: () -> Unit,
@@ -107,9 +112,10 @@ fun CameraSection(
                 .padding(top = 32.dp, bottom = 16.dp, start = 24.dp, end = 24.dp),
             flashMode = flashMode,
             zoomRatio = zoomRatio,
+            hasFlashUnit = hasFlashUnit,
             zoomHasChanged = zoomHasChanged,
             onFlashModeChanged = onFlashModeChanged,
-            onZoomFinish = onZoomFinish
+            onZoomFinish = onZoomFinish,
         )
         ActionBox(
             modifier = Modifier

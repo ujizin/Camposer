@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -13,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.devlucasyuji.camposer.state.FlashMode
 import br.com.devlucasyuji.sample.extensions.roundTo
@@ -24,18 +26,19 @@ fun SettingsBox(
     zoomRatio: Float,
     zoomHasChanged: Boolean,
     flashMode: FlashMode,
+    hasFlashUnit: Boolean,
     onFlashModeChanged: (FlashMode) -> Unit,
     onZoomFinish: () -> Unit,
 ) {
     Box(modifier = modifier) {
-        FlashBox(
+        FlashSection(
             modifier = Modifier.align(Alignment.TopStart),
+            hasFlashUnit = hasFlashUnit,
             flashMode = flashMode,
             onFlashModeChanged = onFlashModeChanged
         )
-
         AnimatedVisibility(
-            modifier = Modifier.align(Alignment.TopCenter),
+            modifier = Modifier.align(Alignment.TopCenter).padding(top = 8.dp),
             enter = fadeIn() + slideInVertically(),
             exit = fadeOut() + slideOutVertically(),
             visible = zoomHasChanged
