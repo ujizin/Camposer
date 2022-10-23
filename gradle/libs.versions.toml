@@ -9,6 +9,7 @@ appcompat = "1.4.0"
 material = "1.6.1"
 material3 = "1.0.0-alpha14"
 lifecycle = "2.5.1"
+navigation = "2.5.2"
 
 [libraries]
 
@@ -26,6 +27,7 @@ compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = 
 compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
 compose-material3 = { module = "androidx.compose.material:material", version.ref = "compose" }
 compose-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
+compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
 
 material = { module = "com.google.android.material:material", version.ref = "material" }
 
