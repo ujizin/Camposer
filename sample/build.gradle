@@ -50,6 +50,8 @@ dependencies {
     implementation libs.compose.viewmodel
     implementation libs.compose.navigation
 
+    implementation libs.accompanist.permissions
+
     implementation libs.material
 
     implementation project(":camposer")

@@ -7,6 +7,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 
 /**
@@ -15,7 +16,8 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 @Composable
 fun rememberCameraState(): CameraState {
     val lifecycleOwner = LocalLifecycleOwner.current
-    return remember { CameraState(lifecycleOwner) }
+    val context = LocalContext.current
+    return remember { CameraState(lifecycleOwner, context) }
 }
 
 /**

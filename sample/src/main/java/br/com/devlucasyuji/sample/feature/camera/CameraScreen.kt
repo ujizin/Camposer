@@ -31,7 +31,7 @@ import br.com.devlucasyuji.sample.feature.camera.components.SettingsBox
 import br.com.devlucasyuji.sample.feature.camera.components.VideoBox
 
 @Composable
-fun CamposerScreen(viewModel: CamposerViewModel = viewModel()) {
+fun CameraScreen(viewModel: CamposerViewModel = viewModel()) {
     val cameraState = rememberCameraState()
     var flashMode by cameraState.rememberFlashMode()
     var camSelector by rememberCameraSelector(CamSelector.Back)

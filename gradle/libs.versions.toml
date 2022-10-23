@@ -10,6 +10,7 @@ material = "1.6.1"
 material3 = "1.0.0-alpha14"
 lifecycle = "2.5.1"
 navigation = "2.5.2"
+accompanist = "0.25.1"
 
 [libraries]
 
@@ -35,6 +36,8 @@ camerax-core = { module = "androidx.camera:camera-core", version.ref = "camerax"
 camerax-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "camerax" }
 camerax-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "camerax" }
 camerax-view = { module = "androidx.camera:camera-view", version.ref = "camerax" }
+
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
 
 [bundles]
 

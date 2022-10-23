@@ -6,4 +6,5 @@
     <string name="photo">photo</string>
     <string name="video">video</string>
     <string name="refresh">refresh</string>
+    <string name="request_allow_permissions">please allow camera and audio access to use %s</string>
 </resources>
