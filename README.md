@@ -1,6 +1,6 @@
 # Camposer
 
-<img src="sample/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" width="200" />
+<img src="sample/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" />
 
 Tired to use CameraX with Jetpack Compose Interoperability? So Camposer was made for you, a camera using 100% Jetpack Compose which supports photos & videos.
 
