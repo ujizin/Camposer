@@ -1,7 +1,7 @@
-package br.com.devlucasyuji.sample.ui.preview.mapper
+package br.com.devlucasyuji.sample.feature.camera.mapper
 
 import br.com.devlucasyuji.camposer.state.FlashMode
-import br.com.devlucasyuji.sample.ui.preview.model.Flash
+import br.com.devlucasyuji.sample.feature.camera.model.Flash
 
 fun Flash.toFlashMode() = when (this) {
     Flash.Auto -> FlashMode.Auto

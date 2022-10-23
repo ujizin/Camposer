@@ -1,4 +1,4 @@
-package br.com.devlucasyuji.sample.ui.preview.model
+package br.com.devlucasyuji.sample.feature.camera.model
 
 import androidx.annotation.StringRes
 import br.com.devlucasyuji.camposer.state.CaptureMode

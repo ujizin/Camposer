@@ -1,6 +1,5 @@
-package br.com.devlucasyuji.sample.ui.preview
+package br.com.devlucasyuji.sample.feature.camera
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,9 +26,9 @@ import br.com.devlucasyuji.camposer.state.rememberCameraSelector
 import br.com.devlucasyuji.camposer.state.rememberCameraState
 import br.com.devlucasyuji.camposer.state.rememberFlashMode
 import br.com.devlucasyuji.sample.extensions.noClickable
-import br.com.devlucasyuji.sample.ui.preview.components.ActionBox
-import br.com.devlucasyuji.sample.ui.preview.components.SettingsBox
-import br.com.devlucasyuji.sample.ui.preview.components.VideoBox
+import br.com.devlucasyuji.sample.feature.camera.components.ActionBox
+import br.com.devlucasyuji.sample.feature.camera.components.SettingsBox
+import br.com.devlucasyuji.sample.feature.camera.components.VideoBox
 
 @Composable
 fun CamposerScreen(viewModel: CamposerViewModel = viewModel()) {

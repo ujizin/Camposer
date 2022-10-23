@@ -1,4 +1,4 @@
-package br.com.devlucasyuji.sample.ui.preview.components
+package br.com.devlucasyuji.sample.feature.camera.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -15,7 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.devlucasyuji.camposer.state.CaptureMode
-import br.com.devlucasyuji.sample.ui.preview.model.Option
+import br.com.devlucasyuji.sample.feature.camera.model.Option
 
 @Composable
 fun OptionSection(

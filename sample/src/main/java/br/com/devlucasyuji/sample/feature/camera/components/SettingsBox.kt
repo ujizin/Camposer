@@ -1,4 +1,4 @@
-package br.com.devlucasyuji.sample.ui.preview.components
+package br.com.devlucasyuji.sample.feature.camera.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -50,7 +50,7 @@ fun SettingsBox(
                 color = Color.White,
             )
         }
-        Box(modifier = Modifier.align(Alignment.TopEnd))
+        Box(modifier = Modifier.align(Alignment.TopEnd)) // TODO add configuration section
     }
     LaunchedEffect(zoomRatio, zoomHasChanged) {
         delay(1_000)

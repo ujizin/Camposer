@@ -1,4 +1,4 @@
-package br.com.devlucasyuji.sample.ui.preview.components
+package br.com.devlucasyuji.sample.feature.camera.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn

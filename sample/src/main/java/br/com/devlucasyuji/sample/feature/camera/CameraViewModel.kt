@@ -1,4 +1,4 @@
-package br.com.devlucasyuji.sample.ui.preview
+package br.com.devlucasyuji.sample.feature.camera
 
 import android.content.ContentValues
 import android.os.Build

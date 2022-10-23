@@ -1,4 +1,4 @@
-package br.com.devlucasyuji.sample.ui.preview.components
+package br.com.devlucasyuji.sample.feature.camera.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth

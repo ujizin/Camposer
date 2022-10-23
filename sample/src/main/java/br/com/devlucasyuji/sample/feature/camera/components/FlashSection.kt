@@ -1,4 +1,4 @@
-package br.com.devlucasyuji.sample.ui.preview.components;
+package br.com.devlucasyuji.sample.feature.camera.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
@@ -29,9 +29,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import br.com.devlucasyuji.camposer.state.FlashMode
-import br.com.devlucasyuji.sample.ui.preview.mapper.toFlash
-import br.com.devlucasyuji.sample.ui.preview.mapper.toFlashMode
-import br.com.devlucasyuji.sample.ui.preview.model.Flash
+import br.com.devlucasyuji.sample.feature.camera.mapper.toFlash
+import br.com.devlucasyuji.sample.feature.camera.mapper.toFlashMode
+import br.com.devlucasyuji.sample.feature.camera.model.Flash
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
