@@ -11,6 +11,7 @@ material3 = "1.0.0-alpha14"
 lifecycle = "2.5.1"
 navigation = "2.5.2"
 accompanist = "0.25.1"
+coil = "2.2.2"
 
 [libraries]
 
@@ -31,6 +32,8 @@ compose-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose",
 compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
 
 material = { module = "com.google.android.material:material", version.ref = "material" }
+
+coil = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 
 camerax-core = { module = "androidx.camera:camera-core", version.ref = "camerax" }
 camerax-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "camerax" }

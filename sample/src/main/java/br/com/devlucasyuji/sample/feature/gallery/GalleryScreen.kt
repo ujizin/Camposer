@@ -1,8 +1,56 @@
 package br.com.devlucasyuji.sample.feature.gallery
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 
+
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun GalleryScreen() {
+fun GalleryScreen(viewModel: GalleryViewModel = viewModel()) {
+    val uiState by viewModel.uiState.collectAsState()
 
+    when (val result: GalleryUiState = uiState) {
+        GalleryUiState.Initial -> Box {}
+        is GalleryUiState.Success ->
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(3),
+                Modifier.fillMaxSize()
+            ) {
+                items(result.images) { image ->
+                    Box(
+                        modifier = Modifier
+                            .padding(1.dp)
+                            .fillMaxSize()
+                            .animateItemPlacement(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        AsyncImage(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .aspectRatio(1F),
+                            model = image,
+                            contentScale = ContentScale.Crop,
+                            contentDescription = "images",
+                            alignment = Alignment.Center,
+                        )
+                    }
+                }
+            }
+    }
 }

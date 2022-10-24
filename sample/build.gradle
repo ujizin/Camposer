@@ -51,6 +51,7 @@ dependencies {
     implementation libs.compose.navigation
 
     implementation libs.accompanist.permissions
+    implementation libs.coil
 
     implementation libs.material
 

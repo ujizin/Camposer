@@ -28,6 +28,7 @@ fun AppPermission(content: @Composable () -> Unit) {
     val permissionsState = rememberMultiplePermissionsState(
         listOf(
             android.Manifest.permission.CAMERA,
+            android.Manifest.permission.READ_EXTERNAL_STORAGE,
             android.Manifest.permission.RECORD_AUDIO,
         )
     )
