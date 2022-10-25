@@ -15,9 +15,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import coil.decode.VideoFrameDecoder
+import coil.request.ImageRequest
+import coil.request.videoFrameMillis
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -32,11 +36,12 @@ fun GalleryScreen(viewModel: GalleryViewModel = viewModel()) {
                 columns = GridCells.Fixed(3),
                 Modifier.fillMaxSize()
             ) {
-                items(result.images) { image ->
+                items(result.images, { it.name }) { image ->
                     Box(
                         modifier = Modifier
                             .padding(1.dp)
                             .fillMaxSize()
+
                             .animateItemPlacement(),
                         contentAlignment = Alignment.Center
                     ) {
@@ -44,7 +49,11 @@ fun GalleryScreen(viewModel: GalleryViewModel = viewModel()) {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .aspectRatio(1F),
-                            model = image,
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(image)
+                                .decoderFactory(VideoFrameDecoder.Factory())
+                                .videoFrameMillis(1)
+                                .build(),
                             contentScale = ContentScale.Crop,
                             contentDescription = "images",
                             alignment = Alignment.Center,

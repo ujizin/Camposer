@@ -1,56 +1,26 @@
 package br.com.devlucasyuji.sample.feature.gallery
 
-import android.graphics.Bitmap
-import android.media.MediaMetadataRetriever
-import android.os.Build
-import android.os.Environment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.devlucasyuji.sample.feature.camera.datasource.FileDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.ByteArrayOutputStream
 import java.io.File
 
-class GalleryViewModel : ViewModel() {
-
-    private val externalStorage = Environment.getExternalStoragePublicDirectory(
-        "Pictures/Camposer"
-    ).listFiles()
+class GalleryViewModel(
+    fileDataSource: FileDataSource = FileDataSource(), // TODO add DI
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow<GalleryUiState>(GalleryUiState.Initial)
     val uiState: StateFlow<GalleryUiState> get() = _uiState
 
-    private val File.videoCompat: File?
-        get() = if (extension == ".mp4") {
-            MediaMetadataRetriever().run {
-                setDataSource(this@videoCompat.path)
-                val bitmap = when {
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.P -> getFrameAtIndex(0)
-                    else -> getFrameAtTime(0)
-                }
-                val stream = ByteArrayOutputStream().apply {
-                    bitmap?.compress(
-                        Bitmap.CompressFormat.JPEG,
-                        100,
-                        this
-                    )
-                }
-                bitmap?.recycle()
-
-                File.createTempFile("video", "jpg").apply { writeBytes(stream.toByteArray()) }
-            }
-        } else this
-
-    private val File.extension: String
-        get() = path.substring(path.lastIndexOf("."))
-
     init {
         viewModelScope.launch {
             val images = withContext(Dispatchers.IO) {
-                externalStorage?.reversed()?.map { it.videoCompat } ?: listOf()
+                fileDataSource.externalFiles.orEmpty()
             }
             _uiState.value = GalleryUiState.Success(images)
         }
@@ -59,5 +29,5 @@ class GalleryViewModel : ViewModel() {
 
 sealed interface GalleryUiState {
     object Initial : GalleryUiState
-    data class Success(val images: List<File?>) : GalleryUiState
+    data class Success(val images: List<File>) : GalleryUiState
 }

@@ -27,8 +27,10 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun NavGraph(navHost: NavHostController) {
-        NavHost(navHost, startDestination = Router.Gallery.route) {
-            route(Router.Camera) { CameraScreen() }
+        NavHost(navHost, startDestination = Router.Camera.route) {
+            route(Router.Camera) {
+                CameraScreen { navHost.navigate(Router.Gallery.route) }
+            }
             route(Router.Gallery) { GalleryScreen() }
         }
     }

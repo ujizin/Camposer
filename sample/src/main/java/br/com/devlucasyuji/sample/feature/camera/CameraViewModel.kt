@@ -1,72 +1,84 @@
 package br.com.devlucasyuji.sample.feature.camera
 
-import android.content.ContentValues
 import android.os.Build
-import android.provider.MediaStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.devlucasyuji.camposer.state.CameraState
 import br.com.devlucasyuji.camposer.state.ImageCaptureResult
 import br.com.devlucasyuji.camposer.state.VideoCaptureResult
+import br.com.devlucasyuji.sample.feature.camera.datasource.FileDataSource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Locale
+import java.io.File
 
-class CamposerViewModel : ViewModel() {
+class CamposerViewModel(
+    private val fileDataSource: FileDataSource = FileDataSource(),
+) : ViewModel() {
 
-    private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Initial)
-    val uiState: StateFlow<UiState> get() = _uiState
+    private val _uiState: MutableStateFlow<CameraUiState> = MutableStateFlow(CameraUiState.Initial)
+    val uiState: StateFlow<CameraUiState> get() = _uiState
 
-    private val currentName: String
-        get() = SimpleDateFormat(
-            DEFAULT_DATE_FORMAT, Locale.US
-        ).format(System.currentTimeMillis())
+    init {
+        _uiState.value = CameraUiState.Ready(fileDataSource.lastPicture)
+    }
 
-    val imageContentValues: ContentValues = getContentValues(
-        MediaStore.Images.Media.RELATIVE_PATH,
-        JPEG_MIME_TYPE
-    )
+    private fun onImageResult(imageResult: ImageCaptureResult) {
+        if (imageResult is ImageCaptureResult.Success) captureSuccess()
+    }
 
-    val videoContentValues: ContentValues = getContentValues(
-        MediaStore.Video.Media.RELATIVE_PATH,
-        VIDEO_MIME_TYPE
-    )
-
-    private fun getContentValues(relativePath: String, mimeType: String) = ContentValues().apply {
-        put(MediaStore.MediaColumns.DISPLAY_NAME, currentName)
-        put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            put(relativePath, RELATIVE_PATH)
+    private fun captureSuccess() {
+        viewModelScope.launch {
+            _uiState.emit(CameraUiState.CaptureSuccess)
+            delay(CAPTURED_PHOTO_DELAY)
+            _uiState.emit(CameraUiState.Ready(fileDataSource.lastPicture))
         }
     }
 
-    fun onImageResult(imageResult: ImageCaptureResult) {
+    private fun onVideoResult(videoResult: VideoCaptureResult) {
+        if (videoResult is VideoCaptureResult.Success) captureSuccess()
+    }
+
+    fun takePicture(cameraState: CameraState) = with(cameraState) {
         viewModelScope.launch {
-            if (imageResult is ImageCaptureResult.Success) {
-                _uiState.emit(UiState.CaptureSuccess)
-                delay(CAPTURED_PHOTO_DELAY)
-                _uiState.emit(UiState.Initial)
+            when {
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> takePicture(
+                    fileDataSource.imageContentValues,
+                    onResult = ::onImageResult
+                )
+
+                else -> takePicture(
+                    fileDataSource.getFile(".jpg"),
+                    ::onImageResult
+                )
             }
         }
     }
 
-    fun onVideoResult(videoResult: VideoCaptureResult) {
+    fun toggleRecording(cameraState: CameraState) = with(cameraState) {
+        viewModelScope.launch {
+            when {
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> toggleRecording(
+                    fileDataSource.videoContentValues,
+                    onResult = ::onVideoResult
+                )
 
+                else -> toggleRecording(
+                    fileDataSource.getFile(".mp4"),
+                    onResult = ::onVideoResult
+                )
+            }
+        }
     }
 
     companion object {
-        private const val DEFAULT_DATE_FORMAT = "YYYY-HH:MM:SS"
-        private const val JPEG_MIME_TYPE = "image/jpeg"
-        private const val VIDEO_MIME_TYPE = "video/mp4"
-        private const val RELATIVE_PATH = "Pictures/Camposer"
-
-        private const val CAPTURED_PHOTO_DELAY = 50L
+        private const val CAPTURED_PHOTO_DELAY = 25L
     }
 }
 
-sealed interface UiState {
-    object Initial : UiState
-    object CaptureSuccess : UiState
+sealed interface CameraUiState {
+    object Initial : CameraUiState
+    data class Ready(val lastPicture: File?) : CameraUiState
+    object CaptureSuccess : CameraUiState
 }

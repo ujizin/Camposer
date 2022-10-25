@@ -7,6 +7,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -24,17 +25,26 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import br.com.devlucasyuji.camposer.state.CaptureMode
 import br.com.devlucasyuji.sample.R
+import coil.compose.AsyncImage
+import coil.decode.VideoFrameDecoder
+import coil.request.ImageRequest
+import coil.request.videoFrameMillis
+import java.io.File
 
 
 @Composable
 fun PictureActions(
     modifier: Modifier = Modifier,
     captureMode: CaptureMode,
+    lastPicture: File?,
+    onGalleryClick: () -> Unit,
     onRecording: () -> Unit,
     onTakePicture: () -> Unit,
     onSwitchCamera: () -> Unit,
@@ -45,12 +55,30 @@ fun PictureActions(
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        SwitchButton(onClick = onSwitchCamera)
+        GalleryButton(lastPicture, onClick = onGalleryClick)
         PictureButton(isVideo = isVideo, onClick = {
             if (isVideo) onRecording() else onTakePicture()
         })
         SwitchButton(onClick = onSwitchCamera)
     }
+}
+
+@Composable
+fun GalleryButton(lastPicture: File?, onClick: () -> Unit) {
+    AsyncImage(
+        modifier = Modifier
+            .size(48.dp)
+            .clip(CircleShape)
+            .background(Color.Black.copy(alpha = 0.5F), CircleShape)
+            .clickable(onClick = onClick),
+        contentScale = ContentScale.Crop,
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(lastPicture)
+            .decoderFactory(VideoFrameDecoder.Factory())
+            .videoFrameMillis(1)
+            .build(),
+        contentDescription = stringResource(R.string.gallery)
+    )
 }
 
 @Composable

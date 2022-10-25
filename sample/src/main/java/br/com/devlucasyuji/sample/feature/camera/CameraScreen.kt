@@ -29,9 +29,13 @@ import br.com.devlucasyuji.sample.extensions.noClickable
 import br.com.devlucasyuji.sample.feature.camera.components.ActionBox
 import br.com.devlucasyuji.sample.feature.camera.components.SettingsBox
 import br.com.devlucasyuji.sample.feature.camera.components.VideoBox
+import java.io.File
 
 @Composable
-fun CameraScreen(viewModel: CamposerViewModel = viewModel()) {
+fun CameraScreen(
+    viewModel: CamposerViewModel = viewModel(),
+    onGalleryClick: () -> Unit
+) {
     val cameraState = rememberCameraState()
     var flashMode by cameraState.rememberFlashMode()
     var camSelector by rememberCameraSelector(CamSelector.Back)
@@ -55,8 +59,8 @@ fun CameraScreen(viewModel: CamposerViewModel = viewModel()) {
             zoomRatio = it
         }
     ) {
-        when (uiState) {
-            UiState.CaptureSuccess -> {
+        when (val result: CameraUiState = uiState) {
+            CameraUiState.CaptureSuccess -> {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -64,37 +68,33 @@ fun CameraScreen(viewModel: CamposerViewModel = viewModel()) {
                 )
             }
 
-            UiState.Initial -> Unit
+            is CameraUiState.Ready -> CameraSection(
+                Modifier.fillMaxSize(),
+                zoomHasChanged = zoomHasChanged,
+                zoomRatio = zoomRatio,
+                flashMode = flashMode,
+                isRecording = isRecording,
+                captureMode = captureMode,
+                hasFlashUnit = hasFlashUnit,
+                onFlashModeChanged = { flashMode = it },
+                onZoomFinish = { zoomHasChanged = false },
+                onGalleryClick = onGalleryClick,
+                lastPicture = result.lastPicture,
+                onTakePicture = {
+                    viewModel.takePicture(cameraState)
+                },
+                onRecording = {
+                    viewModel.toggleRecording(cameraState)
+                },
+                onSwitchCamera = {
+                    if (cameraState.isStreaming) {
+                        camSelector = camSelector.reverse
+                    }
+                },
+                onCaptureModeChanged = { captureMode = it }
+            )
+            CameraUiState.Initial -> Unit
         }
-        CameraSection(
-            Modifier.fillMaxSize(),
-            zoomHasChanged = zoomHasChanged,
-            zoomRatio = zoomRatio,
-            flashMode = flashMode,
-            isRecording = isRecording,
-            captureMode = captureMode,
-            hasFlashUnit = hasFlashUnit,
-            onFlashModeChanged = { flashMode = it },
-            onZoomFinish = { zoomHasChanged = false },
-            onTakePicture = {
-                cameraState.takePicture(
-                    viewModel.imageContentValues,
-                    onResult = viewModel::onImageResult
-                )
-            },
-            onRecording = {
-                cameraState.toggleRecording(
-                    viewModel.videoContentValues,
-                    onResult = viewModel::onVideoResult
-                )
-            },
-            onSwitchCamera = {
-                if (cameraState.isStreaming) {
-                    camSelector = camSelector.reverse
-                }
-            },
-            onCaptureModeChanged = { captureMode = it }
-        )
     }
 }
 
@@ -107,6 +107,8 @@ fun CameraSection(
     isRecording: Boolean,
     captureMode: CaptureMode,
     hasFlashUnit: Boolean,
+    lastPicture: File?,
+    onGalleryClick: () -> Unit,
     onFlashModeChanged: (FlashMode) -> Unit,
     onZoomFinish: () -> Unit,
     onRecording: () -> Unit,
@@ -139,6 +141,8 @@ fun CameraSection(
                 .fillMaxWidth()
                 .noClickable()
                 .padding(bottom = 32.dp, top = 16.dp),
+            lastPicture = lastPicture,
+            onGalleryClick = onGalleryClick,
             captureMode = captureMode,
             onTakePicture = onTakePicture,
             onRecording = onRecording,
