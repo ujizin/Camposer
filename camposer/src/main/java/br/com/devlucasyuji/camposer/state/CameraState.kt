@@ -320,7 +320,7 @@ class CameraState internal constructor(
      * @param file file where the video will be saved
      * @param onResult Callback called when [VideoCaptureResult] is ready
      * */
-    @ExperimentalVideo
+    @OptIn(markerClass = [ExperimentalVideo::class])
     fun startRecording(file: File, onResult: (VideoCaptureResult) -> Unit) {
         startRecording(OutputFileOptions.builder(file).build(), onResult)
     }
@@ -362,14 +362,14 @@ class CameraState internal constructor(
                 object : OnVideoSavedCallback {
                     override fun onVideoSaved(outputFileResults: OutputFileResults) {
                         isRecording = false
-                        VideoCaptureResult.Success(outputFileResults.savedUri)
+                        onResult(VideoCaptureResult.Success(outputFileResults.savedUri))
                     }
 
                     override fun onError(
                         videoCaptureError: Int, message: String, cause: Throwable?
                     ) {
                         isRecording = false
-                        VideoCaptureResult.Error(videoCaptureError, message, cause)
+                        onResult(VideoCaptureResult.Error(videoCaptureError, message, cause))
                     }
                 })
         } catch (exception: Exception) {
@@ -390,6 +390,19 @@ class CameraState internal constructor(
     @OptIn(markerClass = [ExperimentalVideo::class])
     fun stopRecording() {
         controller.stopRecording()
+    }
+
+    /**
+     * Toggle recording camera.
+     * */
+    fun toggleRecording(
+        file: File,
+        onResult: (VideoCaptureResult) -> Unit
+    ) {
+        when (isRecording) {
+            true -> stopRecording()
+            false -> startRecording(file, onResult)
+        }
     }
 
     /**
