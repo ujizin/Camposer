@@ -34,6 +34,7 @@ compose-navigation = { module = "androidx.navigation:navigation-compose", versio
 material = { module = "com.google.android.material:material", version.ref = "material" }
 
 coil = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
+coil-video = { module = "io.coil-kt:coil-video", version.ref = "coil" }
 
 camerax-core = { module = "androidx.camera:camera-core", version.ref = "camerax" }
 camerax-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "camerax" }
