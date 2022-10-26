@@ -1,10 +1,11 @@
 [versions]
 
-kotlin = "1.7.10"
+kotlin = "1.7.20"
 androidx-core = "1.9.0"
 camerax = "1.1.0"
 compose = "1.2.1"
-compose-compiler = "1.3.1"
+compose-compiler = "1.3.2"
+compose-lifecycle = "2.6.0-alpha01"
 appcompat = "1.4.0"
 material = "1.6.1"
 material3 = "1.0.0-alpha14"
@@ -30,6 +31,8 @@ compose-foundation = { module = "androidx.compose.foundation:foundation", versio
 compose-material3 = { module = "androidx.compose.material:material", version.ref = "compose" }
 compose-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
 compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
+
+compose-lifecycle = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "compose-lifecycle"}
 
 material = { module = "com.google.android.material:material", version.ref = "material" }
 
