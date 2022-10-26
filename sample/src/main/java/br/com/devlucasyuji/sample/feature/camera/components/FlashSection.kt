@@ -28,23 +28,21 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import br.com.devlucasyuji.camposer.state.FlashMode
-import br.com.devlucasyuji.sample.feature.camera.mapper.toFlash
-import br.com.devlucasyuji.sample.feature.camera.mapper.toFlashMode
 import br.com.devlucasyuji.sample.feature.camera.model.Flash
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FlashSection(
     modifier: Modifier = Modifier,
-    hasFlashUnit: Boolean = true,
-    flashMode: FlashMode,
-    onFlashModeChanged: (FlashMode) -> Unit
+    hasFlashUnit: Boolean,
+    isVideo: Boolean,
+    flash: Flash,
+    onFlashModeChanged: (Flash) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     val isVisible by remember(hasFlashUnit) { derivedStateOf { hasFlashUnit && expanded }}
     LazyColumn(modifier) {
-        itemsIndexed(Flash.values(), key = { _, it -> it.name }) { index, flash ->
+        itemsIndexed(Flash.getCurrentValues(isVideo), key = { _, it -> it.name }) { index, flash ->
             AnimatedVisibility(
                 visible = isVisible,
                 enter = if (index == 0) EnterTransition.None else fadeIn() + slideInVertically(),
@@ -57,14 +55,14 @@ fun FlashSection(
                     flash = flash
                 ) {
                     expanded = false
-                    onFlashModeChanged(flash.toFlashMode())
+                    onFlashModeChanged(flash)
                 }
             }
         }
     }
 
     if (!isVisible) {
-        FlashButton(enabled = hasFlashUnit, flash = flashMode.toFlash()) { expanded = true }
+        FlashButton(enabled = hasFlashUnit, flash = flash) { expanded = true }
     }
 }
 

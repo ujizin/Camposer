@@ -22,14 +22,17 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.devlucasyuji.camposer.CameraPreview
 import br.com.devlucasyuji.camposer.state.CamSelector
 import br.com.devlucasyuji.camposer.state.CaptureMode
-import br.com.devlucasyuji.camposer.state.FlashMode
 import br.com.devlucasyuji.camposer.state.rememberCameraSelector
 import br.com.devlucasyuji.camposer.state.rememberCameraState
 import br.com.devlucasyuji.camposer.state.rememberFlashMode
+import br.com.devlucasyuji.camposer.state.rememberTorch
 import br.com.devlucasyuji.sample.extensions.noClickable
 import br.com.devlucasyuji.sample.feature.camera.components.ActionBox
 import br.com.devlucasyuji.sample.feature.camera.components.SettingsBox
 import br.com.devlucasyuji.sample.feature.camera.components.VideoBox
+import br.com.devlucasyuji.sample.feature.camera.mapper.toFlash
+import br.com.devlucasyuji.sample.feature.camera.mapper.toFlashMode
+import br.com.devlucasyuji.sample.feature.camera.model.Flash
 import java.io.File
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
@@ -46,6 +49,7 @@ fun CameraScreen(
     val hasFlashUnit by rememberUpdatedState(cameraState.hasFlashUnit)
     var captureMode by remember { mutableStateOf(CaptureMode.Image) }
     val isRecording by rememberUpdatedState(cameraState.isRecording)
+    var enableTorch by cameraState.rememberTorch(initialTorch = false)
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -53,6 +57,7 @@ fun CameraScreen(
         cameraState = cameraState,
         camSelector = camSelector,
         captureMode = captureMode,
+        enableTorch = enableTorch,
         flashMode = flashMode,
         zoomRatio = zoomRatio,
         onZoomRatioChanged = {
@@ -73,11 +78,14 @@ fun CameraScreen(
                 Modifier.fillMaxSize(),
                 zoomHasChanged = zoomHasChanged,
                 zoomRatio = zoomRatio,
-                flashMode = flashMode,
+                flashMode = flashMode.toFlash(enableTorch),
                 isRecording = isRecording,
                 captureMode = captureMode,
                 hasFlashUnit = hasFlashUnit,
-                onFlashModeChanged = { flashMode = it },
+                onFlashModeChanged = { flash ->
+                    enableTorch = flash == Flash.Always
+                    flashMode = flash.toFlashMode()
+                },
                 onZoomFinish = { zoomHasChanged = false },
                 onGalleryClick = onGalleryClick,
                 lastPicture = result.lastPicture,
@@ -105,13 +113,13 @@ fun CameraSection(
     modifier: Modifier = Modifier,
     zoomHasChanged: Boolean,
     zoomRatio: Float,
-    flashMode: FlashMode,
+    flashMode: Flash,
     isRecording: Boolean,
     captureMode: CaptureMode,
     hasFlashUnit: Boolean,
     lastPicture: File?,
     onGalleryClick: () -> Unit,
-    onFlashModeChanged: (FlashMode) -> Unit,
+    onFlashModeChanged: (Flash) -> Unit,
     onZoomFinish: () -> Unit,
     onRecording: () -> Unit,
     onTakePicture: () -> Unit,
@@ -133,6 +141,7 @@ fun CameraSection(
                 .padding(top = 32.dp, bottom = 16.dp, start = 24.dp, end = 24.dp),
             flashMode = flashMode,
             zoomRatio = zoomRatio,
+            isVideo = captureMode == CaptureMode.Video,
             hasFlashUnit = hasFlashUnit,
             zoomHasChanged = zoomHasChanged,
             onFlashModeChanged = onFlashModeChanged,

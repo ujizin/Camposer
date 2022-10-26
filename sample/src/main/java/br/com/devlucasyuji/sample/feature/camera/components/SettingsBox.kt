@@ -16,8 +16,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.com.devlucasyuji.camposer.state.FlashMode
 import br.com.devlucasyuji.sample.extensions.roundTo
+import br.com.devlucasyuji.sample.feature.camera.model.Flash
 import kotlinx.coroutines.delay
 
 @Composable
@@ -25,16 +25,18 @@ fun SettingsBox(
     modifier: Modifier = Modifier,
     zoomRatio: Float,
     zoomHasChanged: Boolean,
-    flashMode: FlashMode,
+    flashMode: Flash,
+    isVideo: Boolean,
     hasFlashUnit: Boolean,
-    onFlashModeChanged: (FlashMode) -> Unit,
+    onFlashModeChanged: (Flash) -> Unit,
     onZoomFinish: () -> Unit,
 ) {
     Box(modifier = modifier) {
         FlashSection(
             modifier = Modifier.align(Alignment.TopStart),
             hasFlashUnit = hasFlashUnit,
-            flashMode = flashMode,
+            flash = flashMode,
+            isVideo = isVideo,
             onFlashModeChanged = onFlashModeChanged
         )
         AnimatedVisibility(

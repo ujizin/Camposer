@@ -9,4 +9,5 @@
     <string name="gallery">gallery</string>
     <string name="request_allow_permissions">please allow camera and audio access to use %s</string>
     <string name="gallery_empty_description">you don\'t have any photos or videos yet</string>
+    <string name="flash_always">flash always</string>
 </resources>

@@ -6,11 +6,11 @@ import br.com.devlucasyuji.sample.feature.camera.model.Flash
 fun Flash.toFlashMode() = when (this) {
     Flash.Auto -> FlashMode.Auto
     Flash.On -> FlashMode.On
-    Flash.Off -> FlashMode.Off
+    Flash.Off, Flash.Always -> FlashMode.Off
 }
 
-fun FlashMode.toFlash() = when (this) {
+fun FlashMode.toFlash(isTorchEnabled: Boolean) = when (this) {
     FlashMode.On -> Flash.On
     FlashMode.Auto -> Flash.Auto
     FlashMode.Off -> Flash.Off
-}
+}.takeIf { !isTorchEnabled } ?: Flash.Always
