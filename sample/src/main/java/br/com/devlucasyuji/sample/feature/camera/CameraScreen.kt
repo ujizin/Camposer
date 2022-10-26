@@ -137,7 +137,6 @@ fun CameraSection(
         SettingsBox(
             modifier = Modifier
                 .fillMaxWidth()
-                .noClickable()
                 .padding(top = 32.dp, bottom = 16.dp, start = 24.dp, end = 24.dp),
             flashMode = flashMode,
             zoomRatio = zoomRatio,

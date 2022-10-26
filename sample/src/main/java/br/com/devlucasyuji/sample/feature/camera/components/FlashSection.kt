@@ -36,7 +36,7 @@ fun FlashSection(
     modifier: Modifier = Modifier,
     hasFlashUnit: Boolean,
     isVideo: Boolean,
-    flash: Flash,
+    flashMode: Flash,
     onFlashModeChanged: (Flash) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -50,8 +50,9 @@ fun FlashSection(
             ) {
                 FlashButton(
                     modifier = Modifier
-                        .padding(bottom = 24.dp)
+                        .padding(bottom = 8.dp)
                         .animateItemPlacement(),
+                    tintColor = if (flashMode == flash) Color.Yellow else Color.White,
                     flash = flash
                 ) {
                     expanded = false
@@ -62,7 +63,7 @@ fun FlashSection(
     }
 
     if (!isVisible) {
-        FlashButton(enabled = hasFlashUnit, flash = flash) { expanded = true }
+        FlashButton(enabled = hasFlashUnit, flash = flashMode) { expanded = true }
     }
 }
 
@@ -70,19 +71,20 @@ fun FlashSection(
 private fun FlashButton(
     modifier: Modifier = Modifier,
     flash: Flash,
+    tintColor: Color = Color.White,
     enabled: Boolean = true,
     onClick: () -> Unit,
 ) {
     Button(
         modifier = modifier.then(Modifier.clip(CircleShape)),
         enabled = enabled,
-        contentPaddingValues = PaddingValues(8.dp),
+        contentPaddingValues = PaddingValues(16.dp),
         onClick = onClick,
     ) {
         Image(
             modifier = Modifier.size(32.dp),
             painter = painterResource(flash.drawableRes),
-            colorFilter = ColorFilter.tint(if (enabled) Color.White else Color.Gray),
+            colorFilter = ColorFilter.tint(if (enabled) tintColor else Color.Gray),
             contentDescription = stringResource(flash.contentRes)
         )
     }

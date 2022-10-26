@@ -35,7 +35,7 @@ fun SettingsBox(
         FlashSection(
             modifier = Modifier.align(Alignment.TopStart),
             hasFlashUnit = hasFlashUnit,
-            flash = flashMode,
+            flashMode = flashMode,
             isVideo = isVideo,
             onFlashModeChanged = onFlashModeChanged
         )
