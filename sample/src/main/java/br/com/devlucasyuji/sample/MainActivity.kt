@@ -31,7 +31,11 @@ class MainActivity : ComponentActivity() {
             route(Router.Camera) {
                 CameraScreen { navHost.navigate(Router.Gallery.route) }
             }
-            route(Router.Gallery) { GalleryScreen() }
+            route(Router.Gallery) {
+                GalleryScreen {
+                    navHost.navigateUp()
+                }
+            }
         }
     }
 }

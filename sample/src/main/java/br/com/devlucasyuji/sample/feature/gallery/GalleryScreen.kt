@@ -1,38 +1,74 @@
 package br.com.devlucasyuji.sample.feature.gallery
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import br.com.devlucasyuji.sample.R
 import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
 import coil.decode.VideoFrameDecoder
 import coil.request.ImageRequest
 import coil.request.videoFrameMillis
 import java.io.File
 
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
-fun GalleryScreen(viewModel: GalleryViewModel = viewModel()) {
-    val uiState by viewModel.uiState.collectAsState()
-
-    when (val result: GalleryUiState = uiState) {
-        GalleryUiState.Initial -> GalleryLoading()
-        is GalleryUiState.Success -> GallerySection(imageFiles = result.images)
-
+fun GalleryScreen(viewModel: GalleryViewModel = viewModel(), onBackPressed: () -> Unit) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                backgroundColor = Color.Gray,
+                contentColor = Color.White,
+                title = {
+                    Text(stringResource(id = R.string.gallery).replaceFirstChar { it.uppercase() })
+                },
+                navigationIcon = {
+                    IconButton(onClick = { onBackPressed() }) {
+                        Icon(Icons.Filled.ArrowBack, "")
+                    }
+                },
+            )
+        }
+    ) {
+        Box(Modifier.padding(it)) {
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+            when (val result: GalleryUiState = uiState) {
+                GalleryUiState.Initial -> GalleryLoading()
+                is GalleryUiState.Success -> GallerySection(imageFiles = result.images)
+            }
+        }
     }
 }
 
@@ -40,33 +76,58 @@ fun GalleryScreen(viewModel: GalleryViewModel = viewModel()) {
 @Composable
 private fun GallerySection(imageFiles: List<File>) {
     LazyVerticalGrid(
+        modifier = Modifier.fillMaxSize(),
         columns = GridCells.Fixed(3),
-        Modifier.fillMaxSize()
+        horizontalArrangement = Arrangement.spacedBy(1.dp),
+        verticalArrangement = Arrangement.spacedBy(1.dp)
     ) {
         items(imageFiles, { it.name }) { image ->
-            Box(
+            PlaceholderImage(
                 modifier = Modifier
-                    .padding(1.dp)
                     .fillMaxSize()
-                    .animateItemPlacement(),
-                contentAlignment = Alignment.Center
-            ) {
-                AsyncImage(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1F),
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(image)
-                        .decoderFactory(VideoFrameDecoder.Factory())
-                        .videoFrameMillis(1)
-                        .build(),
-                    contentScale = ContentScale.Crop,
-                    contentDescription = "images",
-                    alignment = Alignment.Center,
-                )
-            }
+                    .animateItemPlacement()
+                    .aspectRatio(1F),
+                data = image,
+                contentDescription = image.name,
+                placeholder = {
+                    Box(Modifier.fillMaxSize().background(Color.LightGray))
+                }
+            )
         }
     }
+}
+
+@Composable
+private fun PlaceholderImage(
+    modifier: Modifier = Modifier,
+    data: Any,
+    placeholder: @Composable () -> Unit,
+    contentDescription: String?,
+) {
+    var imageState: AsyncImagePainter.State by remember { mutableStateOf(AsyncImagePainter.State.Empty) }
+    AsyncImage(
+        modifier = modifier,
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(data)
+            .decoderFactory(VideoFrameDecoder.Factory())
+            .videoFrameMillis(1)
+            .build(),
+        onState = { imageState = it },
+        contentScale = ContentScale.Crop,
+        contentDescription = contentDescription,
+    )
+    AnimatedVisibility(
+        modifier = modifier,
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = when (imageState) {
+            is AsyncImagePainter.State.Empty,
+            is AsyncImagePainter.State.Success -> false
+
+            is AsyncImagePainter.State.Loading,
+            is AsyncImagePainter.State.Error -> true
+        }
+    ) { placeholder() }
 }
 
 @Composable

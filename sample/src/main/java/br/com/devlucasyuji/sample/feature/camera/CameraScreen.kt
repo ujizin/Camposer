@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -17,6 +16,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.devlucasyuji.camposer.CameraPreview
 import br.com.devlucasyuji.camposer.state.CamSelector
@@ -31,6 +32,7 @@ import br.com.devlucasyuji.sample.feature.camera.components.SettingsBox
 import br.com.devlucasyuji.sample.feature.camera.components.VideoBox
 import java.io.File
 
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun CameraScreen(
     viewModel: CamposerViewModel = viewModel(),
@@ -45,8 +47,7 @@ fun CameraScreen(
     var captureMode by remember { mutableStateOf(CaptureMode.Image) }
     val isRecording by rememberUpdatedState(cameraState.isRecording)
 
-    // FIXME add lifecycle aware
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     CameraPreview(
         cameraState = cameraState,
@@ -93,6 +94,7 @@ fun CameraScreen(
                 },
                 onCaptureModeChanged = { captureMode = it }
             )
+
             CameraUiState.Initial -> Unit
         }
     }
