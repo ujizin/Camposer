@@ -26,12 +26,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -67,8 +70,25 @@ fun GalleryScreen(viewModel: GalleryViewModel = viewModel(), onBackPressed: () -
             when (val result: GalleryUiState = uiState) {
                 GalleryUiState.Initial -> GalleryLoading()
                 is GalleryUiState.Success -> GallerySection(imageFiles = result.images)
+                GalleryUiState.Empty -> GalleryEmpty()
             }
         }
+    }
+}
+
+@Composable
+private fun GalleryEmpty() {
+    Box(
+        Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            modifier = Modifier.padding(24.dp),
+            textAlign = TextAlign.Center,
+            text = stringResource(id = R.string.gallery_empty_description).replaceFirstChar { it.uppercase() },
+            fontSize = 18.sp,
+            color = Color.Gray,
+        )
     }
 }
 
@@ -90,7 +110,11 @@ private fun GallerySection(imageFiles: List<File>) {
                 data = image,
                 contentDescription = image.name,
                 placeholder = {
-                    Box(Modifier.fillMaxSize().background(Color.LightGray))
+                    Box(
+                        Modifier
+                            .fillMaxSize()
+                            .background(Color.LightGray)
+                    )
                 }
             )
         }

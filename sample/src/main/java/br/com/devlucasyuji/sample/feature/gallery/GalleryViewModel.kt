@@ -13,8 +13,10 @@ class GalleryViewModel(
     fileDataSource: FileDataSource = FileDataSource(), // TODO add DI
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<GalleryUiState>(
-        GalleryUiState.Success(fileDataSource.externalFiles.orEmpty())
+    private val _uiState = MutableStateFlow(
+        fileDataSource.externalFiles.orEmpty().run {
+            if (isEmpty()) GalleryUiState.Empty else GalleryUiState.Success(this)
+        }
     ).stateIn(
         viewModelScope,
         started = SharingStarted.Eagerly,
@@ -25,5 +27,6 @@ class GalleryViewModel(
 
 sealed interface GalleryUiState {
     object Initial : GalleryUiState
+    object Empty : GalleryUiState
     data class Success(val images: List<File>) : GalleryUiState
 }
