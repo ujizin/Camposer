@@ -47,7 +47,6 @@ dependencies {
     implementation libs.compose.activity
     implementation libs.compose.material3
 
-    implementation libs.compose.viewmodel
     implementation libs.compose.navigation
 
     implementation libs.compose.lifecycle
@@ -58,6 +57,8 @@ dependencies {
     implementation libs.coil.video
 
     implementation libs.material
+
+    implementation libs.koin
 
     implementation project(":camposer")
 }

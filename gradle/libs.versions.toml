@@ -13,6 +13,7 @@ lifecycle = "2.5.1"
 navigation = "2.5.2"
 accompanist = "0.25.1"
 coil = "2.2.2"
+koin = "3.3.0"
 
 [libraries]
 
@@ -29,15 +30,16 @@ compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = 
 
 compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
 compose-material3 = { module = "androidx.compose.material:material", version.ref = "compose" }
-compose-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
 compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
 
-compose-lifecycle = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "compose-lifecycle"}
+compose-lifecycle = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "compose-lifecycle" }
 
 material = { module = "com.google.android.material:material", version.ref = "material" }
 
 coil = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 coil-video = { module = "io.coil-kt:coil-video", version.ref = "coil" }
+
+koin = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 
 camerax-core = { module = "androidx.camera:camera-core", version.ref = "camerax" }
 camerax-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "camerax" }
