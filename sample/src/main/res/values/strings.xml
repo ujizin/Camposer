@@ -6,6 +6,7 @@
     <string name="flash_auto">flash auto</string>
     <string name="photo">photo</string>
     <string name="video">video</string>
+    <string name="play">play</string>
     <string name="refresh">refresh</string>
     <string name="gallery">gallery</string>
     <string name="request_allow_permissions">please allow camera and audio access to use %s</string>

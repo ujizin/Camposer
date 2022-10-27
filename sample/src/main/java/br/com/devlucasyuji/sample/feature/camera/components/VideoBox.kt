@@ -26,6 +26,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import br.com.devlucasyuji.sample.extensions.minutes
+import br.com.devlucasyuji.sample.extensions.seconds
 import kotlinx.coroutines.delay
 
 @Composable
@@ -42,7 +44,9 @@ fun VideoBox(
         exit = fadeOut() + slideOutVertically(),
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().offset(x = (-4).dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .offset(x = (-4).dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -68,6 +72,3 @@ fun VideoBox(
         timer = 0
     }
 }
-
-val Int.minutes get() = (this / 60).toString().padStart(2, '0')
-val Int.seconds get() = (this % 60).toString().padStart(2, '0')

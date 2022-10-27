@@ -5,27 +5,24 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,6 +30,9 @@ import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import br.com.devlucasyuji.sample.R
 import br.com.devlucasyuji.sample.components.Section
+import br.com.devlucasyuji.sample.extensions.getDuration
+import br.com.devlucasyuji.sample.extensions.minutes
+import br.com.devlucasyuji.sample.extensions.seconds
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import coil.decode.VideoFrameDecoder
@@ -100,8 +100,37 @@ private fun GallerySection(imageFiles: List<File>) {
                             .fillMaxSize()
                             .background(Color.LightGray)
                     )
+                },
+            ) {
+                val context = LocalContext.current
+                val duration = remember { image.getDuration(context) }
+                if (duration != null) {
+                    Box(
+                        modifier = Modifier.background(Color.Black.copy(0.25F)),
+                        contentAlignment = Alignment.TopEnd) {
+                        Row(
+                            modifier = Modifier.padding(4.dp),
+                            horizontalArrangement = Arrangement.spacedBy(2.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(
+                                "${duration.minutes}:${duration.seconds}",
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 12.sp,
+                            )
+                            Icon(
+                                modifier = Modifier
+                                    .size(12.dp)
+                                    .background(Color.White, CircleShape),
+                                imageVector = Icons.Rounded.PlayArrow,
+                                tint = Color.Black,
+                                contentDescription = stringResource(id = R.string.play),
+                            )
+                        }
+                    }
                 }
-            )
+            }
         }
     }
 }
@@ -112,31 +141,59 @@ private fun PlaceholderImage(
     data: Any,
     placeholder: @Composable () -> Unit,
     contentDescription: String?,
+    innerContent: @Composable () -> Unit,
 ) {
     var imageState: AsyncImagePainter.State by remember { mutableStateOf(AsyncImagePainter.State.Empty) }
-    AsyncImage(
-        modifier = modifier,
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(data)
-            .decoderFactory(VideoFrameDecoder.Factory())
-            .videoFrameMillis(1)
-            .build(),
-        onState = { imageState = it },
-        contentScale = ContentScale.Crop,
-        contentDescription = contentDescription,
-    )
+    Box(modifier) {
+        AsyncImage(
+            modifier = Modifier.fillMaxSize(),
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(data)
+                .decoderFactory(VideoFrameDecoder.Factory())
+                .videoFrameMillis(1)
+                .build(),
+            onState = { imageState = it },
+            contentScale = ContentScale.Crop,
+            contentDescription = contentDescription,
+        )
+        GalleryAnimationVisibility(
+            modifier = Modifier.fillMaxSize(),
+            visible = when (imageState) {
+                is AsyncImagePainter.State.Empty,
+                is AsyncImagePainter.State.Success,
+                -> false
+
+                is AsyncImagePainter.State.Loading,
+                is AsyncImagePainter.State.Error,
+                -> true
+            }
+        ) { placeholder() }
+
+        GalleryAnimationVisibility(
+            modifier = Modifier.fillMaxSize(),
+            visible = when (imageState) {
+                is AsyncImagePainter.State.Empty,
+                is AsyncImagePainter.State.Loading,
+                is AsyncImagePainter.State.Error,
+                -> false
+                is AsyncImagePainter.State.Success -> true
+            }) { innerContent() }
+    }
+
+}
+
+@Composable
+private fun GalleryAnimationVisibility(
+    modifier: Modifier = Modifier,
+    visible: Boolean,
+    content: @Composable () -> Unit,
+) {
     AnimatedVisibility(
         modifier = modifier,
         enter = fadeIn(),
         exit = fadeOut(),
-        visible = when (imageState) {
-            is AsyncImagePainter.State.Empty,
-            is AsyncImagePainter.State.Success -> false
-
-            is AsyncImagePainter.State.Loading,
-            is AsyncImagePainter.State.Error -> true
-        }
-    ) { placeholder() }
+        visible = visible
+    ) { content() }
 }
 
 @Composable
