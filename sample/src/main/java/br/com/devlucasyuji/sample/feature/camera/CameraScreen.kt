@@ -18,7 +18,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.devlucasyuji.camposer.CameraPreview
 import br.com.devlucasyuji.camposer.state.CamSelector
 import br.com.devlucasyuji.camposer.state.CaptureMode
@@ -33,12 +32,13 @@ import br.com.devlucasyuji.sample.feature.camera.components.VideoBox
 import br.com.devlucasyuji.sample.feature.camera.mapper.toFlash
 import br.com.devlucasyuji.sample.feature.camera.mapper.toFlashMode
 import br.com.devlucasyuji.sample.feature.camera.model.Flash
+import org.koin.androidx.compose.get
 import java.io.File
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun CameraScreen(
-    viewModel: CamposerViewModel = viewModel(),
+    viewModel: CameraViewModel = get(),
     onGalleryClick: () -> Unit,
     onConfigurationClick: () -> Unit
 ) {

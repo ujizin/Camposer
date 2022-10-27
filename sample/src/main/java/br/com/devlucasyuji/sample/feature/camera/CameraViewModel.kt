@@ -13,8 +13,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.io.File
 
-class CamposerViewModel(
-    private val fileDataSource: FileDataSource = FileDataSource(),
+class CameraViewModel(
+    private val fileDataSource: FileDataSource,
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<CameraUiState> = MutableStateFlow(CameraUiState.Initial)

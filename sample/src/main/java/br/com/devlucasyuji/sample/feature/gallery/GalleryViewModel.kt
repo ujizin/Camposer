@@ -9,9 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import java.io.File
 
-class GalleryViewModel(
-    fileDataSource: FileDataSource = FileDataSource(), // TODO add DI
-) : ViewModel() {
+class GalleryViewModel(fileDataSource: FileDataSource) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
         fileDataSource.externalFiles.orEmpty().run {

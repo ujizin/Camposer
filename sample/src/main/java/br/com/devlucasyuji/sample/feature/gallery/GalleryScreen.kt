@@ -31,7 +31,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.devlucasyuji.sample.R
 import br.com.devlucasyuji.sample.components.Section
 import coil.compose.AsyncImage
@@ -39,11 +38,12 @@ import coil.compose.AsyncImagePainter
 import coil.decode.VideoFrameDecoder
 import coil.request.ImageRequest
 import coil.request.videoFrameMillis
+import org.koin.androidx.compose.get
 import java.io.File
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
-fun GalleryScreen(viewModel: GalleryViewModel = viewModel(), onBackPressed: () -> Unit) {
+fun GalleryScreen(viewModel: GalleryViewModel = get(), onBackPressed: () -> Unit) {
     Section(
         title = {
             Text(stringResource(id = R.string.gallery).replaceFirstChar { it.uppercase() })
