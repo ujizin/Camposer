@@ -1,4 +1,4 @@
-package br.com.devlucasyuji.sample.feature.camera.datasource
+package br.com.devlucasyuji.sample.data
 
 import android.content.ContentValues
 import android.os.Build

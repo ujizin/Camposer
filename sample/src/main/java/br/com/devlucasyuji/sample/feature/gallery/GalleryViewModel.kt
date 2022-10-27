@@ -2,7 +2,7 @@ package br.com.devlucasyuji.sample.feature.gallery
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.com.devlucasyuji.sample.feature.camera.datasource.FileDataSource
+import br.com.devlucasyuji.sample.data.FileDataSource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
