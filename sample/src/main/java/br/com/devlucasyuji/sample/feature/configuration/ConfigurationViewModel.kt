@@ -25,7 +25,12 @@ class ConfigurationViewModel(
         viewModelScope.launch {
             userDataSource.getUser()
                 .onStart { ConfigurationUiState.Initial }
-                .catch { Log.e(this::class.java.name, "error on load user configuration") }
+                .catch {
+                    Log.e(
+                        this::class.java.name,
+                        "Error on load user configuration: ${it.message}"
+                    )
+                }
                 .collect { _uiState.emit(ConfigurationUiState.Success(it)) }
         }
     }

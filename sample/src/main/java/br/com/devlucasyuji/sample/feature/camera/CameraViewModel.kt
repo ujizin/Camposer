@@ -9,7 +9,6 @@ import br.com.devlucasyuji.camposer.state.VideoCaptureResult
 import br.com.devlucasyuji.sample.data.local.datasource.FileDataSource
 import br.com.devlucasyuji.sample.data.local.datasource.UserDataSource
 import br.com.devlucasyuji.sample.domain.User
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.onStart
@@ -77,8 +76,6 @@ class CameraViewModel(
 
     private fun captureSuccess() {
         viewModelScope.launch {
-            _uiState.emit(CameraUiState.CaptureSuccess)
-            delay(CAPTURED_PHOTO_DELAY)
             _uiState.update {
                 CameraUiState.Ready(user = user, lastPicture = fileDataSource.lastPicture)
             }
@@ -102,15 +99,10 @@ class CameraViewModel(
     private fun onError(throwable: Throwable?) {
         _uiState.update { CameraUiState.Ready(user, fileDataSource.lastPicture, throwable) }
     }
-
-    companion object {
-        private const val CAPTURED_PHOTO_DELAY = 25L
-    }
 }
 
 sealed interface CameraUiState {
     object Initial : CameraUiState
-    object CaptureSuccess : CameraUiState
     data class Ready(
         val user: User,
         val lastPicture: File?,

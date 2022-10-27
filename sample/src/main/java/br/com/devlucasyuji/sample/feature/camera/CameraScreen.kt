@@ -1,16 +1,9 @@
 package br.com.devlucasyuji.sample.feature.camera
 
 import android.widget.Toast
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
@@ -19,6 +12,7 @@ import br.com.devlucasyuji.camposer.CameraPreview
 import br.com.devlucasyuji.camposer.state.*
 import br.com.devlucasyuji.sample.extensions.noClickable
 import br.com.devlucasyuji.sample.feature.camera.components.ActionBox
+import br.com.devlucasyuji.sample.feature.camera.components.BlinkPictureBox
 import br.com.devlucasyuji.sample.feature.camera.components.SettingsBox
 import br.com.devlucasyuji.sample.feature.camera.components.VideoBox
 import br.com.devlucasyuji.sample.feature.camera.mapper.toFlash
@@ -36,13 +30,6 @@ fun CameraScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     when (val result: CameraUiState = uiState) {
-        CameraUiState.CaptureSuccess -> {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black)
-            )
-        }
         is CameraUiState.Ready -> {
             val cameraState = rememberCameraState()
             CameraSection(
@@ -103,6 +90,7 @@ fun CameraSection(
             zoomRatio = it
         }
     ) {
+        BlinkPictureBox(lastPicture)
         CameraInnerContent(
             Modifier.fillMaxSize(),
             zoomHasChanged = zoomHasChanged,
