@@ -14,6 +14,8 @@ class SampleApplication : Application() {
             androidLogger()
             androidContext(this@SampleApplication)
             modules(
+                Modules.localStore,
+                Modules.mappers,
                 Modules.dataSources,
                 Modules.viewModels,
             )

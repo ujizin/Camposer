@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import br.com.devlucasyuji.camposer.state.CameraState
 import br.com.devlucasyuji.camposer.state.ImageCaptureResult
 import br.com.devlucasyuji.camposer.state.VideoCaptureResult
-import br.com.devlucasyuji.sample.data.FileDataSource
+import br.com.devlucasyuji.sample.data.local.datasource.FileDataSource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

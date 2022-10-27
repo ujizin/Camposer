@@ -1,4 +1,4 @@
-package br.com.devlucasyuji.sample.data
+package br.com.devlucasyuji.sample.data.local.datasource
 
 import android.content.ContentValues
 import android.os.Build
@@ -27,7 +27,7 @@ class FileDataSource {
     val lastPicture get() = externalFiles?.firstOrNull()
 
     fun getFile(
-        extension: String = "jpg"
+        extension: String = "jpg",
     ): File = File(externalStorage.path, "$currentFileName.$extension").apply { createNewFile() }
 
     @RequiresApi(Build.VERSION_CODES.Q)

@@ -1,32 +1,27 @@
 package br.com.devlucasyuji.sample.feature.configuration
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Switch
 import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import br.com.devlucasyuji.sample.R
 import br.com.devlucasyuji.sample.components.Section
+import br.com.devlucasyuji.sample.domain.User
+import org.koin.androidx.compose.get
 
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun ConfigurationScreen(
-    viewModel: ConfigurationViewModel = viewModel(),
-    onBackPressed: () -> Unit
+    viewModel: ConfigurationViewModel = get(),
+    onBackPressed: () -> Unit,
 ) {
     Section(
         title = {
@@ -34,14 +29,20 @@ fun ConfigurationScreen(
         },
         onBackPressed = onBackPressed,
     ) {
-//        val uiState = viewModel
-        ConfigurationSection()
+        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+        when (val result: ConfigurationUiState = uiState) {
+            ConfigurationUiState.Initial -> Box {}
+            is ConfigurationUiState.Success -> {
+                ConfigurationSection(result.user) { updateUser ->
+                    viewModel.updateUser(updateUser)
+                }
+            }
+        }
     }
 }
 
 @Composable
-private fun ConfigurationSection() {
-    var checked by remember { mutableStateOf(false) }
+private fun ConfigurationSection(user: User, onConfigurationChange: (User) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -50,18 +51,18 @@ private fun ConfigurationSection() {
     ) {
         ConfigurationOption(
             text = stringResource(id = R.string.configuration_cam_selector),
-            checked = checked,
-            onCheckedChange = { checked = it }
+            checked = user.useCamFront,
+            onCheckedChange = { onConfigurationChange(user.copy(useCamFront = !user.useCamFront)) }
         )
         ConfigurationOption(
             text = stringResource(id = R.string.configuration_pinch_to_zoom),
-            checked = checked,
-            onCheckedChange = { checked = it }
+            checked = user.usePinchToZoom,
+            onCheckedChange = { onConfigurationChange(user.copy(usePinchToZoom = !user.usePinchToZoom)) }
         )
         ConfigurationOption(
             text = stringResource(id = R.string.configuration_tap_to_focus),
-            checked = checked,
-            onCheckedChange = { checked = it }
+            checked = user.useTapToFocus,
+            onCheckedChange = { onConfigurationChange(user.copy(useTapToFocus = !user.useTapToFocus)) }
         )
     }
 }
