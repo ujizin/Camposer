@@ -72,7 +72,7 @@ fun CameraPreview(
     implementationMode: ImplementationMode = cameraState.implementationMode,
     isImageAnalysisEnabled: Boolean = cameraState.isImageAnalysisEnabled,
     isFocusOnTapEnabled: Boolean = cameraState.isFocusOnTapEnabled,
-    isPinchToZoomEnabled: Boolean = true,
+    isPinchToZoomEnabled: Boolean = cameraState.isZoomSupported,
     onPreviewStreamChanged: () -> Unit = {},
     onSwitchToFront: @Composable (Bitmap) -> Unit = { bitmap ->
         BlurImage(
