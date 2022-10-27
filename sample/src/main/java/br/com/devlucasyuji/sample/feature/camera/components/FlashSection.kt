@@ -32,7 +32,7 @@ import br.com.devlucasyuji.sample.feature.camera.model.Flash
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun FlashSection(
+fun FlashBox(
     modifier: Modifier = Modifier,
     hasFlashUnit: Boolean,
     isVideo: Boolean,

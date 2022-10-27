@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Camposer</string>
+    <string name="back">back</string>
     <string name="flash_off">flash off</string>
     <string name="flash_on">flash on</string>
     <string name="flash_auto">flash auto</string>
@@ -10,4 +11,8 @@
     <string name="request_allow_permissions">please allow camera and audio access to use %s</string>
     <string name="gallery_empty_description">you don\'t have any photos or videos yet</string>
     <string name="flash_always">flash always</string>
+    <string name="configuration">configuration</string>
+    <string name="configuration_cam_selector">always start on front camera</string>
+    <string name="configuration_pinch_to_zoom">use pinch to zoom</string>
+    <string name="configuration_tap_to_focus">use tap to focus</string>
 </resources>

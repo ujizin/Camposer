@@ -14,13 +14,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,6 +33,7 @@ import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.devlucasyuji.sample.R
+import br.com.devlucasyuji.sample.components.Section
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import coil.decode.VideoFrameDecoder
@@ -49,21 +44,11 @@ import java.io.File
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun GalleryScreen(viewModel: GalleryViewModel = viewModel(), onBackPressed: () -> Unit) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                backgroundColor = Color.Gray,
-                contentColor = Color.White,
-                title = {
-                    Text(stringResource(id = R.string.gallery).replaceFirstChar { it.uppercase() })
-                },
-                navigationIcon = {
-                    IconButton(onClick = { onBackPressed() }) {
-                        Icon(Icons.Filled.ArrowBack, "")
-                    }
-                },
-            )
-        }
+    Section(
+        title = {
+            Text(stringResource(id = R.string.gallery).replaceFirstChar { it.uppercase() })
+        },
+        onBackPressed = onBackPressed
     ) {
         Box(Modifier.padding(it)) {
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()

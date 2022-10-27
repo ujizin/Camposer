@@ -3,11 +3,14 @@ package br.com.devlucasyuji.sample
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import br.com.devlucasyuji.sample.feature.camera.CameraScreen
+import br.com.devlucasyuji.sample.feature.configuration.ConfigurationScreen
 import br.com.devlucasyuji.sample.feature.gallery.GalleryScreen
 import br.com.devlucasyuji.sample.feature.permission.AppPermission
 import br.com.devlucasyuji.sample.router.Router
@@ -18,9 +21,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            AppPermission {
-                val navHost = rememberNavController()
-                NavGraph(navHost)
+            MaterialTheme(
+                colors = MaterialTheme.colors.copy(primary = colorResource(id = R.color.primary))
+            ) {
+                AppPermission {
+                    val navHost = rememberNavController()
+                    NavGraph(navHost)
+                }
             }
         }
     }
@@ -29,10 +36,18 @@ class MainActivity : ComponentActivity() {
     fun NavGraph(navHost: NavHostController) {
         NavHost(navHost, startDestination = Router.Camera.route) {
             route(Router.Camera) {
-                CameraScreen { navHost.navigate(Router.Gallery.route) }
+                CameraScreen(
+                    onGalleryClick = { navHost.navigate(Router.Gallery.route) },
+                    onConfigurationClick = { navHost.navigate(Router.Configuration.route) }
+                )
             }
             route(Router.Gallery) {
                 GalleryScreen {
+                    navHost.navigateUp()
+                }
+            }
+            route(Router.Configuration) {
+                ConfigurationScreen {
                     navHost.navigateUp()
                 }
             }

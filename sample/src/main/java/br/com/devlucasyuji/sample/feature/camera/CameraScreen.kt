@@ -39,7 +39,8 @@ import java.io.File
 @Composable
 fun CameraScreen(
     viewModel: CamposerViewModel = viewModel(),
-    onGalleryClick: () -> Unit
+    onGalleryClick: () -> Unit,
+    onConfigurationClick: () -> Unit
 ) {
     val cameraState = rememberCameraState()
     var flashMode by cameraState.rememberFlashMode()
@@ -87,7 +88,6 @@ fun CameraScreen(
                     flashMode = flash.toFlashMode()
                 },
                 onZoomFinish = { zoomHasChanged = false },
-                onGalleryClick = onGalleryClick,
                 lastPicture = result.lastPicture,
                 onTakePicture = {
                     viewModel.takePicture(cameraState)
@@ -100,7 +100,9 @@ fun CameraScreen(
                         camSelector = camSelector.reverse
                     }
                 },
-                onCaptureModeChanged = { captureMode = it }
+                onCaptureModeChanged = { captureMode = it },
+                onGalleryClick = onGalleryClick,
+                onConfigurationClick = onConfigurationClick
             )
 
             CameraUiState.Initial -> Unit
@@ -123,6 +125,7 @@ fun CameraSection(
     onZoomFinish: () -> Unit,
     onRecording: () -> Unit,
     onTakePicture: () -> Unit,
+    onConfigurationClick: () -> Unit,
     onSwitchCamera: () -> Unit,
     onCaptureModeChanged: (CaptureMode) -> Unit
 ) {
@@ -137,13 +140,14 @@ fun CameraSection(
         SettingsBox(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 32.dp, bottom = 16.dp, start = 24.dp, end = 24.dp),
+                .padding(top = 16.dp, bottom = 16.dp, start = 24.dp, end = 24.dp),
             flashMode = flashMode,
             zoomRatio = zoomRatio,
             isVideo = captureMode == CaptureMode.Video,
             hasFlashUnit = hasFlashUnit,
             zoomHasChanged = zoomHasChanged,
             onFlashModeChanged = onFlashModeChanged,
+            onConfigurationClick = onConfigurationClick,
             onZoomFinish = onZoomFinish,
         )
         ActionBox(

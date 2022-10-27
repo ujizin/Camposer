@@ -29,10 +29,11 @@ fun SettingsBox(
     isVideo: Boolean,
     hasFlashUnit: Boolean,
     onFlashModeChanged: (Flash) -> Unit,
+    onConfigurationClick: () -> Unit,
     onZoomFinish: () -> Unit,
 ) {
     Box(modifier = modifier) {
-        FlashSection(
+        FlashBox(
             modifier = Modifier.align(Alignment.TopStart),
             hasFlashUnit = hasFlashUnit,
             flashMode = flashMode,
@@ -52,8 +53,9 @@ fun SettingsBox(
                 color = Color.White,
             )
         }
-        ConfigurationSection(
-            modifier = Modifier.align(Alignment.TopEnd)
+        ConfigurationBox(
+            modifier = Modifier.align(Alignment.TopEnd),
+            onConfigurationClick = onConfigurationClick
         )
     }
     LaunchedEffect(zoomRatio, zoomHasChanged) {
