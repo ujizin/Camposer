@@ -38,6 +38,7 @@ import coil.compose.AsyncImagePainter
 import coil.decode.VideoFrameDecoder
 import coil.request.ImageRequest
 import coil.request.videoFrameMillis
+import coil.request.videoFramePercent
 import org.koin.androidx.compose.get
 import java.io.File
 
@@ -150,7 +151,7 @@ private fun PlaceholderImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(data)
                 .decoderFactory(VideoFrameDecoder.Factory())
-                .videoFrameMillis(1)
+                .videoFramePercent(0.5)
                 .build(),
             onState = { imageState = it },
             contentScale = ContentScale.Crop,
