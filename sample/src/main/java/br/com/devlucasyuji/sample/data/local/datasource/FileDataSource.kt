@@ -28,7 +28,10 @@ class FileDataSource {
 
     fun getFile(
         extension: String = "jpg",
-    ): File = File(externalStorage.path, "$currentFileName.$extension").apply { createNewFile() }
+    ): File = File(externalStorage.path, "$currentFileName.$extension").apply {
+        if (parentFile?.exists() == false) parentFile?.mkdirs()
+        createNewFile()
+    }
 
     @RequiresApi(Build.VERSION_CODES.Q)
     val imageContentValues: ContentValues = getContentValues(JPEG_MIME_TYPE)

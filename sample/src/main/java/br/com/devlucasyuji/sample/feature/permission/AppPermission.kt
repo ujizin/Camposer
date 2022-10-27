@@ -1,11 +1,7 @@
 package br.com.devlucasyuji.sample.feature.permission
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import android.os.Build
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
@@ -26,11 +22,15 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 @Composable
 fun AppPermission(content: @Composable () -> Unit) {
     val permissionsState = rememberMultiplePermissionsState(
-        listOf(
+        mutableListOf(
             android.Manifest.permission.CAMERA,
             android.Manifest.permission.READ_EXTERNAL_STORAGE,
             android.Manifest.permission.RECORD_AUDIO,
-        )
+        ).apply {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                add(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            }
+        }
     )
 
     if (permissionsState.allPermissionsGranted) {
