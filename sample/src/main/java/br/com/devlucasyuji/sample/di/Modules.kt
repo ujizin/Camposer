@@ -14,7 +14,7 @@ import org.koin.dsl.module
 
 object Modules {
 
-    val localStore = module {
+    val localStores = module {
         factory<UserStore> {
             UserStoreImpl(get(), Json)
         }
@@ -30,7 +30,7 @@ object Modules {
     }
 
     val viewModels = module {
-        viewModel { CameraViewModel(get()) }
+        viewModel { CameraViewModel(get(), get()) }
         viewModel { GalleryViewModel(get()) }
         viewModel { ConfigurationViewModel(get()) }
     }
