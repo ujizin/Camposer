@@ -52,7 +52,9 @@ fun SettingsBox(
                 color = Color.White,
             )
         }
-        Box(modifier = Modifier.align(Alignment.TopEnd)) // TODO add configuration section
+        ConfigurationSection(
+            modifier = Modifier.align(Alignment.TopEnd)
+        )
     }
     LaunchedEffect(zoomRatio, zoomHasChanged) {
         delay(1_000)

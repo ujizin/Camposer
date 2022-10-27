@@ -49,7 +49,7 @@ class CamposerViewModel(
                 )
 
                 else -> takePicture(
-                    fileDataSource.getFile(".jpg"),
+                    fileDataSource.getFile("jpg"),
                     ::onImageResult
                 )
             }
@@ -65,7 +65,7 @@ class CamposerViewModel(
                 )
 
                 else -> toggleRecording(
-                    fileDataSource.getFile(".mp4"),
+                    fileDataSource.getFile("mp4"),
                     onResult = ::onVideoResult
                 )
             }

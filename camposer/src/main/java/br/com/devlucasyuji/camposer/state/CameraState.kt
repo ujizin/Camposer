@@ -116,6 +116,7 @@ class CameraState internal constructor(
     internal var camSelector: CamSelector = CamSelector.Back
         set(value) {
             when {
+                value == field -> Unit
                 !isRecording && hasCamera(value) -> {
                     if (controller.cameraSelector != value.selector) {
                         controller.cameraSelector = value.selector
