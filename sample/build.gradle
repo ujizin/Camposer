@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.plugin.serialization'
 }
 
 android {
@@ -58,6 +59,8 @@ dependencies {
 
     implementation libs.koin
     implementation libs.datastore
+
+    implementation libs.kotlinx.serialization.json
 
     implementation project(":camposer")
 }
