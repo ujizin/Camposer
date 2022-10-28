@@ -62,5 +62,10 @@ dependencies {
 
     implementation libs.kotlinx.serialization.json
 
+    implementation libs.lifecycle
+    implementation libs.lifecycle.viewmodel
+
+    implementation libs.exoplayer
+
     implementation project(":camposer")
 }
