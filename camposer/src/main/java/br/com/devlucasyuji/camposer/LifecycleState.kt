@@ -14,7 +14,7 @@ import androidx.lifecycle.LifecycleEventObserver
  * Based on https://stackoverflow.com/a/69061897/11903815.
  * */
 @Composable
-fun Lifecycle.observeAsState(): State<Lifecycle.Event> {
+internal fun Lifecycle.observeAsState(): State<Lifecycle.Event> {
     val state = remember { mutableStateOf(Lifecycle.Event.ON_ANY) }
     DisposableEffect(this) {
         val observer = LifecycleEventObserver { _, event ->
