@@ -1,8 +1,10 @@
 package br.com.devlucasyuji.sample.feature.preview
 
+import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.devlucasyuji.sample.router.Args
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
@@ -14,8 +16,9 @@ class PreviewViewModel(
 ) : ViewModel() {
 
     val uiState: StateFlow<PreviewUiState> = flow {
-        val path = savedStateHandle.get<String?>("path") ?: return@flow emit(PreviewUiState.Empty)
-        val file = File(path)
+        val path = savedStateHandle.get<String?>(Args.Path)
+            ?: return@flow emit(PreviewUiState.Empty)
+        val file = File(Uri.decode(path))
         val previewUiState = when (file.extension) {
             "mp4" -> PreviewUiState.Video(file)
             else -> PreviewUiState.Image(file)

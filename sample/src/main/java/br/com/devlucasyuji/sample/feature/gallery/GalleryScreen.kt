@@ -1,4 +1,4 @@
-    package br.com.devlucasyuji.sample.feature.gallery
+package br.com.devlucasyuji.sample.feature.gallery
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -6,7 +6,13 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -16,7 +22,11 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,7 +48,6 @@ import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import coil.decode.VideoFrameDecoder
 import coil.request.ImageRequest
-import coil.request.videoFrameMillis
 import coil.request.videoFramePercent
 import org.koin.androidx.compose.get
 import java.io.File
@@ -48,7 +57,7 @@ import java.io.File
 fun GalleryScreen(
     viewModel: GalleryViewModel = get(),
     onBackPressed: () -> Unit,
-    onPreviewClick: () -> Unit,
+    onPreviewClick: (String) -> Unit,
 ) {
     Section(
         title = {
@@ -88,7 +97,7 @@ private fun GalleryEmpty() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun GallerySection(imageFiles: List<File>, onPreviewClick: () -> Unit) {
+private fun GallerySection(imageFiles: List<File>, onPreviewClick: (String) -> Unit) {
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize(),
         columns = GridCells.Fixed(3),
@@ -101,7 +110,7 @@ private fun GallerySection(imageFiles: List<File>, onPreviewClick: () -> Unit) {
                     .fillMaxSize()
                     .animateItemPlacement()
                     .aspectRatio(1F)
-                    .clickable(onClick = onPreviewClick),
+                    .clickable(onClick = { onPreviewClick(image.path) }),
                 data = image,
                 contentDescription = image.name,
                 placeholder = {
@@ -117,7 +126,8 @@ private fun GallerySection(imageFiles: List<File>, onPreviewClick: () -> Unit) {
                 if (duration != null) {
                     Box(
                         modifier = Modifier.background(Color.Black.copy(0.25F)),
-                        contentAlignment = Alignment.TopEnd) {
+                        contentAlignment = Alignment.TopEnd
+                    ) {
                         Row(
                             modifier = Modifier.padding(4.dp),
                             horizontalArrangement = Arrangement.spacedBy(2.dp),
@@ -186,8 +196,10 @@ private fun PlaceholderImage(
                 is AsyncImagePainter.State.Loading,
                 is AsyncImagePainter.State.Error,
                 -> false
+
                 is AsyncImagePainter.State.Success -> true
-            }) { innerContent() }
+            }
+        ) { innerContent() }
     }
 
 }

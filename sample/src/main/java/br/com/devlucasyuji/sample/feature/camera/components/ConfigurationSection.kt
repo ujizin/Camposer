@@ -21,7 +21,8 @@ fun ConfigurationBox(
         Button(
             modifier = Modifier.clip(CircleShape),
             contentPaddingValues = PaddingValues(16.dp),
-            onClick = onConfigurationClick) {
+            onClick = onConfigurationClick,
+        ) {
             Image(
                 painter = painterResource(id = R.drawable.configuration),
                 contentDescription = stringResource(id = R.string.configuration)

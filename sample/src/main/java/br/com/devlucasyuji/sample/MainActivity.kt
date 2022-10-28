@@ -7,13 +7,16 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import br.com.devlucasyuji.sample.feature.camera.CameraScreen
 import br.com.devlucasyuji.sample.feature.configuration.ConfigurationScreen
 import br.com.devlucasyuji.sample.feature.gallery.GalleryScreen
 import br.com.devlucasyuji.sample.feature.permission.AppPermission
 import br.com.devlucasyuji.sample.feature.preview.PreviewScreen
+import br.com.devlucasyuji.sample.router.Args
 import br.com.devlucasyuji.sample.router.Router
 import br.com.devlucasyuji.sample.router.navigate
 import br.com.devlucasyuji.sample.router.route
@@ -46,16 +49,18 @@ class MainActivity : ComponentActivity() {
             route(Router.Gallery) {
                 GalleryScreen(
                     onBackPressed = { navHost.navigateUp() },
-                    onPreviewClick = { navHost.navigate(Router.Preview) }
+                    onPreviewClick = { navHost.navigate(Router.Preview.createRoute(it)) }
                 )
             }
             route(Router.Configuration) {
                 ConfigurationScreen(onBackPressed = { navHost.navigateUp() })
             }
-            route(Router.Preview) {
-                PreviewScreen(onBackPressed = {
-
-                })
+            route(
+                route = Router.Preview,
+                arguments = listOf(navArgument(Args.Path) { type = NavType.StringType },
+                )
+            ) {
+                PreviewScreen(onBackPressed = { navHost.navigateUp() })
             }
         }
     }

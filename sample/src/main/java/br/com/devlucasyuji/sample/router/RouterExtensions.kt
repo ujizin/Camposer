@@ -1,16 +1,26 @@
 package br.com.devlucasyuji.sample.router
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavController
+import androidx.navigation.NavDeepLink
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 
-fun NavGraphBuilder.route(router: Router, content: @Composable (NavBackStackEntry) -> Unit) {
-    composable(router.route, content = content)
+fun NavGraphBuilder.route(
+    route: Router,
+    arguments: List<NamedNavArgument> = emptyList(),
+    deepLinks: List<NavDeepLink> = emptyList(),
+    content: @Composable (NavBackStackEntry) -> Unit
+) {
+    composable(route.route, arguments, deepLinks, content)
 }
 
 fun NavHostController.navigate(route: Router) {
-    navigate(route.route)
+    navigate(route.route) {
+        popUpTo(route.route) {
+            inclusive = true
+        }
+    }
 }

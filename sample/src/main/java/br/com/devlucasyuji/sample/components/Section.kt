@@ -26,13 +26,20 @@ fun Section(
             TopAppBar(
                 contentColor = Color.White,
                 title = { title() },
-                navigationIcon = {
-                    IconButton(onClick = { onBackPressed() }) {
-                        Icon(Icons.Filled.ArrowBack, stringResource(id = R.string.back))
-                    }
-                },
+                navigationIcon = { BackNavigationIcon(onBackPressed = onBackPressed) },
             )
         },
         backgroundColor = Color.LightGray.copy(alpha = 0.25F)
     ) { content(it) }
+}
+
+@Composable
+fun BackNavigationIcon(modifier: Modifier = Modifier, onBackPressed: () -> Unit) {
+    IconButton(modifier = modifier, onClick = { onBackPressed() }) {
+        Icon(
+            imageVector = Icons.Filled.ArrowBack,
+            contentDescription = stringResource(id = R.string.back),
+            tint = Color.White,
+        )
+    }
 }
