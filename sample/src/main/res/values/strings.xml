@@ -16,4 +16,5 @@
     <string name="configuration_cam_selector">always start on front camera</string>
     <string name="configuration_pinch_to_zoom">use pinch to zoom</string>
     <string name="configuration_tap_to_focus">use tap to focus</string>
+    <string name="preview">preview</string>
 </resources>

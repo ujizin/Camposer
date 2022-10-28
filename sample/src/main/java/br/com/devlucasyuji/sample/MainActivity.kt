@@ -13,7 +13,9 @@ import br.com.devlucasyuji.sample.feature.camera.CameraScreen
 import br.com.devlucasyuji.sample.feature.configuration.ConfigurationScreen
 import br.com.devlucasyuji.sample.feature.gallery.GalleryScreen
 import br.com.devlucasyuji.sample.feature.permission.AppPermission
+import br.com.devlucasyuji.sample.feature.preview.PreviewScreen
 import br.com.devlucasyuji.sample.router.Router
+import br.com.devlucasyuji.sample.router.navigate
 import br.com.devlucasyuji.sample.router.route
 
 class MainActivity : ComponentActivity() {
@@ -37,19 +39,23 @@ class MainActivity : ComponentActivity() {
         NavHost(navHost, startDestination = Router.Camera.route) {
             route(Router.Camera) {
                 CameraScreen(
-                    onGalleryClick = { navHost.navigate(Router.Gallery.route) },
-                    onConfigurationClick = { navHost.navigate(Router.Configuration.route) }
+                    onGalleryClick = { navHost.navigate(Router.Gallery) },
+                    onConfigurationClick = { navHost.navigate(Router.Configuration) }
                 )
             }
             route(Router.Gallery) {
-                GalleryScreen {
-                    navHost.navigateUp()
-                }
+                GalleryScreen(
+                    onBackPressed = { navHost.navigateUp() },
+                    onPreviewClick = { navHost.navigate(Router.Preview) }
+                )
             }
             route(Router.Configuration) {
-                ConfigurationScreen {
-                    navHost.navigateUp()
-                }
+                ConfigurationScreen(onBackPressed = { navHost.navigateUp() })
+            }
+            route(Router.Preview) {
+                PreviewScreen(onBackPressed = {
+
+                })
             }
         }
     }

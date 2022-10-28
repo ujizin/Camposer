@@ -8,6 +8,7 @@ import br.com.devlucasyuji.sample.data.local.UserStoreImpl
 import br.com.devlucasyuji.sample.data.mapper.UserMapper
 import br.com.devlucasyuji.sample.feature.configuration.ConfigurationViewModel
 import br.com.devlucasyuji.sample.feature.gallery.GalleryViewModel
+import br.com.devlucasyuji.sample.feature.preview.PreviewViewModel
 import kotlinx.serialization.json.Json
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -33,5 +34,6 @@ object Modules {
         viewModel { CameraViewModel(get(), get()) }
         viewModel { GalleryViewModel(get()) }
         viewModel { ConfigurationViewModel(get()) }
+        viewModel { PreviewViewModel(get()) }
     }
 }

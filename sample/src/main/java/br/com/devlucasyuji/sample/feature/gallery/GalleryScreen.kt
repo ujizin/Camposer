@@ -1,10 +1,11 @@
-package br.com.devlucasyuji.sample.feature.gallery
+    package br.com.devlucasyuji.sample.feature.gallery
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -44,7 +45,11 @@ import java.io.File
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
-fun GalleryScreen(viewModel: GalleryViewModel = get(), onBackPressed: () -> Unit) {
+fun GalleryScreen(
+    viewModel: GalleryViewModel = get(),
+    onBackPressed: () -> Unit,
+    onPreviewClick: () -> Unit,
+) {
     Section(
         title = {
             Text(stringResource(id = R.string.gallery).replaceFirstChar { it.uppercase() })
@@ -55,8 +60,11 @@ fun GalleryScreen(viewModel: GalleryViewModel = get(), onBackPressed: () -> Unit
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
             when (val result: GalleryUiState = uiState) {
                 GalleryUiState.Initial -> GalleryLoading()
-                is GalleryUiState.Success -> GallerySection(imageFiles = result.images)
                 GalleryUiState.Empty -> GalleryEmpty()
+                is GalleryUiState.Success -> GallerySection(
+                    imageFiles = result.images,
+                    onPreviewClick = onPreviewClick,
+                )
             }
         }
     }
@@ -80,7 +88,7 @@ private fun GalleryEmpty() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun GallerySection(imageFiles: List<File>) {
+private fun GallerySection(imageFiles: List<File>, onPreviewClick: () -> Unit) {
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize(),
         columns = GridCells.Fixed(3),
@@ -92,7 +100,8 @@ private fun GallerySection(imageFiles: List<File>) {
                 modifier = Modifier
                     .fillMaxSize()
                     .animateItemPlacement()
-                    .aspectRatio(1F),
+                    .aspectRatio(1F)
+                    .clickable(onClick = onPreviewClick),
                 data = image,
                 contentDescription = image.name,
                 placeholder = {
