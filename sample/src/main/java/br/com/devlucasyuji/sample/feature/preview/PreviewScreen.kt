@@ -119,6 +119,7 @@ private fun PreviewVideoSection(file: File) {
         ExoPlayer.Builder(context).build().apply {
             addMediaItem(MediaItem.fromUri(file.toUri()))
             prepare()
+            playWhenReady = true
         }
     }
 
