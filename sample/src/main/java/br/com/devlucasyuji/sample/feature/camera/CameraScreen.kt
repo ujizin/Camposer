@@ -14,7 +14,6 @@ import br.com.devlucasyuji.sample.extensions.noClickable
 import br.com.devlucasyuji.sample.feature.camera.components.ActionBox
 import br.com.devlucasyuji.sample.feature.camera.components.BlinkPictureBox
 import br.com.devlucasyuji.sample.feature.camera.components.SettingsBox
-import br.com.devlucasyuji.sample.feature.camera.components.VideoBox
 import br.com.devlucasyuji.sample.feature.camera.mapper.toFlash
 import br.com.devlucasyuji.sample.feature.camera.mapper.toFlashMode
 import br.com.devlucasyuji.sample.feature.camera.model.Flash
@@ -90,7 +89,7 @@ fun CameraSection(
             zoomRatio = it
         }
     ) {
-        BlinkPictureBox(lastPicture)
+        BlinkPictureBox(lastPicture, captureMode == CaptureMode.Video)
         CameraInnerContent(
             Modifier.fillMaxSize(),
             zoomHasChanged = zoomHasChanged,
@@ -165,6 +164,7 @@ fun CameraInnerContent(
             onGalleryClick = onGalleryClick,
             captureMode = captureMode,
             onTakePicture = onTakePicture,
+            isRecording = isRecording,
             onRecording = onRecording,
             onSwitchCamera = onSwitchCamera,
             onOptionChanged = onCaptureModeChanged,

@@ -13,6 +13,7 @@ import java.io.File
 fun ActionBox(
     modifier: Modifier = Modifier,
     captureMode: CaptureMode,
+    isRecording: Boolean,
     lastPicture: File?,
     onGalleryClick: () -> Unit,
     onTakePicture: () -> Unit,
@@ -34,6 +35,7 @@ fun ActionBox(
                 .padding(top = 24.dp, bottom = 32.dp),
             captureMode = captureMode,
             lastPicture = lastPicture,
+            isRecording = isRecording,
             onGalleryClick = onGalleryClick,
             onRecording = onRecording,
             onTakePicture = onTakePicture,

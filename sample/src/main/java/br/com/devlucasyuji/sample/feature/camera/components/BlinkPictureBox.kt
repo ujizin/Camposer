@@ -10,9 +10,9 @@ import kotlinx.coroutines.delay
 import java.io.File
 
 @Composable
-fun BlinkPictureBox(lastPicture: File?) {
+fun BlinkPictureBox(lastPicture: File?, isVideo: Boolean) {
     var picture by remember(Unit) { mutableStateOf(lastPicture) }
-    if (lastPicture != picture) {
+    if (!isVideo && lastPicture != picture) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
