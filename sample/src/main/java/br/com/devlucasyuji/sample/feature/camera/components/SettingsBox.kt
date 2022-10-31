@@ -1,11 +1,8 @@
 package br.com.devlucasyuji.sample.feature.camera.components
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.*
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -26,6 +23,7 @@ fun SettingsBox(
     zoomRatio: Float,
     zoomHasChanged: Boolean,
     flashMode: Flash,
+    isRecording: Boolean,
     isVideo: Boolean,
     hasFlashUnit: Boolean,
     onFlashModeChanged: (Flash) -> Unit,
@@ -40,18 +38,27 @@ fun SettingsBox(
             isVideo = isVideo,
             onFlashModeChanged = onFlashModeChanged
         )
-        AnimatedVisibility(
-            modifier = Modifier.align(Alignment.TopCenter).padding(top = 8.dp),
-            enter = fadeIn() + slideInVertically(),
-            exit = fadeOut() + slideOutVertically(),
-            visible = zoomHasChanged
+        Column(
+            modifier = Modifier.align(Alignment.TopCenter),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(
-                text = "${zoomRatio.roundTo(1)}X",
-                fontSize = 24.sp,
-                textAlign = TextAlign.Center,
-                color = Color.White,
+            VideoBox(
+                modifier = Modifier.padding(top = 16.dp),
+                isRecording = isRecording,
             )
+            AnimatedVisibility(
+                modifier = Modifier.padding(top = 16.dp),
+                enter = fadeIn() + slideInVertically(),
+                exit = fadeOut() + slideOutVertically(),
+                visible = zoomHasChanged
+            ) {
+                Text(
+                    text = "${zoomRatio.roundTo(1)}X",
+                    fontSize = 24.sp,
+                    textAlign = TextAlign.Center,
+                    color = Color.White,
+                )
+            }
         }
         ConfigurationBox(
             modifier = Modifier.align(Alignment.TopEnd),

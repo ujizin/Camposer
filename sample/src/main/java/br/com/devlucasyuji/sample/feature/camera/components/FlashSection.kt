@@ -61,6 +61,7 @@ fun FlashBox(
     if (!isVisible) {
         FlashButton(enabled = hasFlashUnit, flash = flashMode) { expanded = true }
     }
+
     LaunchedEffect(isVideo) {
         val hasOption = Flash.getCurrentValues(isVideo).any { it == flashMode }
         if (!hasOption) onFlashModeChanged(Flash.Off)
