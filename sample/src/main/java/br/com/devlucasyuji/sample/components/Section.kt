@@ -36,7 +36,6 @@ fun Section(
                 },
             )
         },
-        backgroundColor = Color.LightGray.copy(alpha = 0.25F)
     ) { content(it) }
 }
 

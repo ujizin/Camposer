@@ -3,10 +3,8 @@ package br.com.devlucasyuji.sample
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material.MaterialTheme
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -26,13 +24,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         setContent {
-            MaterialTheme(
-                colors = MaterialTheme.colors.copy(
-                    primary = colorResource(id = R.color.primary),
-                    background = Color.White,
-                )
-            ) {
+            CamposerTheme {
                 AppPermission {
                     val navHost = rememberNavController()
                     NavGraph(navHost)
