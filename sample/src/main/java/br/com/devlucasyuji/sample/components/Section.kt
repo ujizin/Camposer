@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import br.com.devlucasyuji.sample.R
 
@@ -18,7 +19,7 @@ fun Section(
     modifier: Modifier = Modifier,
     title: @Composable () -> Unit,
     onBackPressed: () -> Unit,
-    content: @Composable (PaddingValues) -> Unit
+    content: @Composable (PaddingValues) -> Unit,
 ) {
     Scaffold(
         modifier = modifier,
@@ -26,7 +27,13 @@ fun Section(
             TopAppBar(
                 contentColor = Color.White,
                 title = { title() },
-                navigationIcon = { BackNavigationIcon(onBackPressed = onBackPressed) },
+                navigationIcon = {
+                    NavigationIcon(
+                        icon = Icons.Filled.ArrowBack,
+                        contentDescription = stringResource(id = R.string.back),
+                        onClick = onBackPressed,
+                    )
+                },
             )
         },
         backgroundColor = Color.LightGray.copy(alpha = 0.25F)
@@ -34,11 +41,16 @@ fun Section(
 }
 
 @Composable
-fun BackNavigationIcon(modifier: Modifier = Modifier, onBackPressed: () -> Unit) {
-    IconButton(modifier = modifier, onClick = { onBackPressed() }) {
+fun NavigationIcon(
+    modifier: Modifier = Modifier,
+    icon: ImageVector,
+    contentDescription: String,
+    onClick: () -> Unit,
+) {
+    IconButton(modifier = modifier, onClick = onClick) {
         Icon(
-            imageVector = Icons.Filled.ArrowBack,
-            contentDescription = stringResource(id = R.string.back),
+            imageVector = icon,
+            contentDescription = contentDescription,
             tint = Color.White,
         )
     }

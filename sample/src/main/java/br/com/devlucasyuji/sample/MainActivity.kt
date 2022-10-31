@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -27,7 +28,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MaterialTheme(
-                colors = MaterialTheme.colors.copy(primary = colorResource(id = R.color.primary))
+                colors = MaterialTheme.colors.copy(
+                    primary = colorResource(id = R.color.primary),
+                    background = Color.White,
+                )
             ) {
                 AppPermission {
                     val navHost = rememberNavController()
@@ -57,7 +61,8 @@ class MainActivity : ComponentActivity() {
             }
             route(
                 route = Router.Preview,
-                arguments = listOf(navArgument(Args.Path) { type = NavType.StringType },
+                arguments = listOf(
+                    navArgument(Args.Path) { type = NavType.StringType },
                 )
             ) {
                 PreviewScreen(onBackPressed = { navHost.navigateUp() })
