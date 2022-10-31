@@ -18,10 +18,11 @@ import java.io.File
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.DurationUnit
 
-fun File.getDuration(context: Context): Int? {
-    return if (isVideo) {
+@WorkerThread
+suspend fun File.getDuration(context: Context): Int? = withContext(Dispatchers.IO) {
+    if (isVideo) {
         val retriever = MediaMetadataRetriever()
-        return try {
+        try {
             retriever.run {
                 setDataSource(context, Uri.fromFile(this@getDuration))
                 extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
@@ -67,8 +68,8 @@ val File.isVideo: Boolean get() = extension == "mp4"
 suspend fun File.delete(
     contentResolver: ContentResolver,
     intentSenderLauncher: ActivityResultLauncher<IntentSenderRequest>,
-    dispatcher: CoroutineDispatcher = Dispatchers.IO
-)= withContext(dispatcher) {
+    dispatcher: CoroutineDispatcher = Dispatchers.IO,
+) = withContext(dispatcher) {
     val uri = getExternalUri(contentResolver) ?: return@withContext
     try {
         contentResolver.delete(uri, null, null)

@@ -6,13 +6,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -22,11 +16,8 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -48,7 +39,10 @@ import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import coil.decode.VideoFrameDecoder
 import coil.request.ImageRequest
+import coil.request.videoFrameMillis
 import coil.request.videoFramePercent
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.koin.androidx.compose.get
 import java.io.File
 
@@ -105,6 +99,9 @@ private fun GallerySection(imageFiles: List<File>, onPreviewClick: (String) -> U
         verticalArrangement = Arrangement.spacedBy(1.dp)
     ) {
         items(imageFiles, { it.name }) { image ->
+            val context = LocalContext.current
+            var duration by rememberSaveable { mutableStateOf<Int?>(null) }
+            LaunchedEffect(Unit) { duration = image.getDuration(context) }
             PlaceholderImage(
                 modifier = Modifier
                     .fillMaxSize()
@@ -121,9 +118,7 @@ private fun GallerySection(imageFiles: List<File>, onPreviewClick: (String) -> U
                     )
                 },
             ) {
-                val context = LocalContext.current
-                val duration = remember { image.getDuration(context) }
-                if (duration != null) {
+                duration?.let { duration ->
                     Box(
                         modifier = Modifier.background(Color.Black.copy(0.25F)),
                         contentAlignment = Alignment.TopEnd
