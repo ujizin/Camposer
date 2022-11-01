@@ -55,6 +55,7 @@ fun CameraScreen(
                 usePinchToZoom = result.user.usePinchToZoom,
                 useTapToFocus = result.user.useTapToFocus,
                 lastPicture = result.lastPicture,
+                qrCodeText = result.qrCodeText,
                 onGalleryClick = onGalleryClick,
                 onConfigurationClick = onConfigurationClick,
                 onRecording = { viewModel.toggleRecording(cameraState) },
@@ -80,6 +81,7 @@ fun CameraSection(
     useFrontCamera: Boolean,
     usePinchToZoom: Boolean,
     useTapToFocus: Boolean,
+    qrCodeText: String?,
     lastPicture: File?,
     onTakePicture: () -> Unit,
     onRecording: () -> Unit,
@@ -121,6 +123,7 @@ fun CameraSection(
             isRecording = isRecording,
             cameraOption = cameraOption,
             hasFlashUnit = hasFlashUnit,
+            qrCodeText = qrCodeText,
             onFlashModeChanged = { flash ->
                 enableTorch = flash == Flash.Always
                 flashMode = flash.toFlashMode()
@@ -150,6 +153,7 @@ fun CameraInnerContent(
     isRecording: Boolean,
     cameraOption: CameraOption,
     hasFlashUnit: Boolean,
+    qrCodeText: String?,
     lastPicture: File?,
     onGalleryClick: () -> Unit,
     onFlashModeChanged: (Flash) -> Unit,
@@ -186,6 +190,7 @@ fun CameraInnerContent(
             lastPicture = lastPicture,
             onGalleryClick = onGalleryClick,
             cameraOption = cameraOption,
+            qrCodeText = qrCodeText,
             onTakePicture = onTakePicture,
             isRecording = isRecording,
             onRecording = onRecording,

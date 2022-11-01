@@ -14,16 +14,22 @@ fun ActionBox(
     modifier: Modifier = Modifier,
     cameraOption: CameraOption,
     isRecording: Boolean,
+    qrCodeText: String?,
     lastPicture: File?,
     onGalleryClick: () -> Unit,
     onTakePicture: () -> Unit,
     onSwitchCamera: () -> Unit,
     onRecording: () -> Unit,
-    onCameraOptionChanged: (CameraOption) -> Unit
+    onCameraOptionChanged: (CameraOption) -> Unit,
 ) {
     Column(
         modifier = modifier,
     ) {
+        QrCodeBox(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            qrCodeText = qrCodeText)
         OptionSection(
             modifier = Modifier.fillMaxWidth(),
             currentCameraOption = cameraOption,
