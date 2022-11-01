@@ -60,7 +60,7 @@ fun CameraScreen(
                 onConfigurationClick = onConfigurationClick,
                 onRecording = { viewModel.toggleRecording(cameraState) },
                 onTakePicture = { viewModel.takePicture(cameraState) },
-                onAnalyzeImage = { viewModel.analyzeImage(it) }
+                onAnalyzeImage = viewModel::analyzeImage
             )
 
             val context = LocalContext.current
@@ -97,7 +97,7 @@ fun CameraSection(
     var cameraOption by rememberSaveable { mutableStateOf(CameraOption.Photo) }
     val isRecording by rememberUpdatedState(cameraState.isRecording)
     var enableTorch by cameraState.rememberTorch(initialTorch = false)
-    val imageAnalyzer = cameraState.rememberImageAnalyzer { onAnalyzeImage(it) }
+    val imageAnalyzer = cameraState.rememberImageAnalyzer(analyze = onAnalyzeImage)
 
     CameraPreview(
         cameraState = cameraState,
