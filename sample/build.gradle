@@ -67,5 +67,7 @@ dependencies {
 
     implementation libs.exoplayer
 
+    implementation libs.zxing.core
+
     implementation project(":camposer")
 }

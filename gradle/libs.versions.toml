@@ -17,6 +17,7 @@ koin = "3.3.0"
 datastore = "1.0.0"
 kotlinx-serialization = "1.4.1"
 exoplayer = "2.18.1"
+zxing = "3.5.0"
 
 [libraries]
 
@@ -55,6 +56,8 @@ camerax-core = { module = "androidx.camera:camera-core", version.ref = "camerax"
 camerax-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "camerax" }
 camerax-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "camerax" }
 camerax-view = { module = "androidx.camera:camera-view", version.ref = "camerax" }
+
+zxing-core = { module = "com.google.zxing:core", version.ref = "zxing" }
 
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
 
