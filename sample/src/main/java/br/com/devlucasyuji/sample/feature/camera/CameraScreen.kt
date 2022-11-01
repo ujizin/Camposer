@@ -1,21 +1,39 @@
 package br.com.devlucasyuji.sample.feature.camera
 
 import android.widget.Toast
-import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.*
+import androidx.camera.core.ImageProxy
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import br.com.devlucasyuji.camposer.CameraPreview
-import br.com.devlucasyuji.camposer.state.*
+import br.com.devlucasyuji.camposer.state.CamSelector
+import br.com.devlucasyuji.camposer.state.CameraState
+import br.com.devlucasyuji.camposer.state.rememberCameraSelector
+import br.com.devlucasyuji.camposer.state.rememberCameraState
+import br.com.devlucasyuji.camposer.state.rememberFlashMode
+import br.com.devlucasyuji.camposer.state.rememberImageAnalyzer
+import br.com.devlucasyuji.camposer.state.rememberTorch
 import br.com.devlucasyuji.sample.extensions.noClickable
 import br.com.devlucasyuji.sample.feature.camera.components.ActionBox
 import br.com.devlucasyuji.sample.feature.camera.components.BlinkPictureBox
 import br.com.devlucasyuji.sample.feature.camera.components.SettingsBox
 import br.com.devlucasyuji.sample.feature.camera.mapper.toFlash
 import br.com.devlucasyuji.sample.feature.camera.mapper.toFlashMode
+import br.com.devlucasyuji.sample.feature.camera.model.CameraOption
 import br.com.devlucasyuji.sample.feature.camera.model.Flash
 import org.koin.androidx.compose.get
 import java.io.File
@@ -41,6 +59,7 @@ fun CameraScreen(
                 onConfigurationClick = onConfigurationClick,
                 onRecording = { viewModel.toggleRecording(cameraState) },
                 onTakePicture = { viewModel.takePicture(cameraState) },
+                onAnalyzeImage = { viewModel.analyzeImage(it) }
             )
 
             val context = LocalContext.current
@@ -50,6 +69,7 @@ fun CameraScreen(
                 }
             }
         }
+
         CameraUiState.Initial -> Unit
     }
 }
@@ -64,24 +84,27 @@ fun CameraSection(
     onTakePicture: () -> Unit,
     onRecording: () -> Unit,
     onGalleryClick: () -> Unit,
+    onAnalyzeImage: (ImageProxy) -> Unit,
     onConfigurationClick: () -> Unit,
 ) {
     var flashMode by cameraState.rememberFlashMode()
     var camSelector by rememberCameraSelector(if (useFrontCamera) CamSelector.Front else CamSelector.Back)
-    var zoomRatio by remember { mutableStateOf(cameraState.minZoom) }
-    var zoomHasChanged by remember { mutableStateOf(false) }
+    var zoomRatio by rememberSaveable { mutableStateOf(cameraState.minZoom) }
+    var zoomHasChanged by rememberSaveable { mutableStateOf(false) }
     val hasFlashUnit by rememberUpdatedState(cameraState.hasFlashUnit)
-    var captureMode by remember { mutableStateOf(CaptureMode.Image) }
+    var cameraOption by rememberSaveable { mutableStateOf(CameraOption.Photo) }
     val isRecording by rememberUpdatedState(cameraState.isRecording)
     var enableTorch by cameraState.rememberTorch(initialTorch = false)
+    val imageAnalyzer = cameraState.rememberImageAnalyzer { onAnalyzeImage(it) }
 
     CameraPreview(
         cameraState = cameraState,
         camSelector = camSelector,
-        captureMode = captureMode,
+        captureMode = cameraOption.toCaptureMode(),
         enableTorch = enableTorch,
         flashMode = flashMode,
         zoomRatio = zoomRatio,
+        imageAnalyzer = imageAnalyzer.takeIf { cameraOption == CameraOption.QRCode },
         isPinchToZoomEnabled = usePinchToZoom,
         isFocusOnTapEnabled = useTapToFocus,
         onZoomRatioChanged = {
@@ -89,14 +112,14 @@ fun CameraSection(
             zoomRatio = it
         }
     ) {
-        BlinkPictureBox(lastPicture, captureMode == CaptureMode.Video)
+        BlinkPictureBox(lastPicture, cameraOption == CameraOption.Video)
         CameraInnerContent(
             Modifier.fillMaxSize(),
             zoomHasChanged = zoomHasChanged,
             zoomRatio = zoomRatio,
             flashMode = flashMode.toFlash(enableTorch),
             isRecording = isRecording,
-            captureMode = captureMode,
+            cameraOption = cameraOption,
             hasFlashUnit = hasFlashUnit,
             onFlashModeChanged = { flash ->
                 enableTorch = flash == Flash.Always
@@ -111,7 +134,7 @@ fun CameraSection(
                     camSelector = camSelector.reverse
                 }
             },
-            onCaptureModeChanged = { captureMode = it },
+            onCameraOptionChanged = { cameraOption = it },
             onGalleryClick = onGalleryClick,
             onConfigurationClick = onConfigurationClick
         )
@@ -125,7 +148,7 @@ fun CameraInnerContent(
     zoomRatio: Float,
     flashMode: Flash,
     isRecording: Boolean,
-    captureMode: CaptureMode,
+    cameraOption: CameraOption,
     hasFlashUnit: Boolean,
     lastPicture: File?,
     onGalleryClick: () -> Unit,
@@ -135,7 +158,7 @@ fun CameraInnerContent(
     onTakePicture: () -> Unit,
     onConfigurationClick: () -> Unit,
     onSwitchCamera: () -> Unit,
-    onCaptureModeChanged: (CaptureMode) -> Unit,
+    onCameraOptionChanged: (CameraOption) -> Unit,
 ) {
     Column(
         modifier = modifier,
@@ -147,7 +170,7 @@ fun CameraInnerContent(
                 .padding(top = 8.dp, bottom = 8.dp, start = 24.dp, end = 24.dp),
             flashMode = flashMode,
             zoomRatio = zoomRatio,
-            isVideo = captureMode == CaptureMode.Video,
+            isVideo = cameraOption == CameraOption.Video,
             hasFlashUnit = hasFlashUnit,
             zoomHasChanged = zoomHasChanged,
             isRecording = isRecording,
@@ -162,12 +185,12 @@ fun CameraInnerContent(
                 .padding(bottom = 32.dp, top = 16.dp),
             lastPicture = lastPicture,
             onGalleryClick = onGalleryClick,
-            captureMode = captureMode,
+            cameraOption = cameraOption,
             onTakePicture = onTakePicture,
             isRecording = isRecording,
             onRecording = onRecording,
             onSwitchCamera = onSwitchCamera,
-            onOptionChanged = onCaptureModeChanged,
+            onCameraOptionChanged = onCameraOptionChanged,
         )
     }
 }

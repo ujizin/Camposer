@@ -14,30 +14,28 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.com.devlucasyuji.camposer.state.CaptureMode
-import br.com.devlucasyuji.sample.feature.camera.model.Option
+import br.com.devlucasyuji.sample.feature.camera.model.CameraOption
 
 @Composable
 fun OptionSection(
     modifier: Modifier = Modifier,
-    captureMode: CaptureMode,
-    onOptionChanged: (CaptureMode) -> Unit
+    currentCameraOption: CameraOption,
+    onCameraOptionChanged: (CameraOption) -> Unit
 ) {
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)
     ) {
-        Option.values().forEach { option ->
-            val capMode = option.toCaptureMode()
+        CameraOption.values().forEach { option ->
             Text(
                 modifier = Modifier.clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null
-                ) { onOptionChanged(capMode) },
+                ) { onCameraOptionChanged(option) },
                 text = stringResource(id = option.titleRes).replaceFirstChar { it.uppercase() },
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
-                color = if (captureMode == capMode) Color.Yellow else Color.White
+                color = if (currentCameraOption == option) Color.Yellow else Color.White
             )
         }
     }
