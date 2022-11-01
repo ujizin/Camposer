@@ -35,7 +35,7 @@ fun OptionSection(
                         onClick = { onCameraOptionChanged(option) },
                     )
                     .padding(vertical = 4.dp)
-                    .width(64.dp),
+                    .width(80.dp),
                 text = stringResource(id = option.titleRes).replaceFirstChar { it.uppercase() },
                 fontSize = 16.sp,
                 maxLines = 1,
