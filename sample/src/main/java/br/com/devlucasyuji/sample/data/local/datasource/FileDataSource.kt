@@ -6,17 +6,14 @@ import android.os.Environment
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import java.io.File
-import java.text.SimpleDateFormat
-import java.util.Locale
+import java.util.UUID
 
 class FileDataSource {
 
     private val externalDir = "${Environment.DIRECTORY_DCIM}${File.separator}$RELATIVE_PATH"
 
     private val currentFileName: String
-        get() = SimpleDateFormat(DEFAULT_DATE_FORMAT, Locale.US).format(
-            System.currentTimeMillis()
-        )
+        get() = "${System.currentTimeMillis()}-${UUID.randomUUID()}"
 
     private val externalStorage
         get() = Environment.getExternalStoragePublicDirectory(externalDir).apply { mkdirs() }
@@ -49,7 +46,6 @@ class FileDataSource {
     companion object {
         private const val JPEG_MIME_TYPE = "image/jpeg"
         private const val VIDEO_MIME_TYPE = "video/mp4"
-        private const val DEFAULT_DATE_FORMAT = "YYYY-HH:MM:SS"
         private const val RELATIVE_PATH = "Camposer"
     }
 }
