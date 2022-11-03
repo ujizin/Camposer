@@ -19,7 +19,7 @@ CameraPreview(
 }
 ```
 
-And that's it! For more information, check the `wiki`.
+And that's it! For more information, check the [wiki](https://github.com/DevLucasYuji/Camposer/wiki).
 
 ### Take picture
 
@@ -72,7 +72,7 @@ camSelector = camSelector.reverse
 
 ###  Other configurations
 
-If you want to use other configurations, you can see our `wiki`.
+If you want to use other configurations, you can see our [wiki](https://github.com/DevLucasYuji/Camposer/wiki).
 
 ## Setup
 
