@@ -12,33 +12,11 @@ import androidx.compose.runtime.saveable.listSaver
  *
  * @param selector Camera selector by CameraX
  * */
-sealed class CamSelector(
+enum class CamSelector(
     internal val selector: CameraSelector
 ) {
-
-    /**
-     * Default front camera from CameraX.
-     * */
-    object Front : CamSelector(CameraSelector.DEFAULT_FRONT_CAMERA)
-
-    /**
-     * Default back camera from cameraX.
-     * */
-    object Back : CamSelector(CameraSelector.DEFAULT_BACK_CAMERA)
-
-    enum class LensFacing(val value: Int) {
-        Back(CameraSelector.LENS_FACING_BACK),
-        Front(CameraSelector.LENS_FACING_FRONT)
-    }
-
-    /**
-     * Return lens facing front or back.
-     * */
-    @SuppressLint("RestrictedApi")
-    val lensFacing: LensFacing = when (selector.lensFacing) {
-        CameraSelector.LENS_FACING_BACK -> LensFacing.Back
-        else -> LensFacing.Front
-    }
+    Front(CameraSelector.DEFAULT_FRONT_CAMERA),
+    Back(CameraSelector.DEFAULT_BACK_CAMERA);
 
     /**
      * Reverse camera selector. Works only with default Front & Back Selector.
@@ -50,13 +28,15 @@ sealed class CamSelector(
         }
 
     companion object {
+
+        @SuppressLint("RestrictedApi")
         internal val Saver: Saver<MutableState<CamSelector>, *> = listSaver(
-            save = { listOf(it.value.lensFacing) },
+            save = { listOf(it.value.selector.lensFacing) },
             restore = {
                 mutableStateOf(
                     when (it[0]) {
-                        LensFacing.Front -> Front
-                        LensFacing.Back -> Back
+                        CameraSelector.LENS_FACING_FRONT -> Front
+                        else -> Back
                     }
                 )
             }
