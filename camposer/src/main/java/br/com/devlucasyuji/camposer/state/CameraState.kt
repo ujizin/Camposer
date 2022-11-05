@@ -24,6 +24,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
+import br.com.devlucasyuji.camposer.CameraPreview
 import java.io.File
 import java.util.concurrent.Executor
 

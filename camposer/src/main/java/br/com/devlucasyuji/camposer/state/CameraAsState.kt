@@ -1,6 +1,5 @@
 package br.com.devlucasyuji.camposer.state
 
-import android.util.Size
 import androidx.camera.core.ImageProxy
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -9,6 +8,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import br.com.devlucasyuji.camposer.CameraPreview
 
 /**
  * Camera State from [CameraPreview] Composable.
@@ -24,7 +24,7 @@ fun rememberCameraState(): CameraState {
  * Camera selector's State to [CameraPreview] Composable.
  * */
 @Composable
-fun rememberCameraSelector(
+fun rememberCamSelector(
     selector: CamSelector = CamSelector.Back
 ): MutableState<CamSelector> = rememberSaveable(saver = CamSelector.Saver) {
     mutableStateOf(selector)
@@ -49,7 +49,7 @@ fun CameraState.rememberFlashMode(
  * */
 @Composable
 fun CameraState.rememberTorch(
-    initialTorch: Boolean,
+    initialTorch: Boolean = false,
     useSaver: Boolean = true
 ): MutableState<Boolean> = rememberConditionalState(
     initialValue = initialTorch,
@@ -66,7 +66,7 @@ fun CameraState.rememberTorch(
 @Composable
 fun CameraState.rememberImageAnalyzer(
     imageAnalysisBackpressureStrategy: ImageAnalysisBackpressureStrategy = ImageAnalysisBackpressureStrategy.KeepOnlyLatest,
-    imageAnalysisTargetSize: Size? = this.imageAnalysisTargetSize?.resolution,
+    imageAnalysisTargetSize: ImageAnalysisTargetSize? = ImageAnalysisTargetSize(this.imageAnalysisTargetSize),
     imageAnalysisImageQueueDepth: Int = this.imageAnalysisImageQueueDepth,
     analyze: (ImageProxy) -> Unit,
 ): ImageAnalyzer = remember(this) {

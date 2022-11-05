@@ -1,9 +1,7 @@
 package br.com.devlucasyuji.camposer.state
 
-import android.util.Size
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
-import androidx.camera.view.CameraController
 import androidx.compose.runtime.Immutable
 
 /**
@@ -20,7 +18,7 @@ import androidx.compose.runtime.Immutable
 class ImageAnalyzer(
     private val cameraState: CameraState,
     imageAnalysisBackpressureStrategy: ImageAnalysisBackpressureStrategy,
-    imageAnalysisTargetSize: Size?,
+    imageAnalysisTargetSize: ImageAnalysisTargetSize?,
     imageAnalysisImageQueueDepth: Int,
     private var analyzerCallback: (ImageProxy) -> Unit,
 ) {
@@ -33,18 +31,18 @@ class ImageAnalyzer(
     init {
         updateCameraState(
             imageAnalysisBackpressureStrategy,
-            imageAnalysisTargetSize?.let { CameraController.OutputSize(it) },
+            imageAnalysisTargetSize,
             imageAnalysisImageQueueDepth
         )
     }
 
     private fun updateCameraState(
         imageAnalysisBackpressureStrategy: ImageAnalysisBackpressureStrategy,
-        imageAnalysisTargetSize: CameraController.OutputSize?,
+        imageAnalysisTargetSize: ImageAnalysisTargetSize?,
         imageAnalysisImageQueueDepth: Int,
     ) = with(cameraState) {
         this.imageAnalysisBackpressureStrategy = imageAnalysisBackpressureStrategy.strategy
-        this.imageAnalysisTargetSize = imageAnalysisTargetSize
+        this.imageAnalysisTargetSize = imageAnalysisTargetSize?.toOutputSize()
         this.imageAnalysisImageQueueDepth = imageAnalysisImageQueueDepth
     }
 
@@ -62,13 +60,13 @@ class ImageAnalyzer(
         imageAnalysisBackpressureStrategy: ImageAnalysisBackpressureStrategy = ImageAnalysisBackpressureStrategy.find(
             cameraState.imageAnalysisBackpressureStrategy
         ),
-        imageAnalysisTargetSize: Size? = cameraState.imageAnalysisTargetSize?.resolution,
+        imageAnalysisTargetSize: ImageAnalysisTargetSize? = ImageAnalysisTargetSize(cameraState.imageAnalysisTargetSize),
         imageAnalysisImageQueueDepth: Int = cameraState.imageAnalysisImageQueueDepth,
         analyzerCallback: (ImageProxy) -> Unit = this.analyzerCallback,
     ) {
         updateCameraState(
             imageAnalysisBackpressureStrategy,
-            imageAnalysisTargetSize?.let { CameraController.OutputSize(it) },
+            imageAnalysisTargetSize,
             imageAnalysisImageQueueDepth
         )
         this.analyzerCallback = analyzerCallback
