@@ -424,7 +424,7 @@ class CameraState internal constructor(
     /**
      * Toggle recording camera.
      * */
-    @ExperimentalVideo
+    @OptIn(markerClass = [ExperimentalVideo::class])
     fun toggleRecording(
         outputFileOptions: OutputFileOptions,
         onResult: (VideoCaptureResult) -> Unit
