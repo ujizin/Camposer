@@ -1,4 +1,4 @@
-package br.com.devlucasyuji.camposer.androidview
+package br.com.devlucasyuji.camposer.extensions
 
 import android.annotation.SuppressLint
 import android.view.MotionEvent

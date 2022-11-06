@@ -18,8 +18,8 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
-import br.com.devlucasyuji.camposer.androidview.onCameraTouchEvent
 import br.com.devlucasyuji.camposer.extensions.clamped
+import br.com.devlucasyuji.camposer.extensions.onCameraTouchEvent
 import br.com.devlucasyuji.camposer.focus.FocusTap
 import br.com.devlucasyuji.camposer.focus.SquareCornerFocus
 import br.com.devlucasyuji.camposer.state.CamSelector
