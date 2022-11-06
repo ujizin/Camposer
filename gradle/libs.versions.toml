@@ -61,6 +61,8 @@ zxing-core = { module = "com.google.zxing:core", version.ref = "zxing" }
 
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
 
+dokka = { module = "org.jetbrains.dokka:dokka-core", version.ref = "kotlin" }
+
 [bundles]
 
 compose = [
