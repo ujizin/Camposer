@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace 'br.com.devlucasyuji.camposer'
+    namespace 'com.ujizin.camposer'
     compileSdk 33
 
     defaultConfig {

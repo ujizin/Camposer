@@ -92,7 +92,7 @@ dependencyResolutionManagement {
 2. Add dependency to your `build.gradle`
 
 ```
-implementation 'br.com.devlucasyuji.camposer:0.1.0'
+implementation 'com.ujizin.camposer:0.1.0'
 ```
 3. Sync your project
 4. Have a happy `fun code()`!

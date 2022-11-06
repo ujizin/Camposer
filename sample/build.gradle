@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace 'br.com.devlucasyuji.sample'
+    namespace 'com.ujizin.camposer.sample'
     compileSdk 33
 
     defaultConfig {
-        applicationId "br.com.devlucasyuji.sample"
+        applicationId "com.ujizin.camposer.sample"
         minSdk 24
         targetSdk 33
         versionCode 1
