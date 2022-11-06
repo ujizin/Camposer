@@ -146,18 +146,18 @@ class CameraState internal constructor(
     /**
      * CameraX's use cases captures.
      * */
-    private val useCases: MutableSet<Int> = mutableSetOf()
+    private val useCases: MutableSet<Int> = mutableSetOf(IMAGE_ANALYSIS)
 
     /**
      * Enable/Disable Image analysis from the camera.
      * */
     internal var isImageAnalysisEnabled: Boolean = true
         set(value) {
-            if (isImageAnalysisEnabled != value) {
+            if (value != field) {
                 if (value) useCases += IMAGE_ANALYSIS else useCases -= IMAGE_ANALYSIS
                 updateUseCases()
+                field = value
             }
-            field = value
         }
 
     private fun updateUseCases() {
