@@ -9,12 +9,12 @@ import androidx.camera.core.ImageAnalysis
  * */
 enum class ImageAnalysisBackpressureStrategy(internal val strategy: Int) {
     /**
-     * always caches the latest image, use to non blocking operation.
+     * always caches the latest image, used for non-blocking operation.
      * */
     KeepOnlyLatest(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST),
 
     /**
-     *  add multiple images to the internal image queue and begins dropping frames only when the queue is full, use to blocking operation.
+     *  add multiple images to the internal image queue and begin dropping frames only when the queue is full, used for blocking operation.
      * */
     BlockProducer(ImageAnalysis.STRATEGY_BLOCK_PRODUCER);
 
