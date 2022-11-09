@@ -13,6 +13,9 @@ enum class FlashMode(internal val mode: Int) {
     Auto(ImageCapture.FLASH_MODE_AUTO),
     Off(ImageCapture.FLASH_MODE_OFF);
 
+    /**
+     * Inverse flash mode. Works only with default Off & On flash modes.
+     * */
     val inverse get() = when(this) {
         On -> Off
         else -> On
