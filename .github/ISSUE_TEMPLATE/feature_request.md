@@ -16,4 +16,6 @@ A clear and concise description of what you want to happen.
 **Describe alternatives you've considered**
 A clear and concise description of any alternative solutions or features you've considered.
 
-**Are you willing to provide a PR?**:  with a PR, it can drastically speed up the process of making this feature
+**Are you willing to provide a PR?**
+
+Providing a PR, it can drastically speed up the process of making this feature

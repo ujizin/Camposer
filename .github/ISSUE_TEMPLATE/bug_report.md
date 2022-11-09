@@ -29,4 +29,6 @@ A clear and concise description of what you expected to happen.
 
 If applicable, add screenshots to help explain your problem.
 
-**Are you willing to provide a PR?**:  with a PR, it can drastically speed up the process of fixing this bug
+**Are you willing to provide a PR?**
+
+Providing a PR, it can drastically speed up the process of fixing this bug
