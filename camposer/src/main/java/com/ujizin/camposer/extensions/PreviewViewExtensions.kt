@@ -3,10 +3,10 @@ package com.ujizin.camposer.extensions
 import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
-import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener
 import android.view.ViewConfiguration.getLongPressTimeout
 import androidx.camera.view.PreviewView
 import androidx.compose.ui.geometry.Offset
+import com.ujizin.camposer.state.PinchToZoomGesture
 
 @SuppressLint("ClickableViewAccessibility")
 internal fun PreviewView.onCameraTouchEvent(
@@ -23,14 +23,5 @@ internal fun PreviewView.onCameraTouchEvent(
         }
 
         scaleGesture.onTouchEvent(event) && onTouchEvent(event)
-    }
-}
-
-class PinchToZoomGesture(
-    private val onZoomChanged: (Float) -> Unit
-) : SimpleOnScaleGestureListener() {
-    override fun onScale(detector: ScaleGestureDetector): Boolean {
-        onZoomChanged(detector.scaleFactor)
-        return true
     }
 }

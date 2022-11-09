@@ -5,7 +5,7 @@ import androidx.camera.core.ImageAnalysis
 /**
  * Image analysis backpressure strategy is used to camera operation mode.
  *
- * https://developer.android.com/training/camerax/analyze#operating-modes
+ * For more information, check it out [CameraX ImageAnalysis operating modes](https://developer.android.com/training/camerax/analyze#operating-modes)
  * */
 enum class ImageAnalysisBackpressureStrategy(internal val strategy: Int) {
     /**
@@ -19,6 +19,7 @@ enum class ImageAnalysisBackpressureStrategy(internal val strategy: Int) {
     BlockProducer(ImageAnalysis.STRATEGY_BLOCK_PRODUCER);
 
     companion object {
-        internal fun find(strategy: Int) = values().firstOrNull { it.strategy == strategy } ?: KeepOnlyLatest
+        internal fun find(strategy: Int) =
+            values().firstOrNull { it.strategy == strategy } ?: KeepOnlyLatest
     }
 }

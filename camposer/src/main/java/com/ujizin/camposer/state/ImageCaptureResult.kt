@@ -4,7 +4,9 @@ import android.net.Uri
 import androidx.compose.runtime.Immutable
 
 /**
- * Photo Result of take a picture.
+ * Photo Result of taking picture.
+ *
+ * @see CameraState.takePicture
  * */
 sealed interface ImageCaptureResult {
     @Immutable
