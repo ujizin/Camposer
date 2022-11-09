@@ -3,7 +3,10 @@ package com.ujizin.camposer.state
 import androidx.camera.core.ImageCapture
 
 /**
- * Flash mode from the camera.
+ * Camera Flash mode.
+ *
+ * @param mode internal flash mode from cameraX
+ * @see ImageCapture.FlashMode
  * */
 enum class FlashMode(internal val mode: Int) {
     On(ImageCapture.FLASH_MODE_ON),

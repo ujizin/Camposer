@@ -134,7 +134,7 @@ fun CameraSection(
             onRecording = onRecording,
             onSwitchCamera = {
                 if (cameraState.isStreaming) {
-                    camSelector = camSelector.reverse
+                    camSelector = camSelector.inverse
                 }
             },
             onCameraOptionChanged = { cameraOption = it },

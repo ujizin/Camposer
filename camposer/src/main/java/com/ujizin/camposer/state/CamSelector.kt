@@ -8,9 +8,10 @@ import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.listSaver
 
 /**
- * Selector from Camera.
+ * Camera Selector.
  *
- * @param selector Camera selector by CameraX
+ * @param selector internal camera selector from CameraX
+ * @see CameraSelector
  * */
 enum class CamSelector(
     internal val selector: CameraSelector
@@ -19,9 +20,9 @@ enum class CamSelector(
     Back(CameraSelector.DEFAULT_BACK_CAMERA);
 
     /**
-     * Reverse camera selector. Works only with default Front & Back Selector.
+     * Inverse camera selector. Works only with default Front & Back Selector.
      * */
-    val reverse: CamSelector
+    val inverse: CamSelector
         get() = when (this) {
             Front -> Back
             Back -> Front

@@ -62,7 +62,7 @@ internal fun FocusTap(
 }
 
 /**
- * Square corner shape, it only has shapes on corner border.
+ * Square corner shape composable, it only has shapes on corner border.
  * */
 @Composable
 fun SquareCornerFocus(
@@ -91,7 +91,7 @@ fun SquareCornerFocus(
 
 
 /**
- * Square focus shape.
+ * Square focus shape composable.
  * */
 @Composable
 fun SquareFocus(
@@ -110,7 +110,7 @@ fun SquareFocus(
 }
 
 /**
- * Circle focus shape.
+ * Circle focus shape composable.
  * */
 @Composable
 fun CircleFocus(

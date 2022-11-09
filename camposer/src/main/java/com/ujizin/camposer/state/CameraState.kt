@@ -24,12 +24,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
-import com.ujizin.camposer.CameraPreview
 import java.io.File
 import java.util.concurrent.Executor
 
 /**
- * CameraState to [CameraPreview] composable
+ * A state object that can be hoisted to control camera, take picture or record video.
+ *
+ * To be created use [rememberCameraState].
  * */
 class CameraState internal constructor(
     lifecycleOwner: LifecycleOwner,

@@ -41,7 +41,7 @@ suspend fun CameraState.takePicture(
 }
 
 /**
- * Transform toggle recording file options to suspend function
+ * Transform toggle recording file to suspend function
  * */
 suspend fun CameraState.toggleRecording(file: File) = suspendCancellableCoroutine { cont ->
     with(cont) { toggleRecording(file, ::toggleRecordContinuation) }
