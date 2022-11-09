@@ -1,6 +1,7 @@
 [versions]
 
-kotlin = "1.7.20"
+kotlin = "1.7.10"
+gradle = "7.3.0"
 androidx-core = "1.9.0"
 camerax = "1.1.0"
 compose = "1.2.1"
@@ -61,7 +62,7 @@ zxing-core = { module = "com.google.zxing:core", version.ref = "zxing" }
 
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
 
-dokka = { module = "org.jetbrains.dokka:dokka-core", version.ref = "kotlin" }
+dokka = { module = "org.jetbrains.dokka:kotlin-as-java-plugin", version.ref = "kotlin" }
 
 [bundles]
 
@@ -78,3 +79,11 @@ internal-camerax = [
     "camerax-lifecycle",
     "camerax-view"
 ]
+
+[plugins]
+
+application = { id = "com.android.application", version.ref = "gradle" }
+library = { id = "com.android.library", version.ref = "gradle" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "kotlin" }

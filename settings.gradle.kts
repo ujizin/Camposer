@@ -14,7 +14,5 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Camposer"
 
-enableFeaturePreview("VERSION_CATALOGS")
-
-include ':sample'
-include ':camposer'
+include(":sample")
+include(":camposer")
