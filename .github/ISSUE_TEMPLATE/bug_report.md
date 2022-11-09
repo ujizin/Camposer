@@ -1,21 +1,32 @@
-**Please complete the following form**
+---
+name: Bug report
+about: Create a report to help us improve
+title: ''
+labels: ''
+assignees: ''
+
+---
+
+**please complete the following information**
 
 - Device: [e.g: Samsung s22, Xiaomi Poco F3]
 - Android version: [e.g: 10 (Q)]
 - Library version: [e.g: v1.0.0]
 
-**Describe the Bug:** 
+**Describe the bug**
 
-A concise and clear description about the bug
+A clear and concise description of what the bug is.
 
-**How to reproduce:** 
+**To Reproduce**
 
-Step by step of how to reproduce the bug
+Steps to reproduce the behavior
 
-**Screenshots** 
+**Expected behavior**
 
-Add screenshot or video to help explain your problem
+A clear and concise description of what you expected to happen.
 
-**Expected Behavior:** 
+**Screenshots**
 
-What you'd expected to happen without the bug
+If applicable, add screenshots to help explain your problem.
+
+**Are you willing to provide a PR?**:  with a PR, it can drastically speed up the process of fixing this bug

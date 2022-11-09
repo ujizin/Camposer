@@ -1,15 +1,19 @@
-**Describe the new feature**: 
+---
+name: Feature request
+about: Suggest an idea for this project
+title: ''
+labels: ''
+assignees: ''
 
-A concise and clear description about the feature request 
+---
 
-**Describe the solution(s) you'd like**:
+**Is your feature request related to a problem? Please describe.**
+A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
 
-A concise and clear description about the solution(s) of what you want to happen
+**Describe the solution you'd like**
+A clear and concise description of what you want to happen.
 
-**Expected Behavior**:
+**Describe alternatives you've considered**
+A clear and concise description of any alternative solutions or features you've considered.
 
-Explain how to use and what it'll happen when applied
-
-**Do you want to help with this feature?**: 
-
-[e.g: yes, providing a PR]
+**Are you willing to provide a PR?**:  with a PR, it can drastically speed up the process of making this feature
