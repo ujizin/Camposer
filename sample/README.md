@@ -17,4 +17,4 @@ This is an example of how to use Camposer library! Using every (or almost) featu
 
 <br>
 
-happy a `fun code()`!
+have a `fun code()`!
