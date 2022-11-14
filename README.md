@@ -1,12 +1,21 @@
 # Camposer
 
-<img src="sample/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" />
+<p align="center">
+ <img src="sample/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" />
+</p>
+<p align="center">
+  <a href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"/></a>
+  <a href="https://android-arsenal.com/api?level=24"><img alt="API" src="https://img.shields.io/badge/API-24%2B-brightgreen.svg?style=flat"/></a>
+  <a href="https://github.com/ujizin"><img alt="Profile" src="https://badgen.net/badge/ujizin/Github/orange?icon=github"/></a>
+  <a href="TODO"><img alt="Dokka" src="https://badgen.net/badge/Dokka/Camposer/purple?icon=libraries"/></a>
+</p>
 
-Tired to use CameraX with Jetpack Compose Interoperability? So Camposer was made for you, a camera using 100% Jetpack Compose which supports photos & videos.
+<p align="center">Tired to use a camera library in Jetpack Compose with interoperability? Then Camposer was made for you. <br> A camera library totally in Jetpack Compose which supports taking photos, recording videos, flash modes, zoom ratio, and among others!</p>
+
 
 ## How it works
 
-Add CameraPreview composable
+To add CameraPreview composable, just use the example below:
 
 ```Kotlin
 val cameraState = rememberCameraState()
@@ -25,7 +34,7 @@ And that's it! For more information, check the [wiki](https://github.com/DevLuca
 
 ```Kotlin
 // Using content values
-cameraState.takePicture(contentValues,mediaURI) { result ->
+cameraState.takePicture(contentValues, mediaURI) { result ->
   /* ... */
 }
 
@@ -95,7 +104,7 @@ dependencyResolutionManagement {
 implementation 'com.ujizin.camposer:0.1.0'
 ```
 3. Sync your project
-4. Have a happy `fun code()`!
+4. Have a `fun code()`!
 
 ##  License
 
