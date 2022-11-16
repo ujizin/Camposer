@@ -14,7 +14,7 @@ import com.ujizin.camposer.CameraPreview
  * Camera State from [CameraPreview] Composable.
  * */
 @Composable
-fun rememberCameraState(): CameraState {
+public fun rememberCameraState(): CameraState {
     val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
     return remember { CameraState(lifecycleOwner, context) }
@@ -24,7 +24,7 @@ fun rememberCameraState(): CameraState {
  * Camera selector's State to [CameraPreview] Composable.
  * */
 @Composable
-fun rememberCamSelector(
+public fun rememberCamSelector(
     selector: CamSelector = CamSelector.Back
 ): MutableState<CamSelector> = rememberSaveable(saver = CamSelector.Saver) {
     mutableStateOf(selector)
@@ -34,7 +34,7 @@ fun rememberCamSelector(
  * Flash mode's State to [CameraPreview] Composable.
  * */
 @Composable
-fun CameraState.rememberFlashMode(
+public fun CameraState.rememberFlashMode(
     initialFlashMode: FlashMode = FlashMode.Off,
     useSaver: Boolean = true
 ): MutableState<FlashMode> = rememberConditionalState(
@@ -48,7 +48,7 @@ fun CameraState.rememberFlashMode(
  * Torch's State to [CameraPreview] Composable.
  * */
 @Composable
-fun CameraState.rememberTorch(
+public fun CameraState.rememberTorch(
     initialTorch: Boolean = false,
     useSaver: Boolean = true
 ): MutableState<Boolean> = rememberConditionalState(
@@ -64,7 +64,7 @@ fun CameraState.rememberTorch(
  * @see ImageAnalyzer
  * */
 @Composable
-fun CameraState.rememberImageAnalyzer(
+public fun CameraState.rememberImageAnalyzer(
     imageAnalysisBackpressureStrategy: ImageAnalysisBackpressureStrategy = ImageAnalysisBackpressureStrategy.KeepOnlyLatest,
     imageAnalysisTargetSize: ImageAnalysisTargetSize? = ImageAnalysisTargetSize(this.imageAnalysisTargetSize),
     imageAnalysisImageQueueDepth: Int = this.imageAnalysisImageQueueDepth,

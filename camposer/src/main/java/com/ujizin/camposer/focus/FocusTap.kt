@@ -64,7 +64,7 @@ internal fun FocusTap(
  * Square corner shape composable, it only has shapes on corner border.
  * */
 @Composable
-fun SquareCornerFocus(
+public fun SquareCornerFocus(
     modifier: Modifier = Modifier,
     tapSize: Dp = DefaultFocusSize,
     borderSize: Dp = Dp.Unspecified,
@@ -93,7 +93,7 @@ fun SquareCornerFocus(
  * Square focus shape composable.
  * */
 @Composable
-fun SquareFocus(
+public fun SquareFocus(
     modifier: Modifier = Modifier,
     tapSize: Dp = DefaultFocusSize,
     borderStroke: BorderStroke = DefaultBorderStroke,
@@ -112,7 +112,7 @@ fun SquareFocus(
  * Circle focus shape composable.
  * */
 @Composable
-fun CircleFocus(
+public fun CircleFocus(
     modifier: Modifier = Modifier,
     tapSize: Dp = DefaultFocusSize,
     borderStroke: BorderStroke = DefaultBorderStroke,

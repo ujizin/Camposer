@@ -32,7 +32,7 @@ import java.util.concurrent.Executor
  *
  * To be created use [rememberCameraState].
  * */
-class CameraState internal constructor(
+public class CameraState internal constructor(
     lifecycleOwner: LifecycleOwner,
     context: Context
 ) {
@@ -55,7 +55,7 @@ class CameraState internal constructor(
     /**
      * Get max zoom from camera.
      * */
-    var maxZoom: Float by mutableStateOf(
+    public var maxZoom: Float by mutableStateOf(
         controller.zoomState.value?.maxZoomRatio ?: INITIAL_ZOOM_VALUE
     )
         internal set
@@ -63,7 +63,7 @@ class CameraState internal constructor(
     /**
      * Get min zoom from camera.
      * */
-    var minZoom: Float by mutableStateOf(
+    public var minZoom: Float by mutableStateOf(
         controller.zoomState.value?.minZoomRatio ?: INITIAL_ZOOM_VALUE
     )
         internal set
@@ -71,24 +71,24 @@ class CameraState internal constructor(
     /**
      * Check if camera is streaming or not.
      * */
-    var isStreaming by mutableStateOf(false)
+    public var isStreaming: Boolean by mutableStateOf(false)
         internal set
 
     /**
      * Check if zoom is supported.
      * */
-    val isZoomSupported: Boolean by derivedStateOf { maxZoom != 1F }
+    public val isZoomSupported: Boolean by derivedStateOf { maxZoom != 1F }
 
     /**
      * Check if camera state is initialized or not.
      * */
-    var isInitialized: Boolean by mutableStateOf(false)
+    public var isInitialized: Boolean by mutableStateOf(false)
         internal set
 
     /**
      * Verify if camera has flash or not.
      * */
-    var hasFlashUnit by mutableStateOf(controller.cameraInfo?.hasFlashUnit() ?: true)
+    public var hasFlashUnit: Boolean by mutableStateOf(controller.cameraInfo?.hasFlashUnit() ?: true)
 
     /**
      * Capture mode to be added on camera.
@@ -241,7 +241,7 @@ class CameraState internal constructor(
     /**
      * Return true if it's recording.
      * */
-    var isRecording: Boolean by mutableStateOf(controller.isRecording)
+    public var isRecording: Boolean by mutableStateOf(controller.isRecording)
         private set
 
     init {
@@ -259,7 +259,7 @@ class CameraState internal constructor(
      *  @param contentValues Content values of the photo.
      *  @param onResult Callback called when [ImageCaptureResult] is ready
      * */
-    fun takePicture(
+    public fun takePicture(
         contentValues: ContentValues,
         saveCollection: Uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
         onResult: (ImageCaptureResult) -> Unit,
@@ -276,7 +276,7 @@ class CameraState internal constructor(
      * @param file file where the photo will be saved
      * @param onResult Callback called when [ImageCaptureResult] is ready
      * */
-    fun takePicture(
+    public fun takePicture(
         file: File, onResult: (ImageCaptureResult) -> Unit
     ) {
         takePicture(ImageCapture.OutputFileOptions.Builder(file).build(), onResult)
@@ -288,7 +288,7 @@ class CameraState internal constructor(
      * @param outputFileOptions Output file options of the photo.
      * @param onResult Callback called when [ImageCaptureResult] is ready
      * */
-    fun takePicture(
+    public fun takePicture(
         outputFileOptions: ImageCapture.OutputFileOptions,
         onResult: (ImageCaptureResult) -> Unit,
     ) {
@@ -324,7 +324,7 @@ class CameraState internal constructor(
      * @param onResult Callback called when [VideoCaptureResult] is ready
      * */
     @OptIn(markerClass = [ExperimentalVideo::class])
-    fun startRecording(file: File, onResult: (VideoCaptureResult) -> Unit) {
+    public fun startRecording(file: File, onResult: (VideoCaptureResult) -> Unit) {
         startRecording(OutputFileOptions.builder(file).build(), onResult)
     }
 
@@ -336,7 +336,7 @@ class CameraState internal constructor(
      *  @param onResult Callback called when [VideoCaptureResult] is ready
      *  */
     @OptIn(markerClass = [ExperimentalVideo::class])
-    fun startRecording(
+    public fun startRecording(
         saveCollection: Uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
         contentValues: ContentValues,
         onResult: (VideoCaptureResult) -> Unit,
@@ -354,7 +354,7 @@ class CameraState internal constructor(
      * @param onResult Callback called when [VideoCaptureResult] is ready
      * */
     @ExperimentalVideo
-    fun startRecording(
+    public fun startRecording(
         outputFileOptions: OutputFileOptions,
         onResult: (VideoCaptureResult) -> Unit,
     ) {
@@ -391,14 +391,14 @@ class CameraState internal constructor(
      * Stop recording camera.
      * */
     @OptIn(markerClass = [ExperimentalVideo::class])
-    fun stopRecording() {
+    public fun stopRecording() {
         controller.stopRecording()
     }
 
     /**
      * Toggle recording camera.
      * */
-    fun toggleRecording(
+    public fun toggleRecording(
         file: File,
         onResult: (VideoCaptureResult) -> Unit
     ) {
@@ -411,7 +411,7 @@ class CameraState internal constructor(
     /**
      * Toggle recording camera.
      * */
-    fun toggleRecording(
+    public fun toggleRecording(
         contentValues: ContentValues,
         saveCollection: Uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
         onResult: (VideoCaptureResult) -> Unit
@@ -426,7 +426,7 @@ class CameraState internal constructor(
      * Toggle recording camera.
      * */
     @OptIn(markerClass = [ExperimentalVideo::class])
-    fun toggleRecording(
+    public fun toggleRecording(
         outputFileOptions: OutputFileOptions,
         onResult: (VideoCaptureResult) -> Unit
     ) {
@@ -439,7 +439,7 @@ class CameraState internal constructor(
     /**
      * Return if has camera selector or not, camera must be initialized, otherwise result is false.
      * */
-    fun hasCamera(cameraSelector: CamSelector) =
+    public fun hasCamera(cameraSelector: CamSelector): Boolean =
         isInitialized && controller.hasCamera(cameraSelector.selector)
 
     private fun startZoom() {
@@ -460,7 +460,7 @@ class CameraState internal constructor(
         acc or current
     }
 
-    companion object {
+    private companion object {
         private val TAG = this::class.java.name
         private const val INITIAL_ZOOM_VALUE = 1F
     }

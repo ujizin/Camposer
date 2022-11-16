@@ -13,7 +13,7 @@ import androidx.camera.view.video.ExperimentalVideo
  * @see VIDEO_CAPTURE
  * */
 @OptIn(markerClass = [ExperimentalVideo::class])
-enum class CaptureMode(internal val value: Int) {
+public enum class CaptureMode(internal val value: Int) {
     Image(IMAGE_CAPTURE),
     Video(VIDEO_CAPTURE),
 }

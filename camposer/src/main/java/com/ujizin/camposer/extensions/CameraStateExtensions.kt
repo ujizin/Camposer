@@ -17,52 +17,52 @@ import kotlin.coroutines.resumeWithException
 /**
  * Transform takePicture file to suspend function
  * */
-suspend fun CameraState.takePicture(file: File) = suspendCancellableCoroutine { cont ->
+public suspend fun CameraState.takePicture(file: File): Uri? = suspendCancellableCoroutine { cont ->
     with(cont) { takePicture(file, ::takePictureContinuation) }
 }
 
 /**
  * Transform takePicture content values to suspend function
  * */
-suspend fun CameraState.takePicture(
+public suspend fun CameraState.takePicture(
     contentValues: ContentValues,
     saveCollection: Uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-) = suspendCancellableCoroutine { cont ->
+): Uri? = suspendCancellableCoroutine { cont ->
     with(cont) { takePicture(contentValues, saveCollection, ::takePictureContinuation) }
 }
 
 /**
  * Transform takePicture output files options to suspend function
  * */
-suspend fun CameraState.takePicture(
+public suspend fun CameraState.takePicture(
     outputFileOptions: ImageCapture.OutputFileOptions,
-) = suspendCancellableCoroutine { cont ->
+): Uri? = suspendCancellableCoroutine { cont ->
     with(cont) { takePicture(outputFileOptions, ::takePictureContinuation) }
 }
 
 /**
  * Transform toggle recording file to suspend function
  * */
-suspend fun CameraState.toggleRecording(file: File) = suspendCancellableCoroutine { cont ->
+public suspend fun CameraState.toggleRecording(file: File): Uri? = suspendCancellableCoroutine { cont ->
     with(cont) { toggleRecording(file, ::toggleRecordContinuation) }
 }
 
 /**
  * Transform toggle recording content values options to suspend function
  * */
-suspend fun CameraState.toggleRecording(
+public suspend fun CameraState.toggleRecording(
     contentValues: ContentValues,
     saveCollection: Uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-) = suspendCancellableCoroutine { cont ->
+): Uri? = suspendCancellableCoroutine { cont ->
     with(cont) { toggleRecording(contentValues, saveCollection, ::toggleRecordContinuation) }
 }
 
 /**
  * Transform toggle recording output files options to suspend function
  * */
-suspend fun CameraState.toggleRecording(
+public suspend fun CameraState.toggleRecording(
     outputFileOptions: OutputFileOptions
-) = suspendCancellableCoroutine { cont ->
+): Uri? = suspendCancellableCoroutine { cont ->
     with(cont) { toggleRecording(outputFileOptions, ::toggleRecordContinuation) }
 }
 

@@ -15,7 +15,7 @@ import androidx.compose.runtime.Immutable
  * @see rememberImageAnalyzer
  * */
 @Immutable
-class ImageAnalyzer(
+public class ImageAnalyzer(
     private val cameraState: CameraState,
     imageAnalysisBackpressureStrategy: ImageAnalysisBackpressureStrategy,
     imageAnalysisTargetSize: ImageAnalysisTargetSize?,
@@ -56,7 +56,7 @@ class ImageAnalyzer(
     /**
      * Update actual image analysis instance.
      * */
-    fun update(
+    public fun update(
         imageAnalysisBackpressureStrategy: ImageAnalysisBackpressureStrategy = ImageAnalysisBackpressureStrategy.find(
             cameraState.imageAnalysisBackpressureStrategy
         ),

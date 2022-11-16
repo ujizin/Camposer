@@ -13,7 +13,7 @@ import androidx.compose.runtime.saveable.listSaver
  * @param selector internal camera selector from CameraX
  * @see CameraSelector
  * */
-enum class CamSelector(
+public enum class CamSelector(
     internal val selector: CameraSelector
 ) {
     Front(CameraSelector.DEFAULT_FRONT_CAMERA),
@@ -22,13 +22,13 @@ enum class CamSelector(
     /**
      * Inverse camera selector. Works only with default Front & Back Selector.
      * */
-    val inverse: CamSelector
+    public val inverse: CamSelector
         get() = when (this) {
             Front -> Back
             Back -> Front
         }
 
-    companion object {
+    internal companion object {
 
         @SuppressLint("RestrictedApi")
         internal val Saver: Saver<MutableState<CamSelector>, *> = listSaver(

@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.Dp
  * Blur Image composable using RenderScript instead RenderEffect.
  * */
 @Composable
-fun BlurImage(
+public fun BlurImage(
     modifier: Modifier = Modifier,
     bitmap: Bitmap,
     contentDescription: String?,

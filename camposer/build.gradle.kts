@@ -35,6 +35,10 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
+
+    kotlinOptions {
+        freeCompilerArgs += "-Xexplicit-api=strict"
+    }
 }
 
 tasks.dokkaHtml.configure {
