@@ -22,8 +22,8 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
+import com.ujizin.camposer.extensions.compatMainExecutor
 import java.io.File
 import java.util.concurrent.Executor
 
@@ -40,7 +40,7 @@ class CameraState internal constructor(
     /**
      * Main Executor to action as take picture or record.
      * */
-    private val mainExecutor: Executor = ContextCompat.getMainExecutor(context)
+    private val mainExecutor: Executor = context.compatMainExecutor
 
     /**
      * Content resolver to picture and video.

@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
 
-
 @Composable
 internal fun FocusTap(
     modifier: Modifier = Modifier,

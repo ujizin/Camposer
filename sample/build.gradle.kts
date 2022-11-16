@@ -32,7 +32,6 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.core)
     implementation(libs.bundles.compose)
 
     implementation(libs.compose.activity)

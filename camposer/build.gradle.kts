@@ -46,7 +46,6 @@ tasks.dokkaHtml.configure {
 }
 
 dependencies {
-    implementation(libs.androidx.core)
     implementation(libs.bundles.compose)
     implementation(libs.lifecycle)
 
