@@ -27,9 +27,15 @@ project.afterEvaluate {
                     }
                     licenses {
                         license {
-                            name = "Apache License, Version 2.0"
+                            name = "The Apache Software License, Version 2.0"
                             url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
                         }
+                    }
+
+                    scm {
+                        connection = "https://github.com/ujizin/Camposer.git"
+                        developerConnection = "https://github.com/ujizin/Camposer.git"
+                        url = "https://github.com/ujizin/Camposer/tree/main"
                     }
                 }
             }
