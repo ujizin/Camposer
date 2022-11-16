@@ -6,6 +6,14 @@ plugins {
     id("org.jetbrains.dokka")
 }
 
+extra.apply {
+    set("PUBLISH_GROUP_ID", Config.groupId)
+    set("PUBLISH_ARTIFACT_ID", Config.artifactId)
+    set("PUBLISH_VERSION", Config.versionName)
+}
+
+apply(from = "${rootDir}/publish.gradle")
+
 android {
     namespace = "com.ujizin.camposer"
     compileSdk = Config.compileSdk

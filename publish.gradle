@@ -1,0 +1,38 @@
+apply plugin: 'maven-publish'
+
+group = PUBLISH_GROUP_ID
+version = PUBLISH_VERSION
+
+project.afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                groupId PUBLISH_GROUP_ID
+                artifactId PUBLISH_ARTIFACT_ID
+                version PUBLISH_VERSION
+
+                from components.release
+
+                pom {
+                    name = PUBLISH_ARTIFACT_ID
+                    description = "Camera Library for Android Jetpack Compose."
+                    url = "https://github.com/ujizin/Camposer"
+                    developers {
+                        developer {
+                            id = 'ujizin'
+                            name = 'Lucas Yuji Yoshimine'
+                            email = "lucasyujideveloper@gmail.com"
+                            url = "https://github.com/ujizin"
+                        }
+                    }
+                    licenses {
+                        license {
+                            name = "Apache License, Version 2.0"
+                            url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
