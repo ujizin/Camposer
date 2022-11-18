@@ -1,8 +1,12 @@
 package com.ujizin.camposer
 
 import android.Manifest
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.rule.GrantPermissionRule
+import com.ujizin.camposer.state.CameraState
+import com.ujizin.camposer.state.rememberCameraState
 import org.junit.Rule
 
 internal abstract class CameraTest {
@@ -17,4 +21,12 @@ internal abstract class CameraTest {
         Manifest.permission.READ_EXTERNAL_STORAGE
     )
 
+    protected lateinit var cameraState: CameraState
+
+    protected fun ComposeContentTestRule.initCamera(
+        block: @Composable (CameraState) -> Unit
+    ) = setContent {
+        cameraState = rememberCameraState()
+        block(cameraState)
+    }
 }
