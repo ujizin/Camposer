@@ -91,7 +91,7 @@ fun CameraSection(
 ) {
     var flashMode by cameraState.rememberFlashMode()
     var camSelector by rememberCamSelector(if (useFrontCamera) CamSelector.Front else CamSelector.Back)
-    var zoomRatio by rememberSaveable { mutableStateOf(2F) }
+    var zoomRatio by rememberSaveable { mutableStateOf(cameraState.minZoom) }
     var zoomHasChanged by rememberSaveable { mutableStateOf(false) }
     val hasFlashUnit by rememberUpdatedState(cameraState.hasFlashUnit)
     var cameraOption by rememberSaveable { mutableStateOf(CameraOption.Photo) }
