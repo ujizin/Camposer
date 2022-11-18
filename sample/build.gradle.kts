@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.ujizin.camposer.sample"
+    namespace = "com.ujizin.sample"
     compileSdk = Config.compileSdk
     defaultConfig {
         versionCode = Config.versionCode

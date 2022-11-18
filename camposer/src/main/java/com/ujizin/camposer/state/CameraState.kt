@@ -7,6 +7,7 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.OptIn
+import androidx.annotation.VisibleForTesting
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -442,11 +443,15 @@ public class CameraState internal constructor(
     public fun hasCamera(cameraSelector: CamSelector): Boolean =
         isInitialized && controller.hasCamera(cameraSelector.selector)
 
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    internal var currentZoom: Float = INITIAL_ZOOM_VALUE
+
     private fun startZoom() {
         // Turn off is pinch to zoom and use manually
         controller.isPinchToZoomEnabled = false
 
         val zoom = controller.zoomState.value
+        currentZoom = zoom?.zoomRatio ?: INITIAL_ZOOM_VALUE
         minZoom = zoom?.minZoomRatio ?: INITIAL_ZOOM_VALUE
         maxZoom = zoom?.maxZoomRatio ?: INITIAL_ZOOM_VALUE
     }
