@@ -8,11 +8,13 @@ import org.junit.Rule
 internal abstract class CameraTest {
 
     @get:Rule
-    val cameraAccess: GrantPermissionRule
-        get() = GrantPermissionRule.grant(Manifest.permission.CAMERA)
+    val composeTestRule = createComposeRule()
 
     @get:Rule
-    val composeTestRule
-        get() = createComposeRule()
+    val permissions: GrantPermissionRule = GrantPermissionRule.grant(
+        Manifest.permission.CAMERA,
+        Manifest.permission.RECORD_AUDIO,
+        Manifest.permission.READ_EXTERNAL_STORAGE
+    )
 
 }

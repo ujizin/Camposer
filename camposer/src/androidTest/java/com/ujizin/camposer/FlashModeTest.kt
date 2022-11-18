@@ -1,14 +1,18 @@
 package com.ujizin.camposer
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.MutableState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.ComposeContentTestRule
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.ujizin.camposer.state.CamSelector
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.FlashMode
 import com.ujizin.camposer.state.rememberCameraState
+import com.ujizin.camposer.state.rememberFlashMode
 import junit.framework.TestCase.assertEquals
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -17,37 +21,35 @@ internal class FlashModeTest: CameraTest() {
 
     private lateinit var cameraState: CameraState
 
-    private var flashMode by mutableStateOf(FlashMode.Off)
+    private lateinit var flashMode: MutableState<FlashMode>
+    @Test
+    fun test_flashModes(): Unit = with(composeTestRule) {
+        initCamera(camSelector = CamSelector.Back)
 
-    @Before
-    fun setup() {
-        composeTestRule.setContent {
-            cameraState = rememberCameraState()
-            CameraPreview(
-                cameraState = cameraState,
-                flashMode = flashMode
-            )
+        FlashMode.values().forEach { mode ->
+            flashMode.value = mode
+            onNodeWithTag("$mode").assertIsDisplayed()
+            runOnIdle { assertEquals(mode, cameraState.flashMode) }
         }
     }
 
     @Test
-    fun test_flashModeIsOn() {
-        flashMode = FlashMode.On
+    fun test_flashModeWithNoUnit(): Unit = with(composeTestRule) {
+        initCamera(camSelector = CamSelector.Front)
+        // Ensure that there's no flash unit on device
+        cameraState.hasFlashUnit = false
 
-        assertEquals(flashMode, cameraState.flashMode)
+        flashMode.value = FlashMode.On
+        onNodeWithTag("$flashMode").assertDoesNotExist()
+        runOnIdle { assertEquals(FlashMode.Off, cameraState.flashMode) }
     }
-
-    @Test
-    fun test_flashModeIsAuto() {
-        flashMode = FlashMode.Auto
-
-        assertEquals(flashMode, cameraState.flashMode)
-    }
-
-    @Test
-    fun test_flashModeIsOff() {
-        flashMode = FlashMode.Off
-
-        assertEquals(flashMode, cameraState.flashMode)
+    private fun ComposeContentTestRule.initCamera(camSelector: CamSelector): Unit = setContent {
+        cameraState = rememberCameraState()
+        flashMode = cameraState.rememberFlashMode(FlashMode.Off)
+        CameraPreview(
+            Modifier.testTag("${flashMode.value}"),
+            cameraState = cameraState, flashMode = flashMode.value,
+            camSelector = camSelector,
+        )
     }
 }

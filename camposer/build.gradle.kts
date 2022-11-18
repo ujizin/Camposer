@@ -57,5 +57,4 @@ dependencies {
 
     androidTestImplementation(libs.androidx.test.rules)
     androidTestImplementation(libs.compose.junit)
-    debugImplementation(libs.compose.ui.test)
 }
