@@ -83,8 +83,25 @@ internal class ZoomRatioTest : CameraTest() {
         }
     }
 
+    @Test
+    fun test_pinchToZoomDisable() = with(composeTestRule) {
+        initZoomCamera(DEFAULT_ZOOM_VALUE, isPinchToZoomEnabled = false)
+
+        composeTestRule
+            .onNodeWithTag(CAMERA_ZOOM_TAG)
+            .performTouchInput {
+                pinch(Offset.middle, Offset.Zero, Offset.middle, Offset.end, 50L)
+            }
+
+        runOnIdle {
+            assertEquals(DEFAULT_ZOOM_VALUE, zoomRatio.value)
+            assertEquals(currentCameraXZoom, zoomRatio.value)
+        }
+    }
+
     private fun ComposeContentTestRule.initZoomCamera(
-        initialValue: Float = DEFAULT_ZOOM_VALUE
+        initialValue: Float = DEFAULT_ZOOM_VALUE,
+        isPinchToZoomEnabled: Boolean = true,
     ) = initCamera {
         configurationScreen = LocalConfiguration.current
         zoomRatio = remember { mutableStateOf(initialValue) }
@@ -94,6 +111,7 @@ internal class ZoomRatioTest : CameraTest() {
             cameraState = cameraState,
             zoomRatio = zoomRatio.value,
             onZoomRatioChanged = { zoomRatio.value = it },
+            isPinchToZoomEnabled = isPinchToZoomEnabled
         )
     }
 
