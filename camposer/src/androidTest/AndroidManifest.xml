@@ -19,7 +19,7 @@
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
-    <application android:name="com.ujizin.camposer.CamposerTestApplication">
+    <application>
         <activity
             android:name="androidx.activity.ComponentActivity"
             android:exported="false"
