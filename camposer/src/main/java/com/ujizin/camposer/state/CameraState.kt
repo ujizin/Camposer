@@ -246,7 +246,6 @@ public class CameraState internal constructor(
 
     init {
         controller.initializationFuture.addListener({
-            controller.torchState.observe(lifecycleOwner) { enableTorch = it == TorchState.ON }
             startZoom()
             isInitialized = true
         }, mainExecutor)
