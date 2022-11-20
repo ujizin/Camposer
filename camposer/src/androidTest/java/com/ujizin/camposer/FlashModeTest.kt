@@ -43,11 +43,14 @@ internal class FlashModeTest : CameraTest() {
         runOnIdle { assertEquals(FlashMode.Off, cameraState.flashMode) }
     }
 
-    private fun ComposeContentTestRule.initFlashCamera(camSelector: CamSelector) = initCamera {
-        flashMode = cameraState.rememberFlashMode(FlashMode.Off)
+    private fun ComposeContentTestRule.initFlashCamera(
+        camSelector: CamSelector
+    ) = initCameraState { state ->
+        flashMode = state.rememberFlashMode(FlashMode.Off)
         CameraPreview(
             Modifier.testTag("${flashMode.value}"),
-            cameraState = cameraState, flashMode = flashMode.value,
+            cameraState = state,
+            flashMode = flashMode.value,
             camSelector = camSelector,
         )
     }

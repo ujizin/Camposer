@@ -23,7 +23,7 @@ internal abstract class CameraTest {
 
     protected lateinit var cameraState: CameraState
 
-    protected fun ComposeContentTestRule.initCamera(
+    protected fun ComposeContentTestRule.initCameraState(
         block: @Composable (CameraState) -> Unit
     ) = setContent {
         cameraState = rememberCameraState()

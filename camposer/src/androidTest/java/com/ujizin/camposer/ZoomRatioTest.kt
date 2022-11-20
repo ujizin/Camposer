@@ -102,13 +102,13 @@ internal class ZoomRatioTest : CameraTest() {
     private fun ComposeContentTestRule.initZoomCamera(
         initialValue: Float = DEFAULT_ZOOM_VALUE,
         isPinchToZoomEnabled: Boolean = true,
-    ) = initCamera {
+    ) = initCameraState { state ->
         configurationScreen = LocalConfiguration.current
         zoomRatio = remember { mutableStateOf(initialValue) }
 
         CameraPreview(
             modifier = Modifier.testTag(CAMERA_ZOOM_TAG),
-            cameraState = cameraState,
+            cameraState = state,
             zoomRatio = zoomRatio.value,
             onZoomRatioChanged = { zoomRatio.value = it },
             isPinchToZoomEnabled = isPinchToZoomEnabled
