@@ -30,7 +30,7 @@ internal class CaptureModeTest : CameraTest() {
 
     @Test
     fun test_imageCaptureMode() = with(composeTestRule) {
-        initCaptureModeCamera()
+        initCaptureModeCamera(CaptureMode.Image)
         waitUntil(CAMERA_TIME_OUT) { cameraState.isStreaming }
         runOnIdle {
             val imageFile = File(context.filesDir, IMAGE_TEST_FILENAME).apply { createNewFile() }
@@ -54,7 +54,10 @@ internal class CaptureModeTest : CameraTest() {
             val videoFile = File(context.filesDir, VIDEO_TEST_FILENAME).apply { createNewFile() }
             cameraState.startRecording(videoFile) { result ->
                 when (result) {
-                    is VideoCaptureResult.Error -> throw result.throwable ?: Exception(result.message)
+                    is VideoCaptureResult.Error -> {
+                        throw result.throwable ?: Exception(result.message)
+                    }
+
                     is VideoCaptureResult.Success -> {
                         assertEquals(Uri.fromFile(videoFile), result.savedUri)
                         assertEquals(CaptureMode.Video, cameraState.captureMode)
@@ -69,7 +72,7 @@ internal class CaptureModeTest : CameraTest() {
     }
 
     private fun ComposeContentTestRule.initCaptureModeCamera(
-        initialValue: CaptureMode = CaptureMode.Image
+        initialValue: CaptureMode
     ) = initCameraState { state ->
         captureModeState = remember { mutableStateOf(initialValue) }
         CameraPreview(
