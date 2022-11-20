@@ -98,6 +98,21 @@ public fun CameraPreview(
     focusTapContent: @Composable () -> Unit = { SquareCornerFocus() },
     content: @Composable () -> Unit = {},
 ) {
+    LaunchedEffect(Unit) {
+        cameraState.update(
+            camSelector = camSelector,
+            captureMode = captureMode,
+            scaleType = scaleType,
+            isImageAnalysisEnabled = isImageAnalysisEnabled,
+            imageAnalyzer = imageAnalyzer,
+            implementationMode = implementationMode,
+            isFocusOnTapEnabled = isFocusOnTapEnabled,
+            flashMode = flashMode,
+            enableTorch = enableTorch,
+            zoomRatio = zoomRatio
+        )
+    }
+
     CameraPreviewImpl(
         modifier = modifier,
         cameraState = cameraState,
@@ -175,8 +190,10 @@ internal fun CameraPreviewImpl(
                     onTap = { if (isFocusOnTapEnabled) tapOffset = it },
                     onScaleChanged = {
                         if (isPinchToZoomEnabled) {
-                            val zoom = zoomRatio.clamped(it)
-                                .coerceIn(cameraState.minZoom, cameraState.maxZoom)
+                            val zoom = zoomRatio.clamped(it).coerceIn(
+                                minimumValue = cameraState.minZoom,
+                                maximumValue = cameraState.maxZoom
+                            )
                             onZoomRatioChanged(zoom)
                         }
                     }
@@ -187,17 +204,18 @@ internal fun CameraPreviewImpl(
                     else -> latestBitmap
                 }
             }
-
-            cameraState.camSelector = camSelector
-            cameraState.captureMode = captureMode
-            cameraState.scaleType = scaleType
-            cameraState.isImageAnalysisEnabled = isImageAnalysisEnabled
-            cameraState.imageAnalyzer = imageAnalyzer?.analyzer
-            cameraState.implementationMode = implementationMode
-            cameraState.isFocusOnTapEnabled = isFocusOnTapEnabled
-            cameraState.flashMode = flashMode
-            cameraState.enableTorch = enableTorch
-            cameraState.setZoomRatio(zoomRatio)
+            cameraState.update(
+                camSelector = camSelector,
+                captureMode = captureMode,
+                scaleType = scaleType,
+                isImageAnalysisEnabled = isImageAnalysisEnabled,
+                imageAnalyzer = imageAnalyzer,
+                implementationMode = implementationMode,
+                isFocusOnTapEnabled = isFocusOnTapEnabled,
+                flashMode = flashMode,
+                enableTorch = enableTorch,
+                zoomRatio = zoomRatio
+            )
         }
     })
 

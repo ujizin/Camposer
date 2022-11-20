@@ -88,7 +88,9 @@ public class CameraState internal constructor(
     /**
      * Verify if camera has flash or not.
      * */
-    public var hasFlashUnit: Boolean by mutableStateOf(controller.cameraInfo?.hasFlashUnit() ?: true)
+    public var hasFlashUnit: Boolean by mutableStateOf(
+        controller.cameraInfo?.hasFlashUnit() ?: true
+    )
 
     /**
      * Capture mode to be added on camera.
@@ -457,6 +459,33 @@ public class CameraState internal constructor(
 
     private fun Set<Int>.sumOr(initial: Int = 0): Int = fold(initial) { acc, current ->
         acc or current
+    }
+
+    /**
+     * Update all values from camera state.
+     * */
+    internal fun update(
+        camSelector: CamSelector,
+        captureMode: CaptureMode,
+        scaleType: ScaleType,
+        isImageAnalysisEnabled: Boolean,
+        imageAnalyzer: ImageAnalyzer?,
+        implementationMode: ImplementationMode,
+        isFocusOnTapEnabled: Boolean,
+        flashMode: FlashMode,
+        zoomRatio: Float,
+        enableTorch: Boolean
+    ) {
+        this.camSelector = camSelector
+        this.captureMode = captureMode
+        this.scaleType = scaleType
+        this.isImageAnalysisEnabled = isImageAnalysisEnabled
+        this.imageAnalyzer = imageAnalyzer?.analyzer
+        this.implementationMode = implementationMode
+        this.isFocusOnTapEnabled = isFocusOnTapEnabled
+        this.flashMode = flashMode
+        this.enableTorch = enableTorch
+        setZoomRatio(zoomRatio)
     }
 
     private companion object {
