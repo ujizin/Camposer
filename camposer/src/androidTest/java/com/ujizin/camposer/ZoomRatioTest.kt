@@ -78,7 +78,9 @@ internal class ZoomRatioTest : CameraTest() {
             }
 
         runOnIdle {
-            assertNotEquals(DEFAULT_ZOOM_VALUE, zoomRatio.value)
+            if (cameraState.isZoomSupported) {
+                assertNotEquals(DEFAULT_ZOOM_VALUE, zoomRatio.value)
+            }
             assertEquals(currentCameraXZoom, zoomRatio.value)
         }
     }
