@@ -98,21 +98,6 @@ public fun CameraPreview(
     focusTapContent: @Composable () -> Unit = { SquareCornerFocus() },
     content: @Composable () -> Unit = {},
 ) {
-    LaunchedEffect(Unit) {
-        cameraState.update(
-            camSelector = camSelector,
-            captureMode = captureMode,
-            scaleType = scaleType,
-            isImageAnalysisEnabled = isImageAnalysisEnabled,
-            imageAnalyzer = imageAnalyzer,
-            implementationMode = implementationMode,
-            isFocusOnTapEnabled = isFocusOnTapEnabled,
-            flashMode = flashMode,
-            enableTorch = enableTorch,
-            zoomRatio = zoomRatio
-        )
-    }
-
     CameraPreviewImpl(
         modifier = modifier,
         cameraState = cameraState,
@@ -200,7 +185,7 @@ internal fun CameraPreviewImpl(
                 )
                 latestBitmap = when {
                     lifecycleEvent == Lifecycle.Event.ON_STOP -> null
-                    camSelector != cameraState.camSelector -> bitmap
+                    !isCameraIdle && camSelector != cameraState.camSelector -> bitmap
                     else -> latestBitmap
                 }
             }
