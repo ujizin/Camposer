@@ -7,9 +7,11 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.OptIn
+import androidx.camera.core.FocusMeteringAction
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
+import androidx.camera.core.MeteringPoint
 import androidx.camera.core.TorchState
 import androidx.camera.view.CameraController.IMAGE_ANALYSIS
 import androidx.camera.view.CameraController.OutputSize
@@ -22,7 +24,6 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.LifecycleOwner
 import com.ujizin.camposer.extensions.compatMainExecutor
 import java.io.File
 import java.util.concurrent.Executor
@@ -32,10 +33,7 @@ import java.util.concurrent.Executor
  *
  * To be created use [rememberCameraState].
  * */
-public class CameraState internal constructor(
-    lifecycleOwner: LifecycleOwner,
-    context: Context
-) {
+public class CameraState internal constructor(context: Context) {
 
     /**
      * Main Executor to action as take picture or record.
@@ -46,6 +44,14 @@ public class CameraState internal constructor(
      * Content resolver to picture and video.
      * */
     private val contentResolver: ContentResolver = context.contentResolver
+
+    /**
+     * Check if metering
+     * */
+    private val MeteringPoint.isFocusMeteringSupported: Boolean
+        get() = controller.cameraInfo?.isFocusMeteringSupported(
+            FocusMeteringAction.Builder(this).build()
+        ) ?: false
 
     /**
      * Main controller from CameraX. useful in cases that haven't been release some feature yet.
@@ -82,7 +88,7 @@ public class CameraState internal constructor(
     /**
      * Check if focus on tap supported
      * */
-    public var isFocusOnTapSupported: Boolean = true
+    public var isFocusOnTapSupported: Boolean by mutableStateOf(true)
 
     /**
      * Check if camera state is initialized or not.
@@ -479,7 +485,8 @@ public class CameraState internal constructor(
         isFocusOnTapEnabled: Boolean,
         flashMode: FlashMode,
         zoomRatio: Float,
-        enableTorch: Boolean
+        enableTorch: Boolean,
+        meteringPoint: MeteringPoint
     ) {
         this.camSelector = camSelector
         this.captureMode = captureMode
@@ -490,6 +497,7 @@ public class CameraState internal constructor(
         this.isFocusOnTapEnabled = isFocusOnTapEnabled
         this.flashMode = flashMode
         this.enableTorch = enableTorch
+        this.isFocusOnTapSupported = meteringPoint.isFocusMeteringSupported
         setZoomRatio(zoomRatio)
     }
 
