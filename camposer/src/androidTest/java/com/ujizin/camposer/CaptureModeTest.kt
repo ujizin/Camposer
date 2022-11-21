@@ -2,7 +2,6 @@ package com.ujizin.camposer
 
 import android.content.Context
 import android.net.Uri
-import androidx.camera.core.CameraState
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
@@ -30,11 +29,9 @@ internal class CaptureModeTest : CameraTest() {
     fun test_imageCaptureMode() = with(composeTestRule) {
         initCaptureModeCamera(CaptureMode.Image)
 
-        waitUntil { cameraState.captureMode == CaptureMode.Image }
-
         runOnIdle {
             val imageFile = File(context.filesDir, IMAGE_TEST_FILENAME).apply { createNewFile() }
-            waitUntil { cameraState.controller.cameraInfo?.cameraState?.value?.type == CameraState.Type.OPEN }
+
             cameraState.takePicture(imageFile) { result ->
                 when (result) {
                     is ImageCaptureResult.Error -> throw result.throwable
