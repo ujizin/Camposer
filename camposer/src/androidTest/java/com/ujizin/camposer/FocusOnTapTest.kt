@@ -40,8 +40,6 @@ internal class FocusOnTapTest : CameraTest() {
     fun test_focusOnTap(): Unit = with(composeTestRule) {
         initFocusCamera(initialValue = true)
 
-        waitUntil { cameraState.isStreaming }
-
         if (!cameraState.isFocusOnTapSupported) return
 
         onNodeWithTag(FOCUS_TEST_TAG).performClick()
@@ -57,8 +55,6 @@ internal class FocusOnTapTest : CameraTest() {
     @Test
     fun test_focusOnTapDisable() = with(composeTestRule) {
         initFocusCamera(initialValue = false)
-
-        waitUntil { cameraState.isStreaming }
 
         if (!cameraState.isFocusOnTapSupported) return
 
@@ -78,8 +74,6 @@ internal class FocusOnTapTest : CameraTest() {
             onComplete()
             completed = true
         }
-
-        waitUntil { cameraState.isStreaming }
 
         if (!cameraState.isFocusOnTapSupported) return
 

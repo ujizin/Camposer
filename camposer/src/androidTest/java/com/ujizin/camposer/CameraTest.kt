@@ -25,8 +25,11 @@ internal abstract class CameraTest {
 
     protected fun ComposeContentTestRule.initCameraState(
         block: @Composable (CameraState) -> Unit
-    ) = setContent {
-        cameraState = rememberCameraState()
-        block(cameraState)
+    ) {
+        setContent {
+            cameraState = rememberCameraState()
+            block(cameraState)
+        }
+        waitUntil { cameraState.isStreaming }
     }
 }

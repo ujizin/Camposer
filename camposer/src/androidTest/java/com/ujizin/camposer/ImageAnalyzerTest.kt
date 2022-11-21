@@ -1,9 +1,6 @@
 package com.ujizin.camposer
 
 import androidx.camera.core.ImageProxy
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
@@ -19,8 +16,6 @@ internal class ImageAnalyzerTest : CameraTest() {
 
     private lateinit var imageAnalyzer: ImageAnalyzer
 
-    private lateinit var isImageAnalyzeEnabledState: MutableState<Boolean>
-
     @Test
     fun test_imageAnalyzer() = with(composeTestRule) {
         var isAnalyzeCalled = false
@@ -29,7 +24,6 @@ internal class ImageAnalyzerTest : CameraTest() {
             it.close()
         }
 
-        waitUntil { cameraState.isStreaming }
         waitUntil(ANALYZER_TIME_OUT) { isAnalyzeCalled }
 
         runOnIdle {
@@ -41,10 +35,7 @@ internal class ImageAnalyzerTest : CameraTest() {
     @Test
     fun test_imageAnalyzerDisabled() = with(composeTestRule) {
         var isAnalyzeCalled = false
-        initImageAnalyzerCamera { isAnalyzeCalled = true }
-        isImageAnalyzeEnabledState.value = false
-
-        waitUntil { cameraState.isStreaming }
+        initImageAnalyzerCamera(isImageAnalyzeEnabled = false) { isAnalyzeCalled = true }
 
         runOnIdle {
             assertEquals(false, cameraState.isImageAnalysisEnabled)
@@ -52,14 +43,16 @@ internal class ImageAnalyzerTest : CameraTest() {
         }
     }
 
-    private fun ComposeContentTestRule.initImageAnalyzerCamera(analyze: (ImageProxy) -> Unit = {}) =
+    private fun ComposeContentTestRule.initImageAnalyzerCamera(
+        isImageAnalyzeEnabled: Boolean = true,
+        analyze: (ImageProxy) -> Unit = {},
+    ) =
         initCameraState { state ->
             imageAnalyzer = state.rememberImageAnalyzer(analyze = analyze)
-            isImageAnalyzeEnabledState = remember { mutableStateOf(true) }
             CameraPreview(
                 cameraState = state,
                 imageAnalyzer = imageAnalyzer,
-                isImageAnalysisEnabled = isImageAnalyzeEnabledState.value
+                isImageAnalysisEnabled = isImageAnalyzeEnabled
             )
         }
 

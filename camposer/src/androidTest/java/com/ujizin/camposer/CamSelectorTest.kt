@@ -32,7 +32,6 @@ internal class CamSelectorTest : CameraTest() {
     fun test_camSelectorToFront() = with(composeTestRule) {
         initCamSelectorCamera(CamSelector.Back)
 
-        waitUntil { cameraState.isStreaming }
         camSelectorState.value = CamSelector.Front
 
         runOnIdle {
@@ -46,7 +45,6 @@ internal class CamSelectorTest : CameraTest() {
     fun test_camSelectorToBack() = with(composeTestRule) {
         initCamSelectorCamera(CamSelector.Front)
 
-        waitUntil { cameraState.isStreaming }
         camSelectorState.value = CamSelector.Back
 
         runOnIdle {
