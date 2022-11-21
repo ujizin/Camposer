@@ -3,6 +3,7 @@ package com.ujizin.camposer
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.view.ViewGroup
+import androidx.camera.core.FocusMeteringAction
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -189,6 +190,17 @@ internal fun CameraPreviewImpl(
                     else -> latestBitmap
                 }
             }
+            // FIXME Improve this!!!
+            cameraState.isFocusOnTapSupported =
+                cameraState.controller.cameraInfo?.isFocusMeteringSupported(
+                    FocusMeteringAction.Builder(
+                        previewView.meteringPointFactory.createPoint(
+                            previewView.x,
+                            previewView.y
+                        )
+                    ).build()
+                ) ?: false
+
             cameraState.update(
                 camSelector = camSelector,
                 captureMode = captureMode,

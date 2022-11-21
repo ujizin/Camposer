@@ -80,6 +80,11 @@ public class CameraState internal constructor(
     public val isZoomSupported: Boolean by derivedStateOf { maxZoom != 1F }
 
     /**
+     * Check if focus on tap supported
+     * */
+    public var isFocusOnTapSupported: Boolean = true
+
+    /**
      * Check if camera state is initialized or not.
      * */
     public var isInitialized: Boolean by mutableStateOf(false)

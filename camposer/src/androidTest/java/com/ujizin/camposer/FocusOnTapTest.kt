@@ -42,6 +42,8 @@ internal class FocusOnTapTest : CameraTest() {
 
         waitUntil { cameraState.isStreaming }
 
+        if (!cameraState.isFocusOnTapSupported) return
+
         onNodeWithTag(FOCUS_TEST_TAG).performClick()
 
         runOnIdle {
@@ -57,6 +59,8 @@ internal class FocusOnTapTest : CameraTest() {
         initFocusCamera(initialValue = false)
 
         waitUntil { cameraState.isStreaming }
+
+        if (!cameraState.isFocusOnTapSupported) return
 
         onNodeWithTag(FOCUS_TEST_TAG).performClick()
 
@@ -76,6 +80,8 @@ internal class FocusOnTapTest : CameraTest() {
         }
 
         waitUntil { cameraState.isStreaming }
+
+        if (!cameraState.isFocusOnTapSupported) return
 
         onNodeWithTag(FOCUS_TEST_TAG).performClick()
         onNodeWithTag(FOCUS_TAP_CONTENT_TAG).assertIsDisplayed()

@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.LargeTest
 import com.ujizin.camposer.state.ImageAnalyzer
 import com.ujizin.camposer.state.rememberImageAnalyzer
 import org.junit.Assert.assertEquals
@@ -13,6 +14,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
+@LargeTest
 internal class ImageAnalyzerTest : CameraTest() {
 
     private lateinit var imageAnalyzer: ImageAnalyzer
@@ -28,7 +30,7 @@ internal class ImageAnalyzerTest : CameraTest() {
         }
 
         waitUntil { cameraState.isStreaming }
-        waitUntil { isAnalyzeCalled }
+        waitUntil(ANALYZER_TIME_OUT) { isAnalyzeCalled }
 
         runOnIdle {
             assertEquals(true, cameraState.isImageAnalysisEnabled)
@@ -60,4 +62,8 @@ internal class ImageAnalyzerTest : CameraTest() {
                 isImageAnalysisEnabled = isImageAnalyzeEnabledState.value
             )
         }
+
+    private companion object {
+        private const val ANALYZER_TIME_OUT = 2_000L
+    }
 }
