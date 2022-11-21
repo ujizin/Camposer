@@ -6,10 +6,18 @@
     <link href="../../images/logo-icon.svg" rel="icon" type="image/svg">
     <script>var pathToRoot = "../../";</script>
     <script>const storage = localStorage.getItem("dokka-dark-mode")
-const savedDarkMode = storage ? JSON.parse(storage) : false
-if(savedDarkMode === true){
-    document.getElementsByTagName("html")[0].classList.add("theme-dark")
-}</script>
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
 <script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async="async"></script>
 <link href="../../styles/style.css" rel="Stylesheet">
 <link href="../../styles/jetbrains-mono.css" rel="Stylesheet">
@@ -21,6 +29,7 @@ if(savedDarkMode === true){
 <script type="text/javascript" src="../../scripts/platform-content-handler.js" async="async"></script>
 <script type="text/javascript" src="../../scripts/main.js" defer="defer"></script>
 <script type="text/javascript" src="../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer="defer"></script>
 </head>
 <body>
 <div class="navigation-wrapper" id="navigation-wrapper">
@@ -31,7 +40,7 @@ if(savedDarkMode === true){
             </a>
     </div>
     <div>
-    </div>
+0.1.0    </div>
     <div class="pull-right d-flex">
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
         <div id="searchBar"></div>
@@ -43,11 +52,11 @@ if(savedDarkMode === true){
     </div>
     <div id="main">
 <div class="main-content" id="content" pageIds="camposer::com.ujizin.camposer.state//rememberImageAnalyzer/com.ujizin.camposer.state.CameraState#com.ujizin.camposer.state.ImageAnalysisBackpressureStrategy#com.ujizin.camposer.state.ImageAnalysisTargetSize?#kotlin.Int#kotlin.Function1[androidx.camera.core.ImageProxy,kotlin.Unit]/PointingToDeclaration//865495748">
-  <div class="breadcrumbs"><a href="../../index.html">camposer</a><span class="delimiter">/</span><a href="index.html">com.ujizin.camposer.state</a><span class="delimiter">/</span><a href="remember-image-analyzer.html">rememberImageAnalyzer</a></div>
+  <div class="breadcrumbs"><a href="../../index.html">camposer</a><span class="delimiter">/</span><a href="index.html">com.ujizin.camposer.state</a><span class="delimiter">/</span><span class="current">rememberImageAnalyzer</span></div>
   <div class="cover ">
     <h1 class="cover"><span>remember</span><wbr></wbr><span>Image</span><wbr></wbr><span><span>Analyzer</span></span></h1>
   </div>
-  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":camposer:dokkaHtml/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation">Composable</span></a></div></div><span class="token keyword"></span><span class="token keyword">fun </span><a href="-camera-state/index.html">CameraState</a><span class="token punctuation">.</span><a href="remember-image-analyzer.html"><span class="token function">rememberImageAnalyzer</span></a><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;imageAnalysisBackpressureStrategy<span class="token operator">: </span><a href="-image-analysis-backpressure-strategy/index.html">ImageAnalysisBackpressureStrategy</a><span class="token operator"> = </span>ImageAnalysisBackpressureStrategy.KeepOnlyLatest<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;imageAnalysisTargetSize<span class="token operator">: </span><a href="-image-analysis-target-size/index.html">ImageAnalysisTargetSize</a><span class="token operator">?</span><span class="token operator"> = </span>ImageAnalysisTargetSize(this.imageAnalysisTargetSize)<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;imageAnalysisImageQueueDepth<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span>this.imageAnalysisImageQueueDepth<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;analyze<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/androidx/camera/core/ImageProxy.html">ImageProxy</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-image-analyzer/index.html">ImageAnalyzer</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Create instance remember of ImageAnalyzer.</p><h2 class="">See also</h2><div data-togglable="See also"><div class="table" data-togglable="See also"><div class="table-row" data-filterable-current=":camposer:dokkaHtml/release" data-filterable-set=":camposer:dokkaHtml/release"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><a href="-image-analyzer/index.html"><span>com.</span><wbr></wbr><span>ujizin.</span><wbr></wbr><span>camposer.</span><wbr></wbr><span>state.</span><wbr></wbr><span>Image</span><wbr></wbr><span><span>Analyzer</span></span></a></div></span></div><div><div class="title"><div data-togglable="See also"></div></div></div></div></div></div></div></div></div>
+  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer:dokkaHtml/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div></div><span class="token keyword"></span><span class="token keyword">fun </span><a href="-camera-state/index.html">CameraState</a><span class="token punctuation">.</span><a href="remember-image-analyzer.html"><span class="token function">rememberImageAnalyzer</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">imageAnalysisBackpressureStrategy<span class="token operator">: </span><a href="-image-analysis-backpressure-strategy/index.html">ImageAnalysisBackpressureStrategy</a><span class="token operator"> = </span>ImageAnalysisBackpressureStrategy.KeepOnlyLatest<span class="token punctuation">, </span></span><span class="parameter ">imageAnalysisTargetSize<span class="token operator">: </span><a href="-image-analysis-target-size/index.html">ImageAnalysisTargetSize</a><span class="token operator">?</span><span class="token operator"> = </span>ImageAnalysisTargetSize(this.imageAnalysisTargetSize)<span class="token punctuation">, </span></span><span class="parameter ">imageAnalysisImageQueueDepth<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span>this.imageAnalysisImageQueueDepth<span class="token punctuation">, </span></span><span class="parameter ">analyze<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/androidx/camera/core/ImageProxy.html">ImageProxy</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-image-analyzer/index.html">ImageAnalyzer</a></div><p class="paragraph">Create instance remember of ImageAnalyzer.</p><h4 class="">See also</h4><div data-togglable="See also"><div class="table" data-togglable="See also"><div class="table-row" data-filterable-current=":camposer:dokkaHtml/release" data-filterable-set=":camposer:dokkaHtml/release"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><a href="-image-analyzer/index.html"><span>Image</span><wbr></wbr><span><span>Analyzer</span></span></a></div></span></div><div></div></div></div></div></div></div></div>
 </div>
       <div class="footer">
         <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span
