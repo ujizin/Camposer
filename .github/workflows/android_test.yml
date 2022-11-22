@@ -8,10 +8,10 @@ on:
 jobs:
   test:
     runs-on: macos-latest
-    strategy:
-      matrix:
-        api-level: [23, 30, 31]
-        target: [default, google_apis]
+#    strategy:
+#      matrix:
+#        api-level: [23, 30, 31]
+#        target: [default, google_apis]
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -27,8 +27,8 @@ jobs:
       - name: run android tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: ${{ matrix.api-level }}
-          target: ${{ matrix.target }}
+          api-level: 23
+          target: default
           arch: x86_64
           disable-animations: true
           emulator-options: -no-window -no-snapshot -camera-back emulated -camera-front emulated -gpu swiftshader_indirect -no-bot-anim
