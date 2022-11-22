@@ -21,7 +21,7 @@ jobs:
         with:
           java-version: 11
 
-      - name: Make gradlew executable
+      - name: make gradlew executable
         run: chmod +x ./gradlew
 
       - name: run android tests
@@ -31,6 +31,7 @@ jobs:
           target: default
           arch: x86_64
           disable-animations: true
+          force-avd-creation: false
           emulator-options: -no-window -no-snapshot -camera-back emulated -camera-front emulated -gpu swiftshader_indirect -no-bot-anim
           profile: Nexus 6
           script: ./gradlew connectedCheck
