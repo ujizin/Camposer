@@ -1,0 +1,24 @@
+name: Android Build
+
+on:
+  push:
+    pull_request:
+      branches:
+        - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      - name: build
+        run: ./gradlew clean build test --no-daemon --parallel build
