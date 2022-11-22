@@ -31,6 +31,6 @@ jobs:
           target: ${{ matrix.target }}
           arch: x86_64
           disable-animations: true
-          emulator-options: -no-window -no-snapshot -camera-back emulated -camera-front emulated
+          emulator-options: -no-window -no-snapshot -camera-back emulated -camera-front emulated -gpu swiftshader_indirect -no-bot-anim
           profile: Nexus 6
           script: ./gradlew connectedCheck
