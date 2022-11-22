@@ -10,7 +10,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        api-level: [23, 31]
+        api-level: [23, 30, 31]
         target: [default, google_apis]
     steps:
       - name: checkout
@@ -30,5 +30,7 @@ jobs:
           api-level: ${{ matrix.api-level }}
           target: ${{ matrix.target }}
           arch: x86_64
+          disable-animations: true
+          emulator-options: -no-window -no-snapshot -camera-back emulated -camera-front emulated
           profile: Nexus 6
           script: ./gradlew connectedCheck
