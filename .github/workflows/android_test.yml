@@ -33,6 +33,6 @@ jobs:
           arch: x86_64
           disable-animations: true
           force-avd-creation: false
-          emulator-options: -no-window -no-snapshot -camera-back emulated -camera-front emulated -gpu swiftshader_indirect -no-boot-anim
+          emulator-options: -no-window -audio -no-snapshot -camera-back emulated -camera-front emulated -gpu swiftshader_indirect -no-boot-anim
           profile: Nexus 6
-          script: ./gradlew connectedCheck
+          script: ./gradlew connectedDebugAndroidTest
