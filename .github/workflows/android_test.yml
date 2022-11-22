@@ -1,4 +1,4 @@
-name: Android Test CI
+name: Android Tests
 on:
   push:
     pull-request:
