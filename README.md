@@ -97,8 +97,8 @@ If you want to use other configurations, you can see our [wiki](https://github.c
 ```
 implementation 'com.ujizin.camposer:0.1.0'
 ```
-3. Sync your project
-4. Have a `fun code()`!
+2. Sync your project
+3. Have a `fun code()`!
 
 ##  License
 
