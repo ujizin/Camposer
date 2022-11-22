@@ -92,20 +92,8 @@ If you want to use other configurations, you can see our [wiki](https://github.c
 
 ## Setup
 
-1. Add Jitpack to your `settings.gradle`
 ```
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-        // add Jitpack here
-        maven { url 'https://jitpack.io' }
-       ...
-    }
-}
-```
-2. Add dependency to your `build.gradle`
+1. Add dependency to your `build.gradle`
 
 ```
 implementation 'com.ujizin.camposer:0.1.0'
