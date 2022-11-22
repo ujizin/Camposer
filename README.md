@@ -92,7 +92,6 @@ If you want to use other configurations, you can see our [wiki](https://github.c
 
 ## Setup
 
-```
 1. Add dependency to your `build.gradle`
 
 ```
