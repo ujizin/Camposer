@@ -1,4 +1,4 @@
-name: Android Tests
+name: Android Test
 on:
   push:
     pull-request:
