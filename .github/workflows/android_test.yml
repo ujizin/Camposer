@@ -25,14 +25,24 @@ jobs:
       - name: make gradlew executable
         run: chmod +x ./gradlew
 
+      - name: create AVD and generate snapshot for caching
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          working-directory: lib/android
+          arch: 'x86_64'
+          api-level: 31
+          force-avd-creation: false
+          disable-animations: true
+          emulator-options: -no-window -audio -no-snapshot -camera-back emulated -camera-front emulated -gpu swiftshader_indirect -no-boot-anim
+          script: echo "Generated AVD snapshot for caching."
+
       - name: run android tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 23
-          target: default
-          arch: x86_64
+          api-level: 31
+          arch: 'x86_64'
           disable-animations: true
           force-avd-creation: false
           emulator-options: -no-window -audio -no-snapshot -camera-back emulated -camera-front emulated -gpu swiftshader_indirect -no-boot-anim
-          profile: Nexus 6
           script: ./gradlew connectedDebugAndroidTest
