@@ -29,7 +29,6 @@ jobs:
         if: steps.avd-cache.outputs.cache-hit != 'true'
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          working-directory: lib/android
           arch: 'x86_64'
           api-level: 31
           force-avd-creation: false
