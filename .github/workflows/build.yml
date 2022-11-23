@@ -20,5 +20,8 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
 
+      - name: make gradlew executable
+        run: chmod +x ./gradlew
+
       - name: build
         run: ./gradlew clean build test --no-daemon --parallel build
