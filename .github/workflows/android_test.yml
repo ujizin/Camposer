@@ -45,7 +45,7 @@ jobs:
           arch: 'x86_64'
           disable-animations: true
           force-avd-creation: false
-          emulator-options: -no-window -audio -camera-back emulated -camera-front emulated -gpu swiftshader_indirect -no-boot-anim
+          emulator-options: -no-window -camera-back emulated -camera-front emulated -gpu swiftshader_indirect -no-boot-anim
           script: echo "Generated AVD snapshot for caching."
 
       - name: run android tests
@@ -55,5 +55,5 @@ jobs:
           arch: 'x86_64'
           disable-animations: true
           force-avd-creation: false
-          emulator-options: -no-snapshot-save -no-window -audio -camera-back emulated -camera-front emulated -gpu swiftshader_indirect -no-boot-anim
+          emulator-options: -no-snapshot-save -no-window -camera-back emulated -camera-front emulated -gpu swiftshader_indirect -no-boot-anim
           script: ./gradlew connectedDebugAndroidTest
