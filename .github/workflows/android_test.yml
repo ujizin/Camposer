@@ -25,6 +25,9 @@ jobs:
       - name: make gradlew executable
         run: chmod +x ./gradlew
 
+      - name: gradle cache
+        uses: gradle/gradle-build-action@v2
+
       - name: AVD cache
         uses: actions/cache@v3
         id: avd-cache
@@ -52,5 +55,5 @@ jobs:
           arch: 'x86_64'
           disable-animations: true
           force-avd-creation: false
-          emulator-options: -no-window -audio -no-snapshot-save -camera-back emulated -camera-front emulated -gpu swiftshader_indirect -no-boot-anim
+          emulator-options: -no-snapshot-save -no-window -audio -camera-back emulated -camera-front emulated -gpu swiftshader_indirect -no-boot-anim
           script: ./gradlew connectedDebugAndroidTest
