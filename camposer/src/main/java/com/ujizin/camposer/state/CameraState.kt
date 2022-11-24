@@ -325,7 +325,7 @@ public class CameraState internal constructor(context: Context) {
      * Set zoom ratio to camera.
      * @param zoomRatio zoomRatio to be added
      * */
-    internal fun setZoomRatio(zoomRatio: Float) {
+    private fun setZoomRatio(zoomRatio: Float) {
         controller.setZoomRatio(zoomRatio.coerceIn(minZoom, maxZoom))
     }
 
