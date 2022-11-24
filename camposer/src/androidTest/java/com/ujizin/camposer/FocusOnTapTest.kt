@@ -85,7 +85,7 @@ internal class FocusOnTapTest : CameraTest() {
             assertEquals(true, isFocusTappedState.value)
         }
 
-        waitUntil { completed }
+        waitUntil(FOCUS_ON_COMPLETE_DELAY) { completed }
 
         onNodeWithTag(FOCUS_TAP_CONTENT_TAG).assertDoesNotExist()
     }
@@ -121,5 +121,6 @@ internal class FocusOnTapTest : CameraTest() {
         private const val FOCUS_TAP_CONTENT_TAG = "focus_tap_content_tag"
         private const val DEFAULT_FOCUS_DELAY = 300L
         private const val FOCUS_DELAY = 500L
+        private const val FOCUS_ON_COMPLETE_DELAY = 2_500L
     }
 }

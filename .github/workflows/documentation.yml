@@ -1,4 +1,4 @@
-name: Dokka
+name: Documentation CI
 on:
   push:
     branches: [ main ]
@@ -11,13 +11,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Make gradlew executable
+      - name: make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Dokka
+      - name: generate dokka (doc)
         run: ./gradlew dokkaHtml
 
-      - name: Deploy to Github Pages
+      - name: deploy to Github Pages
         uses: JamesIves/github-pages-deploy-action@3.7.1
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -30,6 +30,10 @@ internal abstract class CameraTest {
             cameraState = rememberCameraState()
             block(cameraState)
         }
-        waitUntil { cameraState.isStreaming }
+        waitUntil(CAMERA_TIMEOUT) { cameraState.isStreaming }
+    }
+
+    private companion object {
+        private const val CAMERA_TIMEOUT = 2_500L
     }
 }

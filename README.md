@@ -5,9 +5,11 @@
 </p>
 <p align="center">
   <a href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"/></a>
-  <a href="https://android-arsenal.com/api?level=24"><img alt="API" src="https://img.shields.io/badge/API-24%2B-brightgreen.svg?style=flat"/></a>
+  <img src="https://github.com/ujizin/Camposer/actions/workflows/android_test.yml/badge.svg"/>
+  <img src="https://github.com/ujizin/Camposer/actions/workflows/build.yml/badge.svg"/>
+  <a href="https://android-arsenal.com/api?level=23"><img alt="API" src="https://img.shields.io/badge/API-23%2B-brightgreen.svg?style=flat"/></a>
   <a href="https://github.com/ujizin"><img alt="Profile" src="https://badgen.net/badge/ujizin/Github/orange?icon=github"/></a>
-  <a href="TODO"><img alt="Dokka" src="https://badgen.net/badge/Dokka/Camposer/purple?icon=libraries"/></a>
+  <a href="https://ujizin.github.io/Camposer/"><img alt="Dokka" src="https://badgen.net/badge/Dokka/Camposer/purple?icon=libraries"/></a>
 </p>
 
 <p align="center">Tired to use a camera in Jetpack Compose with interoperability? Then Camposer was made for you. <br> A camera library totally in Jetpack Compose which supports taking photos, recording videos, flash modes, zoom ratio, and among others!</p>
@@ -90,26 +92,13 @@ If you want to use other configurations, you can see our [wiki](https://github.c
 
 ## Setup
 
-1. Add Jitpack to your `settings.gradle`
-```
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-        // add Jitpack here
-        maven { url 'https://jitpack.io' }
-       ...
-    }
-}
-```
-2. Add dependency to your `build.gradle`
+1. Add dependency to your `build.gradle`
 
 ```
 implementation 'com.ujizin.camposer:0.1.0'
 ```
-3. Sync your project
-4. Have a `fun code()`!
+2. Sync your project
+3. Have a `fun code()`!
 
 ##  License
 
