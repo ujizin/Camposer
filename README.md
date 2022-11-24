@@ -35,8 +35,6 @@ CameraPreview(
 }
 ```
 
-And that's it! For more information, check the [wiki](https://github.com/DevLucasYuji/Camposer/wiki).
-
 ### Take picture
 
 ```Kotlin
@@ -54,7 +52,7 @@ cameraState.takePicture(file) { result -> /* ... */ }
 ```Kotlin
 // Using content values
 cameraState.startRecording()
-cameraState.stopRecording(contentValues,mediaURI) { result ->
+cameraState.stopRecording(contentValues, mediaURI) { result ->
   /* ... */
 }
 
@@ -63,7 +61,7 @@ cameraState.startRecording()
 cameraState.stopRecording(file) { result -> /* ... */ }
 
 // Using content values + toggle
-cameraState.toggleRecording(contentValues,mediaURI) { result ->
+cameraState.toggleRecording(contentValues, mediaURI) { result ->
   /* ... */
 }
 
