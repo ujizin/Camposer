@@ -20,6 +20,7 @@ datastore = "1.0.0"
 kotlinx-serialization = "1.4.1"
 exoplayer = "2.18.1"
 zxing = "3.5.0"
+cloudy = "0.1.1"
 
 [libraries]
 
@@ -66,6 +67,8 @@ zxing-core = { module = "com.google.zxing:core", version.ref = "zxing" }
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
 
 dokka = { module = "org.jetbrains.dokka:kotlin-as-java-plugin", version.ref = "kotlin" }
+
+cloudy = { module = "com.github.skydoves:cloudy", version.ref = "cloudy" }
 
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-test-rules"}
 

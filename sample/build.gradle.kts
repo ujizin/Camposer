@@ -58,5 +58,7 @@ dependencies {
 
     implementation(libs.zxing.core)
 
+    implementation(libs.cloudy)
+
     implementation(project(":camposer"))
 }

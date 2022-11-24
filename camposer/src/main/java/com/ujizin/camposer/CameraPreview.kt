@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.view.ViewGroup
 import androidx.camera.view.PreviewView
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -15,7 +14,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import com.ujizin.camposer.extensions.clamped
@@ -74,22 +72,8 @@ public fun CameraPreview(
     isFocusOnTapEnabled: Boolean = cameraState.isFocusOnTapEnabled,
     isPinchToZoomEnabled: Boolean = cameraState.isZoomSupported,
     onPreviewStreamChanged: () -> Unit = {},
-    onSwitchToFront: @Composable (Bitmap) -> Unit = { bitmap ->
-        BlurImage(
-            modifier = Modifier.fillMaxSize(),
-            bitmap = bitmap,
-            radius = 20.dp,
-            contentDescription = null
-        )
-    },
-    onSwitchToBack: @Composable (Bitmap) -> Unit = { bitmap ->
-        BlurImage(
-            modifier = Modifier.fillMaxSize(),
-            bitmap = bitmap,
-            radius = 20.dp,
-            contentDescription = null
-        )
-    },
+    onSwitchToFront: @Composable (Bitmap) -> Unit = {},
+    onSwitchToBack: @Composable (Bitmap) -> Unit = {},
     onFocus: suspend (onComplete: () -> Unit) -> Unit = { onComplete ->
         delay(1000L)
         onComplete()

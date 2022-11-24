@@ -2,6 +2,7 @@ package com.ujizin.sample.feature.camera
 
 import android.widget.Toast
 import androidx.camera.core.ImageProxy
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,10 +16,12 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.skydoves.cloudy.Cloudy
 import com.ujizin.camposer.CameraPreview
 import com.ujizin.camposer.state.CamSelector
 import com.ujizin.camposer.state.CameraState
@@ -112,6 +115,12 @@ fun CameraSection(
         onZoomRatioChanged = {
             zoomHasChanged = true
             zoomRatio = it
+        },
+        onSwitchToFront = { bitmap ->
+            Cloudy(radius = 20) { Image(bitmap.asImageBitmap(), contentDescription = null) }
+        },
+        onSwitchToBack = { bitmap ->
+            Cloudy(radius = 20) { Image(bitmap.asImageBitmap(), contentDescription = null) }
         }
     ) {
         BlinkPictureBox(lastPicture, cameraOption == CameraOption.Video)
