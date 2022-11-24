@@ -6,6 +6,6 @@ object Config {
     const val minSdk = 23
     const val versionCode = 1
     const val versionName = "0.1.0"
-    const val groupId = "com.github.ujizin"
+    const val groupId = "io.github.ujizin"
     const val artifactId = "camposer"
 }
