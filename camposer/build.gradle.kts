@@ -12,7 +12,7 @@ extra.apply {
     set("PUBLISH_VERSION", Config.versionName)
 }
 
-apply(from = "${rootDir}/publish.gradle")
+apply(from = "${rootDir}/scripts/publish-module.gradle")
 
 android {
     namespace = "com.ujizin.camposer"

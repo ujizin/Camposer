@@ -2,6 +2,7 @@
 
 kotlin = "1.7.20"
 gradle = "7.3.0"
+gradle-nexus = "1.1.0"
 androidx-core = "1.9.0"
 androidx-test-rules = "1.4.0"
 camerax = "1.1.0"
@@ -95,3 +96,4 @@ library = { id = "com.android.library", version.ref = "gradle" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "kotlin" }
+gradle-nexus = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "gradle-nexus"}
