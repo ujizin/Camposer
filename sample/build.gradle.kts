@@ -60,5 +60,5 @@ dependencies {
 
     implementation(libs.cloudy)
 
-    implementation("io.github.ujizin:camposer:0.1.0")
+    implementation(project(":camposer"))
 }
