@@ -80,8 +80,8 @@ camSelector = CamSelector.Front
 // Use back camera
 camSelector = CamSelector.Back
 
-// Reverse camera selector
-camSelector = camSelector.reverse
+// Inverse camera selector
+camSelector = camSelector.inverse
 ```
 
 ###  Other configurations
