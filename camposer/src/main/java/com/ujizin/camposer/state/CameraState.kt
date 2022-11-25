@@ -46,7 +46,7 @@ public class CameraState internal constructor(context: Context) {
     private val contentResolver: ContentResolver = context.contentResolver
 
     /**
-     * Check if metering
+     * Check if focus metering is supported
      * */
     private val MeteringPoint.isFocusMeteringSupported: Boolean
         get() = controller.cameraInfo?.isFocusMeteringSupported(
