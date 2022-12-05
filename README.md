@@ -9,7 +9,9 @@
   <img src="https://github.com/ujizin/Camposer/actions/workflows/build.yml/badge.svg?branch=main"/>
   <a href="https://android-arsenal.com/api?level=23"><img alt="API" src="https://img.shields.io/badge/API-23%2B-brightgreen.svg?style=flat"/></a>
   <a href="https://github.com/ujizin"><img alt="Profile" src="https://badgen.net/badge/ujizin/Github/orange?icon=github"/></a>
-  <a href="https://ujizin.github.io/Camposer/"><img alt="Dokka" src="https://badgen.net/badge/Dokka/Camposer/purple?icon=libraries"/></a>
+  <a href="https://medium.com/@lucasyujideveloper/camposer-camera-library-using-jetpack-compose-for-android-3af63220fa00"><img src="https://badgen.net/badge/icon/Medium?icon=medium&label=Story"/></a>
+  <a href="https://ujizin.github.io/Camposer/"><img alt="Dokka" src="https://badgen.net/badge/Dokka/Camposer/purple?icon=libraries"/></a></br>
+  <a href="https://androidweekly.net/issues/issue-546"><img src="https://androidweekly.net/issues/issue-546/badge"/></a>
 </p>
 
 <p align="center">Tired to use a camera in Jetpack Compose with interoperability? Then Camposer was made for you. <br> A camera library totally in Jetpack Compose which supports taking photos, recording videos, flash modes, zoom ratio, and among others!</p>
@@ -20,9 +22,20 @@
 
 <p align="center"><small>Check out the <a href="https://github.com/ujizin/Camposer/tree/main/sample">Sample project</a></small></p>
 
-## How it works
 
-To add CameraPreview composable, just use the example below:
+## Gradle
+
+<a href="https://search.maven.org/search?q=g:%22io.github.ujizin%22%20AND%20a:%22camposer%22"><img src="https://img.shields.io/maven-metadata/v.svg?color=dark-green&label=Maven%20Central&metadataUrl=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fio%2Fgithub%2Fujizin%2Fcamposer%2Fmaven-metadata.xml"/></a>
+
+Add dependency to your `build.gradle` and sync your project
+
+```
+implementation 'io.github.ujizin:camposer:0.1.0'
+```
+
+## How to use
+
+To add `CameraPreview` composable, just use the example below:
 
 ```Kotlin
 val cameraState = rememberCameraState()
@@ -35,7 +48,9 @@ CameraPreview(
 }
 ```
 
-### Take picture
+### Taking pictures
+
+To take picture use `CameraState` and call `takePicture` method from it.
 
 ```Kotlin
 // Using content values
@@ -47,7 +62,9 @@ cameraState.takePicture(contentValues, mediaURI) { result ->
 cameraState.takePicture(file) { result -> /* ... */ }
 ```
 
-### Start recording
+### Recording videos
+
+Change the capture mode for `CaptureMode.Video` on `CameraPreview` and call `toggleRecording` method twice for stop recording, or use `startRecording` and `stopRecording` separately
 
 ```Kotlin
 // Using content values
@@ -88,15 +105,7 @@ camSelector = camSelector.inverse
 
 If you want to use other configurations, you can see our [wiki](https://github.com/DevLucasYuji/Camposer/wiki).
 
-## Setup
-
-1. Add dependency to your `build.gradle`
-
-```
-implementation 'io.github.ujizin:camposer:0.1.0'
-```
-2. Sync your project
-3. Have a `fun code()`!
+Have a `fun code()`!
 
 ##  License
 
