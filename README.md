@@ -39,7 +39,7 @@ To add `CameraPreview` composable, just use the example below:
 
 ```Kotlin
 val cameraState = rememberCameraState()
-var camSelector = rememberCamSelector(CamSelector.Back)
+var camSelector by rememberCamSelector(CamSelector.Back)
 CameraPreview(
   cameraState = cameraState,
   camSelector = camSelector,
