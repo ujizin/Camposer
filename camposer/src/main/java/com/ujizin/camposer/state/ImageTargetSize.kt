@@ -8,7 +8,7 @@ import androidx.camera.view.CameraController.OutputSize
  * Image Analysis target size is used to target the size of image analysis, accepting [AspectRatio]
  * or [Size].
  * */
-public class ImageAnalysisTargetSize {
+public class ImageTargetSize {
 
     private var aspectRatio: Int? = null
     private var size: Size? = null
