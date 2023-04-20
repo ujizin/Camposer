@@ -18,7 +18,7 @@ import androidx.compose.runtime.Immutable
 public class ImageAnalyzer(
     private val cameraState: CameraState,
     imageAnalysisBackpressureStrategy: ImageAnalysisBackpressureStrategy,
-    imageAnalysisTargetSize: ImageAnalysisTargetSize?,
+    imageAnalysisTargetSize: ImageTargetSize?,
     imageAnalysisImageQueueDepth: Int,
     private var analyzerCallback: (ImageProxy) -> Unit,
 ) {
@@ -38,7 +38,7 @@ public class ImageAnalyzer(
 
     private fun updateCameraState(
         imageAnalysisBackpressureStrategy: ImageAnalysisBackpressureStrategy,
-        imageAnalysisTargetSize: ImageAnalysisTargetSize?,
+        imageAnalysisTargetSize: ImageTargetSize?,
         imageAnalysisImageQueueDepth: Int,
     ) = with(cameraState) {
         this.imageAnalysisBackpressureStrategy = imageAnalysisBackpressureStrategy.strategy
@@ -60,7 +60,7 @@ public class ImageAnalyzer(
         imageAnalysisBackpressureStrategy: ImageAnalysisBackpressureStrategy = ImageAnalysisBackpressureStrategy.find(
             cameraState.imageAnalysisBackpressureStrategy
         ),
-        imageAnalysisTargetSize: ImageAnalysisTargetSize? = ImageAnalysisTargetSize(cameraState.imageAnalysisTargetSize),
+        imageAnalysisTargetSize: ImageTargetSize? = ImageTargetSize(cameraState.imageAnalysisTargetSize),
         imageAnalysisImageQueueDepth: Int = cameraState.imageAnalysisImageQueueDepth,
         analyzerCallback: (ImageProxy) -> Unit = this.analyzerCallback,
     ) {
