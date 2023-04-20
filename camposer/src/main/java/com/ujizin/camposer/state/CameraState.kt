@@ -146,6 +146,19 @@ public class CameraState internal constructor(context: Context) {
         }
 
     /**
+     * Set image capture target size on camera
+     * */
+    internal var imageCaptureTargetSize: OutputSize?
+        get() = controller.imageCaptureTargetSize
+        set(value) {
+            if (imageCaptureTargetSize?.aspectRatio != value?.aspectRatio
+                && imageCaptureTargetSize?.resolution != value?.resolution
+            ) {
+                controller.imageCaptureTargetSize = value
+            }
+        }
+
+    /**
      * Get Image Analyzer from camera.
      * */
     internal var imageAnalyzer: ImageAnalysis.Analyzer? = null
@@ -479,6 +492,7 @@ public class CameraState internal constructor(context: Context) {
         camSelector: CamSelector,
         captureMode: CaptureMode,
         scaleType: ScaleType,
+        imageCaptureTargetSize: OutputSize?,
         isImageAnalysisEnabled: Boolean,
         imageAnalyzer: ImageAnalyzer?,
         implementationMode: ImplementationMode,
@@ -491,6 +505,7 @@ public class CameraState internal constructor(context: Context) {
         this.camSelector = camSelector
         this.captureMode = captureMode
         this.scaleType = scaleType
+        this.imageCaptureTargetSize = imageCaptureTargetSize
         this.isImageAnalysisEnabled = isImageAnalysisEnabled
         this.imageAnalyzer = imageAnalyzer?.analyzer
         this.implementationMode = implementationMode
