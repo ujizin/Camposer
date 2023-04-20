@@ -38,6 +38,7 @@ import androidx.camera.core.CameraSelector as CameraXSelector
  * @param cameraState camera state hold some states and camera's controller, it can be useful to given action like [CameraState.takePicture]
  * @param camSelector camera selector to be added, default is back
  * @param captureMode camera capture mode, default is image
+ * @param imageCaptureTargetSize suggested target size for image camera capture, default is camera's preferred size
  * @param flashMode flash mode to be added, default is off
  * @param scaleType scale type to be added, default is fill center
  * @param enableTorch enable torch from camera, default is false.
