@@ -152,12 +152,7 @@ public class CameraState internal constructor(context: Context) {
     internal var imageCaptureTargetSize: ImageTargetSize?
         get() = controller.imageCaptureTargetSize.toImageTargetSize()
         set(value) {
-            val valueOutputSize = value?.toOutputSize()
-            val existingOutputSize = imageCaptureTargetSize?.toOutputSize()
-
-            if (existingOutputSize?.aspectRatio != valueOutputSize?.aspectRatio
-                && existingOutputSize?.resolution != valueOutputSize?.resolution
-            ) {
+            if (value != imageCaptureTargetSize) {
                 controller.imageCaptureTargetSize = value?.toOutputSize()
             }
         }
