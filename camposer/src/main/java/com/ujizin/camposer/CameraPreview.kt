@@ -3,6 +3,7 @@ package com.ujizin.camposer
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.view.ViewGroup
+import androidx.camera.view.CameraController
 import androidx.camera.view.PreviewView
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -62,6 +63,7 @@ public fun CameraPreview(
     cameraState: CameraState = rememberCameraState(),
     camSelector: CamSelector = cameraState.camSelector,
     captureMode: CaptureMode = cameraState.captureMode,
+    imageCaptureTargetSize: CameraController.OutputSize? = cameraState.imageCaptureTargetSize,
     flashMode: FlashMode = cameraState.flashMode,
     scaleType: ScaleType = cameraState.scaleType,
     enableTorch: Boolean = cameraState.enableTorch,
@@ -87,6 +89,7 @@ public fun CameraPreview(
         cameraState = cameraState,
         camSelector = camSelector,
         captureMode = captureMode,
+        imageCaptureTargetSize = imageCaptureTargetSize,
         flashMode = flashMode,
         scaleType = scaleType,
         enableTorch = enableTorch,
@@ -113,6 +116,7 @@ internal fun CameraPreviewImpl(
     cameraState: CameraState,
     camSelector: CamSelector,
     captureMode: CaptureMode,
+    imageCaptureTargetSize: CameraController.OutputSize?,
     flashMode: FlashMode,
     scaleType: ScaleType,
     enableTorch: Boolean,
@@ -143,6 +147,8 @@ internal fun CameraPreviewImpl(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
             )
             controller = cameraState.controller.apply {
+                cameraState.controller.imageCaptureTargetSize = imageCaptureTargetSize
+
                 bindToLifecycle(lifecycleOwner)
             }
 
@@ -175,6 +181,7 @@ internal fun CameraPreviewImpl(
                 cameraState.update(
                     camSelector = camSelector,
                     captureMode = captureMode,
+                    imageCaptureTargetSize = imageCaptureTargetSize,
                     scaleType = scaleType,
                     isImageAnalysisEnabled = isImageAnalysisEnabled,
                     imageAnalyzer = imageAnalyzer,
