@@ -3,7 +3,6 @@ package com.ujizin.camposer
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.view.ViewGroup
-import androidx.camera.view.CameraController
 import androidx.camera.view.PreviewView
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,6 +25,7 @@ import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.CaptureMode
 import com.ujizin.camposer.state.FlashMode
 import com.ujizin.camposer.state.ImageAnalyzer
+import com.ujizin.camposer.state.ImageTargetSize
 import com.ujizin.camposer.state.ImplementationMode
 import com.ujizin.camposer.state.ScaleType
 import com.ujizin.camposer.state.rememberCameraState
@@ -64,7 +64,7 @@ public fun CameraPreview(
     cameraState: CameraState = rememberCameraState(),
     camSelector: CamSelector = cameraState.camSelector,
     captureMode: CaptureMode = cameraState.captureMode,
-    imageCaptureTargetSize: CameraController.OutputSize? = cameraState.imageCaptureTargetSize,
+    imageCaptureTargetSize: ImageTargetSize? = cameraState.imageCaptureTargetSize,
     flashMode: FlashMode = cameraState.flashMode,
     scaleType: ScaleType = cameraState.scaleType,
     enableTorch: Boolean = cameraState.enableTorch,
@@ -117,7 +117,7 @@ internal fun CameraPreviewImpl(
     cameraState: CameraState,
     camSelector: CamSelector,
     captureMode: CaptureMode,
-    imageCaptureTargetSize: CameraController.OutputSize?,
+    imageCaptureTargetSize: ImageTargetSize?,
     flashMode: FlashMode,
     scaleType: ScaleType,
     enableTorch: Boolean,
@@ -148,7 +148,7 @@ internal fun CameraPreviewImpl(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
             )
             controller = cameraState.controller.apply {
-                cameraState.controller.imageCaptureTargetSize = imageCaptureTargetSize
+                cameraState.controller.imageCaptureTargetSize = imageCaptureTargetSize?.toOutputSize()
 
                 bindToLifecycle(lifecycleOwner)
             }
