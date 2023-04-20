@@ -15,6 +15,7 @@ import androidx.camera.core.MeteringPoint
 import androidx.camera.core.TorchState
 import androidx.camera.view.CameraController.IMAGE_ANALYSIS
 import androidx.camera.view.CameraController.OutputSize
+import androidx.camera.view.CameraController.OutputSize.UNASSIGNED_ASPECT_RATIO
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.video.ExperimentalVideo
 import androidx.camera.view.video.OnVideoSavedCallback
@@ -148,13 +149,16 @@ public class CameraState internal constructor(context: Context) {
     /**
      * Set image capture target size on camera
      * */
-    internal var imageCaptureTargetSize: OutputSize?
-        get() = controller.imageCaptureTargetSize
+    internal var imageCaptureTargetSize: ImageTargetSize?
+        get() = controller.imageCaptureTargetSize.toImageTargetSize()
         set(value) {
-            if (imageCaptureTargetSize?.aspectRatio != value?.aspectRatio
-                && imageCaptureTargetSize?.resolution != value?.resolution
+            val valueOutputSize = value?.toOutputSize()
+            val existingOutputSize = imageCaptureTargetSize?.toOutputSize()
+
+            if (existingOutputSize?.aspectRatio != valueOutputSize?.aspectRatio
+                && existingOutputSize?.resolution != valueOutputSize?.resolution
             ) {
-                controller.imageCaptureTargetSize = value
+                controller.imageCaptureTargetSize = value?.toOutputSize()
             }
         }
 
@@ -492,7 +496,7 @@ public class CameraState internal constructor(context: Context) {
         camSelector: CamSelector,
         captureMode: CaptureMode,
         scaleType: ScaleType,
-        imageCaptureTargetSize: OutputSize?,
+        imageCaptureTargetSize: ImageTargetSize?,
         isImageAnalysisEnabled: Boolean,
         imageAnalyzer: ImageAnalyzer?,
         implementationMode: ImplementationMode,
@@ -519,5 +523,15 @@ public class CameraState internal constructor(context: Context) {
     private companion object {
         private val TAG = this::class.java.name
         private const val INITIAL_ZOOM_VALUE = 1F
+    }
+}
+
+private fun OutputSize?.toImageTargetSize(): ImageTargetSize? {
+    return this?.let {
+        if (it.aspectRatio != UNASSIGNED_ASPECT_RATIO) {
+            ImageTargetSize(aspectRatio = it.aspectRatio)
+        } else {
+            ImageTargetSize(size = it.resolution)
+        }
     }
 }
