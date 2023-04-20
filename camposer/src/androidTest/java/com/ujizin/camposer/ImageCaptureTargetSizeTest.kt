@@ -24,7 +24,7 @@ internal class ImageCaptureTargetSizeTest : CameraTest() {
         initImageCaptureTargetSizeCamera(ImageTargetSize(RATIO_16_9))
 
         runOnIdle {
-            assertEqualSize(
+            assertEquals(
                 cameraState.imageCaptureTargetSize,
                 ImageTargetSize(RATIO_16_9)
             )
@@ -33,7 +33,7 @@ internal class ImageCaptureTargetSizeTest : CameraTest() {
         imageCaptureTargetSize.value = ImageTargetSize(Size(1600, 1200))
 
         runOnIdle {
-            assertEqualSize(
+            assertEquals(
                 cameraState.imageCaptureTargetSize,
                 ImageTargetSize(Size(1600, 1200))
             )
@@ -48,17 +48,5 @@ internal class ImageCaptureTargetSizeTest : CameraTest() {
             cameraState = state,
             imageCaptureTargetSize = imageCaptureTargetSize.value,
         )
-    }
-
-    private fun assertEqualSize(
-        size1: ImageTargetSize?,
-        size2: ImageTargetSize?
-    ) {
-        val size1OutputSize = size1?.toOutputSize()
-        val size2OutputSize = size2?.toOutputSize()
-
-        assertEquals(size1OutputSize?.resolution?.height, size2OutputSize?.resolution?.height)
-        assertEquals(size1OutputSize?.resolution?.width, size2OutputSize?.resolution?.width)
-        assertEquals(size1OutputSize?.aspectRatio, size2OutputSize?.aspectRatio)
     }
 }
