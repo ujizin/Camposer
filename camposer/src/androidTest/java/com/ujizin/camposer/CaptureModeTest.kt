@@ -26,7 +26,7 @@ internal class CaptureModeTest : CameraTest() {
 
     @Test
     @Ignore("Flaky test, sometimes throw exception \"Camera closed\"")
-    fun test_imageCaptureMode() = with(composeTestRule) {
+    fun test_captureMode() = with(composeTestRule) {
         initCaptureModeCamera(CaptureMode.Image)
 
         runOnIdle {
