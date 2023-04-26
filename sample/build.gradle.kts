@@ -32,6 +32,7 @@ android {
 }
 
 dependencies {
+    implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose)
 
     implementation(libs.compose.activity)

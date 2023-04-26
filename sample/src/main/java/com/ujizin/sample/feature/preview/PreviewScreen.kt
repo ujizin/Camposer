@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ujizin.sample.R
 import com.ujizin.sample.components.NavigationIcon
@@ -41,7 +40,6 @@ import com.google.android.exoplayer2.ui.StyledPlayerView
 import org.koin.androidx.compose.koinViewModel
 import java.io.File
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun PreviewScreen(
     viewModel: PreviewViewModel = koinViewModel(),
