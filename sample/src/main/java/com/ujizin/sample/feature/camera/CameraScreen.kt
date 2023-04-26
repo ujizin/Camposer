@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.skydoves.cloudy.Cloudy
 import com.ujizin.camposer.CameraPreview
@@ -41,7 +40,6 @@ import com.ujizin.sample.feature.camera.model.Flash
 import org.koin.androidx.compose.get
 import java.io.File
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun CameraScreen(
     viewModel: CameraViewModel = get(),

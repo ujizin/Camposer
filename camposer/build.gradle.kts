@@ -50,11 +50,13 @@ tasks.dokkaHtml.configure {
 }
 
 dependencies {
+    implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose)
     implementation(libs.lifecycle)
 
     api(libs.bundles.internal.camerax)
 
     androidTestImplementation(libs.androidx.test.rules)
+    androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.compose.junit)
 }

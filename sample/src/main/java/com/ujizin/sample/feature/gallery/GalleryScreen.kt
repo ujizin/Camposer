@@ -28,7 +28,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ujizin.sample.R
 import com.ujizin.sample.components.Section
@@ -43,7 +42,6 @@ import coil.request.videoFramePercent
 import org.koin.androidx.compose.get
 import java.io.File
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun GalleryScreen(
     viewModel: GalleryViewModel = get(),

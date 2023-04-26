@@ -10,14 +10,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ujizin.sample.R
 import com.ujizin.sample.components.Section
 import com.ujizin.sample.domain.User
 import org.koin.androidx.compose.get
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun ConfigurationScreen(
     viewModel: ConfigurationViewModel = get(),
