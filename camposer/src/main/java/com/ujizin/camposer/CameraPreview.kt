@@ -25,6 +25,7 @@ import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.CaptureMode
 import com.ujizin.camposer.state.FlashMode
 import com.ujizin.camposer.state.ImageAnalyzer
+import com.ujizin.camposer.state.ImageCaptureMode
 import com.ujizin.camposer.state.ImageTargetSize
 import com.ujizin.camposer.state.ImplementationMode
 import com.ujizin.camposer.state.ScaleType
@@ -38,6 +39,7 @@ import androidx.camera.core.CameraSelector as CameraXSelector
  * @param cameraState camera state hold some states and camera's controller, it can be useful to given action like [CameraState.takePicture]
  * @param camSelector camera selector to be added, default is back
  * @param captureMode camera capture mode, default is image
+ * @param imageCaptureMode camera image capture mode, default is minimum latency for better performance
  * @param imageCaptureTargetSize suggested target size for image camera capture, default is camera's preferred size
  * @param flashMode flash mode to be added, default is off
  * @param scaleType scale type to be added, default is fill center
@@ -64,6 +66,7 @@ public fun CameraPreview(
     cameraState: CameraState = rememberCameraState(),
     camSelector: CamSelector = cameraState.camSelector,
     captureMode: CaptureMode = cameraState.captureMode,
+    imageCaptureMode: ImageCaptureMode = cameraState.imageCaptureMode,
     imageCaptureTargetSize: ImageTargetSize? = cameraState.imageCaptureTargetSize,
     flashMode: FlashMode = cameraState.flashMode,
     scaleType: ScaleType = cameraState.scaleType,
@@ -90,6 +93,7 @@ public fun CameraPreview(
         cameraState = cameraState,
         camSelector = camSelector,
         captureMode = captureMode,
+        imageCaptureMode = imageCaptureMode,
         imageCaptureTargetSize = imageCaptureTargetSize,
         flashMode = flashMode,
         scaleType = scaleType,
@@ -117,6 +121,7 @@ internal fun CameraPreviewImpl(
     cameraState: CameraState,
     camSelector: CamSelector,
     captureMode: CaptureMode,
+    imageCaptureMode: ImageCaptureMode,
     imageCaptureTargetSize: ImageTargetSize?,
     flashMode: FlashMode,
     scaleType: ScaleType,
@@ -148,7 +153,8 @@ internal fun CameraPreviewImpl(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
             )
             controller = cameraState.controller.apply {
-                cameraState.controller.imageCaptureTargetSize = imageCaptureTargetSize?.toOutputSize()
+                cameraState.controller.imageCaptureTargetSize =
+                    imageCaptureTargetSize?.toOutputSize()
 
                 bindToLifecycle(lifecycleOwner)
             }
@@ -191,6 +197,7 @@ internal fun CameraPreviewImpl(
                     flashMode = flashMode,
                     enableTorch = enableTorch,
                     zoomRatio = zoomRatio,
+                    imageCaptureMode = imageCaptureMode,
                     meteringPoint = meteringPointFactory.createPoint(x, y)
                 )
             }

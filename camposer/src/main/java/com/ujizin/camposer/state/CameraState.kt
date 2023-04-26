@@ -116,6 +116,17 @@ public class CameraState internal constructor(context: Context) {
         }
 
     /**
+     * Image capture mode to be added on camera.
+     * */
+    internal var imageCaptureMode: ImageCaptureMode = ImageCaptureMode.MinLatency
+        set(value) {
+            if (field != value) {
+                field = value
+                controller.imageCaptureMode = value.mode
+            }
+        }
+
+    /**
      * Get scale type from the camera.
      * */
     internal var scaleType: ScaleType = ScaleType.FillCenter
@@ -498,6 +509,7 @@ public class CameraState internal constructor(context: Context) {
         isFocusOnTapEnabled: Boolean,
         flashMode: FlashMode,
         zoomRatio: Float,
+        imageCaptureMode: ImageCaptureMode,
         enableTorch: Boolean,
         meteringPoint: MeteringPoint
     ) {
@@ -512,6 +524,7 @@ public class CameraState internal constructor(context: Context) {
         this.flashMode = flashMode
         this.enableTorch = enableTorch
         this.isFocusOnTapSupported = meteringPoint.isFocusMeteringSupported
+        this.imageCaptureMode = imageCaptureMode
         setZoomRatio(zoomRatio)
     }
 
