@@ -24,9 +24,17 @@ fun AppPermission(content: @Composable () -> Unit) {
     val permissionsState = rememberMultiplePermissionsState(
         mutableListOf(
             android.Manifest.permission.CAMERA,
-            android.Manifest.permission.READ_EXTERNAL_STORAGE,
             android.Manifest.permission.RECORD_AUDIO,
         ).apply {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                add(android.Manifest.permission.POST_NOTIFICATIONS)
+                add(android.Manifest.permission.READ_MEDIA_AUDIO)
+                add(android.Manifest.permission.READ_MEDIA_VIDEO)
+                add(android.Manifest.permission.READ_MEDIA_IMAGES)
+            } else {
+                add(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+            }
+
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                 add(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
             }
