@@ -1,7 +1,6 @@
 package com.ujizin.camposer.state
 
 import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.ImageProxy
 import androidx.compose.runtime.Immutable
 
 /**
@@ -10,7 +9,7 @@ import androidx.compose.runtime.Immutable
  * @param imageAnalysisBackpressureStrategy the backpressure strategy applied to the image producer
  * @param imageAnalysisTargetSize the intended output size for ImageAnalysis
  * @param imageAnalysisImageQueueDepth the image queue depth of ImageAnalysis.
- * @param analyzerCallback receive images and perform custom processing.
+ * @param analyzer receive images and perform custom processing.
  *
  * @see rememberImageAnalyzer
  * */
@@ -20,13 +19,8 @@ public class ImageAnalyzer(
     imageAnalysisBackpressureStrategy: ImageAnalysisBackpressureStrategy,
     imageAnalysisTargetSize: ImageTargetSize?,
     imageAnalysisImageQueueDepth: Int,
-    private var analyzerCallback: (ImageProxy) -> Unit,
+    internal var analyzer: ImageAnalysis.Analyzer,
 ) {
-
-    /**
-     * Hold Image analysis Analyzer to camera.
-     * */
-    internal val analyzer: ImageAnalysis.Analyzer = Analyzer()
 
     init {
         updateCameraState(
@@ -46,13 +40,6 @@ public class ImageAnalyzer(
         this.imageAnalysisImageQueueDepth = imageAnalysisImageQueueDepth
     }
 
-    @Immutable
-    private inner class Analyzer : ImageAnalysis.Analyzer {
-        override fun analyze(image: ImageProxy) {
-            this@ImageAnalyzer.analyzerCallback(image)
-        }
-    }
-
     /**
      * Update actual image analysis instance.
      * */
@@ -62,13 +49,13 @@ public class ImageAnalyzer(
         ),
         imageAnalysisTargetSize: ImageTargetSize? = ImageTargetSize(cameraState.imageAnalysisTargetSize),
         imageAnalysisImageQueueDepth: Int = cameraState.imageAnalysisImageQueueDepth,
-        analyzerCallback: (ImageProxy) -> Unit = this.analyzerCallback,
+        analyzer: ImageAnalysis.Analyzer = this.analyzer,
     ) {
         updateCameraState(
             imageAnalysisBackpressureStrategy,
             imageAnalysisTargetSize,
             imageAnalysisImageQueueDepth
         )
-        this.analyzerCallback = analyzerCallback
+        this.analyzer = analyzer
     }
 }
