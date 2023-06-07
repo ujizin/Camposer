@@ -57,7 +57,7 @@ public class CameraState internal constructor(context: Context) {
     /**
      * Main controller from CameraX. useful in cases that haven't been release some feature yet.
      * */
-    internal val controller: LifecycleCameraController = LifecycleCameraController(context)
+    public val controller: LifecycleCameraController = LifecycleCameraController(context)
 
     /**
      * Get max zoom from camera.
