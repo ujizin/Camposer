@@ -99,7 +99,6 @@ fun CameraSection(
     val isRecording by rememberUpdatedState(cameraState.isRecording)
     var enableTorch by cameraState.rememberTorch(initialTorch = false)
     val imageAnalyzer = cameraState.rememberImageAnalyzer(analyze = onAnalyzeImage)
-
     CameraPreview(
         cameraState = cameraState,
         camSelector = camSelector,
@@ -107,7 +106,7 @@ fun CameraSection(
         enableTorch = enableTorch,
         flashMode = flashMode,
         zoomRatio = zoomRatio,
-        imageAnalyzer = imageAnalyzer.takeIf { cameraOption == CameraOption.QRCode },
+        imageAnalyzer = imageAnalyzer,
         isPinchToZoomEnabled = usePinchToZoom,
         isFocusOnTapEnabled = useTapToFocus,
         onZoomRatioChanged = {

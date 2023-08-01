@@ -153,9 +153,6 @@ internal fun CameraPreviewImpl(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
             )
             controller = cameraState.controller.apply {
-                cameraState.controller.imageCaptureTargetSize =
-                    imageCaptureTargetSize?.toOutputSize()
-
                 bindToLifecycle(lifecycleOwner)
             }
 
