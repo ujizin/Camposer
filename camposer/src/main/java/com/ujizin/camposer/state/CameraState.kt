@@ -229,12 +229,7 @@ public class CameraState(context: Context) {
         }
 
     private fun updateUseCases() {
-        controller.setEnabledUseCases(0)
-        val useCases = when (captureMode) {
-            CaptureMode.Video -> captureMode.value
-            CaptureMode.Image -> useCases.sumOr(captureMode.value)
-        }
-        controller.setEnabledUseCases(useCases)
+        controller.setEnabledUseCases(useCases.sumOr(captureMode.value))
     }
 
     /**
