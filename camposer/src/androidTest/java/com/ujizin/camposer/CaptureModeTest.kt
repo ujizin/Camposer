@@ -72,7 +72,7 @@ internal class CaptureModeTest : CameraTest() {
     }
 
     @Test
-    fun text_videoCaptureModeWithAnalysis() = with(composeTestRule) {
+    fun test_videoCaptureModeWithAnalysis() = with(composeTestRule) {
         var isAnalyzeCalled = false
         initCaptureModeCamera(CaptureMode.Video) {
             isAnalyzeCalled = true
@@ -90,14 +90,14 @@ internal class CaptureModeTest : CameraTest() {
                     is VideoCaptureResult.Success -> {
                         assertEquals(Uri.fromFile(videoFile), result.savedUri)
                         assertEquals(CaptureMode.Video, cameraState.captureMode)
+                        assertEquals(true, cameraState.isImageAnalysisEnabled)
+                        assertEquals(true, isAnalyzeCalled)
                     }
                 }
             }
             runBlocking {
                 delay(RECORD_VIDEO_DELAY)
                 cameraState.stopRecording()
-                assertEquals(true, cameraState.isImageAnalysisEnabled)
-                assertEquals(true, isAnalyzeCalled)
             }
         }
     }
