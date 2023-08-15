@@ -110,6 +110,7 @@ internal class CaptureModeTest : CameraTest() {
             cameraState = state,
             captureMode = captureMode,
             imageAnalyzer = analyzer?.let { state.rememberImageAnalyzer(analyze = it) },
+            isImageAnalysisEnabled = analyzer != null
         )
     }
 
