@@ -30,7 +30,7 @@
 Add dependency to your `build.gradle` and sync your project
 
 ```
-implementation 'io.github.ujizin:camposer:0.1.0'
+implementation 'io.github.ujizin:camposer:<version>'
 ```
 
 ## How to use
