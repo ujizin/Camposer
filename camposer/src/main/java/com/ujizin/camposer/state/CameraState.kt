@@ -34,7 +34,7 @@ import java.util.concurrent.Executor
  *
  * To be created use [rememberCameraState].
  * */
-public class CameraState internal constructor(context: Context) {
+public class CameraState(context: Context) {
 
     /**
      * Main Executor to action as take picture or record.
