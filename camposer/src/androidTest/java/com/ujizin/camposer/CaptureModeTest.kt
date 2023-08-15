@@ -96,9 +96,6 @@ internal class CaptureModeTest : CameraTest() {
             runBlocking {
                 delay(RECORD_VIDEO_DELAY)
                 cameraState.stopRecording()
-            }
-
-            runOnIdle {
                 assertEquals(false, cameraState.isImageAnalysisEnabled)
                 assertEquals(false, isAnalyzeCalled)
             }
