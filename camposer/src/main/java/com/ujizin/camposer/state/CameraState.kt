@@ -75,6 +75,37 @@ public class CameraState internal constructor(context: Context) {
     )
         internal set
 
+
+    /**
+     * Get range compensation range from camera.
+     * */
+    private val exposureCompensationRange
+        get() = controller.cameraInfo?.exposureState?.exposureCompensationRange
+
+    /**
+     * Get min exposure from camera.
+     * */
+    public var minExposure: Int by mutableStateOf(
+        exposureCompensationRange?.lower ?: INITIAL_EXPOSURE_VALUE
+    )
+        internal set
+
+    /**
+     * Get max exposure from camera.
+     * */
+    public var maxExposure: Int by mutableStateOf(
+        exposureCompensationRange?.upper ?: INITIAL_EXPOSURE_VALUE
+    )
+        internal set
+
+    public val initialExposure: Int = INITIAL_EXPOSURE_VALUE
+        get() = controller.cameraInfo?.exposureState?.exposureCompensationIndex ?: field
+
+    /**
+     * Check if compensation exposure is supported.
+     * */
+    public val isExposureSupported: Boolean by derivedStateOf { maxExposure != INITIAL_EXPOSURE_VALUE }
+
     /**
      * Check if camera is streaming or not.
      * */
@@ -282,9 +313,14 @@ public class CameraState internal constructor(context: Context) {
 
     init {
         controller.initializationFuture.addListener({
-            startZoom()
+            resetCamera()
             isInitialized = true
         }, mainExecutor)
+    }
+
+    private fun startExposure() {
+        minExposure = exposureCompensationRange?.lower ?: INITIAL_EXPOSURE_VALUE
+        maxExposure = exposureCompensationRange?.upper ?: INITIAL_EXPOSURE_VALUE
     }
 
     /**
@@ -350,6 +386,10 @@ public class CameraState internal constructor(context: Context) {
      * */
     private fun setZoomRatio(zoomRatio: Float) {
         controller.setZoomRatio(zoomRatio.coerceIn(minZoom, maxZoom))
+    }
+
+    private fun setExposureCompensation(exposureCompensation: Int) {
+        controller.cameraControl?.setExposureCompensationIndex(exposureCompensation)
     }
 
     /**
@@ -489,6 +529,7 @@ public class CameraState internal constructor(context: Context) {
     private fun resetCamera() {
         hasFlashUnit = controller.cameraInfo?.hasFlashUnit() ?: false
         startZoom()
+        startExposure()
     }
 
     private fun Set<Int>.sumOr(initial: Int = 0): Int = fold(initial) { acc, current ->
@@ -511,7 +552,8 @@ public class CameraState internal constructor(context: Context) {
         zoomRatio: Float,
         imageCaptureMode: ImageCaptureMode,
         enableTorch: Boolean,
-        meteringPoint: MeteringPoint
+        meteringPoint: MeteringPoint,
+        exposureCompensation: Int
     ) {
         this.camSelector = camSelector
         this.captureMode = captureMode
@@ -525,12 +567,14 @@ public class CameraState internal constructor(context: Context) {
         this.enableTorch = enableTorch
         this.isFocusOnTapSupported = meteringPoint.isFocusMeteringSupported
         this.imageCaptureMode = imageCaptureMode
+        setExposureCompensation(exposureCompensation)
         setZoomRatio(zoomRatio)
     }
 
     private companion object {
         private val TAG = this::class.java.name
         private const val INITIAL_ZOOM_VALUE = 1F
+        private const val INITIAL_EXPOSURE_VALUE = 0
     }
 }
 

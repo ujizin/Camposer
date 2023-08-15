@@ -44,6 +44,7 @@ import androidx.camera.core.CameraSelector as CameraXSelector
  * @param flashMode flash mode to be added, default is off
  * @param scaleType scale type to be added, default is fill center
  * @param enableTorch enable torch from camera, default is false.
+ * @param exposureCompensation camera exposure compensation to be added
  * @param zoomRatio zoom ratio to be added, default is 1.0
  * @param imageAnalyzer image analyzer from camera, see [ImageAnalyzer]
  * @param implementationMode implementation mode to be added, default is performance
@@ -71,6 +72,7 @@ public fun CameraPreview(
     flashMode: FlashMode = cameraState.flashMode,
     scaleType: ScaleType = cameraState.scaleType,
     enableTorch: Boolean = cameraState.enableTorch,
+    exposureCompensation: Int = cameraState.initialExposure,
     zoomRatio: Float = 1F,
     imageAnalyzer: ImageAnalyzer? = null,
     implementationMode: ImplementationMode = cameraState.implementationMode,
@@ -93,6 +95,7 @@ public fun CameraPreview(
         cameraState = cameraState,
         camSelector = camSelector,
         captureMode = captureMode,
+        exposureCompensation = exposureCompensation,
         imageCaptureMode = imageCaptureMode,
         imageCaptureTargetSize = imageCaptureTargetSize,
         flashMode = flashMode,
@@ -129,6 +132,7 @@ internal fun CameraPreviewImpl(
     zoomRatio: Float,
     implementationMode: ImplementationMode,
     imageAnalyzer: ImageAnalyzer?,
+    exposureCompensation: Int,
     isImageAnalysisEnabled: Boolean,
     isFocusOnTapEnabled: Boolean,
     isPinchToZoomEnabled: Boolean,
@@ -198,7 +202,8 @@ internal fun CameraPreviewImpl(
                     enableTorch = enableTorch,
                     zoomRatio = zoomRatio,
                     imageCaptureMode = imageCaptureMode,
-                    meteringPoint = meteringPointFactory.createPoint(x, y)
+                    meteringPoint = meteringPointFactory.createPoint(x, y),
+                    exposureCompensation = exposureCompensation,
                 )
             }
 
