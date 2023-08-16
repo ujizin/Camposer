@@ -12,6 +12,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
       - name: make gradlew executable
         run: chmod +x ./gradlew
 
