@@ -1,13 +1,14 @@
 [versions]
 
-kotlin = "1.8.10"
+kotlin = "1.9.10"
 gradle = "8.0.0"
 gradle-nexus = "1.1.0"
 androidx-core = "1.9.0"
 androidx-test-rules = "1.4.0"
 camerax = "1.2.3"
 compose-bom = "2023.04.01"
-compose-compiler = "1.4.4"
+compose-compiler = "1.4.7"
+compose-multiplatform = "1.5.1"
 appcompat = "1.7.1"
 material = "1.6.1"
 lifecycle = "2.6.1"
@@ -70,7 +71,7 @@ dokka = { module = "org.jetbrains.dokka:kotlin-as-java-plugin", version.ref = "k
 
 cloudy = { module = "com.github.skydoves:cloudy", version.ref = "cloudy" }
 
-androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-test-rules"}
+androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-test-rules" }
 
 [bundles]
 
@@ -95,4 +96,6 @@ library = { id = "com.android.library", version.ref = "gradle" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "kotlin" }
-gradle-nexus = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "gradle-nexus"}
+gradle-nexus = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "gradle-nexus" }
+multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+multiplatform-compose = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }

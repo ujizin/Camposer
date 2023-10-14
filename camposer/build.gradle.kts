@@ -1,9 +1,10 @@
 import com.ujizin.camposer.Config
 
 plugins {
+    kotlin("multiplatform")
+//    id("org.jetbrains.dokka")
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.dokka")
+    id("org.jetbrains.compose")
 }
 
 extra.apply {
@@ -12,51 +13,85 @@ extra.apply {
     set("PUBLISH_VERSION", Config.versionName)
 }
 
-apply(from = "${rootDir}/scripts/publish-module.gradle")
+// apply(from = "${rootDir}/scripts/publish-module.gradle")
 
 android {
     namespace = "com.ujizin.camposer"
     compileSdk = Config.compileSdk
     defaultConfig {
         minSdk = Config.minSdk
-        targetSdk = Config.targetSdk
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
 
-    kotlinOptions {
-        freeCompilerArgs += "-Xexplicit-api=strict"
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
+
 }
 
-tasks.dokkaHtml.configure {
-    dokkaSourceSets {
-        named("main") {
-            noAndroidSdkLink.set(false)
+kotlin {
+     targetHierarchy.default()
+
+
+    androidTarget {
+        compilations.all {
+            kotlinOptions {
+                freeCompilerArgs += "-Xexplicit-api=strict"
+            }
         }
     }
+
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach {
+        it.compilations.all {
+            kotlinOptions {
+                freeCompilerArgs += "-Xexplicit-api=strict"
+            }
+        }
+        it.binaries.framework { baseName = "camposer" }
+    }
+
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation(compose.runtime)
+                implementation(compose.foundation)
+            }
+        }
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test-junit"))
+                implementation(kotlin("test-common"))
+                implementation(kotlin("test-annotations-common"))
+//                implementation(compose.desktop.uiTestJUnit4)
+            }
+        }
+
+        val androidMain by getting {
+            dependencies {
+                implementation(libs.lifecycle)
+                api(libs.bundles.internal.camerax)
+            }
+        }
+
+//        val iosX64Main by getting
+//        val iosArm64Main by getting
+//        val iosSimulatorArm64Main by getting
+//        val iosMain by creating {
+//            dependsOn(commonMain)
+//            iosX64Main.dependsOn(this)
+//            iosArm64Main.dependsOn(this)
+//            iosSimulatorArm64Main.dependsOn(this)
+//        }
+    }
 }
-
-dependencies {
-    implementation(platform(libs.compose.bom))
-    implementation(libs.bundles.compose)
-    implementation(libs.lifecycle)
-
-    api(libs.bundles.internal.camerax)
-
-    androidTestImplementation(libs.androidx.test.rules)
-    androidTestImplementation(platform(libs.compose.bom))
-    androidTestImplementation(libs.compose.junit)
-}
+//tasks.dokkaHtml.configure {
+//    dokkaSourceSets {
+//        named("main") {
+//            noAndroidSdkLink.set(false)
+//        }
+//    }
+//}

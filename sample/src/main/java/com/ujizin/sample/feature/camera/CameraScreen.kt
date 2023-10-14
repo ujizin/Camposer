@@ -24,6 +24,7 @@ import com.skydoves.cloudy.Cloudy
 import com.ujizin.camposer.CameraPreview
 import com.ujizin.camposer.state.CamSelector
 import com.ujizin.camposer.state.CameraState
+import com.ujizin.camposer.state.inverse
 import com.ujizin.camposer.state.rememberCamSelector
 import com.ujizin.camposer.state.rememberCameraState
 import com.ujizin.camposer.state.rememberFlashMode
@@ -114,10 +115,10 @@ fun CameraSection(
             zoomRatio = it
         },
         onSwitchToFront = { bitmap ->
-            Cloudy(radius = 20) { Image(bitmap.asImageBitmap(), contentDescription = null) }
+            Cloudy(radius = 20) { Image(bitmap, contentDescription = null) }
         },
         onSwitchToBack = { bitmap ->
-            Cloudy(radius = 20) { Image(bitmap.asImageBitmap(), contentDescription = null) }
+            Cloudy(radius = 20) { Image(bitmap, contentDescription = null) }
         }
     ) {
         BlinkPictureBox(lastPicture, cameraOption == CameraOption.Video)

@@ -10,6 +10,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.ujizin.multiplatform_sample.MultiplatformCameraScreen
 import com.ujizin.sample.feature.camera.CameraScreen
 import com.ujizin.sample.feature.configuration.ConfigurationScreen
 import com.ujizin.sample.feature.gallery.GalleryScreen
@@ -39,10 +40,11 @@ class MainActivity : ComponentActivity() {
     fun NavGraph(navHost: NavHostController) {
         NavHost(navHost, startDestination = Router.Camera.route) {
             route(Router.Camera) {
-                CameraScreen(
-                    onGalleryClick = { navHost.navigate(Router.Gallery) },
-                    onConfigurationClick = { navHost.navigate(Router.Configuration) }
-                )
+                MultiplatformCameraScreen()
+//                CameraScreen(
+//                    onGalleryClick = { navHost.navigate(Router.Gallery) },
+//                    onConfigurationClick = { navHost.navigate(Router.Configuration) }
+//                )
             }
             route(Router.Gallery) {
                 GalleryScreen(
