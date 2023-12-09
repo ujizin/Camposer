@@ -9,6 +9,7 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.OptIn
+import androidx.annotation.VisibleForTesting
 import androidx.camera.core.FocusMeteringAction
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
@@ -555,8 +556,9 @@ public class CameraState(context: Context) {
     }
 
     @SuppressLint("RestrictedApi")
-    private fun isImageAnalysisSupported(
-        cameraSelector: CamSelector
+    @VisibleForTesting
+    internal fun isImageAnalysisSupported(
+        cameraSelector: CamSelector = camSelector
     ): Boolean = cameraManager?.isImageAnalysisSupported(cameraSelector.selector.lensFacing) ?: false
 
     /**

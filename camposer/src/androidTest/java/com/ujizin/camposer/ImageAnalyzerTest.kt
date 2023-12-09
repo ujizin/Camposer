@@ -43,18 +43,30 @@ internal class ImageAnalyzerTest : CameraTest() {
         }
     }
 
+    @Test
+    fun test_imageAnalysisSupported() = with(composeTestRule) {
+        var expectImageAnalysisSupported = true
+        initImageAnalyzerCamera(isImageAnalyzeEnabled = true) {
+            expectImageAnalysisSupported = cameraState.isImageAnalysisSupported()
+        }
+
+        runOnIdle {
+            assertEquals(expectImageAnalysisSupported, cameraState.isImageAnalysisSupported)
+            assertEquals(expectImageAnalysisSupported, cameraState.isImageAnalysisEnabled)
+        }
+    }
+
     private fun ComposeContentTestRule.initImageAnalyzerCamera(
         isImageAnalyzeEnabled: Boolean = true,
         analyze: (ImageProxy) -> Unit = {},
-    ) =
-        initCameraState { state ->
-            imageAnalyzer = state.rememberImageAnalyzer(analyze = analyze)
-            CameraPreview(
-                cameraState = state,
-                imageAnalyzer = imageAnalyzer,
-                isImageAnalysisEnabled = isImageAnalyzeEnabled
-            )
-        }
+    ) = initCameraState { state ->
+        imageAnalyzer = state.rememberImageAnalyzer(analyze = analyze)
+        CameraPreview(
+            cameraState = state,
+            imageAnalyzer = imageAnalyzer,
+            isImageAnalysisEnabled = isImageAnalyzeEnabled
+        )
+    }
 
     private companion object {
         private const val ANALYZER_TIME_OUT = 2_000L
