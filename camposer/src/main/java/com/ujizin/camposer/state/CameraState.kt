@@ -1,8 +1,10 @@
 package com.ujizin.camposer.state
 
+import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
+import android.hardware.camera2.CameraManager
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
@@ -26,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.ujizin.camposer.extensions.compatMainExecutor
+import com.ujizin.camposer.extensions.isImageAnalysisSupported
 import java.io.File
 import java.util.concurrent.Executor
 
@@ -216,11 +219,24 @@ public class CameraState(context: Context) {
      * */
     private val useCases: MutableSet<Int> = mutableSetOf(IMAGE_ANALYSIS)
 
+    private val cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as? CameraManager
+
+    /**
+     * Check if image analysis is supported by camera hardware level.
+     * */
+    public var isImageAnalysisSupported: Boolean by mutableStateOf(isImageAnalysisSupported(camSelector))
+        private set
+
     /**
      * Enable/Disable Image analysis from the camera.
      * */
-    internal var isImageAnalysisEnabled: Boolean = true
+    internal var isImageAnalysisEnabled: Boolean = isImageAnalysisSupported
         set(value) {
+            if (!isImageAnalysisSupported) {
+                Log.e(TAG, "Image analysis is not supported")
+                return
+            }
+
             if (value != field) {
                 if (value) useCases += IMAGE_ANALYSIS else useCases -= IMAGE_ANALYSIS
                 updateUseCases()
@@ -229,7 +245,12 @@ public class CameraState(context: Context) {
         }
 
     private fun updateUseCases() {
-        controller.setEnabledUseCases(useCases.sumOr(captureMode.value))
+        try {
+            controller.setEnabledUseCases(useCases.sumOr(captureMode.value))
+        } catch (exception: IllegalStateException) {
+            Log.e(TAG, "Use case Image Analysis not supported")
+            controller.setEnabledUseCases(captureMode.value)
+        }
     }
 
     /**
@@ -303,6 +324,7 @@ public class CameraState(context: Context) {
     /**
      * Return true if it's recording.
      * */
+    @ExperimentalVideo
     public var isRecording: Boolean by mutableStateOf(controller.isRecording)
         private set
 
@@ -523,6 +545,7 @@ public class CameraState(context: Context) {
 
     private fun resetCamera() {
         hasFlashUnit = controller.cameraInfo?.hasFlashUnit() ?: false
+        isImageAnalysisSupported = isImageAnalysisSupported(camSelector)
         startZoom()
         startExposure()
     }
@@ -530,6 +553,11 @@ public class CameraState(context: Context) {
     private fun Set<Int>.sumOr(initial: Int = 0): Int = fold(initial) { acc, current ->
         acc or current
     }
+
+    @SuppressLint("RestrictedApi")
+    private fun isImageAnalysisSupported(
+        cameraSelector: CamSelector
+    ): Boolean = cameraManager?.isImageAnalysisSupported(cameraSelector.selector.lensFacing) ?: false
 
     /**
      * Update all values from camera state.
