@@ -24,6 +24,7 @@ internal class FlashModeTest : CameraTest() {
     @Test
     fun test_flashModes() = with(composeTestRule) {
         initFlashCamera(camSelector = CamSelector.Back)
+        if (!cameraState.hasFlashUnit) return
 
         FlashMode.values().forEach { mode ->
             flashMode.value = mode
@@ -39,7 +40,7 @@ internal class FlashModeTest : CameraTest() {
         cameraState.hasFlashUnit = false
 
         flashMode.value = FlashMode.On
-        onNodeWithTag("${flashMode.value}").assertDoesNotExist()
+        onNodeWithTag("${FlashMode.On}").assertDoesNotExist()
         runOnIdle { assertEquals(FlashMode.Off, cameraState.flashMode) }
     }
 
