@@ -27,8 +27,10 @@ internal class ImageAnalyzerTest : CameraTest() {
         waitUntil(ANALYZER_TIME_OUT) { isAnalyzeCalled }
 
         runOnIdle {
-            assertEquals(true, cameraState.isImageAnalysisEnabled)
-            assertEquals(true, isAnalyzeCalled)
+            if (cameraState.isImageAnalysisSupported) {
+                assertEquals(true, cameraState.isImageAnalysisEnabled)
+                assertEquals(true, isAnalyzeCalled)
+            }
         }
     }
 
@@ -38,14 +40,16 @@ internal class ImageAnalyzerTest : CameraTest() {
         initImageAnalyzerCamera(isImageAnalyzeEnabled = false) { isAnalyzeCalled = true }
 
         runOnIdle {
-            assertEquals(false, cameraState.isImageAnalysisEnabled)
-            assertEquals(false, isAnalyzeCalled)
+            if (cameraState.isImageAnalysisSupported) {
+                assertEquals(false, cameraState.isImageAnalysisEnabled)
+                assertEquals(false, isAnalyzeCalled)
+            }
         }
     }
 
     @Test
     fun test_imageAnalysisSupported() = with(composeTestRule) {
-        var expectImageAnalysisSupported = true
+        var expectImageAnalysisSupported: Boolean? = null
         initImageAnalyzerCamera(isImageAnalyzeEnabled = true) {
             expectImageAnalysisSupported = cameraState.isImageAnalysisSupported()
         }

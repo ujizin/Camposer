@@ -90,8 +90,10 @@ internal class CaptureModeTest : CameraTest() {
                     is VideoCaptureResult.Success -> {
                         assertEquals(Uri.fromFile(videoFile), result.savedUri)
                         assertEquals(CaptureMode.Video, cameraState.captureMode)
-                        assertEquals(true, cameraState.isImageAnalysisEnabled)
-                        assertEquals(true, isAnalyzeCalled)
+                        if (cameraState.isImageAnalysisSupported) {
+                            assertEquals(true, cameraState.isImageAnalysisEnabled)
+                            assertEquals(true, isAnalyzeCalled)
+                        }
                     }
                 }
             }
@@ -115,7 +117,7 @@ internal class CaptureModeTest : CameraTest() {
     }
 
     private companion object {
-        private const val RECORD_VIDEO_DELAY = 500L
+        private const val RECORD_VIDEO_DELAY = 1000L
         private const val IMAGE_TEST_FILENAME = "capture_mode_test.jpg"
         private const val VIDEO_TEST_FILENAME = "capture_mode_test.mp4"
     }

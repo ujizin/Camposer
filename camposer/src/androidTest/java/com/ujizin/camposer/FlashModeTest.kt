@@ -27,7 +27,7 @@ internal class FlashModeTest : CameraTest() {
 
         FlashMode.values().forEach { mode ->
             flashMode.value = mode
-            onNodeWithTag("$mode").assertIsDisplayed()
+            onNodeWithTag("${flashMode.value}").assertIsDisplayed()
             runOnIdle { assertEquals(mode, cameraState.flashMode) }
         }
     }
@@ -39,7 +39,7 @@ internal class FlashModeTest : CameraTest() {
         cameraState.hasFlashUnit = false
 
         flashMode.value = FlashMode.On
-        onNodeWithTag("$flashMode").assertDoesNotExist()
+        onNodeWithTag("${flashMode.value}").assertDoesNotExist()
         runOnIdle { assertEquals(FlashMode.Off, cameraState.flashMode) }
     }
 
