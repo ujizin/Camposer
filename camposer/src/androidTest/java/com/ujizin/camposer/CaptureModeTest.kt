@@ -2,6 +2,7 @@ package com.ujizin.camposer
 
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import androidx.camera.core.ImageProxy
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -48,6 +49,9 @@ internal class CaptureModeTest : CameraTest() {
 
     @Test
     fun test_videoCaptureMode() = with(composeTestRule) {
+        // No support for API Level 23 below
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return
+
         initCaptureModeCamera(CaptureMode.Video)
 
         runOnIdle {
@@ -73,6 +77,9 @@ internal class CaptureModeTest : CameraTest() {
 
     @Test
     fun test_videoCaptureModeWithAnalysis() = with(composeTestRule) {
+        // No support for API Level 23 below
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return
+
         var isAnalyzeCalled = false
         initCaptureModeCamera(CaptureMode.Video) {
             isAnalyzeCalled = true
