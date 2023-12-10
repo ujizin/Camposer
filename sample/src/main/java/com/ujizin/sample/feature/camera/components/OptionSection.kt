@@ -17,10 +17,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ujizin.sample.feature.camera.model.CameraOption
+
 @Composable
 fun OptionSection(
     modifier: Modifier = Modifier,
     currentCameraOption: CameraOption,
+    isVideoSupported: Boolean,
     onCameraOptionChanged: (CameraOption) -> Unit,
 ) {
     Row(
@@ -28,6 +30,8 @@ fun OptionSection(
         horizontalArrangement = Arrangement.Center,
     ) {
         CameraOption.values().forEach { option ->
+            if (!isVideoSupported && option == CameraOption.Video) return@forEach
+
             Text(
                 modifier = Modifier
                     .clickable(

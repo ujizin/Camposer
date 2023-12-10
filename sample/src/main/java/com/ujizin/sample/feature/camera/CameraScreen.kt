@@ -130,6 +130,7 @@ fun CameraSection(
             cameraOption = cameraOption,
             hasFlashUnit = hasFlashUnit,
             qrCodeText = qrCodeText,
+            isVideoSupported = cameraState.isVideoSupported,
             onFlashModeChanged = { flash ->
                 enableTorch = flash == Flash.Always
                 flashMode = flash.toFlashMode()
@@ -161,6 +162,7 @@ fun CameraInnerContent(
     hasFlashUnit: Boolean,
     qrCodeText: String?,
     lastPicture: File?,
+    isVideoSupported: Boolean,
     onGalleryClick: () -> Unit,
     onFlashModeChanged: (Flash) -> Unit,
     onZoomFinish: () -> Unit,
@@ -199,6 +201,7 @@ fun CameraInnerContent(
             qrCodeText = qrCodeText,
             onTakePicture = onTakePicture,
             isRecording = isRecording,
+            isVideoSupported = isVideoSupported,
             onRecording = onRecording,
             onSwitchCamera = onSwitchCamera,
             onCameraOptionChanged = onCameraOptionChanged,

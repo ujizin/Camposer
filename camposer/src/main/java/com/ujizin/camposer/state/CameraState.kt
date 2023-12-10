@@ -6,9 +6,12 @@ import android.content.ContentValues
 import android.content.Context
 import android.hardware.camera2.CameraManager
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
+import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.annotation.OptIn
+import androidx.annotation.RequiresApi
 import androidx.annotation.VisibleForTesting
 import androidx.camera.core.FocusMeteringAction
 import androidx.camera.core.ImageAnalysis
@@ -323,6 +326,13 @@ public class CameraState(context: Context) {
         }
 
     /**
+     * Return if video is supported.
+     * */
+
+    @ChecksSdkIntAtLeast(Build.VERSION_CODES.M)
+    public var isVideoSupported: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+
+    /**
      * Return true if it's recording.
      * */
     @ExperimentalVideo
@@ -417,6 +427,7 @@ public class CameraState(context: Context) {
      * @param onResult Callback called when [VideoCaptureResult] is ready
      * */
     @OptIn(markerClass = [ExperimentalVideo::class])
+    @RequiresApi(Build.VERSION_CODES.M)
     public fun startRecording(file: File, onResult: (VideoCaptureResult) -> Unit) {
         startRecording(OutputFileOptions.builder(file).build(), onResult)
     }
@@ -429,6 +440,7 @@ public class CameraState(context: Context) {
      *  @param onResult Callback called when [VideoCaptureResult] is ready
      *  */
     @OptIn(markerClass = [ExperimentalVideo::class])
+    @RequiresApi(Build.VERSION_CODES.M)
     public fun startRecording(
         saveCollection: Uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
         contentValues: ContentValues,
@@ -447,6 +459,7 @@ public class CameraState(context: Context) {
      * @param onResult Callback called when [VideoCaptureResult] is ready
      * */
     @ExperimentalVideo
+    @RequiresApi(Build.VERSION_CODES.M)
     public fun startRecording(
         outputFileOptions: OutputFileOptions,
         onResult: (VideoCaptureResult) -> Unit,
@@ -484,6 +497,7 @@ public class CameraState(context: Context) {
      * Stop recording camera.
      * */
     @OptIn(markerClass = [ExperimentalVideo::class])
+    @RequiresApi(Build.VERSION_CODES.M)
     public fun stopRecording() {
         controller.stopRecording()
     }
@@ -491,6 +505,7 @@ public class CameraState(context: Context) {
     /**
      * Toggle recording camera.
      * */
+    @RequiresApi(Build.VERSION_CODES.M)
     public fun toggleRecording(
         file: File,
         onResult: (VideoCaptureResult) -> Unit
@@ -504,6 +519,7 @@ public class CameraState(context: Context) {
     /**
      * Toggle recording camera.
      * */
+    @RequiresApi(Build.VERSION_CODES.M)
     public fun toggleRecording(
         contentValues: ContentValues,
         saveCollection: Uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
@@ -518,6 +534,7 @@ public class CameraState(context: Context) {
     /**
      * Toggle recording camera.
      * */
+    @RequiresApi(Build.VERSION_CODES.M)
     @OptIn(markerClass = [ExperimentalVideo::class])
     public fun toggleRecording(
         outputFileOptions: OutputFileOptions,

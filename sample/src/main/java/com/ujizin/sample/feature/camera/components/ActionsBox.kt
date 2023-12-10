@@ -16,6 +16,7 @@ fun ActionBox(
     isRecording: Boolean,
     qrCodeText: String?,
     lastPicture: File?,
+    isVideoSupported: Boolean,
     onGalleryClick: () -> Unit,
     onTakePicture: () -> Unit,
     onSwitchCamera: () -> Unit,
@@ -32,6 +33,7 @@ fun ActionBox(
             qrCodeText = qrCodeText)
         OptionSection(
             modifier = Modifier.fillMaxWidth(),
+            isVideoSupported = isVideoSupported,
             currentCameraOption = cameraOption,
             onCameraOptionChanged = onCameraOptionChanged
         )
