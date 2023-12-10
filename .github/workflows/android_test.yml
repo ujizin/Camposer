@@ -11,7 +11,13 @@ jobs:
     strategy:
       matrix:
         api-level: [21, 26, 31]
-        arch: ['x86_64', 'x86']
+        include:
+          - api-level: 21
+            arch: 'x86'
+          - api-level: 26
+            arch: 'x86_64'
+          - api-level: 31
+            arch: 'x86_64'
     steps:
       - name: checkout
         uses: actions/checkout@v3
