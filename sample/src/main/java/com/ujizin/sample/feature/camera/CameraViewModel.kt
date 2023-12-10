@@ -8,6 +8,9 @@ import android.util.Log
 import androidx.camera.core.ImageProxy
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.DecodeHintType
+import com.google.zxing.MultiFormatReader
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.ImageCaptureResult
 import com.ujizin.camposer.state.VideoCaptureResult
@@ -15,9 +18,6 @@ import com.ujizin.sample.data.local.datasource.FileDataSource
 import com.ujizin.sample.data.local.datasource.UserDataSource
 import com.ujizin.sample.domain.User
 import com.ujizin.sample.extensions.getQRCodeResult
-import com.google.zxing.BarcodeFormat
-import com.google.zxing.DecodeHintType
-import com.google.zxing.MultiFormatReader
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.onStart
@@ -80,10 +80,12 @@ class CameraViewModel(
                     onResult = ::onVideoResult
                 )
 
-                else -> toggleRecording(
-                    fileDataSource.getFile("mp4"),
-                    onResult = ::onVideoResult
-                )
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
+                    toggleRecording(
+                        fileDataSource.getFile("mp4"),
+                        onResult = ::onVideoResult
+                    )
+                }
             }
         }
     }

@@ -2,7 +2,9 @@ package com.ujizin.camposer.extensions
 
 import android.content.ContentValues
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
+import androidx.annotation.RequiresApi
 import androidx.camera.core.ImageCapture
 import androidx.camera.view.video.OutputFileOptions
 import com.ujizin.camposer.state.CameraState
@@ -43,6 +45,7 @@ public suspend fun CameraState.takePicture(
 /**
  * Transform toggle recording file to suspend function
  * */
+@RequiresApi(Build.VERSION_CODES.M)
 public suspend fun CameraState.toggleRecording(file: File): Uri? = suspendCancellableCoroutine { cont ->
     with(cont) { toggleRecording(file, ::toggleRecordContinuation) }
 }
@@ -50,6 +53,7 @@ public suspend fun CameraState.toggleRecording(file: File): Uri? = suspendCancel
 /**
  * Transform toggle recording content values options to suspend function
  * */
+@RequiresApi(Build.VERSION_CODES.M)
 public suspend fun CameraState.toggleRecording(
     contentValues: ContentValues,
     saveCollection: Uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
@@ -60,6 +64,7 @@ public suspend fun CameraState.toggleRecording(
 /**
  * Transform toggle recording output files options to suspend function
  * */
+@RequiresApi(Build.VERSION_CODES.M)
 public suspend fun CameraState.toggleRecording(
     outputFileOptions: OutputFileOptions
 ): Uri? = suspendCancellableCoroutine { cont ->
