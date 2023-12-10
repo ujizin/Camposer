@@ -117,7 +117,7 @@ internal class CaptureModeTest : CameraTest() {
     }
 
     private companion object {
-        private const val RECORD_VIDEO_DELAY = 1000L
+        private const val RECORD_VIDEO_DELAY = 2000L
         private const val IMAGE_TEST_FILENAME = "capture_mode_test.jpg"
         private const val VIDEO_TEST_FILENAME = "capture_mode_test.mp4"
     }
