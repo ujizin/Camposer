@@ -85,6 +85,8 @@ internal class CaptureModeTest : CameraTest() {
             isAnalyzeCalled = true
         }
 
+        if (!cameraState.isImageAnalysisSupported) return
+
         runOnIdle {
             val videoFile = File(context.filesDir, VIDEO_TEST_FILENAME).apply { createNewFile() }
 
@@ -118,8 +120,10 @@ internal class CaptureModeTest : CameraTest() {
         CameraPreview(
             cameraState = state,
             captureMode = captureMode,
-            imageAnalyzer = analyzer?.let { state.rememberImageAnalyzer(analyze = it) },
-            isImageAnalysisEnabled = analyzer != null
+            imageAnalyzer = analyzer?.takeIf {
+                cameraState.isImageAnalysisSupported
+            }?.let { state.rememberImageAnalyzer(analyze = it) },
+            isImageAnalysisEnabled = cameraState.isImageAnalysisSupported && analyzer != null
         )
     }
 
