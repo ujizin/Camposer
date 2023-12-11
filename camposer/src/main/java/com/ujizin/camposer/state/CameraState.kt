@@ -218,11 +218,6 @@ public class CameraState(context: Context) {
             }
         }
 
-    /**
-     * CameraX's use cases captures.
-     * */
-    private val useCases: MutableSet<Int> = mutableSetOf(IMAGE_ANALYSIS)
-
     private val cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as? CameraManager
 
     /**
@@ -230,6 +225,13 @@ public class CameraState(context: Context) {
      * */
     public var isImageAnalysisSupported: Boolean by mutableStateOf(isImageAnalysisSupported(camSelector))
         private set
+
+    /**
+     * CameraX's use cases captures.
+     * */
+    private val captureUseCases: MutableSet<Int> = mutableSetOf<Int>().apply {
+        if (isImageAnalysisSupported) add(IMAGE_ANALYSIS)
+    }
 
     /**
      * Enable/Disable Image analysis from the camera.
@@ -242,7 +244,7 @@ public class CameraState(context: Context) {
             }
 
             if (value != field) {
-                if (value) useCases += IMAGE_ANALYSIS else useCases -= IMAGE_ANALYSIS
+                if (value) captureUseCases += IMAGE_ANALYSIS else captureUseCases -= IMAGE_ANALYSIS
                 updateUseCases()
                 field = value
             }
@@ -250,7 +252,7 @@ public class CameraState(context: Context) {
 
     private fun updateUseCases() {
         try {
-            controller.setEnabledUseCases(useCases.sumOr(captureMode.value))
+            controller.setEnabledUseCases(captureUseCases.sumOr(captureMode.value))
         } catch (exception: IllegalStateException) {
             Log.e(TAG, "Use case Image Analysis not supported")
             controller.setEnabledUseCases(captureMode.value)
