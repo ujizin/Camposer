@@ -31,6 +31,7 @@ $dokka.location:com.ujizin.camposer.state/CameraState/hasFlashUnit/#/PointingToD
 $dokka.location:com.ujizin.camposer.state/CameraState/initialExposure/#/PointingToDeclaration/camposer/com.ujizin.camposer.state/-camera-state/initial-exposure.html
 $dokka.location:com.ujizin.camposer.state/CameraState/isExposureSupported/#/PointingToDeclaration/camposer/com.ujizin.camposer.state/-camera-state/is-exposure-supported.html
 $dokka.location:com.ujizin.camposer.state/CameraState/isFocusOnTapSupported/#/PointingToDeclaration/camposer/com.ujizin.camposer.state/-camera-state/is-focus-on-tap-supported.html
+$dokka.location:com.ujizin.camposer.state/CameraState/isImageAnalysisSupported/#/PointingToDeclaration/camposer/com.ujizin.camposer.state/-camera-state/is-image-analysis-supported.html
 $dokka.location:com.ujizin.camposer.state/CameraState/isInitialized/#/PointingToDeclaration/camposer/com.ujizin.camposer.state/-camera-state/is-initialized.html
 $dokka.location:com.ujizin.camposer.state/CameraState/isRecording/#/PointingToDeclaration/camposer/com.ujizin.camposer.state/-camera-state/is-recording.html
 $dokka.location:com.ujizin.camposer.state/CameraState/isStreaming/#/PointingToDeclaration/camposer/com.ujizin.camposer.state/-camera-state/is-streaming.html
