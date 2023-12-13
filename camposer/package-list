@@ -35,6 +35,7 @@ $dokka.location:com.ujizin.camposer.state/CameraState/isImageAnalysisSupported/#
 $dokka.location:com.ujizin.camposer.state/CameraState/isInitialized/#/PointingToDeclaration/camposer/com.ujizin.camposer.state/-camera-state/is-initialized.html
 $dokka.location:com.ujizin.camposer.state/CameraState/isRecording/#/PointingToDeclaration/camposer/com.ujizin.camposer.state/-camera-state/is-recording.html
 $dokka.location:com.ujizin.camposer.state/CameraState/isStreaming/#/PointingToDeclaration/camposer/com.ujizin.camposer.state/-camera-state/is-streaming.html
+$dokka.location:com.ujizin.camposer.state/CameraState/isVideoSupported/#/PointingToDeclaration/camposer/com.ujizin.camposer.state/-camera-state/is-video-supported.html
 $dokka.location:com.ujizin.camposer.state/CameraState/isZoomSupported/#/PointingToDeclaration/camposer/com.ujizin.camposer.state/-camera-state/is-zoom-supported.html
 $dokka.location:com.ujizin.camposer.state/CameraState/maxExposure/#/PointingToDeclaration/camposer/com.ujizin.camposer.state/-camera-state/max-exposure.html
 $dokka.location:com.ujizin.camposer.state/CameraState/maxZoom/#/PointingToDeclaration/camposer/com.ujizin.camposer.state/-camera-state/max-zoom.html
