@@ -1,11 +1,16 @@
 package com.ujizin.sample.feature.camera
 
+import android.annotation.SuppressLint
+import android.content.ContentResolver
 import android.graphics.ImageFormat.YUV_420_888
 import android.graphics.ImageFormat.YUV_422_888
 import android.graphics.ImageFormat.YUV_444_888
 import android.os.Build
+import android.provider.MediaStore
 import android.util.Log
 import androidx.camera.core.ImageProxy
+import androidx.camera.video.FileOutputOptions
+import androidx.camera.video.MediaStoreOutputOptions
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.zxing.BarcodeFormat
@@ -72,23 +77,28 @@ class CameraViewModel(
         }
     }
 
-    fun toggleRecording(cameraState: CameraState) = with(cameraState) {
-        viewModelScope.launch {
-            when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> toggleRecording(
-                    fileDataSource.videoContentValues,
-                    onResult = ::onVideoResult
-                )
-
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
-                    toggleRecording(
-                        fileDataSource.getFile("mp4"),
+    @SuppressLint("MissingPermission")
+    fun toggleRecording(contentResolver: ContentResolver, cameraState: CameraState) =
+        with(cameraState) {
+            viewModelScope.launch {
+                when {
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> toggleRecording(
+                        MediaStoreOutputOptions.Builder(
+                            contentResolver,
+                            MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+                        ).setContentValues(fileDataSource.videoContentValues).build(),
                         onResult = ::onVideoResult
                     )
+
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> {
+                        toggleRecording(
+                            FileOutputOptions.Builder(fileDataSource.getFile("mp4")).build(),
+                            onResult = ::onVideoResult
+                        )
+                    }
                 }
             }
         }
-    }
 
     fun analyzeImage(image: ImageProxy) {
         viewModelScope.launch {

@@ -1,5 +1,6 @@
 package com.ujizin.camposer.state
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.ContentValues
@@ -10,27 +11,33 @@ import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.ChecksSdkIntAtLeast
-import androidx.annotation.OptIn
 import androidx.annotation.RequiresApi
+import androidx.annotation.RequiresPermission
 import androidx.annotation.VisibleForTesting
+import androidx.camera.core.CameraEffect
 import androidx.camera.core.FocusMeteringAction
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.MeteringPoint
 import androidx.camera.core.TorchState
+import androidx.camera.video.FileDescriptorOutputOptions
+import androidx.camera.video.FileOutputOptions
+import androidx.camera.video.MediaStoreOutputOptions
+import androidx.camera.video.QualitySelector
+import androidx.camera.video.Recording
+import androidx.camera.video.VideoRecordEvent
 import androidx.camera.view.CameraController.IMAGE_ANALYSIS
 import androidx.camera.view.CameraController.OutputSize
 import androidx.camera.view.CameraController.OutputSize.UNASSIGNED_ASPECT_RATIO
 import androidx.camera.view.LifecycleCameraController
-import androidx.camera.view.video.ExperimentalVideo
-import androidx.camera.view.video.OnVideoSavedCallback
-import androidx.camera.view.video.OutputFileOptions
-import androidx.camera.view.video.OutputFileResults
+import androidx.camera.view.video.AudioConfig
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.util.Consumer
 import com.ujizin.camposer.extensions.compatMainExecutor
 import com.ujizin.camposer.extensions.isImageAnalysisSupported
 import java.io.File
@@ -67,9 +74,14 @@ public class CameraState(context: Context) {
     public val controller: LifecycleCameraController = LifecycleCameraController(context)
 
     /**
+     * Record controller to video Capture
+     * */
+    private var recordController: Recording? = null
+
+    /**
      * Get max zoom from camera.
      * */
-    public var maxZoom: Float by mutableStateOf(
+    public var maxZoom: Float by mutableFloatStateOf(
         controller.zoomState.value?.maxZoomRatio ?: INITIAL_ZOOM_VALUE
     )
         internal set
@@ -174,6 +186,12 @@ public class CameraState(context: Context) {
      * */
     internal var implementationMode: ImplementationMode = ImplementationMode.Performance
 
+    internal var videoQualitySelector: QualitySelector
+        get() = controller.videoCaptureQualitySelector
+        set(value) {
+            controller.videoCaptureQualitySelector = value
+        }
+
     /**
      * Camera mode, it can be front or back.
      * @see CamSelector
@@ -223,7 +241,11 @@ public class CameraState(context: Context) {
     /**
      * Check if image analysis is supported by camera hardware level.
      * */
-    public var isImageAnalysisSupported: Boolean by mutableStateOf(isImageAnalysisSupported(camSelector))
+    public var isImageAnalysisSupported: Boolean by mutableStateOf(
+        isImageAnalysisSupported(
+            camSelector
+        )
+    )
         private set
 
     /**
@@ -331,13 +353,12 @@ public class CameraState(context: Context) {
      * Return if video is supported.
      * */
 
-    @ChecksSdkIntAtLeast(Build.VERSION_CODES.M)
-    public var isVideoSupported: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+    @ChecksSdkIntAtLeast(Build.VERSION_CODES.N)
+    public var isVideoSupported: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
 
     /**
      * Return true if it's recording.
      * */
-    @ExperimentalVideo
     public var isRecording: Boolean by mutableStateOf(controller.isRecording)
         private set
 
@@ -425,70 +446,108 @@ public class CameraState(context: Context) {
     /**
      * Start recording camera.
      *
-     * @param file file where the video will be saved
+     * @param fileOutputOptions file output options where the video will be saved
      * @param onResult Callback called when [VideoCaptureResult] is ready
      * */
-    @OptIn(markerClass = [ExperimentalVideo::class])
-    @RequiresApi(Build.VERSION_CODES.M)
-    public fun startRecording(file: File, onResult: (VideoCaptureResult) -> Unit) {
-        startRecording(OutputFileOptions.builder(file).build(), onResult)
-    }
-
-    /**
-     * Start recording camera.
-     *
-     *  @param saveCollection Uri collection where the video will be saved.
-     *  @param contentValues Content values of the video.
-     *  @param onResult Callback called when [VideoCaptureResult] is ready
-     *  */
-    @OptIn(markerClass = [ExperimentalVideo::class])
-    @RequiresApi(Build.VERSION_CODES.M)
+    @RequiresApi(Build.VERSION_CODES.N)
+    @RequiresPermission(Manifest.permission.RECORD_AUDIO)
     public fun startRecording(
-        saveCollection: Uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-        contentValues: ContentValues,
+        fileOutputOptions: FileOutputOptions,
+        audioConfig: AudioConfig = AudioConfig.create(true),
         onResult: (VideoCaptureResult) -> Unit,
-    ) {
-        startRecording(
-            OutputFileOptions.builder(contentResolver, saveCollection, contentValues).build(),
-            onResult
+    ): Unit = prepareRecording(onResult) {
+        Log.i(TAG, "Start recording")
+        controller.startRecording(
+            fileOutputOptions,
+            audioConfig,
+            mainExecutor,
+            getConsumerEvent(onResult)
         )
     }
 
     /**
      * Start recording camera.
      *
-     * @param outputFileOptions Output file options of the video.
+     * @param fileDescriptorOutputOptions file output options where the video will be saved
      * @param onResult Callback called when [VideoCaptureResult] is ready
      * */
-    @ExperimentalVideo
-    @RequiresApi(Build.VERSION_CODES.M)
+    @RequiresApi(Build.VERSION_CODES.O)
+    @RequiresPermission(Manifest.permission.RECORD_AUDIO)
     public fun startRecording(
-        outputFileOptions: OutputFileOptions,
+        fileDescriptorOutputOptions: FileDescriptorOutputOptions,
+        audioConfig: AudioConfig = AudioConfig.create(true),
         onResult: (VideoCaptureResult) -> Unit,
+    ): Unit = prepareRecording(onResult) {
+        controller.startRecording(
+            fileDescriptorOutputOptions,
+            audioConfig,
+            mainExecutor,
+            getConsumerEvent(onResult)
+        )
+    }
+
+    /**
+     * Start recording camera.
+     *
+     *  @param mediaStoreOutputOptions media store output options to the video to be saved.
+     *  @param onResult Callback called when [VideoCaptureResult] is ready
+     *  */
+    @RequiresApi(Build.VERSION_CODES.N)
+    @RequiresPermission(Manifest.permission.RECORD_AUDIO)
+    public fun startRecording(
+        mediaStoreOutputOptions: MediaStoreOutputOptions,
+        audioConfig: AudioConfig = AudioConfig.create(true),
+        onResult: (VideoCaptureResult) -> Unit,
+    ): Unit = prepareRecording(onError = onResult) {
+        controller.startRecording(
+            mediaStoreOutputOptions,
+            audioConfig,
+            mainExecutor,
+            getConsumerEvent(onResult)
+        )
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun getConsumerEvent(
+        onResult: (VideoCaptureResult) -> Unit
+    ): Consumer<VideoRecordEvent> = Consumer<VideoRecordEvent> { event ->
+        Log.i(TAG, "Video Recorder Event - $event")
+        if (event is VideoRecordEvent.Finalize) {
+            isRecording = false
+            val result = when {
+                !event.hasError() -> VideoCaptureResult.Success(event.outputResults.outputUri)
+                else -> VideoCaptureResult.Error(
+                    "Video error code: ${event.error}",
+                    event.cause
+                )
+            }
+            recordController = null
+            onResult(result)
+        }
+    }
+
+    /**
+     * Prepare recording camera.
+     *
+     * @param onRecordBuild lambda to retrieve record controller
+     * @param onError Callback called when thrown error
+     * */
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun prepareRecording(
+        onError: (VideoCaptureResult.Error) -> Unit,
+        onRecordBuild: () -> Recording,
     ) {
         try {
+            Log.i(TAG, "Prepare recording")
             isRecording = true
-            controller.startRecording(outputFileOptions,
-                mainExecutor,
-                object : OnVideoSavedCallback {
-                    override fun onVideoSaved(outputFileResults: OutputFileResults) {
-                        isRecording = false
-                        onResult(VideoCaptureResult.Success(outputFileResults.savedUri))
-                    }
-
-                    override fun onError(
-                        videoCaptureError: Int, message: String, cause: Throwable?
-                    ) {
-                        isRecording = false
-                        onResult(VideoCaptureResult.Error(videoCaptureError, message, cause))
-                    }
-                })
+            recordController = onRecordBuild()
         } catch (exception: Exception) {
+            Log.i(TAG, "Fail to record! - $exception")
             isRecording = false
-            onResult(
+            onError(
                 VideoCaptureResult.Error(
-                    OnVideoSavedCallback.ERROR_UNKNOWN, if (!controller.isVideoCaptureEnabled) {
-                        "Video capture is not enabled, please set captureMode as CaptureMode.Video"
+                    if (!controller.isVideoCaptureEnabled) {
+                        "Video capture is not enabled, please set captureMode as CaptureMode.Video - ${exception.message}"
                     } else "${exception.message}", exception
                 )
             )
@@ -498,53 +557,76 @@ public class CameraState(context: Context) {
     /**
      * Stop recording camera.
      * */
-    @OptIn(markerClass = [ExperimentalVideo::class])
     @RequiresApi(Build.VERSION_CODES.M)
     public fun stopRecording() {
-        controller.stopRecording()
+        Log.i(TAG, "Stop recording")
+        recordController?.stop()?.also {
+            isRecording = false
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    public fun pauseRecording() {
+        Log.i(TAG, "Pause recording")
+        recordController?.pause()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    public fun resumeRecording() {
+        Log.i(TAG, "Resume recording")
+        recordController?.resume()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    public fun muteRecording(muted: Boolean) {
+        recordController?.mute(muted)
     }
 
     /**
      * Toggle recording camera.
      * */
-    @RequiresApi(Build.VERSION_CODES.M)
+    @RequiresApi(Build.VERSION_CODES.O)
+    @RequiresPermission(Manifest.permission.RECORD_AUDIO)
     public fun toggleRecording(
-        file: File,
+        fileDescriptorOutputOptions: FileDescriptorOutputOptions,
+        audioConfig: AudioConfig = AudioConfig.create(true),
         onResult: (VideoCaptureResult) -> Unit
     ) {
         when (isRecording) {
             true -> stopRecording()
-            false -> startRecording(file, onResult)
+            false -> startRecording(fileDescriptorOutputOptions, audioConfig, onResult)
         }
     }
 
     /**
      * Toggle recording camera.
      * */
-    @RequiresApi(Build.VERSION_CODES.M)
+    @RequiresApi(Build.VERSION_CODES.N)
+    @RequiresPermission(Manifest.permission.RECORD_AUDIO)
     public fun toggleRecording(
-        contentValues: ContentValues,
-        saveCollection: Uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+        mediaStoreOutputOptions: MediaStoreOutputOptions,
+        audioConfig: AudioConfig = AudioConfig.create(true),
         onResult: (VideoCaptureResult) -> Unit
     ) {
         when (isRecording) {
             true -> stopRecording()
-            false -> startRecording(saveCollection, contentValues, onResult)
+            false -> startRecording(mediaStoreOutputOptions, audioConfig, onResult)
         }
     }
 
     /**
      * Toggle recording camera.
      * */
-    @RequiresApi(Build.VERSION_CODES.M)
-    @OptIn(markerClass = [ExperimentalVideo::class])
+    @RequiresApi(Build.VERSION_CODES.N)
+    @RequiresPermission(Manifest.permission.RECORD_AUDIO)
     public fun toggleRecording(
-        outputFileOptions: OutputFileOptions,
+        fileOutputOptions: FileOutputOptions,
+        audioConfig: AudioConfig = AudioConfig.create(true),
         onResult: (VideoCaptureResult) -> Unit
     ) {
         when (isRecording) {
             true -> stopRecording()
-            false -> startRecording(outputFileOptions, onResult)
+            false -> startRecording(fileOutputOptions, audioConfig, onResult)
         }
     }
 
@@ -570,6 +652,20 @@ public class CameraState(context: Context) {
         startExposure()
     }
 
+    /**
+     *  Set effects on camera
+     * */
+    public fun setEffects(effects: Set<CameraEffect>) {
+        controller.setEffects(effects)
+    }
+
+    /**
+     *  Set effects on camera
+     * */
+    public fun clearEffects() {
+        controller.clearEffects()
+    }
+
     private fun Set<Int>.sumOr(initial: Int = 0): Int = fold(initial) { acc, current ->
         acc or current
     }
@@ -578,7 +674,9 @@ public class CameraState(context: Context) {
     @VisibleForTesting
     internal fun isImageAnalysisSupported(
         cameraSelector: CamSelector = camSelector
-    ): Boolean = cameraManager?.isImageAnalysisSupported(cameraSelector.selector.lensFacing) ?: false
+    ): Boolean = cameraManager?.isImageAnalysisSupported(
+        cameraSelector.selector.lensFacing
+    ) ?: false
 
     /**
      * Update all values from camera state.
@@ -597,7 +695,8 @@ public class CameraState(context: Context) {
         imageCaptureMode: ImageCaptureMode,
         enableTorch: Boolean,
         meteringPoint: MeteringPoint,
-        exposureCompensation: Int
+        exposureCompensation: Int,
+        videoQualitySelector: QualitySelector,
     ) {
         this.camSelector = camSelector
         this.captureMode = captureMode
@@ -611,6 +710,7 @@ public class CameraState(context: Context) {
         this.enableTorch = enableTorch
         this.isFocusOnTapSupported = meteringPoint.isFocusMeteringSupported
         this.imageCaptureMode = imageCaptureMode
+        this.videoQualitySelector = videoQualitySelector
         setExposureCompensation(exposureCompensation)
         setZoomRatio(zoomRatio)
     }

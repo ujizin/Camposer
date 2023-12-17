@@ -49,6 +49,6 @@ internal abstract class CameraTest {
     }
 
     private companion object {
-        private const val CAMERA_TIMEOUT = 2_500L
+        private const val CAMERA_TIMEOUT = 10_000L
     }
 }

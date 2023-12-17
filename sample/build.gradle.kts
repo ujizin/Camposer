@@ -1,4 +1,4 @@
-import com.ujizin.camposer.Config
+import ujizin.camposer.Config
 
 plugins {
     id("com.android.application")

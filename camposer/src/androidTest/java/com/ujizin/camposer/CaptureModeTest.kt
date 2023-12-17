@@ -2,8 +2,9 @@ package com.ujizin.camposer
 
 import android.content.Context
 import android.net.Uri
-import android.os.Build
 import androidx.camera.core.ImageProxy
+import androidx.camera.video.FileOutputOptions
+import androidx.camera.view.video.AudioConfig
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
@@ -15,7 +16,6 @@ import com.ujizin.camposer.state.rememberImageAnalyzer
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
@@ -28,74 +28,80 @@ internal class CaptureModeTest : CameraTest() {
         get() = InstrumentationRegistry.getInstrumentation().context
 
     @Test
-    @Ignore("Flaky test, sometimes throw exception \"Camera closed\"")
     fun test_captureMode() = with(composeTestRule) {
         initCaptureModeCamera(CaptureMode.Image)
 
+        var isFinalized = false
         runOnIdle {
             val imageFile = File(context.filesDir, IMAGE_TEST_FILENAME).apply { createNewFile() }
-
             cameraState.takePicture(imageFile) { result ->
                 when (result) {
                     is ImageCaptureResult.Error -> throw result.throwable
                     is ImageCaptureResult.Success -> {
                         assertEquals(Uri.fromFile(imageFile), result.savedUri)
                         assertEquals(CaptureMode.Image, cameraState.captureMode)
+                        isFinalized = true
                     }
                 }
             }
         }
+
+        waitUntil(CAPTURE_MODE_TIMEOUT) { isFinalized }
     }
 
     @Test
     fun test_videoCaptureMode() = with(composeTestRule) {
-        // No support for API Level 23 below
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return
-
         initCaptureModeCamera(CaptureMode.Video)
 
-        runOnIdle {
-            val videoFile = File(context.filesDir, VIDEO_TEST_FILENAME).apply { createNewFile() }
-            cameraState.startRecording(videoFile) { result ->
-                when (result) {
-                    is VideoCaptureResult.Error -> {
-                        throw result.throwable ?: Exception(result.message)
-                    }
+        if (!cameraState.isVideoSupported) return
 
+        // Create file
+        val videoFile = File(context.filesDir, VIDEO_TEST_FILENAME).apply {
+            delete()
+            createNewFile()
+        }
+
+        var isFinished = false
+        runOnIdle {
+            cameraState.startRecording(FileOutputOptions.Builder(videoFile).build(), AudioConfig.AUDIO_DISABLED) { result ->
+                when (result) {
+                    is VideoCaptureResult.Error -> throw result.throwable ?: error(result.message)
                     is VideoCaptureResult.Success -> {
                         assertEquals(Uri.fromFile(videoFile), result.savedUri)
                         assertEquals(CaptureMode.Video, cameraState.captureMode)
+                        isFinished = true
                     }
                 }
             }
-            runBlocking {
-                delay(RECORD_VIDEO_DELAY)
-                cameraState.stopRecording()
-            }
         }
+
+        runBlocking {
+            delay(RECORD_VIDEO_DELAY)
+            cameraState.stopRecording()
+        }
+
+        waitUntil(CAPTURE_MODE_TIMEOUT) { isFinished }
     }
 
     @Test
     fun test_videoCaptureModeWithAnalysis() = with(composeTestRule) {
-        // No support for API Level 23 below
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return
-
-        var isAnalyzeCalled = false
-        initCaptureModeCamera(CaptureMode.Video) {
-            isAnalyzeCalled = true
+        // Create file
+        val videoFile = File(context.filesDir, VIDEO_TEST_FILENAME).apply {
+            delete()
+            createNewFile()
         }
 
-        if (!cameraState.isImageAnalysisSupported) return
+        var isAnalyzeCalled = false
+        initCaptureModeCamera(CaptureMode.Video) { isAnalyzeCalled = true }
+
+        if (!cameraState.isImageAnalysisSupported || !cameraState.isVideoSupported) return
+
+        var isFinished = false
 
         runOnIdle {
-            val videoFile = File(context.filesDir, VIDEO_TEST_FILENAME).apply { createNewFile() }
-
-            cameraState.startRecording(videoFile) { result ->
+            cameraState.startRecording(FileOutputOptions.Builder(videoFile).build()) { result ->
                 when (result) {
-                    is VideoCaptureResult.Error -> {
-                        throw result.throwable ?: Exception(result.message)
-                    }
-
+                    is VideoCaptureResult.Error -> throw result.throwable ?: error(result.message)
                     is VideoCaptureResult.Success -> {
                         assertEquals(Uri.fromFile(videoFile), result.savedUri)
                         assertEquals(CaptureMode.Video, cameraState.captureMode)
@@ -103,14 +109,18 @@ internal class CaptureModeTest : CameraTest() {
                             assertEquals(true, cameraState.isImageAnalysisEnabled)
                             assertEquals(true, isAnalyzeCalled)
                         }
+                        isFinished = true
                     }
                 }
             }
-            runBlocking {
-                delay(RECORD_VIDEO_DELAY)
-                cameraState.stopRecording()
-            }
         }
+
+        runBlocking {
+            delay(RECORD_VIDEO_DELAY)
+            cameraState.stopRecording()
+        }
+
+        waitUntil(CAPTURE_MODE_TIMEOUT) { isFinished }
     }
 
     private fun ComposeContentTestRule.initCaptureModeCamera(
@@ -129,6 +139,7 @@ internal class CaptureModeTest : CameraTest() {
 
     private companion object {
         private const val RECORD_VIDEO_DELAY = 2000L
+        private const val CAPTURE_MODE_TIMEOUT = 10000L
         private const val IMAGE_TEST_FILENAME = "capture_mode_test.jpg"
         private const val VIDEO_TEST_FILENAME = "capture_mode_test.mp4"
     }

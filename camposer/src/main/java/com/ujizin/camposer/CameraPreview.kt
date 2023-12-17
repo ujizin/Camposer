@@ -3,6 +3,7 @@ package com.ujizin.camposer
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.view.ViewGroup
+import androidx.camera.video.QualitySelector
 import androidx.camera.view.PreviewView
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -51,6 +52,7 @@ import androidx.camera.core.CameraSelector as CameraXSelector
  * @param isImageAnalysisEnabled enable or disable image analysis
  * @param isFocusOnTapEnabled turn on feature focus on tap if true
  * @param isPinchToZoomEnabled turn on feature pinch to zoom if true
+ * @param videoQualitySelector quality selector to the video capture
  * @param onPreviewStreamChanged dispatch when preview is switching to front or back
  * @param onSwitchToFront composable preview when change camera to front and it's not been streaming yet
  * @param onSwitchToBack composable preview when change camera to back and it's not been streaming yet
@@ -79,6 +81,7 @@ public fun CameraPreview(
     isImageAnalysisEnabled: Boolean = cameraState.isImageAnalysisEnabled,
     isFocusOnTapEnabled: Boolean = cameraState.isFocusOnTapEnabled,
     isPinchToZoomEnabled: Boolean = cameraState.isZoomSupported,
+    videoQualitySelector: QualitySelector = cameraState.videoQualitySelector,
     onPreviewStreamChanged: () -> Unit = {},
     onSwitchToFront: @Composable (Bitmap) -> Unit = {},
     onSwitchToBack: @Composable (Bitmap) -> Unit = {},
@@ -107,6 +110,7 @@ public fun CameraPreview(
         implementationMode = implementationMode,
         isFocusOnTapEnabled = isFocusOnTapEnabled,
         isPinchToZoomEnabled = isPinchToZoomEnabled,
+        videoQualitySelector = videoQualitySelector,
         onZoomRatioChanged = onZoomRatioChanged,
         focusTapContent = focusTapContent,
         onFocus = onFocus,
@@ -136,6 +140,7 @@ internal fun CameraPreviewImpl(
     isImageAnalysisEnabled: Boolean,
     isFocusOnTapEnabled: Boolean,
     isPinchToZoomEnabled: Boolean,
+    videoQualitySelector: QualitySelector,
     onZoomRatioChanged: (Float) -> Unit,
     onPreviewStreamChanged: () -> Unit,
     onFocus: suspend (() -> Unit) -> Unit,
@@ -200,6 +205,7 @@ internal fun CameraPreviewImpl(
                     zoomRatio = zoomRatio,
                     imageCaptureMode = imageCaptureMode,
                     meteringPoint = meteringPointFactory.createPoint(x, y),
+                    videoQualitySelector = videoQualitySelector,
                     exposureCompensation = exposureCompensation,
                 )
             }
