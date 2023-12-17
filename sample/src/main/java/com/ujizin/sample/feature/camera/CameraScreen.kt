@@ -50,6 +50,7 @@ fun CameraScreen(
     when (val result: CameraUiState = uiState) {
         is CameraUiState.Ready -> {
             val cameraState = rememberCameraState()
+            val context = LocalContext.current
             CameraSection(
                 cameraState = cameraState,
                 useFrontCamera = result.user.useCamFront,
@@ -59,12 +60,11 @@ fun CameraScreen(
                 qrCodeText = result.qrCodeText,
                 onGalleryClick = onGalleryClick,
                 onConfigurationClick = onConfigurationClick,
-                onRecording = { viewModel.toggleRecording(cameraState) },
+                onRecording = { viewModel.toggleRecording(context.contentResolver, cameraState) },
                 onTakePicture = { viewModel.takePicture(cameraState) },
                 onAnalyzeImage = viewModel::analyzeImage
             )
 
-            val context = LocalContext.current
             LaunchedEffect(result.throwable) {
                 if (result.throwable != null) {
                     Toast.makeText(context, result.throwable.message, Toast.LENGTH_SHORT).show()

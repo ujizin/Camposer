@@ -26,7 +26,7 @@ internal class FlashModeTest : CameraTest() {
         initFlashCamera(camSelector = CamSelector.Back)
         if (!cameraState.hasFlashUnit) return
 
-        FlashMode.values().forEach { mode ->
+        FlashMode.entries.forEach { mode ->
             flashMode.value = mode
             onNodeWithTag("${flashMode.value}").assertIsDisplayed()
             runOnIdle { assertEquals(mode, cameraState.flashMode) }

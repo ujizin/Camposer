@@ -1,4 +1,4 @@
-package com.ujizin.camposer
+package ujizin.camposer
 
 object Config {
     const val compileSdk = 34

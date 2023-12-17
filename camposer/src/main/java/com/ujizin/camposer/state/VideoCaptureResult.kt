@@ -15,7 +15,6 @@ public sealed interface VideoCaptureResult {
 
     @Immutable
     public data class Error(
-        val videoCaptureError: Int,
         val message: String,
         val throwable: Throwable?
     ) : VideoCaptureResult
