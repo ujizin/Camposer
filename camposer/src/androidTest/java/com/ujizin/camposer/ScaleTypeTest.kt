@@ -18,7 +18,7 @@ internal class ScaleTypeTest : CameraTest() {
     @Test
     fun test_scaleType() = with(composeTestRule) {
         initScaleTypeCamera()
-        ScaleType.values().forEach { scale ->
+        ScaleType.entries.forEach { scale ->
             scaleType.value = scale
             runOnIdle { assertEquals(cameraState.scaleType, scaleType.value) }
         }

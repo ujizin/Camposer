@@ -16,6 +16,7 @@ import com.ujizin.camposer.state.rememberImageAnalyzer
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
@@ -57,58 +58,23 @@ internal class CaptureModeTest : CameraTest() {
 
         // Create file
         val videoFile = File(context.filesDir, VIDEO_TEST_FILENAME).apply {
-            delete()
+            deleteRecursively()
             createNewFile()
         }
 
+        waitUntil(CAPTURE_MODE_TIMEOUT) { videoFile.exists() }
+
         var isFinished = false
         runOnIdle {
-            cameraState.startRecording(FileOutputOptions.Builder(videoFile).build(), AudioConfig.AUDIO_DISABLED) { result ->
+            cameraState.startRecording(
+                FileOutputOptions.Builder(videoFile).build(),
+                AudioConfig.AUDIO_DISABLED
+            ) { result ->
                 when (result) {
                     is VideoCaptureResult.Error -> throw result.throwable ?: error(result.message)
                     is VideoCaptureResult.Success -> {
                         assertEquals(Uri.fromFile(videoFile), result.savedUri)
                         assertEquals(CaptureMode.Video, cameraState.captureMode)
-                        isFinished = true
-                    }
-                }
-            }
-        }
-
-        runBlocking {
-            delay(RECORD_VIDEO_DELAY)
-            cameraState.stopRecording()
-        }
-
-        waitUntil(CAPTURE_MODE_TIMEOUT) { isFinished }
-    }
-
-    @Test
-    fun test_videoCaptureModeWithAnalysis() = with(composeTestRule) {
-        // Create file
-        val videoFile = File(context.filesDir, VIDEO_TEST_FILENAME).apply {
-            delete()
-            createNewFile()
-        }
-
-        var isAnalyzeCalled = false
-        initCaptureModeCamera(CaptureMode.Video) { isAnalyzeCalled = true }
-
-        if (!cameraState.isImageAnalysisSupported || !cameraState.isVideoSupported) return
-
-        var isFinished = false
-
-        runOnIdle {
-            cameraState.startRecording(FileOutputOptions.Builder(videoFile).build(), AudioConfig.AUDIO_DISABLED) { result ->
-                when (result) {
-                    is VideoCaptureResult.Error -> throw result.throwable ?: error(result.message)
-                    is VideoCaptureResult.Success -> {
-                        assertEquals(Uri.fromFile(videoFile), result.savedUri)
-                        assertEquals(CaptureMode.Video, cameraState.captureMode)
-                        if (cameraState.isImageAnalysisSupported) {
-                            assertEquals(true, cameraState.isImageAnalysisEnabled)
-                            assertEquals(true, isAnalyzeCalled)
-                        }
                         isFinished = true
                     }
                 }

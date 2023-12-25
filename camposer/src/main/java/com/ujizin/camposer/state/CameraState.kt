@@ -8,6 +8,7 @@ import android.content.Context
 import android.hardware.camera2.CameraManager
 import android.net.Uri
 import android.os.Build
+import android.os.Build.VERSION_CODES
 import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.ChecksSdkIntAtLeast
@@ -32,9 +33,11 @@ import androidx.camera.view.CameraController.OutputSize
 import androidx.camera.view.CameraController.OutputSize.UNASSIGNED_ASPECT_RATIO
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.video.AudioConfig
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.util.Consumer
@@ -48,6 +51,7 @@ import java.util.concurrent.Executor
  *
  * To be created use [rememberCameraState].
  * */
+@Stable
 public class CameraState(context: Context) {
 
     /**
@@ -89,7 +93,7 @@ public class CameraState(context: Context) {
     /**
      * Get min zoom from camera.
      * */
-    public var minZoom: Float by mutableStateOf(
+    public var minZoom: Float by mutableFloatStateOf(
         controller.zoomState.value?.minZoomRatio ?: INITIAL_ZOOM_VALUE
     )
         internal set
@@ -104,7 +108,7 @@ public class CameraState(context: Context) {
     /**
      * Get min exposure from camera.
      * */
-    public var minExposure: Int by mutableStateOf(
+    public var minExposure: Int by mutableIntStateOf(
         exposureCompensationRange?.lower ?: INITIAL_EXPOSURE_VALUE
     )
         internal set
@@ -112,7 +116,7 @@ public class CameraState(context: Context) {
     /**
      * Get max exposure from camera.
      * */
-    public var maxExposure: Int by mutableStateOf(
+    public var maxExposure: Int by mutableIntStateOf(
         exposureCompensationRange?.upper ?: INITIAL_EXPOSURE_VALUE
     )
         internal set
@@ -161,7 +165,7 @@ public class CameraState(context: Context) {
         set(value) {
             if (field != value) {
                 field = value
-                updateUseCases()
+                updateCaptureMode()
             }
         }
 
@@ -227,13 +231,10 @@ public class CameraState(context: Context) {
     /**
      * Get Image Analyzer from camera.
      * */
-    internal var imageAnalyzer: ImageAnalysis.Analyzer? = null
+    private var imageAnalyzer: ImageAnalysis.Analyzer? = null
         set(value) {
             field = value
-            with(controller) {
-                clearImageAnalysisAnalyzer()
-                setImageAnalysisAnalyzer(mainExecutor, value ?: return)
-            }
+            updateImageAnalyzer(value)
         }
 
     private val cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as? CameraManager
@@ -249,13 +250,6 @@ public class CameraState(context: Context) {
         private set
 
     /**
-     * CameraX's use cases captures.
-     * */
-    private val captureUseCases: MutableSet<Int> = mutableSetOf<Int>().apply {
-        if (isImageAnalysisSupported) add(IMAGE_ANALYSIS)
-    }
-
-    /**
      * Enable/Disable Image analysis from the camera.
      * */
     internal var isImageAnalysisEnabled: Boolean = isImageAnalysisSupported
@@ -264,22 +258,9 @@ public class CameraState(context: Context) {
                 Log.e(TAG, "Image analysis is not supported")
                 return
             }
-
-            if (value != field) {
-                if (value) captureUseCases += IMAGE_ANALYSIS else captureUseCases -= IMAGE_ANALYSIS
-                updateUseCases()
-                field = value
-            }
+            field = value
+            updateCaptureMode()
         }
-
-    private fun updateUseCases() {
-        try {
-            controller.setEnabledUseCases(captureUseCases.sumOr(captureMode.value))
-        } catch (exception: IllegalStateException) {
-            Log.e(TAG, "Use case Image Analysis not supported")
-            controller.setEnabledUseCases(captureMode.value)
-        }
-    }
 
     /**
      * Image analysis backpressure strategy, use [rememberImageAnalyzer] to set value.
@@ -353,8 +334,8 @@ public class CameraState(context: Context) {
      * Return if video is supported.
      * */
 
-    @ChecksSdkIntAtLeast(Build.VERSION_CODES.N)
-    public var isVideoSupported: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+    @ChecksSdkIntAtLeast(VERSION_CODES.N)
+    public var isVideoSupported: Boolean = Build.VERSION.SDK_INT >= VERSION_CODES.N
 
     /**
      * Return true if it's recording.
@@ -367,6 +348,33 @@ public class CameraState(context: Context) {
             resetCamera()
             isInitialized = true
         }, mainExecutor)
+    }
+
+    private fun updateCaptureMode() {
+        try {
+            var useCases = captureMode.value
+            if (captureMode == CaptureMode.Image && isImageAnalysisEnabled) {
+                useCases = useCases or IMAGE_ANALYSIS
+                updateImageAnalyzer(imageAnalyzer)
+            } else {
+                updateImageAnalyzer(null)
+            }
+            controller.setEnabledUseCases(useCases)
+        } catch (exception: IllegalStateException) {
+            Log.e(TAG, "Use case Image Analysis not supported")
+            controller.setEnabledUseCases(captureMode.value)
+        }
+    }
+
+    private fun updateImageAnalyzer(
+        analyzer: ImageAnalysis.Analyzer? = imageAnalyzer
+    ) = with(controller) {
+        clearImageAnalysisAnalyzer()
+        if (Build.VERSION.SDK_INT >= VERSION_CODES.N && captureMode == CaptureMode.Video) {
+            return
+        }
+
+        setImageAnalysisAnalyzer(mainExecutor, analyzer ?: return)
     }
 
     private fun startExposure() {
@@ -449,7 +457,7 @@ public class CameraState(context: Context) {
      * @param fileOutputOptions file output options where the video will be saved
      * @param onResult Callback called when [VideoCaptureResult] is ready
      * */
-    @RequiresApi(Build.VERSION_CODES.N)
+    @RequiresApi(VERSION_CODES.N)
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
     public fun startRecording(
         fileOutputOptions: FileOutputOptions,
@@ -471,7 +479,7 @@ public class CameraState(context: Context) {
      * @param fileDescriptorOutputOptions file output options where the video will be saved
      * @param onResult Callback called when [VideoCaptureResult] is ready
      * */
-    @RequiresApi(Build.VERSION_CODES.O)
+    @RequiresApi(VERSION_CODES.O)
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
     public fun startRecording(
         fileDescriptorOutputOptions: FileDescriptorOutputOptions,
@@ -492,7 +500,7 @@ public class CameraState(context: Context) {
      *  @param mediaStoreOutputOptions media store output options to the video to be saved.
      *  @param onResult Callback called when [VideoCaptureResult] is ready
      *  */
-    @RequiresApi(Build.VERSION_CODES.N)
+    @RequiresApi(VERSION_CODES.N)
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
     public fun startRecording(
         mediaStoreOutputOptions: MediaStoreOutputOptions,
@@ -507,7 +515,7 @@ public class CameraState(context: Context) {
         )
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
+    @RequiresApi(VERSION_CODES.N)
     private fun getConsumerEvent(
         onResult: (VideoCaptureResult) -> Unit
     ): Consumer<VideoRecordEvent> = Consumer<VideoRecordEvent> { event ->
@@ -532,7 +540,7 @@ public class CameraState(context: Context) {
      * @param onRecordBuild lambda to retrieve record controller
      * @param onError Callback called when thrown error
      * */
-    @RequiresApi(Build.VERSION_CODES.M)
+    @RequiresApi(VERSION_CODES.M)
     private fun prepareRecording(
         onError: (VideoCaptureResult.Error) -> Unit,
         onRecordBuild: () -> Recording,
@@ -557,7 +565,7 @@ public class CameraState(context: Context) {
     /**
      * Stop recording camera.
      * */
-    @RequiresApi(Build.VERSION_CODES.M)
+    @RequiresApi(VERSION_CODES.M)
     public fun stopRecording() {
         Log.i(TAG, "Stop recording")
         recordController?.stop()?.also {
@@ -565,19 +573,19 @@ public class CameraState(context: Context) {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
+    @RequiresApi(VERSION_CODES.M)
     public fun pauseRecording() {
         Log.i(TAG, "Pause recording")
         recordController?.pause()
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
+    @RequiresApi(VERSION_CODES.M)
     public fun resumeRecording() {
         Log.i(TAG, "Resume recording")
         recordController?.resume()
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
+    @RequiresApi(VERSION_CODES.M)
     public fun muteRecording(muted: Boolean) {
         recordController?.mute(muted)
     }
@@ -585,7 +593,7 @@ public class CameraState(context: Context) {
     /**
      * Toggle recording camera.
      * */
-    @RequiresApi(Build.VERSION_CODES.O)
+    @RequiresApi(VERSION_CODES.O)
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
     public fun toggleRecording(
         fileDescriptorOutputOptions: FileDescriptorOutputOptions,
@@ -601,7 +609,7 @@ public class CameraState(context: Context) {
     /**
      * Toggle recording camera.
      * */
-    @RequiresApi(Build.VERSION_CODES.N)
+    @RequiresApi(VERSION_CODES.N)
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
     public fun toggleRecording(
         mediaStoreOutputOptions: MediaStoreOutputOptions,
@@ -617,7 +625,7 @@ public class CameraState(context: Context) {
     /**
      * Toggle recording camera.
      * */
-    @RequiresApi(Build.VERSION_CODES.N)
+    @RequiresApi(VERSION_CODES.N)
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
     public fun toggleRecording(
         fileOutputOptions: FileOutputOptions,

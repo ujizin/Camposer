@@ -2,6 +2,7 @@ package com.ujizin.camposer.state
 
 import androidx.camera.core.ImageAnalysis
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 
 /**
  * Intermediate Image analyzer from cameraX
@@ -13,7 +14,7 @@ import androidx.compose.runtime.Immutable
  *
  * @see rememberImageAnalyzer
  * */
-@Immutable
+@Stable
 public class ImageAnalyzer(
     private val cameraState: CameraState,
     imageAnalysisBackpressureStrategy: ImageAnalysisBackpressureStrategy,

@@ -49,7 +49,7 @@ internal class ImageAnalyzerTest : CameraTest() {
 
     @Test
     fun test_imageAnalysisSupported() = with(composeTestRule) {
-        var expectImageAnalysisSupported: Boolean? = null
+        val expectImageAnalysisSupported: Boolean?
         initImageAnalyzerCamera(isImageAnalyzeEnabled = true)
 
         expectImageAnalysisSupported = cameraState.isImageAnalysisSupported()

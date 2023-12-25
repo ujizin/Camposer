@@ -17,7 +17,7 @@ jobs:
           - api-level: 26
             arch: 'x86_64'
           - api-level: 31
-            arch: 'arm64-v8a'
+            arch: 'x86_64'
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -34,26 +34,6 @@ jobs:
       - name: gradle cache
         uses: gradle/gradle-build-action@v2
 
-      - name: AVD cache
-        uses: actions/cache@v3
-        id: avd-cache
-        with:
-          path: |
-            ~/.android/avd/*
-            ~/.android/adb*
-          key: avd-${{ matrix.api-level }}
-
-      - name: create AVD and generate snapshot for caching
-        if: steps.avd-cache.outputs.cache-hit != 'true'
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: ${{ matrix.api-level }}
-          arch: ${{ matrix.arch }}
-          disable-animations: true
-          force-avd-creation: false
-          emulator-options: -no-window -camera-back emulated -camera-front emulated -gpu swiftshader_indirect -no-boot-anim
-          script: echo "Generated AVD snapshot for caching."
-
       - name: run android tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -61,5 +41,5 @@ jobs:
           arch: ${{ matrix.arch }}
           disable-animations: true
           force-avd-creation: false
-          emulator-options: -no-snapshot-save -no-window -camera-back emulated -camera-front emulated -gpu swiftshader_indirect -no-boot-anim
-          script: ./gradlew connectedDebugAndroidTest
+          emulator-options: -no-snapshot -no-window -no-boot-anim -camera-back emulated -camera-front emulated -gpu swiftshader_indirect
+          script: ./gradlew connectedAndroidTest --stacktrace
