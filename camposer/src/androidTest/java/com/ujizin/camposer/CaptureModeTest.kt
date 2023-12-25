@@ -99,7 +99,7 @@ internal class CaptureModeTest : CameraTest() {
         var isFinished = false
 
         runOnIdle {
-            cameraState.startRecording(FileOutputOptions.Builder(videoFile).build()) { result ->
+            cameraState.startRecording(FileOutputOptions.Builder(videoFile).build(), AudioConfig.AUDIO_DISABLED) { result ->
                 when (result) {
                     is VideoCaptureResult.Error -> throw result.throwable ?: error(result.message)
                     is VideoCaptureResult.Success -> {
