@@ -17,7 +17,7 @@ enum class Flash(
     companion object {
         fun getCurrentValues(isVideo: Boolean) = when {
             isVideo -> listOf(Off, Always)
-            else -> values().toList()
+            else -> entries
         }
     }
 }

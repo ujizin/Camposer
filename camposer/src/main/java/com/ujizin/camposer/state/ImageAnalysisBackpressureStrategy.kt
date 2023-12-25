@@ -20,6 +20,6 @@ public enum class ImageAnalysisBackpressureStrategy(internal val strategy: Int) 
 
     internal companion object {
         internal fun find(strategy: Int) =
-            values().firstOrNull { it.strategy == strategy } ?: KeepOnlyLatest
+            entries.firstOrNull { it.strategy == strategy } ?: KeepOnlyLatest
     }
 }
