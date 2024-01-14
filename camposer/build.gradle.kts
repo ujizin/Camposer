@@ -39,6 +39,13 @@ android {
     kotlinOptions {
         freeCompilerArgs += "-Xexplicit-api=strict"
     }
+
+    publishing {
+        singleVariant("release") {
+            withJavadocJar()
+            withSourcesJar()
+        }
+    }
 }
 
 tasks.dokkaHtml.configure {

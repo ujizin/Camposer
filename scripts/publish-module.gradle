@@ -45,9 +45,6 @@ project.afterEvaluate {
                     from components.java
                 }
 
-                artifact androidSourcesJar
-                artifact javadocJar
-
                 pom {
                     name = PUBLISH_ARTIFACT_ID
                     description = "Camera Library for Android Jetpack Compose."
@@ -56,7 +53,6 @@ project.afterEvaluate {
                         license {
                             name = "The Apache Software License, Version 2.0"
                             url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
-                        }
                     }
                     developers {
                         developer {

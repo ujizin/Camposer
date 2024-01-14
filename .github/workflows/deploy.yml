@@ -19,7 +19,7 @@ jobs:
       - name: Release build
         run: ./gradlew :camposer:assembleRelease
       - name: Source jar and dokka
-        run: ./gradlew androidSourcesJar javadocJar
+        run: ./gradlew :camposer:androidSourcesJar :camposer:javadocJar
       - name: Publish to MavenCentral
         run: ./gradlew camposer:publishReleasePublicationToSonatypeRepository --max-workers 1 closeAndReleaseSonatypeStagingRepository
         env:
