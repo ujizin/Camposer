@@ -1,1 +1,1 @@
-sourceset_dependencies='{":camposer:dokkaHtml/androidTestRelease":[],":camposer:dokkaHtml/debug":[],":camposer:dokkaHtml/main":[],":camposer:dokkaHtml/release":[],":camposer:dokkaHtml/testFixtures":[],":camposer:dokkaHtml/testFixturesDebug":[],":camposer:dokkaHtml/testFixturesRelease":[]}'
+sourceset_dependencies='{":camposer:dokkaHtml/debug":[],":camposer:dokkaHtml/main":[],":camposer:dokkaHtml/release":[]}'
