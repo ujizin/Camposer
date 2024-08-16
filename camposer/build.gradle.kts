@@ -63,6 +63,7 @@ dependencies {
 
     api(libs.bundles.internal.camerax)
 
+    androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.androidx.test.rules)
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.compose.junit)
