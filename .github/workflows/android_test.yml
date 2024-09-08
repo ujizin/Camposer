@@ -69,11 +69,13 @@ jobs:
 
       - name: run android tests
         uses: reactivecircus/android-emulator-runner@v2
+        env:
+          ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL: 60
         with:
           api-level: ${{ matrix.api-level }}
           target: ${{ matrix.target }}
           arch: ${{ matrix.arch }}
           disable-animations: true
           force-avd-creation: false
-          emulator-options: -no-snapshot-save -no-window -no-boot-anim -camera-back emulated -camera-front emulated -gpu swiftshader_indirect
+          emulator-options: -no-snapshot-save -no-window -no-boot-anim -no-metrics -camera-back emulated -camera-front emulated -gpu swiftshader_indirect
           script: ./gradlew connectedAndroidTest --stacktrace
