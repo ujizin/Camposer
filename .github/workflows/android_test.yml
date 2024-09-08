@@ -7,7 +7,7 @@ on:
 
 jobs:
   test:
-    runs-on: macos-latest
+    runs-on: macos-13
     strategy:
       matrix:
         api-level: [21, 26, 31]
