@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        api-level: [21, 26, 29, 31]
+        api-level: [21, 26, 31, 34]
         include:
           - api-level: 21
             arch: 'x86'
@@ -18,10 +18,10 @@ jobs:
           - api-level: 26
             arch: 'x86_64'
             target: default
-          - api-level: 29
+          - api-level: 31
             arch: 'x86_64'
             target: google_apis
-          - api-level: 31
+          - api-level: 34
             arch: 'x86_64'
             target: google_apis
     steps:
