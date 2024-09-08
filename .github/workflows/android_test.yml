@@ -75,5 +75,5 @@ jobs:
           arch: ${{ matrix.arch }}
           disable-animations: true
           force-avd-creation: false
-          emulator-options: -no-snapshot -no-window -no-boot-anim -camera-back emulated -camera-front emulated -gpu swiftshader_indirect
+          emulator-options: -no-snapshot-save -no-window -no-boot-anim -camera-back emulated -camera-front emulated -gpu swiftshader_indirect
           script: ./gradlew connectedAndroidTest --stacktrace
