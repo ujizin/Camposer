@@ -10,13 +10,13 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        api-level: [21, 26, 31]
+        api-level: [21, 26, 29]
         include:
           - api-level: 21
             arch: 'x86'
           - api-level: 26
             arch: 'x86_64'
-          - api-level: 31
+          - api-level: 29
             arch: 'x86_64'
     steps:
       - name: checkout
