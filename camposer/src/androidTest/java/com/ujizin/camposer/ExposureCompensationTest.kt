@@ -35,11 +35,11 @@ internal class ExposureCompensationTest: CameraTest() {
     @Test
     fun test_maxExposureCompensation() = with(composeTestRule) {
         initCameraWithExposure(0)
-        if (!cameraState.isExposureSupported) return@with
 
         exposureCompensation.value = cameraState.maxExposure
 
         runOnIdle {
+            if (!cameraState.isExposureSupported) return@runOnIdle
             assertEquals(cameraState.maxExposure, currentExposure)
             assertEquals(exposureCompensation.value, currentExposure)
         }
