@@ -27,6 +27,8 @@ internal class ExposureCompensationTest: CameraTest() {
         exposureCompensation.value = cameraState.minExposure
 
         runOnIdle {
+            if (!cameraState.isExposureSupported) return@runOnIdle
+
             assertEquals(cameraState.minExposure, currentExposure)
             assertEquals(exposureCompensation.value, currentExposure)
         }
@@ -39,6 +41,8 @@ internal class ExposureCompensationTest: CameraTest() {
         exposureCompensation.value = cameraState.maxExposure
 
         runOnIdle {
+            if (!cameraState.isExposureSupported) return@runOnIdle
+
             assertEquals(cameraState.maxExposure, currentExposure)
             assertEquals(exposureCompensation.value, currentExposure)
         }
@@ -52,6 +56,8 @@ internal class ExposureCompensationTest: CameraTest() {
         exposureCompensation.value = Int.MAX_VALUE
 
         runOnIdle {
+            if (!cameraState.isExposureSupported) return@runOnIdle
+
             assertNotEquals(cameraState.maxExposure, currentExposure)
             assertNotEquals(exposureCompensation.value, currentExposure)
             assertEquals(cameraState.initialExposure, currentExposure)

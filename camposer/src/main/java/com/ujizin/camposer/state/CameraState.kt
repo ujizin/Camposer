@@ -448,7 +448,9 @@ public class CameraState(context: Context) {
     }
 
     private fun setExposureCompensation(exposureCompensation: Int) {
-        controller.cameraControl?.setExposureCompensationIndex(exposureCompensation)
+        if (exposureCompensation in minExposure..maxExposure) {
+            controller.cameraControl?.setExposureCompensationIndex(exposureCompensation)
+        }
     }
 
     /**
