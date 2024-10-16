@@ -193,6 +193,7 @@ public class CameraState(context: Context) {
     internal var videoQualitySelector: QualitySelector
         get() = controller.videoCaptureQualitySelector
         set(value) {
+            if (controller.isRecording) return
             controller.videoCaptureQualitySelector = value
         }
 
@@ -254,6 +255,7 @@ public class CameraState(context: Context) {
      * */
     internal var isImageAnalysisEnabled: Boolean = isImageAnalysisSupported
         set(value) {
+            if (field == value) return
             if (!isImageAnalysisSupported) {
                 Log.e(TAG, "Image analysis is not supported")
                 return
@@ -304,6 +306,7 @@ public class CameraState(context: Context) {
     internal var isFocusOnTapEnabled: Boolean
         get() = controller.isTapToFocusEnabled
         set(value) {
+            if (value == controller.isTapToFocusEnabled) return
             controller.isTapToFocusEnabled = value
         }
 
