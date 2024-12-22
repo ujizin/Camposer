@@ -2,13 +2,12 @@
 
 # Camposer libraries
 
-kotlin = "1.9.20"
+kotlin = "2.0.0"
 gradle = "8.5.2"
 gradle-nexus = "1.1.0"
 androidx-test = "1.6.1"
 camerax = "1.4.1"
 compose-bom = "2024.12.01"
-compose-compiler = "1.5.5"
 
 # Sample app libraries
 
@@ -103,3 +102,4 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "kotlin" }
 gradle-nexus = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "gradle-nexus" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

@@ -1,9 +1,10 @@
 import ujizin.camposer.Config
 
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.dokka")
+    alias(libs.plugins.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.compose.compiler)
 }
 
 extra.apply {
@@ -31,9 +32,6 @@ android {
     }
     buildFeatures {
         compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
 
     kotlinOptions {
