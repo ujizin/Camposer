@@ -22,7 +22,7 @@ navigation = "2.8.5"
 kotlinx-serialization = "1.6.3"
 accompanist = "0.34.0"
 coil = "2.7.0"
-koin = "3.3.0"
+koin = "4.0.0"
 datastore = "1.1.1"
 
 [libraries]
