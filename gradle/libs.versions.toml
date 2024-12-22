@@ -6,21 +6,21 @@ kotlin = "1.9.20"
 gradle = "8.5.2"
 gradle-nexus = "1.1.0"
 androidx-test = "1.6.1"
-camerax = "1.3.4"
-compose-bom = "2024.06.00"
+camerax = "1.4.1"
+compose-bom = "2024.12.01"
 compose-compiler = "1.5.5"
 
 # Sample app libraries
 
-androidx-core = "1.13.1"
+androidx-core = "1.15.0"
 exoplayer = "2.19.1"
 zxing = "3.5.0"
 cloudy = "0.1.1"
-appcompat = "1.9.1"
+appcompat = "1.9.3"
 material = "1.12.0"
-lifecycle = "2.8.4"
-navigation = "2.5.2"
-kotlinx-serialization = "1.4.1"
+lifecycle = "2.8.7"
+navigation = "2.8.5"
+kotlinx-serialization = "1.6.3"
 accompanist = "0.34.0"
 coil = "2.7.0"
 koin = "3.3.0"
@@ -43,6 +43,7 @@ compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 
 compose-foundation = { module = "androidx.compose.foundation:foundation" }
 compose-material3 = { module = "androidx.compose.material:material" }
+compose-material3-icons = { module = "androidx.compose.material:material-icons-extended" }
 compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
 
 compose-lifecycle = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
@@ -75,8 +76,8 @@ dokka = { module = "org.jetbrains.dokka:kotlin-as-java-plugin", version.ref = "k
 
 cloudy = { module = "com.github.skydoves:cloudy", version.ref = "cloudy" }
 
-androidx-test-core = { module = "androidx.test:core-ktx", version.ref = "androidx-test"}
-androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-test"}
+androidx-test-core = { module = "androidx.test:core-ktx", version.ref = "androidx-test" }
+androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-test" }
 
 [bundles]
 
@@ -101,4 +102,4 @@ library = { id = "com.android.library", version.ref = "gradle" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "kotlin" }
-gradle-nexus = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "gradle-nexus"}
+gradle-nexus = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "gradle-nexus" }

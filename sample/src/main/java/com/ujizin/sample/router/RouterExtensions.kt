@@ -1,5 +1,6 @@
 package com.ujizin.sample.router
 
+import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.runtime.Composable
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
@@ -12,9 +13,9 @@ fun NavGraphBuilder.route(
     route: Router,
     arguments: List<NamedNavArgument> = emptyList(),
     deepLinks: List<NavDeepLink> = emptyList(),
-    content: @Composable (NavBackStackEntry) -> Unit
+    content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit
 ) {
-    composable(route.route, arguments, deepLinks, content)
+    composable(route.route, arguments, deepLinks, content = content)
 }
 
 fun NavHostController.navigate(route: Router) {

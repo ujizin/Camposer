@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.ripple
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -35,7 +36,7 @@ fun Button(
             .then(modifier)
             .clickable(
                 enabled = enabled,
-                indication = rememberRipple(bounded = true),
+                indication = ripple(bounded = true),
                 interactionSource = interactionSource,
                 onClick = onClick,
             )
