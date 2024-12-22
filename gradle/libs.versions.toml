@@ -13,7 +13,7 @@ compose-bom = "2024.12.01"
 
 androidx-core = "1.15.0"
 exoplayer = "2.19.1"
-zxing = "3.5.0"
+zxing = "3.5.3"
 cloudy = "0.1.1"
 appcompat = "1.9.3"
 material = "1.12.0"
