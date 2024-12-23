@@ -37,12 +37,12 @@ import com.ujizin.sample.feature.camera.mapper.toFlash
 import com.ujizin.sample.feature.camera.mapper.toFlashMode
 import com.ujizin.sample.feature.camera.model.CameraOption
 import com.ujizin.sample.feature.camera.model.Flash
-import org.koin.androidx.compose.get
+import org.koin.androidx.compose.koinViewModel
 import java.io.File
 
 @Composable
 fun CameraScreen(
-    viewModel: CameraViewModel = get(),
+    viewModel: CameraViewModel = koinViewModel(),
     onGalleryClick: () -> Unit,
     onConfigurationClick: () -> Unit,
 ) {
