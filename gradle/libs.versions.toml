@@ -4,7 +4,7 @@
 
 kotlin = "2.0.0"
 gradle = "8.5.2"
-gradle-nexus = "1.1.0"
+gradle-nexus = "2.0.0"
 androidx-test = "1.6.1"
 camerax = "1.4.1"
 compose-bom = "2024.12.01"
