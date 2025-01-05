@@ -71,8 +71,6 @@ zxing-core = { module = "com.google.zxing:core", version.ref = "zxing" }
 
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
 
-dokka = { module = "org.jetbrains.dokka:kotlin-as-java-plugin", version.ref = "kotlin" }
-
 cloudy = { module = "com.github.skydoves:cloudy", version.ref = "cloudy" }
 
 androidx-test-core = { module = "androidx.test:core-ktx", version.ref = "androidx-test" }
@@ -101,5 +99,6 @@ library = { id = "com.android.library", version.ref = "gradle" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "kotlin" }
+dokka-java-doc = { id = "org.jetbrains.dokka-javadoc", version.ref = "kotlin" }
 gradle-nexus = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "gradle-nexus" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

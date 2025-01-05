@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.dokka)
+    alias(libs.plugins.dokka.java.doc)
     alias(libs.plugins.compose.compiler)
 }
 
@@ -46,10 +47,10 @@ android {
     }
 }
 
-tasks.dokkaHtml.configure {
+dokka {
     dokkaSourceSets {
         named("main") {
-            noAndroidSdkLink.set(false)
+            enableAndroidDocumentationLink.set(true)
         }
     }
 }

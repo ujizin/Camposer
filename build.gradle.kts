@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.gradle.nexus)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.dokka)
+    alias(libs.plugins.dokka.java.doc)
 }
 
 apply(from = "${rootDir}/scripts/publish-root.gradle")
