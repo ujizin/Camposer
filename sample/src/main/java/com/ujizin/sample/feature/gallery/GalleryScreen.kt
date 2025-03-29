@@ -111,7 +111,7 @@ private fun GallerySection(imageFiles: List<File>, onPreviewClick: (String) -> U
             PlaceholderImage(
                 modifier = Modifier
                     .fillMaxSize()
-                    .animateItemPlacement()
+                    .animateItem(fadeInSpec = null, fadeOutSpec = null)
                     .aspectRatio(1F)
                     .clickable(onClick = { onPreviewClick(image.path) }),
                 data = image,
