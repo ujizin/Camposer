@@ -1,7 +1,6 @@
 package com.ujizin.sample.feature.preview
 
 import android.app.Activity
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -30,13 +29,13 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.ujizin.sample.R
-import com.ujizin.sample.components.NavigationIcon
-import com.ujizin.sample.extensions.observeAsState
 import coil.compose.AsyncImage
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.ui.StyledPlayerView
+import com.ujizin.sample.R
+import com.ujizin.sample.components.NavigationIcon
+import com.ujizin.sample.extensions.observeAsState
 import org.koin.androidx.compose.koinViewModel
 import java.io.File
 

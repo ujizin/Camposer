@@ -6,17 +6,14 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.ujizin.sample.feature.camera.CameraScreen
 import com.ujizin.sample.feature.configuration.ConfigurationScreen
 import com.ujizin.sample.feature.gallery.GalleryScreen
 import com.ujizin.sample.feature.permission.AppPermission
 import com.ujizin.sample.feature.preview.PreviewScreen
-import com.ujizin.sample.router.Args
 import com.ujizin.sample.router.Router
 
 class MainActivity : ComponentActivity() {
