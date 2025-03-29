@@ -14,9 +14,11 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.ujizin.camposer.extensions.clamped
 import com.ujizin.camposer.extensions.onCameraTouchEvent
 import com.ujizin.camposer.focus.FocusTap
@@ -155,63 +157,67 @@ internal fun CameraPreviewImpl(
     var tapOffset by remember { mutableStateOf(Offset.Zero) }
     val isCameraIdle by rememberUpdatedState(!cameraState.isStreaming)
     var latestBitmap by remember { mutableStateOf<Bitmap?>(null) }
+    var cameraOffset by remember { mutableStateOf(Offset.Zero) }
 
-    AndroidView(modifier = modifier, factory = { context ->
-        PreviewView(context).apply {
-            layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
-            )
-            controller = cameraState.controller.apply {
-                bindToLifecycle(lifecycleOwner)
-            }
-
-            previewStreamState.observe(lifecycleOwner) { state ->
-                cameraState.isStreaming = state == PreviewView.StreamState.STREAMING
-            }
-        }
-    }, update = { previewView ->
-        if (cameraIsInitialized) {
-            with(previewView) {
-                this.scaleType = scaleType.type
-                this.implementationMode = implementationMode.value
-                onCameraTouchEvent(
-                    onTap = { if (isFocusOnTapEnabled) tapOffset = it },
-                    onScaleChanged = {
-                        if (isPinchToZoomEnabled) {
-                            val zoom = zoomRatio.clamped(it).coerceIn(
-                                minimumValue = cameraState.minZoom,
-                                maximumValue = cameraState.maxZoom
-                            )
-                            onZoomRatioChanged(zoom)
-                        }
-                    }
+    AndroidView(
+        modifier = modifier.onGloballyPositioned { cameraOffset = it.positionInParent() },
+        factory = { context ->
+            PreviewView(context).apply {
+                layoutParams = ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
                 )
-                latestBitmap = when {
-                    lifecycleEvent == Lifecycle.Event.ON_STOP -> null
-                    !isCameraIdle && camSelector != cameraState.camSelector -> bitmap
-                    else -> latestBitmap
+                controller = cameraState.controller.apply {
+                    bindToLifecycle(lifecycleOwner)
                 }
-                cameraState.update(
-                    camSelector = camSelector,
-                    captureMode = captureMode,
-                    imageCaptureTargetSize = imageCaptureTargetSize,
-                    scaleType = scaleType,
-                    isImageAnalysisEnabled = isImageAnalysisEnabled,
-                    imageAnalyzer = imageAnalyzer,
-                    implementationMode = implementationMode,
-                    isFocusOnTapEnabled = isFocusOnTapEnabled,
-                    flashMode = flashMode,
-                    enableTorch = enableTorch,
-                    zoomRatio = zoomRatio,
-                    imageCaptureMode = imageCaptureMode,
-                    meteringPoint = meteringPointFactory.createPoint(x, y),
-                    videoQualitySelector = videoQualitySelector,
-                    exposureCompensation = exposureCompensation,
-                )
-            }
 
-        }
-    })
+                previewStreamState.observe(lifecycleOwner) { state ->
+                    cameraState.isStreaming = state == PreviewView.StreamState.STREAMING
+                }
+            }
+        },
+        update = { previewView ->
+            if (cameraIsInitialized) {
+                with(previewView) {
+                    this.scaleType = scaleType.type
+                    this.implementationMode = implementationMode.value
+                    onCameraTouchEvent(
+                        onTap = { if (isFocusOnTapEnabled) tapOffset = it + cameraOffset },
+                        onScaleChanged = {
+                            if (isPinchToZoomEnabled) {
+                                val zoom = zoomRatio.clamped(it).coerceIn(
+                                    minimumValue = cameraState.minZoom,
+                                    maximumValue = cameraState.maxZoom
+                                )
+                                onZoomRatioChanged(zoom)
+                            }
+                        }
+                    )
+                    latestBitmap = when {
+                        lifecycleEvent == Lifecycle.Event.ON_STOP -> null
+                        !isCameraIdle && camSelector != cameraState.camSelector -> bitmap
+                        else -> latestBitmap
+                    }
+                    cameraState.update(
+                        camSelector = camSelector,
+                        captureMode = captureMode,
+                        imageCaptureTargetSize = imageCaptureTargetSize,
+                        scaleType = scaleType,
+                        isImageAnalysisEnabled = isImageAnalysisEnabled,
+                        imageAnalyzer = imageAnalyzer,
+                        implementationMode = implementationMode,
+                        isFocusOnTapEnabled = isFocusOnTapEnabled,
+                        flashMode = flashMode,
+                        enableTorch = enableTorch,
+                        zoomRatio = zoomRatio,
+                        imageCaptureMode = imageCaptureMode,
+                        meteringPoint = meteringPointFactory.createPoint(x, y),
+                        videoQualitySelector = videoQualitySelector,
+                        exposureCompensation = exposureCompensation,
+                    )
+                }
+
+            }
+        })
 
     FocusTap(
         offset = tapOffset,
