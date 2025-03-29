@@ -52,11 +52,7 @@ fun PreviewScreen(
         if (it.resultCode == Activity.RESULT_OK) {
             onBackPressed()
         }
-
-        Log.d("INTENT SENDER", "RESULT: ${it.resultCode}")
     }
-
-    Log.d("PREVIEW SCREEN", "OPA")
 
     when (val result: PreviewUiState = uiState) {
         PreviewUiState.Initial -> {}

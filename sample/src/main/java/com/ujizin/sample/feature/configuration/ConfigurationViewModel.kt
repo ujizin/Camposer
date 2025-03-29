@@ -44,6 +44,6 @@ class ConfigurationViewModel(
 }
 
 sealed interface ConfigurationUiState {
-    object Initial : ConfigurationUiState
+    data object Initial : ConfigurationUiState
     data class Success(val user: User) : ConfigurationUiState
 }

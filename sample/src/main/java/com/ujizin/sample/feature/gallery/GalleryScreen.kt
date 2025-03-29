@@ -182,11 +182,11 @@ private fun PlaceholderImage(
             visible = when (imageState) {
                 is AsyncImagePainter.State.Empty,
                 is AsyncImagePainter.State.Success,
-                -> false
+                    -> false
 
                 is AsyncImagePainter.State.Loading,
                 is AsyncImagePainter.State.Error,
-                -> true
+                    -> true
             }
         ) { placeholder() }
 
@@ -196,7 +196,7 @@ private fun PlaceholderImage(
                 is AsyncImagePainter.State.Empty,
                 is AsyncImagePainter.State.Loading,
                 is AsyncImagePainter.State.Error,
-                -> false
+                    -> false
 
                 is AsyncImagePainter.State.Success -> true
             }
