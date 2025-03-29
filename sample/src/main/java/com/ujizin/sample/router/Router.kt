@@ -1,12 +1,18 @@
 package com.ujizin.sample.router
 
-import android.net.Uri
+import kotlinx.serialization.Serializable
 
-sealed class Router(val route: String) {
-    object Camera : Router("camera")
-    object Gallery : Router("gallery")
-    object Configuration : Router("configuration")
-    object Preview : Router("preview/{${Args.Path}}") {
-        fun createRoute(path: String) = "preview/${Uri.encode(path)}"
-    }
+@Serializable
+sealed interface Router {
+    @Serializable
+    data object Camera : Router
+
+    @Serializable
+    data object Gallery : Router
+
+    @Serializable
+    data object Configuration : Router
+
+    @Serializable
+    data class Preview(val path: String) : Router
 }
