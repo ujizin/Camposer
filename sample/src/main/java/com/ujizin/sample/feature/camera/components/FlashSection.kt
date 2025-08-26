@@ -46,7 +46,7 @@ fun FlashBox(
                 FlashButton(
                     modifier = Modifier
                         .padding(bottom = 8.dp)
-                        .animateItemPlacement(),
+                        .animateItem(),
                     tintColor = if (flashMode == flash) Color.Yellow else Color.White,
                     flash = flash
                 ) {
