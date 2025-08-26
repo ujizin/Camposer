@@ -1,6 +1,7 @@
 package com.ujizin.camposer
 
 import android.Manifest
+import android.app.UiAutomation
 import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
@@ -12,10 +13,10 @@ import org.junit.Rule
 
 internal abstract class CameraTest {
 
-    @get:Rule
+    @get:Rule(order = 1)
     val composeTestRule = createComposeRule()
 
-    @get:Rule
+    @get:Rule(order = 0)
     val permissions: GrantPermissionRule = GrantPermissionRule.grant(
         *mutableListOf(
             Manifest.permission.CAMERA,
@@ -26,11 +27,10 @@ internal abstract class CameraTest {
                 add(Manifest.permission.READ_MEDIA_AUDIO)
                 add(Manifest.permission.READ_MEDIA_VIDEO)
                 add(Manifest.permission.READ_MEDIA_IMAGES)
-            } else {
-                add(Manifest.permission.READ_EXTERNAL_STORAGE)
             }
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                add(Manifest.permission.READ_EXTERNAL_STORAGE)
                 add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             }
         }.toTypedArray()

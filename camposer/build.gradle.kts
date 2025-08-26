@@ -1,10 +1,16 @@
+@file:OptIn(ExperimentalComposeLibrary::class)
+
+import org.jetbrains.compose.ExperimentalComposeLibrary
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import ujizin.camposer.Config
 
 plugins {
     alias(libs.plugins.library)
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.dokka)
     alias(libs.plugins.dokka.java.doc)
+    alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.compose.compiler)
 }
 
@@ -16,6 +22,50 @@ extra.apply {
 
 apply(from = "${rootDir}/scripts/publish-module.gradle")
 
+kotlin {
+    explicitApi()
+    androidTarget {
+        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_11)
+        }
+
+    }
+
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            baseName = "ComposeApp"
+            isStatic = true
+        }
+    }
+
+    sourceSets {
+
+        commonMain.dependencies {
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+
+            // TODO change to androidMain
+            api(libs.bundles.internal.camerax)
+
+        }
+
+        androidInstrumentedTest.dependencies {
+            implementation(libs.androidx.test.core)
+            implementation(libs.androidx.test.rules)
+            implementation(compose.desktop.uiTestJUnit4)
+        }
+
+        androidMain.dependencies {
+            implementation(compose.preview)
+        }
+    }
+}
+
 android {
     namespace = "com.ujizin.camposer"
     compileSdk = Config.compileSdk
@@ -24,19 +74,17 @@ android {
         targetSdk = Config.targetSdk
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-    buildFeatures {
-        compose = true
-    }
 
-    kotlinOptions {
-        freeCompilerArgs += "-Xexplicit-api=strict"
+
+    sourceSets {
+        getByName("androidTest") {
+            manifest.srcFile("src/androidTest/AndroidManifest.xml")
+        }
     }
 
     publishing {
@@ -47,23 +95,10 @@ android {
     }
 }
 
-dokka {
-    dokkaSourceSets {
-        named("main") {
-            enableAndroidDocumentationLink.set(true)
-        }
-    }
-}
-
-dependencies {
-    implementation(platform(libs.compose.bom))
-    implementation(libs.bundles.compose)
-    implementation(libs.lifecycle)
-
-    api(libs.bundles.internal.camerax)
-
-    androidTestImplementation(libs.androidx.test.core)
-    androidTestImplementation(libs.androidx.test.rules)
-    androidTestImplementation(platform(libs.compose.bom))
-    androidTestImplementation(libs.compose.junit)
-}
+//dokka {
+//    dokkaSourceSets {
+//        named("main") {
+//            enableAndroidDocumentationLink.set(true)
+//        }
+//    }
+//}
