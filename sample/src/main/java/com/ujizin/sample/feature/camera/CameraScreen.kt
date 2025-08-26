@@ -20,7 +20,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.skydoves.cloudy.Cloudy
+import com.skydoves.cloudy.cloudy
 import com.ujizin.camposer.CameraPreview
 import com.ujizin.camposer.state.CamSelector
 import com.ujizin.camposer.state.CameraState
@@ -114,10 +114,18 @@ fun CameraSection(
             zoomRatio = it
         },
         onSwitchToFront = { bitmap ->
-            Cloudy(radius = 20) { Image(bitmap.asImageBitmap(), contentDescription = null) }
+            Image(
+                modifier = Modifier.cloudy(radius = 20),
+                bitmap = bitmap.asImageBitmap(),
+                contentDescription = null
+            )
         },
         onSwitchToBack = { bitmap ->
-            Cloudy(radius = 20) { Image(bitmap.asImageBitmap(), contentDescription = null) }
+            Image(
+                modifier = Modifier.cloudy(radius = 20),
+                bitmap = bitmap.asImageBitmap(),
+                contentDescription = null
+            )
         }
     ) {
         BlinkPictureBox(lastPicture, cameraOption == CameraOption.Video)

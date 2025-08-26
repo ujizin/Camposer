@@ -2,28 +2,29 @@
 
 # Camposer libraries
 
-kotlin = "2.0.0"
-gradle = "8.5.2"
+kotlin = "2.2.10"
+dokka = "2.0.0"
+gradle = "8.12.1"
 gradle-nexus = "2.0.0"
-androidx-test = "1.6.1"
-camerax = "1.4.1"
-compose-bom = "2024.12.01"
+androidx-test = "1.7.0"
+camerax = "1.4.2"
+compose-bom = "2025.08.00"
 
 # Sample app libraries
 
-androidx-core = "1.15.0"
+androidx-core = "1.17.0"
 exoplayer = "2.19.1"
 zxing = "3.5.3"
-cloudy = "0.1.1"
-appcompat = "1.9.3"
+cloudy = "0.2.7"
+appcompat = "1.10.1"
 material = "1.12.0"
-lifecycle = "2.8.7"
-navigation = "2.8.5"
-kotlinx-serialization = "1.6.3"
-accompanist = "0.34.0"
+lifecycle = "2.9.2"
+navigation = "2.9.3"
+kotlinx-serialization = "1.9.0"
+accompanist = "0.37.3"
 coil = "2.7.0"
-koin = "4.0.0"
-datastore = "1.1.1"
+koin = "4.1.0"
+datastore = "1.1.7"
 
 [libraries]
 
@@ -98,7 +99,7 @@ application = { id = "com.android.application", version.ref = "gradle" }
 library = { id = "com.android.library", version.ref = "gradle" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-dokka = { id = "org.jetbrains.dokka", version.ref = "kotlin" }
-dokka-java-doc = { id = "org.jetbrains.dokka-javadoc", version.ref = "kotlin" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+dokka-java-doc = { id = "org.jetbrains.dokka-javadoc", version.ref = "dokka" }
 gradle-nexus = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "gradle-nexus" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
