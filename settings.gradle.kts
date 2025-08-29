@@ -17,3 +17,4 @@ rootProject.name = "Camposer"
 
 include(":sample")
 include(":camposer")
+include(":shared")

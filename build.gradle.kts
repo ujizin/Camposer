@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.dokka)
     alias(libs.plugins.dokka.java.doc)
+    alias(libs.plugins.kotlin.multiplatform.library) apply false
 }
 
 apply(from = "${rootDir}/scripts/publish-root.gradle")
