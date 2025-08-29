@@ -49,9 +49,6 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.foundation)
 
-            // TODO change to androidMain
-            api(libs.bundles.internal.camerax)
-
         }
 
         androidInstrumentedTest.dependencies {
@@ -62,6 +59,7 @@ kotlin {
 
         androidMain.dependencies {
             implementation(compose.preview)
+            api(libs.bundles.internal.camerax)
         }
     }
 }
