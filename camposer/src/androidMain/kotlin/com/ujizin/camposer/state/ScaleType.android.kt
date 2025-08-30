@@ -8,7 +8,7 @@ import androidx.camera.view.PreviewView.ScaleType as CameraScaleType
  * @param type internal scale type from cameraX
  * @see CameraScaleType
  * */
-public enum class ScaleType(public val type: CameraScaleType) {
+public actual enum class ScaleType(public val type: CameraScaleType) {
     FitStart(CameraScaleType.FIT_START),
     FitCenter(CameraScaleType.FIT_CENTER),
     FitEnd(CameraScaleType.FIT_END),

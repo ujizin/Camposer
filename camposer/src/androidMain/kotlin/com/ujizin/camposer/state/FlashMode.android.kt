@@ -8,7 +8,7 @@ import androidx.camera.core.ImageCapture
  * @param mode internal flash mode from cameraX
  * @see ImageCapture.FlashMode
  * */
-public enum class FlashMode(internal val mode: Int) {
+public actual enum class FlashMode(internal val mode: Int) {
     On(ImageCapture.FLASH_MODE_ON),
     Auto(ImageCapture.FLASH_MODE_AUTO),
     Off(ImageCapture.FLASH_MODE_OFF);

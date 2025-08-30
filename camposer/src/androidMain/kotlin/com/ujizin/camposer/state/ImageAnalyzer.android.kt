@@ -15,7 +15,7 @@ import androidx.compose.runtime.Stable
  * @see rememberImageAnalyzer
  * */
 @Stable
-public class ImageAnalyzer(
+public actual class ImageAnalyzer(
     private val cameraState: CameraState,
     imageAnalysisBackpressureStrategy: ImageAnalysisBackpressureStrategy,
     imageAnalysisTargetSize: ImageTargetSize?,

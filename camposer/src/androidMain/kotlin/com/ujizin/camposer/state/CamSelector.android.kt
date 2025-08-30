@@ -13,7 +13,7 @@ import androidx.compose.runtime.saveable.listSaver
  * @param selector internal camera selector from CameraX
  * @see CameraSelector
  * */
-public enum class CamSelector(
+public actual enum class CamSelector(
     internal val selector: CameraSelector
 ) {
     Front(CameraSelector.DEFAULT_FRONT_CAMERA),

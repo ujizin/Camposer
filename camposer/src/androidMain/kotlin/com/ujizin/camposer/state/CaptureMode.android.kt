@@ -1,3 +1,4 @@
+
 package com.ujizin.camposer.state
 
 import android.os.Build
@@ -12,7 +13,7 @@ import androidx.camera.view.CameraController.VIDEO_CAPTURE
  * @see IMAGE_CAPTURE
  * @see VIDEO_CAPTURE
  * */
-public enum class CaptureMode(internal val value: Int) {
+public actual enum class CaptureMode(internal val value: Int) {
     Image(IMAGE_CAPTURE),
 
     @RequiresApi(Build.VERSION_CODES.N)

@@ -3,7 +3,6 @@ package com.ujizin.camposer
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.view.ViewGroup
-import androidx.camera.video.QualitySelector
 import androidx.camera.view.PreviewView
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -14,6 +13,8 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.viewinterop.AndroidView
@@ -31,6 +32,7 @@ import com.ujizin.camposer.state.ImageAnalyzer
 import com.ujizin.camposer.state.ImageCaptureMode
 import com.ujizin.camposer.state.ImageTargetSize
 import com.ujizin.camposer.state.ImplementationMode
+import com.ujizin.camposer.state.QualitySelector
 import com.ujizin.camposer.state.ScaleType
 import com.ujizin.camposer.state.rememberCameraState
 import kotlinx.coroutines.delay
@@ -66,34 +68,31 @@ import androidx.camera.core.CameraSelector as CameraXSelector
  * @see CameraState
  * */
 @Composable
-public fun CameraPreview(
-    modifier: Modifier = Modifier,
-    cameraState: CameraState = rememberCameraState(),
-    camSelector: CamSelector = cameraState.camSelector,
-    captureMode: CaptureMode = cameraState.captureMode,
-    imageCaptureMode: ImageCaptureMode = cameraState.imageCaptureMode,
-    imageCaptureTargetSize: ImageTargetSize? = cameraState.imageCaptureTargetSize,
-    flashMode: FlashMode = cameraState.flashMode,
-    scaleType: ScaleType = cameraState.scaleType,
-    enableTorch: Boolean = cameraState.enableTorch,
-    exposureCompensation: Int = cameraState.initialExposure,
-    zoomRatio: Float = 1F,
-    imageAnalyzer: ImageAnalyzer? = null,
-    implementationMode: ImplementationMode = cameraState.implementationMode,
-    isImageAnalysisEnabled: Boolean = cameraState.isImageAnalysisEnabled,
-    isFocusOnTapEnabled: Boolean = cameraState.isFocusOnTapEnabled,
-    isPinchToZoomEnabled: Boolean = cameraState.isZoomSupported,
-    videoQualitySelector: QualitySelector = cameraState.videoQualitySelector,
-    onPreviewStreamChanged: () -> Unit = {},
-    onSwitchToFront: @Composable (Bitmap) -> Unit = {},
-    onSwitchToBack: @Composable (Bitmap) -> Unit = {},
-    onFocus: suspend (onComplete: () -> Unit) -> Unit = { onComplete ->
-        delay(1000L)
-        onComplete()
-    },
-    onZoomRatioChanged: (Float) -> Unit = {},
-    focusTapContent: @Composable () -> Unit = { SquareCornerFocus() },
-    content: @Composable () -> Unit = {},
+public actual fun CameraPreview(
+    modifier: Modifier,
+    cameraState: CameraState,
+    camSelector: CamSelector,
+    captureMode: CaptureMode,
+    imageCaptureMode: ImageCaptureMode,
+    imageCaptureTargetSize: ImageTargetSize?,
+    flashMode: FlashMode,
+    scaleType: ScaleType,
+    enableTorch: Boolean,
+    exposureCompensation: Int,
+    zoomRatio: Float,
+    imageAnalyzer: ImageAnalyzer?,
+    implementationMode: ImplementationMode,
+    videoQualitySelector: QualitySelector,
+    isImageAnalysisEnabled: Boolean,
+    isFocusOnTapEnabled: Boolean,
+    isPinchToZoomEnabled: Boolean,
+    onPreviewStreamChanged: () -> Unit,
+    onSwitchToFront: @Composable ((ImageBitmap) -> Unit),
+    onSwitchToBack: @Composable ((ImageBitmap) -> Unit),
+    onFocus: suspend (() -> Unit) -> Unit,
+    onZoomRatioChanged: (Float) -> Unit,
+    focusTapContent: @Composable (() -> Unit),
+    content: @Composable (() -> Unit)
 ) {
     CameraPreviewImpl(
         modifier = modifier,
@@ -146,8 +145,8 @@ internal fun CameraPreviewImpl(
     onZoomRatioChanged: (Float) -> Unit,
     onPreviewStreamChanged: () -> Unit,
     onFocus: suspend (() -> Unit) -> Unit,
-    onSwipeToFront: @Composable (Bitmap) -> Unit,
-    onSwipeToBack: @Composable (Bitmap) -> Unit,
+    onSwipeToFront: @Composable (ImageBitmap) -> Unit,
+    onSwipeToBack: @Composable (ImageBitmap) -> Unit,
     focusTapContent: @Composable () -> Unit,
     content: @Composable () -> Unit
 ) {
@@ -229,8 +228,8 @@ internal fun CameraPreviewImpl(
     if (isCameraIdle) {
         latestBitmap?.let {
             when (camSelector.selector.lensFacing) {
-                CameraXSelector.LENS_FACING_FRONT -> onSwipeToFront(it)
-                CameraXSelector.LENS_FACING_BACK -> onSwipeToBack(it)
+                CameraXSelector.LENS_FACING_FRONT -> onSwipeToFront(it.asImageBitmap())
+                CameraXSelector.LENS_FACING_BACK -> onSwipeToBack(it.asImageBitmap())
                 else -> Unit
             }
             LaunchedEffect(latestBitmap) {

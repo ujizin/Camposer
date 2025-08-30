@@ -2,6 +2,7 @@ package com.ujizin.sample.feature.camera
 
 import android.widget.Toast
 import androidx.camera.core.ImageProxy
+import androidx.camera.video.QualitySelector
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -92,7 +94,7 @@ fun CameraSection(
 ) {
     var flashMode by cameraState.rememberFlashMode()
     var camSelector by rememberCamSelector(if (useFrontCamera) CamSelector.Front else CamSelector.Back)
-    var zoomRatio by rememberSaveable { mutableStateOf(cameraState.minZoom) }
+    var zoomRatio by rememberSaveable { mutableFloatStateOf(cameraState.minZoom) }
     var zoomHasChanged by rememberSaveable { mutableStateOf(false) }
     val hasFlashUnit by rememberUpdatedState(cameraState.hasFlashUnit)
     var cameraOption by rememberSaveable { mutableStateOf(CameraOption.Photo) }
@@ -116,14 +118,14 @@ fun CameraSection(
         onSwitchToFront = { bitmap ->
             Image(
                 modifier = Modifier.cloudy(radius = 20),
-                bitmap = bitmap.asImageBitmap(),
+                bitmap = bitmap,
                 contentDescription = null
             )
         },
         onSwitchToBack = { bitmap ->
             Image(
                 modifier = Modifier.cloudy(radius = 20),
-                bitmap = bitmap.asImageBitmap(),
+                bitmap = bitmap,
                 contentDescription = null
             )
         }

@@ -13,7 +13,7 @@ import com.ujizin.camposer.CameraPreview
  * Camera State from [CameraPreview] Composable.
  * */
 @Composable
-public fun rememberCameraState(): CameraState {
+public actual fun rememberCameraState(): CameraState {
     val context = LocalContext.current
     return remember { CameraState(context) }
 }

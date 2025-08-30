@@ -25,7 +25,6 @@ import androidx.camera.core.TorchState
 import androidx.camera.video.FileDescriptorOutputOptions
 import androidx.camera.video.FileOutputOptions
 import androidx.camera.video.MediaStoreOutputOptions
-import androidx.camera.video.QualitySelector
 import androidx.camera.video.Recording
 import androidx.camera.video.VideoRecordEvent
 import androidx.camera.view.CameraController.IMAGE_ANALYSIS
@@ -52,7 +51,7 @@ import java.util.concurrent.Executor
  * To be created use [rememberCameraState].
  * */
 @Stable
-public class CameraState(context: Context) {
+public actual class CameraState(context: Context) {
 
     /**
      * Main Executor to action as take picture or record.
@@ -85,7 +84,7 @@ public class CameraState(context: Context) {
     /**
      * Get max zoom from camera.
      * */
-    public var maxZoom: Float by mutableFloatStateOf(
+    public actual var maxZoom: Float by mutableFloatStateOf(
         controller.zoomState.value?.maxZoomRatio ?: INITIAL_ZOOM_VALUE
     )
         internal set
@@ -93,7 +92,7 @@ public class CameraState(context: Context) {
     /**
      * Get min zoom from camera.
      * */
-    public var minZoom: Float by mutableFloatStateOf(
+    public actual var minZoom: Float by mutableFloatStateOf(
         controller.zoomState.value?.minZoomRatio ?: INITIAL_ZOOM_VALUE
     )
         internal set
@@ -108,7 +107,7 @@ public class CameraState(context: Context) {
     /**
      * Get min exposure from camera.
      * */
-    public var minExposure: Int by mutableIntStateOf(
+    public actual var minExposure: Int by mutableIntStateOf(
         exposureCompensationRange?.lower ?: INITIAL_EXPOSURE_VALUE
     )
         internal set
@@ -116,52 +115,52 @@ public class CameraState(context: Context) {
     /**
      * Get max exposure from camera.
      * */
-    public var maxExposure: Int by mutableIntStateOf(
+    public actual var maxExposure: Int by mutableIntStateOf(
         exposureCompensationRange?.upper ?: INITIAL_EXPOSURE_VALUE
     )
         internal set
 
-    public val initialExposure: Int = INITIAL_EXPOSURE_VALUE
+    public actual val initialExposure: Int = INITIAL_EXPOSURE_VALUE
         get() = controller.cameraInfo?.exposureState?.exposureCompensationIndex ?: field
 
     /**
      * Check if compensation exposure is supported.
      * */
-    public val isExposureSupported: Boolean by derivedStateOf { maxExposure != INITIAL_EXPOSURE_VALUE }
+    public actual val isExposureSupported: Boolean by derivedStateOf { maxExposure != INITIAL_EXPOSURE_VALUE }
 
     /**
      * Check if camera is streaming or not.
      * */
-    public var isStreaming: Boolean by mutableStateOf(false)
+    public actual var isStreaming: Boolean by mutableStateOf(false)
         internal set
 
     /**
      * Check if zoom is supported.
      * */
-    public val isZoomSupported: Boolean by derivedStateOf { maxZoom != 1F }
+    public actual val isZoomSupported: Boolean by derivedStateOf { maxZoom != 1F }
 
     /**
      * Check if focus on tap supported
      * */
-    public var isFocusOnTapSupported: Boolean by mutableStateOf(true)
+    public actual var isFocusOnTapSupported: Boolean by mutableStateOf(true)
 
     /**
      * Check if camera state is initialized or not.
      * */
-    public var isInitialized: Boolean by mutableStateOf(false)
+    public actual var isInitialized: Boolean by mutableStateOf(false)
         internal set
 
     /**
      * Verify if camera has flash or not.
      * */
-    public var hasFlashUnit: Boolean by mutableStateOf(
+    public actual var hasFlashUnit: Boolean by mutableStateOf(
         controller.cameraInfo?.hasFlashUnit() ?: true
     )
 
     /**
      * Capture mode to be added on camera.
      * */
-    internal var captureMode: CaptureMode = CaptureMode.Image
+    internal actual var captureMode: CaptureMode = CaptureMode.Image
         set(value) {
             if (field != value) {
                 field = value
@@ -172,7 +171,7 @@ public class CameraState(context: Context) {
     /**
      * Image capture mode to be added on camera.
      * */
-    internal var imageCaptureMode: ImageCaptureMode = ImageCaptureMode.MinLatency
+    internal actual var imageCaptureMode: ImageCaptureMode = ImageCaptureMode.MinLatency
         set(value) {
             if (field != value) {
                 field = value
@@ -183,25 +182,25 @@ public class CameraState(context: Context) {
     /**
      * Get scale type from the camera.
      * */
-    internal var scaleType: ScaleType = ScaleType.FillCenter
+    internal actual var scaleType: ScaleType = ScaleType.FillCenter
 
     /**
      * Get implementation mode from the camera.
      * */
-    internal var implementationMode: ImplementationMode = ImplementationMode.Performance
+    internal actual var implementationMode: ImplementationMode = ImplementationMode.Performance
 
-    internal var videoQualitySelector: QualitySelector
-        get() = controller.videoCaptureQualitySelector
+    internal actual var videoQualitySelector: QualitySelector
+        get() = QualitySelector(controller.videoCaptureQualitySelector)
         set(value) {
             if (controller.isRecording) return
-            controller.videoCaptureQualitySelector = value
+            controller.videoCaptureQualitySelector = value.qualitySelector
         }
 
     /**
      * Camera mode, it can be front or back.
      * @see CamSelector
      * */
-    internal var camSelector: CamSelector = CamSelector.Back
+    internal actual var camSelector: CamSelector = CamSelector.Back
         set(value) {
             when {
                 value == field -> Unit
@@ -221,7 +220,7 @@ public class CameraState(context: Context) {
     /**
      * Set image capture target size on camera
      * */
-    internal var imageCaptureTargetSize: ImageTargetSize?
+    internal actual var imageCaptureTargetSize: ImageTargetSize?
         get() = controller.imageCaptureTargetSize.toImageTargetSize()
         set(value) {
             if (value != imageCaptureTargetSize) {
@@ -253,7 +252,7 @@ public class CameraState(context: Context) {
     /**
      * Enable/Disable Image analysis from the camera.
      * */
-    internal var isImageAnalysisEnabled: Boolean = isImageAnalysisSupported
+    internal actual var isImageAnalysisEnabled: Boolean = isImageAnalysisSupported
         set(value) {
             if (field == value) return
             if (!isImageAnalysisSupported) {
@@ -303,7 +302,7 @@ public class CameraState(context: Context) {
     /**
      * Get if focus on tap is enabled from cameraX.
      * */
-    internal var isFocusOnTapEnabled: Boolean
+    internal actual var isFocusOnTapEnabled: Boolean
         get() = controller.isTapToFocusEnabled
         set(value) {
             if (value == controller.isTapToFocusEnabled) return
@@ -314,7 +313,7 @@ public class CameraState(context: Context) {
      * Flash Mode from the camera.
      * @see FlashMode
      * */
-    internal var flashMode: FlashMode
+    internal actual var flashMode: FlashMode
         get() = FlashMode.find(controller.imageCaptureFlashMode)
         set(value) {
             if (hasFlashUnit && flashMode != value) {
@@ -325,7 +324,7 @@ public class CameraState(context: Context) {
     /**
      * Enabled/Disable torch from camera.
      * */
-    internal var enableTorch: Boolean
+    internal actual var enableTorch: Boolean
         get() = controller.torchState.value == TorchState.ON
         set(value) {
             if (enableTorch != value) {
@@ -343,7 +342,7 @@ public class CameraState(context: Context) {
     /**
      * Return true if it's recording.
      * */
-    public var isRecording: Boolean by mutableStateOf(controller.isRecording)
+    public actual var isRecording: Boolean by mutableStateOf(controller.isRecording)
         private set
 
     init {

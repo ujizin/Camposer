@@ -6,7 +6,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import ujizin.camposer.Config
 
 plugins {
-    alias(libs.plugins.library)
+    alias(libs.plugins.library) // TODO migrate to kmp library
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.dokka)
     alias(libs.plugins.dokka.java.doc)
@@ -38,7 +38,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "ComposeApp"
+            baseName = "Camposer"
             isStatic = true
         }
     }
@@ -48,7 +48,6 @@ kotlin {
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
-
         }
 
         androidInstrumentedTest.dependencies {
@@ -60,6 +59,9 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             api(libs.bundles.internal.camerax)
+        }
+
+        iosMain.dependencies {
         }
     }
 }
