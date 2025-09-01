@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.multiplatform.library)
+    alias(libs.plugins.compose.multiplatform)
+    alias(libs.plugins.compose.compiler)
 }
 
 kotlin {
@@ -58,7 +60,11 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                // Add KMP dependencies here
+                implementation(compose.runtime)
+                implementation(compose.ui)
+                implementation(compose.material3)
+                implementation(compose.foundation)
+                implementation(project(":camposer"))
             }
         }
 

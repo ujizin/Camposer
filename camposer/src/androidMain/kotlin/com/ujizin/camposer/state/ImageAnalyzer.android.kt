@@ -1,7 +1,6 @@
 package com.ujizin.camposer.state
 
 import androidx.camera.core.ImageAnalysis
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 
 /**

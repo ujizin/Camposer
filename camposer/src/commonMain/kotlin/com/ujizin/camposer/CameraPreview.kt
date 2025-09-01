@@ -1,8 +1,16 @@
 package com.ujizin.camposer
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ImageBitmap
+import com.ujizin.camposer.focus.FocusTap
 import com.ujizin.camposer.focus.SquareCornerFocus
 import com.ujizin.camposer.state.CamSelector
 import com.ujizin.camposer.state.CameraState
@@ -45,7 +53,7 @@ import kotlinx.coroutines.delay
  * @see CameraState
  * */
 @Composable
-public expect fun CameraPreview(
+public fun CameraPreview(
     modifier: Modifier = Modifier,
     cameraState: CameraState,
     camSelector: CamSelector = cameraState.camSelector,
@@ -64,6 +72,91 @@ public expect fun CameraPreview(
     isFocusOnTapEnabled: Boolean = cameraState.isFocusOnTapEnabled,
     isPinchToZoomEnabled: Boolean = cameraState.isZoomSupported,
     onPreviewStreamChanged: () -> Unit = {},
+    onSwitchToFront: @Composable (ImageBitmap) -> Unit = {},
+    onSwitchToBack: @Composable (ImageBitmap) -> Unit = {},
+    onFocus: suspend (onComplete: () -> Unit) -> Unit = { onComplete ->
+        delay(1000L)
+        onComplete()
+    },
+    onZoomRatioChanged: (Float) -> Unit = {},
+    focusTapContent: @Composable () -> Unit = { SquareCornerFocus() },
+    content: @Composable () -> Unit = {},
+) {
+    val isCameraIdle by rememberUpdatedState(!cameraState.isStreaming)
+    var tapOffset by remember { mutableStateOf(Offset.Zero) }
+    var latestBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
+
+    CameraPreviewImpl(
+        modifier = modifier,
+        cameraState = cameraState,
+        captureMode = captureMode,
+        camSelector = camSelector,
+        imageCaptureMode = imageCaptureMode,
+        imageCaptureTargetSize = imageCaptureTargetSize,
+        flashMode = flashMode,
+        scaleType = scaleType,
+        enableTorch = enableTorch,
+        exposureCompensation = exposureCompensation,
+        zoomRatio = zoomRatio,
+        imageAnalyzer = imageAnalyzer,
+        implementationMode = implementationMode,
+        videoQualitySelector = videoQualitySelector,
+        isImageAnalysisEnabled = isImageAnalysisEnabled,
+        isFocusOnTapEnabled = isFocusOnTapEnabled,
+        isPinchToZoomEnabled = isPinchToZoomEnabled,
+        onPreviewStreamChanged = onPreviewStreamChanged,
+        onSwitchToFront = onSwitchToFront,
+        onSwitchToBack = onSwitchToBack,
+        onZoomRatioChanged = onZoomRatioChanged,
+        focusTapContent = focusTapContent,
+        onTapFocus = { tapOffset = it },
+        onSwitchCamera = { latestBitmap = it },
+    )
+
+    FocusTap(
+        offset = tapOffset,
+        onFocus = { onFocus { tapOffset = Offset.Zero } },
+    ) { focusTapContent() }
+
+    if (isCameraIdle) {
+        latestBitmap?.let {
+            when (camSelector) {
+                CamSelector.Front -> onSwitchToFront(it)
+                CamSelector.Back -> onSwitchToBack(it)
+                else -> Unit
+            }
+            LaunchedEffect(latestBitmap) {
+                onPreviewStreamChanged()
+                if (latestBitmap != null) onZoomRatioChanged(cameraState.minZoom)
+            }
+        }
+    }
+
+    content()
+}
+
+@Composable
+internal expect fun CameraPreviewImpl(
+    modifier: Modifier = Modifier,
+    cameraState: CameraState,
+    camSelector: CamSelector = cameraState.camSelector,
+    captureMode: CaptureMode = cameraState.captureMode,
+    imageCaptureMode: ImageCaptureMode = cameraState.imageCaptureMode,
+    imageCaptureTargetSize: ImageTargetSize? = cameraState.imageCaptureTargetSize,
+    flashMode: FlashMode = cameraState.flashMode,
+    scaleType: ScaleType = cameraState.scaleType,
+    enableTorch: Boolean = cameraState.enableTorch,
+    exposureCompensation: Int = cameraState.initialExposure,
+    zoomRatio: Float = 1F,
+    imageAnalyzer: ImageAnalyzer? = null,
+    implementationMode: ImplementationMode = cameraState.implementationMode,
+    videoQualitySelector: QualitySelector = cameraState.videoQualitySelector,
+    isImageAnalysisEnabled: Boolean = cameraState.isImageAnalysisEnabled,
+    isFocusOnTapEnabled: Boolean = cameraState.isFocusOnTapEnabled,
+    isPinchToZoomEnabled: Boolean = cameraState.isZoomSupported,
+    onPreviewStreamChanged: () -> Unit = {},
+    onTapFocus: (Offset) -> Unit = {},
+    onSwitchCamera: (ImageBitmap) -> Unit = {},
     onSwitchToFront: @Composable (ImageBitmap) -> Unit = {},
     onSwitchToBack: @Composable (ImageBitmap) -> Unit = {},
     onFocus: suspend (onComplete: () -> Unit) -> Unit = { onComplete ->

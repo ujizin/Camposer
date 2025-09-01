@@ -2,7 +2,11 @@ package com.ujizin.camposer
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.UIKitViewController
 import com.ujizin.camposer.state.CamSelector
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.CaptureMode
@@ -17,7 +21,7 @@ import kotlinx.cinterop.ExperimentalForeignApi
 
 @OptIn(ExperimentalForeignApi::class)
 @Composable
-public actual fun CameraPreview(
+internal actual fun CameraPreviewImpl(
     modifier: Modifier,
     cameraState: CameraState,
     camSelector: CamSelector,
@@ -36,6 +40,8 @@ public actual fun CameraPreview(
     isFocusOnTapEnabled: Boolean,
     isPinchToZoomEnabled: Boolean,
     onPreviewStreamChanged: () -> Unit,
+    onTapFocus: (Offset) -> Unit,
+    onSwitchCamera: (ImageBitmap) -> Unit,
     onSwitchToFront: @Composable (ImageBitmap) -> Unit,
     onSwitchToBack: @Composable (ImageBitmap) -> Unit,
     onFocus: suspend (onComplete: () -> Unit) -> Unit,
@@ -43,42 +49,38 @@ public actual fun CameraPreview(
     focusTapContent: @Composable () -> Unit,
     content: @Composable () -> Unit,
 ) {
-//    val previewLayer = remember(cameraState) {
-//        AVCaptureVideoPreviewLayer(session = cameraState.session)
-//    }
-
-//    UIKitView(
-//        modifier = modifier,
-//        update = {
-//            previewLayer.videoGravity = scaleType.gravity
-//            cameraState.update(
-//                camSelector = camSelector,
-//                captureMode = captureMode,
-//                scaleType = scaleType,
-//                imageCaptureTargetSize = imageCaptureTargetSize,
-//                isImageAnalysisEnabled = isImageAnalysisEnabled,
-//                imageAnalyzer = imageAnalyzer,
-//                implementationMode = implementationMode,
-//                isFocusOnTapEnabled = isFocusOnTapEnabled,
-//                flashMode = flashMode,
-//                zoomRatio = zoomRatio,
-//                imageCaptureMode = imageCaptureMode,
-//                enableTorch = enableTorch,
-//                exposureCompensation = exposureCompensation
-//            )
-//        },
-//        factory = {
-//            UIView().apply {
-//                layer.addSublayer(previewLayer)
-//                previewLayer.frame = bounds
-//            }
-//        }
-//    )
+    val density = LocalDensity.current
+    UIKitViewController(
+        modifier = modifier,
+        factory = {
+            CameraViewController(
+                cameraState = cameraState,
+                cameraViewDelegate = object : CameraViewDelegate {
+                    override fun onFocusTap(x: Float, y: Float): Unit = with(density) {
+                        onTapFocus(Offset(x.dp.toPx(), y.dp.toPx()))
+                    }
+                }
+            )
+        },
+        update = { cameraViewController ->
+            cameraViewController.cameraState.update(
+                camSelector = camSelector,
+                captureMode = captureMode,
+                imageCaptureTargetSize = imageCaptureTargetSize,
+                scaleType = scaleType,
+                isImageAnalysisEnabled = isImageAnalysisEnabled,
+                imageAnalyzer = imageAnalyzer,
+                implementationMode = implementationMode,
+                isFocusOnTapEnabled = isFocusOnTapEnabled,
+                flashMode = flashMode,
+                enableTorch = enableTorch,
+                zoomRatio = zoomRatio,
+                imageCaptureMode = imageCaptureMode,
+                videoQualitySelector = videoQualitySelector,
+                exposureCompensation = exposureCompensation,
+            )
+        }
+    )
 
     content()
-
-//    DisposableEffect(cameraState) {
-//        cameraState.session.startRunning()
-//        onDispose { /*cameraState.session.stopRunning()*/ }
-//    }
 }

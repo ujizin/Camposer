@@ -56,6 +56,13 @@ public expect class CameraState {
      * */
     public var isInitialized: Boolean
         private set
+
+    /**
+     * Verify if camera has torch available.
+     * */
+    public var hasTorchAvailable: Boolean
+        private set
+
     /**
      * Verify if camera has flash or not.
      * */

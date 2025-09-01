@@ -321,6 +321,9 @@ public actual class CameraState(context: Context) {
             }
         }
 
+    public actual var hasTorchAvailable: Boolean by mutableStateOf(hasFlashUnit)
+        private set
+
     /**
      * Enabled/Disable torch from camera.
      * */
@@ -328,7 +331,7 @@ public actual class CameraState(context: Context) {
         get() = controller.torchState.value == TorchState.ON
         set(value) {
             if (enableTorch != value) {
-                controller.enableTorch(hasFlashUnit && value)
+                controller.enableTorch(hasTorchAvailable && value)
             }
         }
 
@@ -659,6 +662,7 @@ public actual class CameraState(context: Context) {
 
     private fun resetCamera() {
         hasFlashUnit = controller.cameraInfo?.hasFlashUnit() ?: false
+        hasTorchAvailable = hasFlashUnit
         isImageAnalysisSupported = isImageAnalysisSupported(camSelector)
         startZoom()
         startExposure()
