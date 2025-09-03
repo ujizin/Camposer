@@ -17,6 +17,8 @@ import com.ujizin.camposer.state.ImageTargetSize
 import com.ujizin.camposer.state.ImplementationMode
 import com.ujizin.camposer.state.QualitySelector
 import com.ujizin.camposer.state.ScaleType
+import com.ujizin.camposer.view.CameraViewController
+import com.ujizin.camposer.view.CameraViewDelegate
 import kotlinx.cinterop.ExperimentalForeignApi
 
 @OptIn(ExperimentalForeignApi::class)

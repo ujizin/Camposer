@@ -1,4 +1,4 @@
-package com.ujizin.camposer
+package com.ujizin.camposer.view
 
 import com.ujizin.camposer.state.CamSelector
 import com.ujizin.camposer.state.CameraState
@@ -25,11 +25,6 @@ import platform.UIKit.UIGestureRecognizerStateChanged
 import platform.UIKit.UIPinchGestureRecognizer
 import platform.UIKit.UITapGestureRecognizer
 import platform.UIKit.UIViewController
-
-internal interface CameraViewDelegate {
-    fun onFocusTap(x: Float, y: Float)
-    fun onZoomChanged(zoomRatio: Float)
-}
 
 @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
 internal class CameraViewController(
