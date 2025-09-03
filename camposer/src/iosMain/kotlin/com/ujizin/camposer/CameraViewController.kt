@@ -16,26 +16,15 @@ import kotlinx.cinterop.ObjCAction
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.placeTo
 import kotlinx.cinterop.pointed
-import platform.AVFoundation.AVCaptureVideoOrientation
-import platform.AVFoundation.AVCaptureVideoOrientationLandscapeLeft
-import platform.AVFoundation.AVCaptureVideoOrientationLandscapeRight
-import platform.AVFoundation.AVCaptureVideoOrientationPortrait
-import platform.AVFoundation.AVCaptureVideoOrientationPortraitUpsideDown
 import platform.CoreGraphics.CGPointMake
 import platform.Foundation.NSNotificationCenter
 import platform.Foundation.NSSelectorFromString
 import platform.UIKit.UIApplicationDidBecomeActiveNotification
 import platform.UIKit.UIApplicationWillResignActiveNotification
-import platform.UIKit.UIDevice
-import platform.UIKit.UIDeviceOrientation
 import platform.UIKit.UIGestureRecognizerStateChanged
 import platform.UIKit.UIPinchGestureRecognizer
 import platform.UIKit.UITapGestureRecognizer
 import platform.UIKit.UIViewController
-import platform.darwin.DISPATCH_QUEUE_PRIORITY_DEFAULT
-import platform.darwin.DISPATCH_QUEUE_PRIORITY_HIGH
-import platform.darwin.dispatch_async
-import platform.darwin.dispatch_get_global_queue
 
 internal interface CameraViewDelegate {
     fun onFocusTap(x: Float, y: Float)
@@ -50,8 +39,8 @@ internal class CameraViewController(
 
     override fun viewDidLoad() {
         super.viewDidLoad()
-        cameraState.initCamera(view)
-        cameraState.startCamera()
+        cameraState.startCamera(view)
+
         observeAppLifecycle()
 
         view.addGestureRecognizer(
@@ -69,10 +58,7 @@ internal class CameraViewController(
 
     override fun viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        cameraState.previewLayer?.apply {
-            setFrame(view.bounds)
-            connection?.videoOrientation = currentVideoOrientation()
-        }
+        cameraState.renderCamera(view)
     }
 
     @ObjCAction
@@ -95,25 +81,12 @@ internal class CameraViewController(
         if (!cameraState.isPinchToZoomEnabled || sender.state != UIGestureRecognizerStateChanged) return
         memScoped {
             val scale = sender.scale.toFloat()
-
             val clampedZoom = (cameraState.zoomRatio * scale).coerceIn(
                 minimumValue = cameraState.minZoom,
                 maximumValue = cameraState.maxZoom,
             )
-
             cameraViewDelegate.onZoomChanged(clampedZoom)
             sender.scale = 1.0
-        }
-    }
-
-    private fun currentVideoOrientation(): AVCaptureVideoOrientation {
-        val orientation = UIDevice.currentDevice.orientation
-        return when (orientation) {
-            UIDeviceOrientation.UIDeviceOrientationPortrait -> AVCaptureVideoOrientationPortrait
-            UIDeviceOrientation.UIDeviceOrientationPortraitUpsideDown -> AVCaptureVideoOrientationPortraitUpsideDown
-            UIDeviceOrientation.UIDeviceOrientationLandscapeLeft -> AVCaptureVideoOrientationLandscapeRight
-            UIDeviceOrientation.UIDeviceOrientationLandscapeRight -> AVCaptureVideoOrientationLandscapeLeft
-            else -> AVCaptureVideoOrientationPortrait
         }
     }
 
@@ -183,7 +156,6 @@ internal class CameraViewController(
 
     @ObjCAction
     fun appDidBecomeActive() {
-        println("appDidBecomeActive")
         cameraState.recoveryState()
     }
 

@@ -3,60 +3,39 @@ package com.ujizin.camposer.state
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.ujizin.camposer.extensions.captureDevice
-import com.ujizin.camposer.extensions.withConfigurationLock
+import com.ujizin.camposer.helper.IOSCameraController
 import com.ujizin.camposer.mapper.toAVCaptureDevicePosition
-import com.ujizin.camposer.utils.executeWithErrorHandling
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
-import platform.AVFoundation.AVCaptureDevice
-import platform.AVFoundation.AVCaptureDeviceInput
-import platform.AVFoundation.AVCaptureExposureModeAutoExpose
-import platform.AVFoundation.AVCaptureFocusModeAutoFocus
-import platform.AVFoundation.AVCapturePhotoOutput
-import platform.AVFoundation.AVCaptureSession
-import platform.AVFoundation.AVCaptureSessionPreset1280x720
-import platform.AVFoundation.AVCaptureTorchModeOff
-import platform.AVFoundation.AVCaptureTorchModeOn
-import platform.AVFoundation.AVCaptureVideoPreviewLayer
-import platform.AVFoundation.AVLayerVideoGravityResizeAspectFill
-import platform.AVFoundation.exposureMode
-import platform.AVFoundation.exposurePointOfInterest
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import platform.AVFoundation.exposureTargetOffset
-import platform.AVFoundation.flashMode
-import platform.AVFoundation.focusMode
-import platform.AVFoundation.focusPointOfInterest
+import platform.AVFoundation.hasFlash
 import platform.AVFoundation.hasTorch
-import platform.AVFoundation.isExposurePointOfInterestSupported
 import platform.AVFoundation.isFlashAvailable
-import platform.AVFoundation.isFocusPointOfInterestSupported
 import platform.AVFoundation.isTorchAvailable
 import platform.AVFoundation.maxExposureTargetBias
 import platform.AVFoundation.minExposureTargetBias
-import platform.AVFoundation.position
-import platform.AVFoundation.torchMode
 import platform.AVFoundation.videoZoomFactor
 import platform.CoreGraphics.CGPoint
 import platform.UIKit.UIView
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalForeignApi::class)
-public actual class CameraState {
+public actual class CameraState internal constructor(
+    private val controller: IOSCameraController = IOSCameraController(),
+) {
 
-    private val captureSession = AVCaptureSession()
-
-    internal var previewLayer: AVCaptureVideoPreviewLayer? = null
-
-    private lateinit var captureDeviceInput: AVCaptureDeviceInput
-
-    private val captureDevice: AVCaptureDevice
-        get() = captureDeviceInput.device
+    private val mainScope = MainScope()
+    private var positionStateJob: Job? = null
 
     internal actual var camSelector: CamSelector = CamSelector.Back
         set(value) {
             if (value == field) return
             field = value
-            value.setupCameraInput()
+            controller.switchInputCamera(position = value.toAVCaptureDevicePosition())
         }
 
     internal actual var captureMode: CaptureMode
@@ -71,9 +50,9 @@ public actual class CameraState {
 
     internal actual var flashMode: FlashMode = FlashMode.Off
         set(value) {
-            if (field == value || !captureDevice.isFlashAvailable()) return
+            if (field == value || !controller.device.isFlashAvailable()) return
             field = value
-            captureDevice.withConfigurationLock { flashMode = value.mode }
+            controller.setFlashMode(value.mode)
         }
 
     internal actual var scaleType: ScaleType = ScaleType.FillCenter
@@ -86,34 +65,22 @@ public actual class CameraState {
 
     internal actual var isFocusOnTapEnabled: Boolean = true
 
-
-    // When blocked, this disable automatically, let's try to make enable again when appeared again
     internal actual var enableTorch: Boolean = false
         set(value) {
             if (field == value) return
             field = value
-
-            setTorchEnabled(value)
+            controller.setTorchEnabled(value)
         }
-
-    private fun setTorchEnabled(isEnabled: Boolean) {
-        if (!captureDevice.hasTorch || !captureDevice.isTorchAvailable()) return
-        captureDevice.withConfigurationLock {
-            torchMode = if (isEnabled) AVCaptureTorchModeOn else AVCaptureTorchModeOff
-        }
-    }
 
     internal var zoomRatio: Float
-        get() = captureDevice.videoZoomFactor.toFloat()
+        get() = controller.device.videoZoomFactor.toFloat()
         set(value) {
             if (zoomRatio == value || value !in minZoom..maxZoom) return
-            captureDevice.withConfigurationLock {
-                captureDevice.videoZoomFactor = value.toDouble()
-            }
+            controller.setZoom(value)
         }
 
     private var exposureCompensation: Int
-        get() = captureDevice.exposureTargetOffset.roundToInt()
+        get() = controller.device.exposureTargetOffset.roundToInt()
         set(value) {
 
         }
@@ -123,18 +90,18 @@ public actual class CameraState {
     public actual val isZoomSupported: Boolean = true
 
     public actual var maxZoom: Float = 1F
-        get() = captureDevice.activeFormat.videoMaxZoomFactor.toFloat()
+        get() = controller.device.activeFormat.videoMaxZoomFactor.toFloat()
         private set
 
     public actual var minZoom: Float = 1F
         private set
 
     public actual var minExposure: Int = 0
-        get() = captureDevice.minExposureTargetBias.roundToInt()
+        get() = controller.device.minExposureTargetBias.roundToInt()
         private set
 
     public actual var maxExposure: Int = 0
-        get() = captureDevice.maxExposureTargetBias.roundToInt()
+        get() = controller.device.maxExposureTargetBias.roundToInt()
         private set
 
     public actual val isExposureSupported: Boolean
@@ -144,11 +111,11 @@ public actual class CameraState {
         internal set
 
     public actual var isFocusOnTapSupported: Boolean = false
-        get() = captureDevice.isFocusPointOfInterestSupported() || captureDevice.isExposurePointOfInterestSupported()
+        get() = controller.isFocusOnTapSupported
         private set
 
     public actual var isInitialized: Boolean = false
-        get() = captureSession.isRunning()
+        get() = controller.isRunning
         private set
 
     public actual var hasFlashUnit: Boolean by mutableStateOf(false)
@@ -170,71 +137,24 @@ public actual class CameraState {
         private set
 
     init {
-        camSelector.setupCameraInput()
+        prepareCamera()
+    }
+
+    private fun prepareCamera() = with(controller) {
+        positionStateJob?.cancel()
+        positionStateJob = cameraPositionState.onEach { onCameraSwitched() }.launchIn(mainScope)
+        switchInputCamera(position = camSelector.toAVCaptureDevicePosition())
     }
 
     @OptIn(ExperimentalForeignApi::class)
-    internal fun initCamera(view: UIView) {
-        captureSession.beginConfiguration()
-        captureSession.sessionPreset = AVCaptureSessionPreset1280x720
+    internal fun startCamera(view: UIView) = controller.start(
+        view = view,
+        position = camSelector.toAVCaptureDevicePosition(),
+    )
 
-        camSelector.setupCameraInput()
+    internal fun renderCamera(view: UIView) = controller.render(view)
 
-        val output = AVCapturePhotoOutput()
-        if (captureSession.canAddOutput(output)) {
-            captureSession.addOutput(output)
-            output.setHighResolutionCaptureEnabled(true)
-        }
-
-        captureSession.commitConfiguration()
-
-        previewLayer = AVCaptureVideoPreviewLayer(session = captureSession).apply {
-            videoGravity = AVLayerVideoGravityResizeAspectFill
-            view.layer.addSublayer(this)
-        }
-    }
-
-    private fun CamSelector.setupCameraInput() {
-        val position = toAVCaptureDevicePosition()
-        if (::captureDeviceInput.isInitialized) {
-            if (captureDeviceInput.device.position == position) {
-                return
-            }
-            captureSession.removeInput(captureDeviceInput)
-        }
-
-        executeWithErrorHandling { ptr ->
-            captureDeviceInput = AVCaptureDeviceInput.deviceInputWithDevice(
-                position.captureDevice,
-                ptr
-            )!!
-            if (captureSession.canAddInput(captureDeviceInput)) {
-                captureSession.addInput(captureDeviceInput)
-            }
-        }
-        hasTorchAvailable = captureDevice.isTorchAvailable()
-        hasFlashUnit = captureDevice.isFlashAvailable()
-    }
-
-    internal fun startCamera() {
-        captureSession.startRunning()
-    }
-
-    internal fun setFocusPoint(focusPoint: CValue<CGPoint>) {
-        captureDevice.withConfigurationLock {
-            when {
-                isFocusPointOfInterestSupported() -> {
-                    focusPointOfInterest = focusPoint
-                    focusMode = AVCaptureFocusModeAutoFocus
-                }
-
-                isExposurePointOfInterestSupported() -> {
-                    exposurePointOfInterest = focusPoint
-                    exposureMode = AVCaptureExposureModeAutoExpose
-                }
-            }
-        }
-    }
+    internal fun setFocusPoint(focusPoint: CValue<CGPoint>) = controller.setFocusPoint(focusPoint)
 
     /**
      * Update all values from camera state.
@@ -272,12 +192,18 @@ public actual class CameraState {
         this.isPinchToZoomEnabled = isPinchToZoomEnabled
     }
 
+    private fun onCameraSwitched() = with(controller.device) {
+        hasFlashUnit = hasFlash && isFlashAvailable()
+        hasTorchAvailable = hasTorch && isTorchAvailable()
+    }
+
     internal fun recoveryState() {
-        setTorchEnabled(enableTorch)
+        controller.setTorchEnabled(enableTorch)
     }
 
     internal fun dispose() {
-        captureSession.stopRunning()
-        previewLayer = null
+        controller.dispose()
+        positionStateJob?.cancel()
+        positionStateJob = null
     }
 }

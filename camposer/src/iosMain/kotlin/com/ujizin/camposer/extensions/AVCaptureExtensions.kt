@@ -23,15 +23,3 @@ internal val AVCaptureDevicePosition.captureDevice: AVCaptureDevice
     ).devices.firstOrNull {
         (it as? AVCaptureDevice)?.position == this
     } as AVCaptureDevice
-
-@OptIn(ExperimentalForeignApi::class)
-internal fun AVCaptureDevice.withConfigurationLock(block: AVCaptureDevice.() -> Unit) {
-    executeWithErrorHandling { nsErrorPtr ->
-        try {
-            lockForConfiguration(nsErrorPtr)
-            block()
-        } finally {
-            unlockForConfiguration()
-        }
-    }
-}
