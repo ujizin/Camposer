@@ -26,13 +26,12 @@ import platform.AVFoundation.exposureTargetOffset
 import platform.AVFoundation.flashMode
 import platform.AVFoundation.focusMode
 import platform.AVFoundation.focusPointOfInterest
+import platform.AVFoundation.hasTorch
 import platform.AVFoundation.isExposurePointOfInterestSupported
 import platform.AVFoundation.isFlashAvailable
 import platform.AVFoundation.isFocusPointOfInterestSupported
 import platform.AVFoundation.isTorchAvailable
-import platform.AVFoundation.maxAvailableVideoZoomFactor
 import platform.AVFoundation.maxExposureTargetBias
-import platform.AVFoundation.minAvailableVideoZoomFactor
 import platform.AVFoundation.minExposureTargetBias
 import platform.AVFoundation.position
 import platform.AVFoundation.torchMode
@@ -55,6 +54,7 @@ public actual class CameraState {
 
     internal actual var camSelector: CamSelector = CamSelector.Back
         set(value) {
+            if (value == field) return
             field = value
             value.setupCameraInput()
         }
@@ -71,7 +71,7 @@ public actual class CameraState {
 
     internal actual var flashMode: FlashMode = FlashMode.Off
         set(value) {
-            if (!captureDevice.isFlashAvailable()) return
+            if (field == value || !captureDevice.isFlashAvailable()) return
             field = value
             captureDevice.withConfigurationLock { flashMode = value.mode }
         }
@@ -84,25 +84,29 @@ public actual class CameraState {
         get() = true
         set(value) {}
 
-    internal actual var isFocusOnTapEnabled: Boolean
-        get() = true
-        set(value) {
+    internal actual var isFocusOnTapEnabled: Boolean = true
 
-        }
 
     // When blocked, this disable automatically, let's try to make enable again when appeared again
-    internal actual var enableTorch: Boolean
-        get() = captureDevice.torchMode == AVCaptureTorchModeOn
+    internal actual var enableTorch: Boolean = false
         set(value) {
-            if (!captureDevice.isTorchAvailable()) return
-            captureDevice.withConfigurationLock {
-                torchMode = if (value) AVCaptureTorchModeOn else AVCaptureTorchModeOff
-            }
+            if (field == value) return
+            field = value
+
+            setTorchEnabled(value)
         }
 
-    private var zoomRatio: Float
+    private fun setTorchEnabled(isEnabled: Boolean) {
+        if (!captureDevice.hasTorch || !captureDevice.isTorchAvailable()) return
+        captureDevice.withConfigurationLock {
+            torchMode = if (isEnabled) AVCaptureTorchModeOn else AVCaptureTorchModeOff
+        }
+    }
+
+    internal var zoomRatio: Float
         get() = captureDevice.videoZoomFactor.toFloat()
         set(value) {
+            if (zoomRatio == value || value !in minZoom..maxZoom) return
             captureDevice.withConfigurationLock {
                 captureDevice.videoZoomFactor = value.toDouble()
             }
@@ -111,22 +115,18 @@ public actual class CameraState {
     private var exposureCompensation: Int
         get() = captureDevice.exposureTargetOffset.roundToInt()
         set(value) {
+
         }
 
     public actual val initialExposure: Int by lazy { exposureCompensation }
 
-    public actual val isZoomSupported: Boolean
-        get() = true
+    public actual val isZoomSupported: Boolean = true
 
-    /**
-     * Get max zoom from camera.
-     * */
     public actual var maxZoom: Float = 1F
-        get() = captureDevice.maxAvailableVideoZoomFactor.toFloat()
+        get() = captureDevice.activeFormat.videoMaxZoomFactor.toFloat()
         private set
 
     public actual var minZoom: Float = 1F
-        get() = captureDevice.minAvailableVideoZoomFactor.toFloat()
         private set
 
     public actual var minExposure: Int = 0
@@ -166,6 +166,9 @@ public actual class CameraState {
         get() = QualitySelector()
         set(value) {}
 
+    internal var isPinchToZoomEnabled: Boolean = true
+        private set
+
     init {
         camSelector.setupCameraInput()
     }
@@ -201,7 +204,10 @@ public actual class CameraState {
         }
 
         executeWithErrorHandling { ptr ->
-            captureDeviceInput = AVCaptureDeviceInput.deviceInputWithDevice(position.captureDevice, ptr)!!
+            captureDeviceInput = AVCaptureDeviceInput.deviceInputWithDevice(
+                position.captureDevice,
+                ptr
+            )!!
             if (captureSession.canAddInput(captureDeviceInput)) {
                 captureSession.addInput(captureDeviceInput)
             }
@@ -214,13 +220,14 @@ public actual class CameraState {
         captureSession.startRunning()
     }
 
-    internal fun onTapFocus(focusPoint: CValue<CGPoint>) {
+    internal fun setFocusPoint(focusPoint: CValue<CGPoint>) {
         captureDevice.withConfigurationLock {
             when {
                 isFocusPointOfInterestSupported() -> {
                     focusPointOfInterest = focusPoint
                     focusMode = AVCaptureFocusModeAutoFocus
                 }
+
                 isExposurePointOfInterestSupported() -> {
                     exposurePointOfInterest = focusPoint
                     exposureMode = AVCaptureExposureModeAutoExpose
@@ -228,6 +235,7 @@ public actual class CameraState {
             }
         }
     }
+
     /**
      * Update all values from camera state.
      * */
@@ -245,7 +253,8 @@ public actual class CameraState {
         imageCaptureMode: ImageCaptureMode,
         enableTorch: Boolean,
         videoQualitySelector: QualitySelector,
-        exposureCompensation: Int
+        exposureCompensation: Int,
+        isPinchToZoomEnabled: Boolean,
     ) {
         this.camSelector = camSelector
         this.captureMode = captureMode
@@ -260,6 +269,11 @@ public actual class CameraState {
         this.zoomRatio = zoomRatio
         this.exposureCompensation = exposureCompensation
         this.videoQualitySelector = videoQualitySelector
+        this.isPinchToZoomEnabled = isPinchToZoomEnabled
+    }
+
+    internal fun recoveryState() {
+        setTorchEnabled(enableTorch)
     }
 
     internal fun dispose() {

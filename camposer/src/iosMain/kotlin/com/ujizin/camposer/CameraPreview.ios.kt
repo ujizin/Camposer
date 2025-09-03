@@ -50,6 +50,7 @@ internal actual fun CameraPreviewImpl(
     content: @Composable () -> Unit,
 ) {
     val density = LocalDensity.current
+
     UIKitViewController(
         modifier = modifier,
         factory = {
@@ -59,11 +60,13 @@ internal actual fun CameraPreviewImpl(
                     override fun onFocusTap(x: Float, y: Float): Unit = with(density) {
                         onTapFocus(Offset(x.dp.toPx(), y.dp.toPx()))
                     }
+
+                    override fun onZoomChanged(zoomRatio: Float) = onZoomRatioChanged(zoomRatio)
                 }
             )
         },
         update = { cameraViewController ->
-            cameraViewController.cameraState.update(
+            cameraViewController.update(
                 camSelector = camSelector,
                 captureMode = captureMode,
                 imageCaptureTargetSize = imageCaptureTargetSize,
@@ -78,8 +81,9 @@ internal actual fun CameraPreviewImpl(
                 imageCaptureMode = imageCaptureMode,
                 videoQualitySelector = videoQualitySelector,
                 exposureCompensation = exposureCompensation,
+                isPinchToZoomEnabled = isPinchToZoomEnabled,
             )
-        }
+        },
     )
 
     content()

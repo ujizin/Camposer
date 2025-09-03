@@ -17,6 +17,7 @@ import com.ujizin.camposer.state.inverse
 import com.ujizin.camposer.state.rememberCamSelector
 import com.ujizin.camposer.state.rememberCameraState
 import com.ujizin.camposer.state.rememberTorch
+import kotlin.math.roundToInt
 
 @Composable
 fun CameraScreen() {
@@ -33,6 +34,7 @@ fun CameraScreen() {
         enableTorch = enableTorch,
         camSelector = camSelector,
         zoomRatio = zoomRatio,
+        onZoomRatioChanged = { zoomRatio = it }
     ) {
         FlowRow {
             Button(onClick = { enableTorch = !enableTorch }) {
@@ -50,8 +52,13 @@ fun CameraScreen() {
                 Text("Cam selector: $camSelector")
             }
             Button(onClick = { zoomRatio += 1F }) {
-                Text("zoom Ratio: $zoomRatio")
+                Text("zoom Ratio: ${zoomRatio.roundDecimals(1)}")
             }
         }
     }
+}
+
+fun Float.roundDecimals(n: Int = 1): Float {
+    val factor = (10F * n).coerceAtLeast(1F)
+    return (this * factor).roundToInt() / factor
 }

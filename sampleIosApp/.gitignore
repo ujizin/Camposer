@@ -1,0 +1,10 @@
+# Xcode
+**/*.xcuserstate
+**/*.xcscmblueprint
+**/*.xccheckout
+**/*.moved-aside
+/*.xcworkspace/xcuserdata/
+*.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
