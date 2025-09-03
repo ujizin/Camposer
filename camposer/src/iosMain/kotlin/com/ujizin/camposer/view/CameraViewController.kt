@@ -20,7 +20,6 @@ import platform.CoreGraphics.CGPointMake
 import platform.Foundation.NSNotificationCenter
 import platform.Foundation.NSSelectorFromString
 import platform.UIKit.UIApplicationDidBecomeActiveNotification
-import platform.UIKit.UIApplicationWillResignActiveNotification
 import platform.UIKit.UIGestureRecognizerStateChanged
 import platform.UIKit.UIPinchGestureRecognizer
 import platform.UIKit.UITapGestureRecognizer
@@ -34,21 +33,10 @@ internal class CameraViewController(
 
     override fun viewDidLoad() {
         super.viewDidLoad()
-        cameraState.startCamera(view)
-
         observeAppLifecycle()
+        addCameraGesturesRecognizer()
 
-        view.addGestureRecognizer(
-            UITapGestureRecognizer(
-                target = this, action = NSSelectorFromString("onTap:"),
-            )
-        )
-        view.addGestureRecognizer(
-            UIPinchGestureRecognizer(
-                target = this,
-                action = NSSelectorFromString("onPinch:")
-            )
-        )
+        cameraState.startCamera(view)
     }
 
     override fun viewDidLayoutSubviews() {
@@ -104,7 +92,7 @@ internal class CameraViewController(
     ) {
         val hasCameraChanged = cameraState.camSelector != camSelector
         if (hasCameraChanged) {
-            cameraViewDelegate.onZoomChanged(cameraState.minZoom)
+            onBeforeSwitchCamera()
         }
 
         cameraState.update(
@@ -126,27 +114,32 @@ internal class CameraViewController(
         )
     }
 
-    private fun observeAppLifecycle() {
-        val nc = NSNotificationCenter.defaultCenter
+    private fun onBeforeSwitchCamera() {
+        cameraViewDelegate.onZoomChanged(cameraState.minZoom)
+    }
 
-        nc.addObserver(
-            observer = this,
-            selector = NSSelectorFromString("appWillResignActive"),
-            name = UIApplicationWillResignActiveNotification,
-            `object` = null
+    private fun addCameraGesturesRecognizer() {
+        view.addGestureRecognizer(
+            UITapGestureRecognizer(
+                target = this, action = NSSelectorFromString("onTap:"),
+            )
         )
+        view.addGestureRecognizer(
+            UIPinchGestureRecognizer(
+                target = this,
+                action = NSSelectorFromString("onPinch:")
+            )
+        )
+    }
 
-        nc.addObserver(
+    private fun observeAppLifecycle() {
+        val notificationCenter = NSNotificationCenter.defaultCenter
+        notificationCenter.addObserver(
             observer = this,
             selector = NSSelectorFromString("appDidBecomeActive"),
             name = UIApplicationDidBecomeActiveNotification,
             `object` = null
         )
-    }
-
-    @ObjCAction
-    fun appWillResignActive() {
-
     }
 
     @ObjCAction
