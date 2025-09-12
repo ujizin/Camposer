@@ -178,7 +178,9 @@ internal fun CameraPreviewImpl(
         update = { previewView ->
             if (cameraIsInitialized) {
                 with(previewView) {
-                    this.scaleType = scaleType.type
+                    if( this.scaleType != scaleType.type) {
+                        this.scaleType = scaleType.type
+                    }
                     this.implementationMode = implementationMode.value
                     onCameraTouchEvent(
                         onTap = { if (isFocusOnTapEnabled) tapOffset = it + cameraOffset },
