@@ -1,1 +1,1 @@
-sourceset_dependencies='{":camposer:dokkaHtml/debug":[],":camposer:dokkaHtml/main":[],":camposer:dokkaHtml/release":[]}'
+sourceset_dependencies='{":camposer/debug":[],":camposer/main":[],":camposer/release":[]}'
