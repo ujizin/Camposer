@@ -178,7 +178,7 @@ internal fun CameraPreviewImpl(
         update = { previewView ->
             if (cameraIsInitialized) {
                 with(previewView) {
-                    if( this.scaleType != scaleType.type) {
+                    if (this.scaleType != scaleType.type) {
                         this.scaleType = scaleType.type
                     }
                     this.implementationMode = implementationMode.value
