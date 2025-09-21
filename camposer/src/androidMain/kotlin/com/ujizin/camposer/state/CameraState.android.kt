@@ -47,6 +47,7 @@ import com.ujizin.camposer.extensions.toFile
 import com.ujizin.camposer.extensions.toPath
 import com.ujizin.camposer.result.CaptureResult
 import kotlinx.io.files.Path
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.concurrent.Executor
 
@@ -704,11 +705,29 @@ public actual class CameraState(context: Context) {
     ) ?: false
 
     public actual fun takePicture(onImageCaptured: (CaptureResult<ByteArray>) -> Unit) {
-        TODO("To be implemented yet")
+        val byteArrayOS = ByteArrayOutputStream()
+        takePicture(
+            outputFileOptions = ImageCapture.OutputFileOptions.Builder(byteArrayOS).build(),
+            onResult = { result ->
+                when (result) {
+                    is CaptureResult.Error -> CaptureResult.Error(result.throwable)
+                    is CaptureResult.Success<Uri?> -> CaptureResult.Success(byteArrayOS.toByteArray())
+                }
+            },
+        )
     }
 
+    @RequiresPermission(Manifest.permission.RECORD_AUDIO)
     public actual fun startRecording(path: Path, onVideoCaptured: (CaptureResult<Path>) -> Unit) {
-        TODO("To be implemented yet")
+        startRecording(
+            fileOutputOptions = FileOutputOptions.Builder(path.toFile()).build(),
+            onResult = { result ->
+                when (result) {
+                    is CaptureResult.Error -> CaptureResult.Error(result.throwable)
+                    is CaptureResult.Success<Uri?> -> CaptureResult.Success(path)
+                }
+            }
+        )
     }
 
     private fun setResolutionPreset(value: ResolutionPreset) {
