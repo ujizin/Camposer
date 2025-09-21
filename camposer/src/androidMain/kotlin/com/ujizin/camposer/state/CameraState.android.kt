@@ -21,8 +21,6 @@ import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.MeteringPoint
 import androidx.camera.core.TorchState
-import androidx.camera.core.resolutionselector.ResolutionSelector
-import androidx.camera.core.resolutionselector.ResolutionStrategy
 import androidx.camera.video.FileDescriptorOutputOptions
 import androidx.camera.video.FileOutputOptions
 import androidx.camera.video.MediaStoreOutputOptions
@@ -225,15 +223,11 @@ public actual class CameraState(context: Context) {
     /**
      * Set image capture target size on camera
      * */
+    @Deprecated("Use ResolutionPreset instead")
     internal actual var imageCaptureTargetSize: ImageTargetSize?
         get() = controller.imageCaptureTargetSize.toImageTargetSize()
         set(value) {
             if (value != imageCaptureTargetSize) {
-                controller.setImageCaptureResolutionSelector(
-                    ResolutionSelector.Builder()
-                        .setResolutionStrategy(ResolutionStrategy.HIGHEST_AVAILABLE_STRATEGY)
-                        .build()
-                )
                 controller.imageCaptureTargetSize = value?.toOutputSize()
             }
         }
@@ -357,6 +351,8 @@ public actual class CameraState(context: Context) {
      * */
     public var isVideoSupported: Boolean = true
 
+    public actual var isPinchToZoomEnabled: Boolean by mutableStateOf(false)
+
     /**
      * Return true if it's recording.
      * */
@@ -381,7 +377,7 @@ public actual class CameraState(context: Context) {
             }
             controller.setEnabledUseCases(useCases)
         } catch (exception: IllegalStateException) {
-            Log.e(TAG, "Use case Image Analysis not supported")
+            Log.e(TAG, "Use case Image Analysis not supported, ${exception.stackTraceToString()}")
             controller.setEnabledUseCases(captureMode.value)
         }
     }
@@ -731,9 +727,9 @@ public actual class CameraState(context: Context) {
     }
 
     private fun setResolutionPreset(value: ResolutionPreset) {
+        value.getQualitySelector()?.let { controller.videoCaptureQualitySelector = it }
         controller.imageCaptureResolutionSelector = value.getResolutionSelector()
         controller.previewResolutionSelector = value.getResolutionSelector()
-        value.getQualitySelector()?.let { controller.videoCaptureQualitySelector = it }
     }
 
     /**
@@ -755,6 +751,7 @@ public actual class CameraState(context: Context) {
         meteringPoint: MeteringPoint,
         exposureCompensation: Int,
         resolutionPreset: ResolutionPreset,
+        isPinchToZoomEnabled: Boolean,
     ) {
         this.camSelector = camSelector
         this.captureMode = captureMode
@@ -769,8 +766,13 @@ public actual class CameraState(context: Context) {
         this.isFocusOnTapSupported = meteringPoint.isFocusMeteringSupported
         this.imageCaptureMode = imageCaptureMode
         this.resolutionPreset = resolutionPreset
+        this.isPinchToZoomEnabled = isPinchToZoomEnabled
         setExposureCompensation(exposureCompensation)
         setZoomRatio(zoomRatio)
+    }
+
+    internal fun dispose() {
+        controller.unbind()
     }
 
     private companion object {

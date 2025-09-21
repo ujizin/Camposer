@@ -1,12 +1,12 @@
 package com.ujizin.camposer.state
 
 import android.view.ScaleGestureDetector
+import com.ujizin.camposer.controller.PinchToZoomController
 
-internal actual class PinchToZoomGesture(
-    private val onZoomChanged: (Float) -> Unit
+internal class PinchToZoomGesture(
+    private val pinchZoomController: PinchToZoomController,
 ) : ScaleGestureDetector.SimpleOnScaleGestureListener() {
     override fun onScale(detector: ScaleGestureDetector): Boolean {
-        onZoomChanged(detector.scaleFactor)
-        return true
+        return pinchZoomController.onPinchToZoom(detector.scaleFactor)
     }
 }

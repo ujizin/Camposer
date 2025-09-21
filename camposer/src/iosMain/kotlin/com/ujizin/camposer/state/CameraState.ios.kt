@@ -151,8 +151,7 @@ public actual class CameraState internal constructor(
     public actual var isMuted: Boolean by mutableStateOf(false)
         private set
 
-    internal var isPinchToZoomEnabled: Boolean = true
-        private set
+    public actual var isPinchToZoomEnabled: Boolean by mutableStateOf(false)
 
     public actual var isStreaming: Boolean = false
         get() = isInitialized

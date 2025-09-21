@@ -12,10 +12,10 @@ public actual enum class ResolutionPreset(
     private val videoQuality: Quality? = null,
 ) {
     Default,
-    UltraHigh(Size(3840, 2160)),
-    High(Size(1920, 1080)),
-    Medium(Size(1080, 720)),
-    Low(Size(640, 480));
+    UltraHigh(Size(3840, 2160), Quality.UHD),
+    High(Size(1920, 1080), Quality.FHD),
+    Medium(Size(1080, 720), Quality.HD),
+    Low(Size(640, 480), Quality.SD);
 
     internal fun getResolutionSelector(): ResolutionSelector? {
         if (imageQuality == null) return null

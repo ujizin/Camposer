@@ -6,14 +6,20 @@ import android.view.ScaleGestureDetector
 import android.view.ViewConfiguration.getLongPressTimeout
 import androidx.camera.view.PreviewView
 import androidx.compose.ui.geometry.Offset
+import com.ujizin.camposer.controller.PinchToZoomController
 import com.ujizin.camposer.state.PinchToZoomGesture
 
+
 @SuppressLint("ClickableViewAccessibility")
-internal fun PreviewView.onCameraTouchEvent(
+internal fun PreviewView.setCameraTouchEvent(
+    pinchZoomController: PinchToZoomController,
     onTap: (Offset) -> Unit,
-    onScaleChanged: (Float) -> Unit,
 ) {
-    val scaleGesture = ScaleGestureDetector(context, PinchToZoomGesture(onScaleChanged))
+    val scaleGesture = ScaleGestureDetector(
+        /*context = */context,
+        /*listener = */ PinchToZoomGesture(pinchZoomController),
+    )
+
     setOnTouchListener { _, event ->
         val isSingleTouch = event.pointerCount == 1
         val isUpEvent = event.action == MotionEvent.ACTION_UP

@@ -18,6 +18,7 @@ public expect class CameraState {
     public val initialExposure: Int
     public val isZoomSupported: Boolean
 
+    public var isPinchToZoomEnabled: Boolean
     @Deprecated("Use ResolutionPreset instead")
     internal var imageCaptureTargetSize: ImageTargetSize?
 

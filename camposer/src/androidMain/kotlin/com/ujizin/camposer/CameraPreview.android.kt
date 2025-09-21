@@ -18,8 +18,8 @@ import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.ujizin.camposer.extensions.clamped
-import com.ujizin.camposer.extensions.onCameraTouchEvent
+import com.ujizin.camposer.controller.PinchToZoomController
+import com.ujizin.camposer.extensions.setCameraTouchEvent
 import com.ujizin.camposer.focus.SquareCornerFocus
 import com.ujizin.camposer.state.CamSelector
 import com.ujizin.camposer.state.CameraState
@@ -50,7 +50,6 @@ import com.ujizin.camposer.state.ScaleType
  * @param isImageAnalysisEnabled enable or disable image analysis
  * @param isFocusOnTapEnabled turn on feature focus on tap if true
  * @param isPinchToZoomEnabled turn on feature pinch to zoom if true
- * @param videoQualitySelector quality selector to the video capture
  * @param onPreviewStreamChanged dispatch when preview is switching to front or back
  * @param onSwitchToFront composable preview when change camera to front and it's not been streaming yet
  * @param onSwitchToBack composable preview when change camera to back and it's not been streaming yet
@@ -115,51 +114,49 @@ internal actual fun CameraPreviewImpl(
                 previewStreamState.observe(lifecycleOwner) { state ->
                     cameraState.isStreaming = state == PreviewView.StreamState.STREAMING
                 }
+
+                setCameraTouchEvent(
+                    pinchZoomController = PinchToZoomController(
+                        cameraState = cameraState,
+                        zoomRatio = zoomRatio,
+                        onZoomRatioChanged = onZoomRatioChanged
+                    ),
+                    onTap = { if (isFocusOnTapEnabled) tapOffset = it + cameraOffset },
+                )
             }
         },
         update = { previewView ->
-            if (cameraIsInitialized) {
-                with(previewView) {
-                    if (this.scaleType != scaleType.type) {
-                        this.scaleType = scaleType.type
-                    }
-                    this.implementationMode = implementationMode.value
-                    onCameraTouchEvent(
-                        onTap = { if (isFocusOnTapEnabled) tapOffset = it + cameraOffset },
-                        onScaleChanged = {
-                            if (isPinchToZoomEnabled) {
-                                val zoom = zoomRatio.clamped(it).coerceIn(
-                                    minimumValue = cameraState.minZoom,
-                                    maximumValue = cameraState.maxZoom
-                                )
-                                onZoomRatioChanged(zoom)
-                            }
-                        }
-                    )
-                    latestBitmap = when {
-                        lifecycleEvent == Lifecycle.Event.ON_STOP -> null
-                        !isCameraIdle && camSelector != cameraState.camSelector -> bitmap?.asImageBitmap()
-                        else -> latestBitmap
-                    }
-                    cameraState.update(
-                        camSelector = camSelector,
-                        captureMode = captureMode,
-                        imageCaptureTargetSize = imageCaptureTargetSize,
-                        scaleType = scaleType,
-                        isImageAnalysisEnabled = isImageAnalysisEnabled,
-                        imageAnalyzer = imageAnalyzer,
-                        implementationMode = implementationMode,
-                        isFocusOnTapEnabled = isFocusOnTapEnabled,
-                        flashMode = flashMode,
-                        enableTorch = enableTorch,
-                        zoomRatio = zoomRatio,
-                        imageCaptureMode = imageCaptureMode,
-                        meteringPoint = meteringPointFactory.createPoint(x, y),
-                        resolutionPreset = resolutionPreset,
-                        exposureCompensation = exposureCompensation,
-                    )
+            if (!cameraIsInitialized) return@AndroidView
+            with(previewView) {
+                if (this.scaleType != scaleType.type) {
+                    this.scaleType = scaleType.type
                 }
-
+                if (this.implementationMode != implementationMode.value) {
+                    this.implementationMode = implementationMode.value
+                }
+                latestBitmap = when {
+                    lifecycleEvent == Lifecycle.Event.ON_STOP -> null
+                    !isCameraIdle && camSelector != cameraState.camSelector -> bitmap?.asImageBitmap()
+                    else -> latestBitmap
+                }
+                cameraState.update(
+                    camSelector = camSelector,
+                    captureMode = captureMode,
+                    imageCaptureTargetSize = imageCaptureTargetSize,
+                    scaleType = scaleType,
+                    isImageAnalysisEnabled = isImageAnalysisEnabled,
+                    imageAnalyzer = imageAnalyzer,
+                    implementationMode = implementationMode,
+                    isFocusOnTapEnabled = isFocusOnTapEnabled,
+                    flashMode = flashMode,
+                    enableTorch = enableTorch,
+                    zoomRatio = zoomRatio,
+                    imageCaptureMode = imageCaptureMode,
+                    meteringPoint = meteringPointFactory.createPoint(x, y),
+                    resolutionPreset = resolutionPreset,
+                    exposureCompensation = exposureCompensation,
+                    isPinchToZoomEnabled = isPinchToZoomEnabled,
+                )
             }
         },
     )
