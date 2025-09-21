@@ -12,9 +12,8 @@ import androidx.camera.video.FileDescriptorOutputOptions
 import androidx.camera.video.FileOutputOptions
 import androidx.camera.video.MediaStoreOutputOptions
 import androidx.camera.view.video.AudioConfig
+import com.ujizin.camposer.result.CaptureResult
 import com.ujizin.camposer.state.CameraState
-import com.ujizin.camposer.state.ImageCaptureResult
-import com.ujizin.camposer.state.VideoCaptureResult
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.File
 import kotlin.coroutines.Continuation
@@ -90,16 +89,16 @@ public suspend fun CameraState.toggleRecording(
     }
 }
 
-private fun Continuation<Uri?>.takePictureContinuation(result: ImageCaptureResult) {
-    when (val res: ImageCaptureResult = result) {
-        is ImageCaptureResult.Error -> resumeWithException(res.throwable)
-        is ImageCaptureResult.Success -> resume(res.savedUri)
+private fun Continuation<Uri?>.takePictureContinuation(result: CaptureResult<Uri?>) {
+    when (val res: CaptureResult<Uri?> = result) {
+        is CaptureResult.Error -> resumeWithException(res.throwable)
+        is CaptureResult.Success -> resume(res.data)
     }
 }
 
-private fun Continuation<Uri?>.toggleRecordContinuation(result: VideoCaptureResult) {
-    when (val res: VideoCaptureResult = result) {
-        is VideoCaptureResult.Error -> resumeWithException(res.throwable ?: Exception(res.message))
-        is VideoCaptureResult.Success -> resume(res.savedUri)
+private fun Continuation<Uri?>.toggleRecordContinuation(result: CaptureResult<Uri?>) {
+    when (val res: CaptureResult<Uri?> = result) {
+        is CaptureResult.Error -> resumeWithException(res.throwable)
+        is CaptureResult.Success -> resume(res.data)
     }
 }

@@ -9,14 +9,12 @@ import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
+import com.ujizin.camposer.result.CaptureResult
 import com.ujizin.camposer.state.CaptureMode
-import com.ujizin.camposer.state.ImageCaptureResult
-import com.ujizin.camposer.state.VideoCaptureResult
 import com.ujizin.camposer.state.rememberImageAnalyzer
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
@@ -37,9 +35,9 @@ internal class CaptureModeTest : CameraTest() {
             val imageFile = File(context.filesDir, IMAGE_TEST_FILENAME).apply { createNewFile() }
             cameraState.takePicture(imageFile) { result ->
                 when (result) {
-                    is ImageCaptureResult.Error -> throw result.throwable
-                    is ImageCaptureResult.Success -> {
-                        assertEquals(Uri.fromFile(imageFile), result.savedUri)
+                    is CaptureResult.Error -> throw result.throwable
+                    is CaptureResult.Success -> {
+                        assertEquals(Uri.fromFile(imageFile), result.data)
                         assertEquals(CaptureMode.Image, cameraState.captureMode)
                         isFinalized = true
                     }
@@ -71,9 +69,9 @@ internal class CaptureModeTest : CameraTest() {
                 AudioConfig.AUDIO_DISABLED
             ) { result ->
                 when (result) {
-                    is VideoCaptureResult.Error -> throw result.throwable ?: error(result.message)
-                    is VideoCaptureResult.Success -> {
-                        assertEquals(Uri.fromFile(videoFile), result.savedUri)
+                    is CaptureResult.Error -> throw result.throwable
+                    is CaptureResult.Success -> {
+                        assertEquals(Uri.fromFile(videoFile), result.data)
                         assertEquals(CaptureMode.Video, cameraState.captureMode)
                         isFinished = true
                     }

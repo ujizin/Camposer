@@ -64,6 +64,7 @@ kotlin {
                 implementation(compose.ui)
                 implementation(compose.material3)
                 implementation(compose.foundation)
+                implementation(libs.media.kmp)
                 implementation(project(":camposer"))
             }
         }

@@ -5,6 +5,7 @@ import android.content.ContentResolver
 import android.graphics.ImageFormat.YUV_420_888
 import android.graphics.ImageFormat.YUV_422_888
 import android.graphics.ImageFormat.YUV_444_888
+import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
@@ -16,9 +17,8 @@ import androidx.lifecycle.viewModelScope
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.DecodeHintType
 import com.google.zxing.MultiFormatReader
+import com.ujizin.camposer.result.CaptureResult
 import com.ujizin.camposer.state.CameraState
-import com.ujizin.camposer.state.ImageCaptureResult
-import com.ujizin.camposer.state.VideoCaptureResult
 import com.ujizin.sample.data.local.datasource.FileDataSource
 import com.ujizin.sample.data.local.datasource.UserDataSource
 import com.ujizin.sample.domain.User
@@ -125,17 +125,17 @@ class CameraViewModel(
         }
     }
 
-    private fun onVideoResult(videoResult: VideoCaptureResult) {
+    private fun onVideoResult(videoResult: CaptureResult<Uri?>) {
         when (videoResult) {
-            is VideoCaptureResult.Error -> onError(videoResult.throwable)
-            is VideoCaptureResult.Success -> captureSuccess()
+            is CaptureResult.Error -> onError(videoResult.throwable)
+            is CaptureResult.Success -> captureSuccess()
         }
     }
 
-    private fun onImageResult(imageResult: ImageCaptureResult) {
+    private fun onImageResult(imageResult: CaptureResult<Uri?>) {
         when (imageResult) {
-            is ImageCaptureResult.Error -> onError(imageResult.throwable)
-            is ImageCaptureResult.Success -> captureSuccess()
+            is CaptureResult.Error -> onError(imageResult.throwable)
+            is CaptureResult.Success -> captureSuccess()
         }
     }
 

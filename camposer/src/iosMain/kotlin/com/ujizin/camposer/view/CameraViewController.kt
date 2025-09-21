@@ -8,7 +8,7 @@ import com.ujizin.camposer.state.ImageAnalyzer
 import com.ujizin.camposer.state.ImageCaptureMode
 import com.ujizin.camposer.state.ImageTargetSize
 import com.ujizin.camposer.state.ImplementationMode
-import com.ujizin.camposer.state.QualitySelector
+import com.ujizin.camposer.state.ResolutionPreset
 import com.ujizin.camposer.state.ScaleType
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
@@ -86,9 +86,9 @@ internal class CameraViewController(
         zoomRatio: Float,
         imageCaptureMode: ImageCaptureMode,
         enableTorch: Boolean,
-        videoQualitySelector: QualitySelector,
         exposureCompensation: Int,
         isPinchToZoomEnabled: Boolean,
+        resolutionPreset: ResolutionPreset,
     ) {
         val hasCameraChanged = cameraState.camSelector != camSelector
         if (hasCameraChanged) {
@@ -108,7 +108,7 @@ internal class CameraViewController(
             enableTorch = enableTorch,
             zoomRatio = zoomRatio,
             imageCaptureMode = imageCaptureMode,
-            videoQualitySelector = videoQualitySelector,
+            resolutionPreset = resolutionPreset,
             exposureCompensation = exposureCompensation,
             isPinchToZoomEnabled = isPinchToZoomEnabled,
         )

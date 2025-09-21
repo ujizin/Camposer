@@ -15,7 +15,7 @@ import com.ujizin.camposer.state.ImageAnalyzer
 import com.ujizin.camposer.state.ImageCaptureMode
 import com.ujizin.camposer.state.ImageTargetSize
 import com.ujizin.camposer.state.ImplementationMode
-import com.ujizin.camposer.state.QualitySelector
+import com.ujizin.camposer.state.ResolutionPreset
 import com.ujizin.camposer.state.ScaleType
 import com.ujizin.camposer.view.CameraViewController
 import com.ujizin.camposer.view.CameraViewDelegate
@@ -28,6 +28,7 @@ internal actual fun CameraPreviewImpl(
     cameraState: CameraState,
     camSelector: CamSelector,
     captureMode: CaptureMode,
+    resolutionPreset: ResolutionPreset,
     imageCaptureMode: ImageCaptureMode,
     imageCaptureTargetSize: ImageTargetSize?,
     flashMode: FlashMode,
@@ -37,7 +38,6 @@ internal actual fun CameraPreviewImpl(
     zoomRatio: Float,
     imageAnalyzer: ImageAnalyzer?,
     implementationMode: ImplementationMode,
-    videoQualitySelector: QualitySelector,
     isImageAnalysisEnabled: Boolean,
     isFocusOnTapEnabled: Boolean,
     isPinchToZoomEnabled: Boolean,
@@ -81,9 +81,9 @@ internal actual fun CameraPreviewImpl(
                 enableTorch = enableTorch,
                 zoomRatio = zoomRatio,
                 imageCaptureMode = imageCaptureMode,
-                videoQualitySelector = videoQualitySelector,
                 exposureCompensation = exposureCompensation,
                 isPinchToZoomEnabled = isPinchToZoomEnabled,
+                resolutionPreset = resolutionPreset,
             )
         },
     )

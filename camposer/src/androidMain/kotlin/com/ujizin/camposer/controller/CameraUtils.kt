@@ -1,9 +1,9 @@
-package com.ujizin.camposer.helper
+package com.ujizin.camposer.controller
 
 import android.hardware.camera2.CameraCharacteristics
 import android.os.Build
 
-internal object CameraHelper {
+internal object CameraUtils {
     
     private const val COMPAT_HARDWARE_LEVEL_3 = 3 
 

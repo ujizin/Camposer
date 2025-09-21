@@ -48,6 +48,7 @@ kotlin {
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
+            implementation(libs.kotlinx.io)
         }
 
         androidInstrumentedTest.dependencies {

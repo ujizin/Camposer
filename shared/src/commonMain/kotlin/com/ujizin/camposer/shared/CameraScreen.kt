@@ -1,24 +1,44 @@
 package com.ujizin.camposer.shared
 
+import VideoPlayer
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.decodeToImageBitmap
+import androidx.compose.ui.unit.dp
 import com.ujizin.camposer.CameraPreview
+import com.ujizin.camposer.result.CaptureResult
 import com.ujizin.camposer.state.CamSelector
+import com.ujizin.camposer.state.CaptureMode
 import com.ujizin.camposer.state.FlashMode
+import com.ujizin.camposer.state.ResolutionPreset
 import com.ujizin.camposer.state.inverse
 import com.ujizin.camposer.state.rememberCamSelector
 import com.ujizin.camposer.state.rememberCameraState
 import com.ujizin.camposer.state.rememberTorch
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemTemporaryDirectory
 import kotlin.math.roundToInt
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
+@OptIn(ExperimentalUuidApi::class)
 @Composable
 fun CameraScreen() {
     val cameraState = rememberCameraState()
@@ -26,6 +46,11 @@ fun CameraScreen() {
     var enableTorch by cameraState.rememberTorch(false)
     var camSelector by rememberCamSelector(CamSelector.Back)
     var zoomRatio by remember { mutableStateOf(cameraState.minZoom) }
+    var bitmap by remember { mutableStateOf<ImageBitmap?>(null) }
+
+    var captureMode by remember { mutableStateOf(CaptureMode.Image) }
+    val isRecording by rememberUpdatedState(cameraState.isRecording)
+    var videoPath by remember { mutableStateOf("") }
 
     CameraPreview(
         modifier = Modifier.fillMaxSize(),
@@ -34,9 +59,14 @@ fun CameraScreen() {
         enableTorch = enableTorch,
         camSelector = camSelector,
         zoomRatio = zoomRatio,
+        resolutionPreset = ResolutionPreset.UltraHigh,
+        captureMode = captureMode,
         onZoomRatioChanged = { zoomRatio = it }
     ) {
         FlowRow {
+            if (isRecording) {
+                Box(Modifier.size(24.dp).background(Color.Red, CircleShape))
+            }
             Button(onClick = { enableTorch = !enableTorch }) {
                 Text("Torch: $enableTorch")
             }
@@ -54,7 +84,58 @@ fun CameraScreen() {
             Button(onClick = { zoomRatio += 1F }) {
                 Text("zoom Ratio: ${zoomRatio.roundDecimals(1)}")
             }
+            Button(onClick = {
+                val path = Path("$SystemTemporaryDirectory/video-${Uuid.random()}.mov")
+
+                if (isRecording) {
+                    cameraState.stopRecording()
+                    return@Button
+                }
+
+                when (captureMode) {
+                    CaptureMode.Image -> cameraState.takePicture {
+                        if (it is CaptureResult.Success) {
+                            bitmap = it.data.decodeToImageBitmap()
+                        }
+                    }
+
+                    CaptureMode.Video -> cameraState.startRecording(path) {
+                        println("video result: $it")
+                        if (it is CaptureResult.Success) {
+                            println("Video saved to ${it.data}")
+                            videoPath = it.data.toString()
+                        }
+                    }
+                }
+            }) {
+                Text("Take picture")
+            }
+            Button(onClick = {
+                captureMode =
+                    if (captureMode == CaptureMode.Image) CaptureMode.Video else CaptureMode.Image
+            }) {
+                Text("Capture mode: $captureMode")
+            }
         }
+    }
+
+    bitmap?.let {
+        Image(
+            modifier = Modifier.fillMaxSize().clickable {
+                bitmap = null
+            },
+            bitmap = it,
+            contentDescription = null
+        )
+    }
+
+    if (videoPath.isNotEmpty()) {
+        VideoPlayer(
+            modifier = Modifier.fillMaxSize(),
+            url = "file://$videoPath",
+            autoPlay = true,
+            showControls = true,
+        )
     }
 }
 

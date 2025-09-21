@@ -2,7 +2,7 @@ package com.ujizin.camposer.extensions
 
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
-import com.ujizin.camposer.helper.CameraHelper
+import com.ujizin.camposer.controller.CameraUtils
 
 internal fun CameraManager.isImageAnalysisSupported(lensFacing: Int?): Boolean {
     val cameraId = cameraIdList.firstOrNull {
@@ -12,5 +12,5 @@ internal fun CameraManager.isImageAnalysisSupported(lensFacing: Int?): Boolean {
     val level = getCameraCharacteristics(cameraId)
         .get(CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL) ?: 0
 
-    return level >= CameraHelper.compatHardwareLevel3
+    return level >= CameraUtils.compatHardwareLevel3
 }

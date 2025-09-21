@@ -3,6 +3,7 @@
 package com.ujizin.camposer.utils
 
 
+import com.ujizin.camposer.error.NSErrorException
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.ExperimentalForeignApi
@@ -13,8 +14,6 @@ import kotlinx.cinterop.pointed
 import kotlinx.cinterop.ptr
 import kotlinx.cinterop.value
 import platform.Foundation.NSError
-
-internal class NSErrorException(nsError: NSError) : Exception(nsError.localizedDescription)
 
 @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
 @Throws(NSErrorException::class)

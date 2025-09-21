@@ -24,6 +24,7 @@ import com.skydoves.cloudy.cloudy
 import com.ujizin.camposer.CameraPreview
 import com.ujizin.camposer.state.CamSelector
 import com.ujizin.camposer.state.CameraState
+import com.ujizin.camposer.state.ResolutionPreset
 import com.ujizin.camposer.state.rememberCamSelector
 import com.ujizin.camposer.state.rememberCameraState
 import com.ujizin.camposer.state.rememberFlashMode
@@ -105,6 +106,7 @@ fun CameraSection(
         captureMode = cameraOption.toCaptureMode(),
         enableTorch = enableTorch,
         flashMode = flashMode,
+        resolutionPreset = ResolutionPreset.Low,
         zoomRatio = zoomRatio,
         imageAnalyzer = imageAnalyzer,
         isPinchToZoomEnabled = usePinchToZoom,

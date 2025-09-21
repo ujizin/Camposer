@@ -1,10 +1,14 @@
 package com.ujizin.camposer.state
 
+import com.ujizin.camposer.result.CaptureResult
+import kotlinx.io.files.Path
+
 public expect class CameraState {
     internal var camSelector: CamSelector
     internal var captureMode: CaptureMode
     internal var imageCaptureMode: ImageCaptureMode
-    internal var imageCaptureTargetSize: ImageTargetSize?
+    internal var resolutionPreset: ResolutionPreset
+
     internal var flashMode: FlashMode
     internal var scaleType: ScaleType
     internal var implementationMode: ImplementationMode
@@ -13,6 +17,9 @@ public expect class CameraState {
     internal var enableTorch: Boolean
     public val initialExposure: Int
     public val isZoomSupported: Boolean
+
+    @Deprecated("Use ResolutionPreset instead")
+    internal var imageCaptureTargetSize: ImageTargetSize?
 
     /**
      * Get max zoom from camera.
@@ -31,11 +38,13 @@ public expect class CameraState {
      * */
     public var minExposure: Int
         private set
+
     /**
      * Get max exposure from camera.
      * */
     public var maxExposure: Int
         private set
+
     /**
      * Check if compensation exposure is supported.
      * */
@@ -46,11 +55,13 @@ public expect class CameraState {
      * */
     public var isStreaming: Boolean
         internal set
+
     /**
      * Check if focus on tap supported
      * */
     public var isFocusOnTapSupported: Boolean
         private set
+
     /**
      * Check if camera state is initialized or not.
      * */
@@ -68,12 +79,26 @@ public expect class CameraState {
      * */
     public var hasFlashUnit: Boolean
         private set
+
     /**
      * Return true if it's recording.
      * */
     public var isRecording: Boolean
         private set
 
-    internal var videoQualitySelector: QualitySelector
+    /**
+     * Return true if it's muted.
+     * */
+    public var isMuted: Boolean
         private set
+
+    public fun takePicture(onImageCaptured: (CaptureResult<ByteArray>) -> Unit)
+    public fun takePicture(path: Path, onImageCaptured: (CaptureResult<Path>) -> Unit)
+
+    public fun startRecording(path: Path, onVideoCaptured: (CaptureResult<Path>) -> Unit)
+    public fun resumeRecording()
+    public fun pauseRecording()
+    public fun stopRecording()
+
+    public fun muteRecording(isMuted: Boolean)
 }
