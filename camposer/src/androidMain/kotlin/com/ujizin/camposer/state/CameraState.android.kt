@@ -176,11 +176,17 @@ public actual class CameraState(context: Context) {
     /**
      * Image capture mode to be added on camera.
      * */
-    internal actual var imageCaptureMode: ImageCaptureMode = ImageCaptureMode.MinLatency
+    @SuppressLint("UnsafeOptInUsageError")
+    internal actual var imageCaptureMode: ImageCaptureMode = ImageCaptureMode.Balanced
         set(value) {
             if (field != value) {
                 field = value
-                controller.imageCaptureMode = value.mode
+                val isZslSupported = controller.cameraInfo?.isZslSupported == true
+                var mode = value.mode
+                if (value == ImageCaptureMode.MinLatency && !isZslSupported) {
+                    mode = value.fallback
+                }
+                controller.imageCaptureMode = mode
             }
         }
 

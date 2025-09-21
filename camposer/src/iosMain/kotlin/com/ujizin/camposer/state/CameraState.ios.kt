@@ -51,7 +51,7 @@ public actual class CameraState internal constructor(
             controller.setCameraPreset(value.presets.toList())
         }
 
-    internal actual var imageCaptureMode: ImageCaptureMode = ImageCaptureMode.MinLatency
+    internal actual var imageCaptureMode: ImageCaptureMode = ImageCaptureMode.Balanced
         set(value) {
             if (value == field) return
             field = value

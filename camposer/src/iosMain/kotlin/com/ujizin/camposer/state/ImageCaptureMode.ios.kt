@@ -9,7 +9,7 @@ public actual enum class ImageCaptureMode(
     internal val strategy: AVCapturePhotoQualityPrioritization,
     internal val highResolutionEnabled: Boolean,
 ) {
-    ZeroShutterLag(AVCapturePhotoQualityPrioritizationSpeed, false),
+    MinLatency(AVCapturePhotoQualityPrioritizationSpeed, false),
     MaxQuality(AVCapturePhotoQualityPrioritizationQuality, true),
-    MinLatency(AVCapturePhotoQualityPrioritizationBalanced, false),
+    Balanced(AVCapturePhotoQualityPrioritizationBalanced, false),
 }

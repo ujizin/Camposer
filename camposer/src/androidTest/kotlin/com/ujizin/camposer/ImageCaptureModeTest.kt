@@ -19,9 +19,9 @@ internal class ImageCaptureModeTest : CameraTest() {
 
     @Test
     fun test_imageCaptureMode() = with(composeTestRule) {
-        initImageCaptureModeCamera(ImageCaptureMode.MinLatency)
+        initImageCaptureModeCamera(ImageCaptureMode.Balanced)
 
-        Assert.assertEquals(cameraState.imageCaptureMode, ImageCaptureMode.MinLatency)
+        Assert.assertEquals(cameraState.imageCaptureMode, ImageCaptureMode.Balanced)
         imageCaptureMode.value = ImageCaptureMode.MaxQuality
 
         runOnIdle {

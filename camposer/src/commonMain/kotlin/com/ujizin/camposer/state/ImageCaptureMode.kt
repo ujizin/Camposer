@@ -1,7 +1,7 @@
 package com.ujizin.camposer.state
 
 public expect enum class ImageCaptureMode {
-    ZeroShutterLag,
+    MinLatency,
     MaxQuality,
-    MinLatency
+    Balanced
 }

@@ -11,9 +11,15 @@ import androidx.camera.core.ImageCapture
  * @see ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY
  * @see ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY
  * */
-public actual enum class ImageCaptureMode(@ImageCapture.CaptureMode internal val mode: Int) {
+public actual enum class ImageCaptureMode(
+    @ImageCapture.CaptureMode internal val mode: Int,
+    internal val fallback: Int = mode,
+) {
     @ExperimentalZeroShutterLag
-    ZeroShutterLag(ImageCapture.CAPTURE_MODE_ZERO_SHUTTER_LAG),
+    MinLatency(
+        ImageCapture.CAPTURE_MODE_ZERO_SHUTTER_LAG,
+        ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY
+    ),
     MaxQuality(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY),
-    MinLatency(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY);
+    Balanced(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY);
 }
