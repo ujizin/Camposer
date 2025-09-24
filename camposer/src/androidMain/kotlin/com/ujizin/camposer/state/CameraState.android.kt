@@ -359,12 +359,12 @@ public actual class CameraState(context: Context) {
     public actual var isRecording: Boolean by mutableStateOf(controller.isRecording)
         private set
 
-    public actual var exposureCompensation: Float = initialExposure
+    public actual var exposureCompensation: Float? = null
         set(value) {
-            if (field == value) return
+            if (value == null || field == value) return
             field = value
             if (value in minExposure..maxExposure) {
-                controller.cameraControl?.setExposureCompensationIndex(exposureCompensation.roundToInt())
+                controller.cameraControl?.setExposureCompensationIndex(value.roundToInt())
             }
         }
 
@@ -752,7 +752,7 @@ public actual class CameraState(context: Context) {
         imageCaptureMode: ImageCaptureMode,
         enableTorch: Boolean,
         meteringPoint: MeteringPoint,
-        exposureCompensation: Float,
+        exposureCompensation: Float?,
         resolutionPreset: ResolutionPreset,
         isPinchToZoomEnabled: Boolean,
     ) {

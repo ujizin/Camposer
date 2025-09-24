@@ -34,7 +34,7 @@ public expect class CameraState {
     public var minZoom: Float
         private set
 
-    public var exposureCompensation: Float
+    public var exposureCompensation: Float?
         private set
 
     /**

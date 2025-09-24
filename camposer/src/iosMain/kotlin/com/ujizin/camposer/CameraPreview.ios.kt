@@ -34,7 +34,7 @@ internal actual fun CameraPreviewImpl(
     flashMode: FlashMode,
     scaleType: ScaleType,
     enableTorch: Boolean,
-    exposureCompensation: Float,
+    exposureCompensation: Float?,
     zoomRatio: Float,
     imageAnalyzer: ImageAnalyzer?, // TODO
     implementationMode: ImplementationMode,

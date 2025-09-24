@@ -102,9 +102,9 @@ public actual class CameraState internal constructor(
             }
         }
 
-    public actual var exposureCompensation: Float = 0F
+    public actual var exposureCompensation: Float? = null
         private set(value) {
-            if (field == value) return
+            if (value == null || field == value) return
             field = value
             controller.device.withConfigurationLock {
                 setExposureTargetBias(value, {})
@@ -234,7 +234,7 @@ public actual class CameraState internal constructor(
         zoomRatio: Float,
         imageCaptureMode: ImageCaptureMode,
         enableTorch: Boolean,
-        exposureCompensation: Float,
+        exposureCompensation: Float?,
         resolutionPreset: ResolutionPreset,
         isPinchToZoomEnabled: Boolean,
     ) {

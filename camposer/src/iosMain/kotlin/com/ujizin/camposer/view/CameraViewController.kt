@@ -86,7 +86,7 @@ internal class CameraViewController(
         zoomRatio: Float,
         imageCaptureMode: ImageCaptureMode,
         enableTorch: Boolean,
-        exposureCompensation: Float,
+        exposureCompensation: Float?,
         isPinchToZoomEnabled: Boolean,
         resolutionPreset: ResolutionPreset,
     ) {
