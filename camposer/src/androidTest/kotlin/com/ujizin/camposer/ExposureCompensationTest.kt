@@ -15,14 +15,14 @@ import org.junit.runner.RunWith
 @LargeTest
 internal class ExposureCompensationTest: CameraTest() {
 
-    private lateinit var exposureCompensation: MutableState<Int>
+    private lateinit var exposureCompensation: MutableState<Float>
 
-    private val currentExposure: Int?
-        get() = cameraState.controller.cameraInfo?.exposureState?.exposureCompensationIndex
+    private val currentExposure: Float?
+        get() = cameraState.controller.cameraInfo?.exposureState?.exposureCompensationIndex?.toFloat()
 
     @Test
     fun test_minExposureCompensation() = with(composeTestRule) {
-        initCameraWithExposure(0)
+        initCameraWithExposure(0F)
 
         exposureCompensation.value = cameraState.minExposure
 
@@ -36,7 +36,7 @@ internal class ExposureCompensationTest: CameraTest() {
 
     @Test
     fun test_maxExposureCompensation() = with(composeTestRule) {
-        initCameraWithExposure(0)
+        initCameraWithExposure(0F)
 
         exposureCompensation.value = cameraState.maxExposure
 
@@ -51,9 +51,9 @@ internal class ExposureCompensationTest: CameraTest() {
 
     @Test
     fun test_invalidExposureCompensation() = with(composeTestRule) {
-        initCameraWithExposure(0)
+        initCameraWithExposure(0F)
 
-        exposureCompensation.value = Int.MAX_VALUE
+        exposureCompensation.value = Float.MAX_VALUE
 
         runOnIdle {
             if (!cameraState.isExposureSupported) return@runOnIdle
@@ -65,7 +65,7 @@ internal class ExposureCompensationTest: CameraTest() {
     }
 
     private fun ComposeContentTestRule.initCameraWithExposure(
-        exposure: Int,
+        exposure: Float,
     ) = initCameraState { state ->
         exposureCompensation = remember { mutableStateOf(exposure) }
         CameraPreview(
