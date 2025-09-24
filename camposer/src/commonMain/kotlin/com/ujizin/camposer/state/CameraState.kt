@@ -15,7 +15,7 @@ public expect class CameraState {
     internal var isImageAnalysisEnabled: Boolean
     internal var isFocusOnTapEnabled: Boolean
     internal var enableTorch: Boolean
-    public val initialExposure: Int
+    public val initialExposure: Float
     public val isZoomSupported: Boolean
 
     public var isPinchToZoomEnabled: Boolean
@@ -34,16 +34,19 @@ public expect class CameraState {
     public var minZoom: Float
         private set
 
+    public var exposureCompensation: Float
+        private set
+
     /**
      * Get min exposure from camera.
      * */
-    public var minExposure: Int
+    public var minExposure: Float
         private set
 
     /**
      * Get max exposure from camera.
      * */
-    public var maxExposure: Int
+    public var maxExposure: Float
         private set
 
     /**

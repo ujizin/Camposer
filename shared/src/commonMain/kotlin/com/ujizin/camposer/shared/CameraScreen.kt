@@ -50,6 +50,7 @@ fun CameraScreen() {
 
     var captureMode by remember { mutableStateOf(CaptureMode.Image) }
     val isRecording by rememberUpdatedState(cameraState.isRecording)
+    var exposureCompensation by remember { mutableStateOf(cameraState.initialExposure) }
     var videoPath by remember { mutableStateOf("") }
 
     CameraPreview(
@@ -59,6 +60,7 @@ fun CameraScreen() {
         enableTorch = enableTorch,
         camSelector = camSelector,
         zoomRatio = zoomRatio,
+        exposureCompensation = exposureCompensation,
         resolutionPreset = ResolutionPreset.UltraHigh,
         captureMode = captureMode,
         onZoomRatioChanged = { zoomRatio = it }
@@ -115,6 +117,15 @@ fun CameraScreen() {
                     if (captureMode == CaptureMode.Image) CaptureMode.Video else CaptureMode.Image
             }) {
                 Text("Capture mode: $captureMode")
+            }
+            Button(
+                onClick = {
+                    exposureCompensation = (exposureCompensation + 1).coerceAtMost(
+                        cameraState.maxExposure
+                    )
+                },
+            ) {
+                Text("exposureCompensation: $exposureCompensation")
             }
         }
     }

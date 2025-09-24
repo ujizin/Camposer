@@ -35,7 +35,6 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.util.Consumer
@@ -48,6 +47,7 @@ import kotlinx.io.files.Path
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.concurrent.Executor
+import kotlin.math.roundToInt
 
 /**
  * A state object that can be hoisted to control camera, take picture or record video.
@@ -111,22 +111,22 @@ public actual class CameraState(context: Context) {
     /**
      * Get min exposure from camera.
      * */
-    public actual var minExposure: Int by mutableIntStateOf(
-        exposureCompensationRange?.lower ?: INITIAL_EXPOSURE_VALUE
+    public actual var minExposure: Float by mutableFloatStateOf(
+        exposureCompensationRange?.lower?.toFloat() ?: INITIAL_EXPOSURE_VALUE
     )
         internal set
 
     /**
      * Get max exposure from camera.
      * */
-    public actual var maxExposure: Int by mutableIntStateOf(
-        exposureCompensationRange?.upper ?: INITIAL_EXPOSURE_VALUE
+    public actual var maxExposure: Float by mutableFloatStateOf(
+        exposureCompensationRange?.upper?.toFloat() ?: INITIAL_EXPOSURE_VALUE
     )
         internal set
 
     public actual var isMuted: Boolean by mutableStateOf(false)
-    public actual val initialExposure: Int = INITIAL_EXPOSURE_VALUE
-        get() = controller.cameraInfo?.exposureState?.exposureCompensationIndex ?: field
+    public actual val initialExposure: Float = INITIAL_EXPOSURE_VALUE
+        get() = controller.cameraInfo?.exposureState?.exposureCompensationIndex?.toFloat() ?: field
 
     /**
      * Check if compensation exposure is supported.
@@ -359,6 +359,15 @@ public actual class CameraState(context: Context) {
     public actual var isRecording: Boolean by mutableStateOf(controller.isRecording)
         private set
 
+    public actual var exposureCompensation: Float = initialExposure
+        set(value) {
+            if (field == value) return
+            field = value
+            if (value in minExposure..maxExposure) {
+                controller.cameraControl?.setExposureCompensationIndex(exposureCompensation.roundToInt())
+            }
+        }
+
     init {
         controller.initializationFuture.addListener({
             rebindCamera()
@@ -394,8 +403,8 @@ public actual class CameraState(context: Context) {
     }
 
     private fun startExposure() {
-        minExposure = exposureCompensationRange?.lower ?: INITIAL_EXPOSURE_VALUE
-        maxExposure = exposureCompensationRange?.upper ?: INITIAL_EXPOSURE_VALUE
+        minExposure = exposureCompensationRange?.lower?.toFloat() ?: INITIAL_EXPOSURE_VALUE
+        maxExposure = exposureCompensationRange?.upper?.toFloat() ?: INITIAL_EXPOSURE_VALUE
     }
 
     /**
@@ -475,12 +484,6 @@ public actual class CameraState(context: Context) {
      * */
     private fun setZoomRatio(zoomRatio: Float) {
         controller.setZoomRatio(zoomRatio.coerceIn(minZoom, maxZoom))
-    }
-
-    private fun setExposureCompensation(exposureCompensation: Int) {
-        if (exposureCompensation in minExposure..maxExposure) {
-            controller.cameraControl?.setExposureCompensationIndex(exposureCompensation)
-        }
     }
 
     /**
@@ -749,7 +752,7 @@ public actual class CameraState(context: Context) {
         imageCaptureMode: ImageCaptureMode,
         enableTorch: Boolean,
         meteringPoint: MeteringPoint,
-        exposureCompensation: Int,
+        exposureCompensation: Float,
         resolutionPreset: ResolutionPreset,
         isPinchToZoomEnabled: Boolean,
     ) {
@@ -767,7 +770,7 @@ public actual class CameraState(context: Context) {
         this.imageCaptureMode = imageCaptureMode
         this.resolutionPreset = resolutionPreset
         this.isPinchToZoomEnabled = isPinchToZoomEnabled
-        setExposureCompensation(exposureCompensation)
+        this.exposureCompensation = exposureCompensation
         setZoomRatio(zoomRatio)
     }
 
@@ -778,7 +781,7 @@ public actual class CameraState(context: Context) {
     private companion object {
         private val TAG = this::class.java.name
         private const val INITIAL_ZOOM_VALUE = 1F
-        private const val INITIAL_EXPOSURE_VALUE = 0
+        private const val INITIAL_EXPOSURE_VALUE = 0F
     }
 }
 

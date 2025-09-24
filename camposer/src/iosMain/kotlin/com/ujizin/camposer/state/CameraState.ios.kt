@@ -10,17 +10,16 @@ import com.ujizin.camposer.result.CaptureResult
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.io.files.Path
-import platform.AVFoundation.exposureTargetOffset
 import platform.AVFoundation.hasFlash
 import platform.AVFoundation.hasTorch
 import platform.AVFoundation.isFlashAvailable
 import platform.AVFoundation.isTorchAvailable
 import platform.AVFoundation.maxExposureTargetBias
 import platform.AVFoundation.minExposureTargetBias
+import platform.AVFoundation.setExposureTargetBias
 import platform.AVFoundation.videoZoomFactor
 import platform.CoreGraphics.CGPoint
 import platform.UIKit.UIView
-import kotlin.math.roundToInt
 
 @OptIn(ExperimentalForeignApi::class)
 public actual class CameraState internal constructor(
@@ -103,10 +102,13 @@ public actual class CameraState internal constructor(
             }
         }
 
-    private var exposureCompensation: Int
-        get() = controller.device.exposureTargetOffset.roundToInt()
-        set(value) {
-
+    public actual var exposureCompensation: Float = 0F
+        private set(value) {
+            if (field == value) return
+            field = value
+            controller.device.withConfigurationLock {
+                setExposureTargetBias(value, {})
+            }
         }
 
     public actual val isZoomSupported: Boolean = true
@@ -118,15 +120,15 @@ public actual class CameraState internal constructor(
     public actual var minZoom: Float = 1F
         private set
 
-    public actual var minExposure: Int = 0
-        get() = controller.device.minExposureTargetBias.roundToInt()
+    public actual var minExposure: Float = 0F
+        get() = controller.device.minExposureTargetBias
         private set
 
-    public actual var maxExposure: Int = 0
-        get() = controller.device.maxExposureTargetBias.roundToInt()
+    public actual var maxExposure: Float = 0F
+        get() = controller.device.maxExposureTargetBias
         private set
 
-    public actual val initialExposure: Int by lazy { exposureCompensation }
+    public actual val initialExposure: Float by lazy { exposureCompensation }
 
     public actual val isExposureSupported: Boolean
         get() = true
@@ -232,7 +234,7 @@ public actual class CameraState internal constructor(
         zoomRatio: Float,
         imageCaptureMode: ImageCaptureMode,
         enableTorch: Boolean,
-        exposureCompensation: Int,
+        exposureCompensation: Float,
         resolutionPreset: ResolutionPreset,
         isPinchToZoomEnabled: Boolean,
     ) {
