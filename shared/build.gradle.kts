@@ -13,7 +13,7 @@ kotlin {
     androidLibrary {
         namespace = "com.ujizin.camposer.shared"
         compileSdk = 36
-        minSdk = 24
+        minSdk = 23
 
         withHostTestBuilder {
         }
