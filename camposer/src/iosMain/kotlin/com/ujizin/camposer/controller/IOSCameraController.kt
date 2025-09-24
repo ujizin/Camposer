@@ -1,6 +1,5 @@
 package com.ujizin.camposer.controller
 
-import com.ujizin.camposer.controller.command.RecordVideoController
 import com.ujizin.camposer.controller.command.TakePictureCommand
 import com.ujizin.camposer.error.AudioInputNotFoundException
 import com.ujizin.camposer.extensions.captureDevice

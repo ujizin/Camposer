@@ -50,12 +50,8 @@ import com.ujizin.camposer.state.ScaleType
  * @param isImageAnalysisEnabled enable or disable image analysis
  * @param isFocusOnTapEnabled turn on feature focus on tap if true
  * @param isPinchToZoomEnabled turn on feature pinch to zoom if true
- * @param onPreviewStreamChanged dispatch when preview is switching to front or back
- * @param onSwitchToFront composable preview when change camera to front and it's not been streaming yet
- * @param onSwitchToBack composable preview when change camera to back and it's not been streaming yet
  * @param onZoomRatioChanged dispatch when zoom is changed by pinch to zoom
  * @param focusTapContent content of focus tap, default is [SquareCornerFocus]
- * @param onFocus callback to use when on focus tap is triggered, call onComplete to [focusTapContent] gone.
  * @param content content composable within of camera preview.
  * @see ImageAnalyzer
  * @see CameraState
@@ -79,12 +75,8 @@ internal actual fun CameraPreviewImpl(
     isImageAnalysisEnabled: Boolean,
     isFocusOnTapEnabled: Boolean,
     isPinchToZoomEnabled: Boolean,
-    onPreviewStreamChanged: () -> Unit,
     onTapFocus: (Offset) -> Unit,
     onSwitchCamera: (ImageBitmap) -> Unit,
-    onSwitchToFront: @Composable ((ImageBitmap) -> Unit),
-    onSwitchToBack: @Composable ((ImageBitmap) -> Unit),
-    onFocus: suspend (() -> Unit) -> Unit,
     onZoomRatioChanged: (Float) -> Unit,
     focusTapContent: @Composable (() -> Unit),
     content: @Composable (() -> Unit)

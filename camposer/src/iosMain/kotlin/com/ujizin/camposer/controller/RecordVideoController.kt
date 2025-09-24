@@ -1,4 +1,4 @@
-package com.ujizin.camposer.controller.command
+package com.ujizin.camposer.controller
 
 import com.ujizin.camposer.error.CameraNotRunningException
 import com.ujizin.camposer.error.ErrorRecordVideoException
@@ -61,7 +61,7 @@ internal class RecordVideoController(
         }.apply { videoDelegate = this }
 
         videoRecordOutput.startRecordingToOutputFileURL(
-            outputFileURL = NSURL.fileURLWithPath(path.toString()),
+            outputFileURL = NSURL.Companion.fileURLWithPath(path.toString()),
             recordingDelegate = videoDelegate,
         )
     }

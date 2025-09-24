@@ -34,19 +34,15 @@ internal actual fun CameraPreviewImpl(
     flashMode: FlashMode,
     scaleType: ScaleType,
     enableTorch: Boolean,
-    exposureCompensation: Int,
+    exposureCompensation: Int, // TODO
     zoomRatio: Float,
-    imageAnalyzer: ImageAnalyzer?,
+    imageAnalyzer: ImageAnalyzer?, // TODO
     implementationMode: ImplementationMode,
-    isImageAnalysisEnabled: Boolean,
+    isImageAnalysisEnabled: Boolean, // TODO
     isFocusOnTapEnabled: Boolean,
     isPinchToZoomEnabled: Boolean,
-    onPreviewStreamChanged: () -> Unit,
     onTapFocus: (Offset) -> Unit,
     onSwitchCamera: (ImageBitmap) -> Unit,
-    onSwitchToFront: @Composable (ImageBitmap) -> Unit,
-    onSwitchToBack: @Composable (ImageBitmap) -> Unit,
-    onFocus: suspend (onComplete: () -> Unit) -> Unit,
     onZoomRatioChanged: (Float) -> Unit,
     focusTapContent: @Composable () -> Unit,
     content: @Composable () -> Unit,
