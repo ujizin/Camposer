@@ -28,7 +28,6 @@ import androidx.camera.video.Recording
 import androidx.camera.video.VideoRecordEvent
 import androidx.camera.view.CameraController.IMAGE_ANALYSIS
 import androidx.camera.view.CameraController.OutputSize
-import androidx.camera.view.CameraController.OutputSize.UNASSIGNED_ASPECT_RATIO
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.video.AudioConfig
 import androidx.compose.runtime.Stable
@@ -782,15 +781,5 @@ public actual class CameraState(context: Context) {
         private val TAG = this::class.java.name
         private const val INITIAL_ZOOM_VALUE = 1F
         private const val INITIAL_EXPOSURE_VALUE = 0F
-    }
-}
-
-private fun OutputSize?.toImageTargetSize(): ImageTargetSize? {
-    return this?.let {
-        if (it.aspectRatio != UNASSIGNED_ASPECT_RATIO) {
-            ImageTargetSize(aspectRatio = it.aspectRatio)
-        } else {
-            ImageTargetSize(size = it.resolution)
-        }
     }
 }

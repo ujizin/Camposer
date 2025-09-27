@@ -3,6 +3,7 @@ package com.ujizin.camposer.state
 import android.util.Size
 import androidx.camera.core.AspectRatio
 import androidx.camera.view.CameraController.OutputSize
+import androidx.camera.view.CameraController.OutputSize.UNASSIGNED_ASPECT_RATIO
 
 /**
  * Image Analysis target size is used to target the size of image analysis, accepting [AspectRatio]
@@ -46,3 +47,14 @@ public actual data class ImageTargetSize(
         return outputSize ?: aspectRatio?.let { OutputSize(it) } ?: size?.let { OutputSize(it) }
     }
 }
+
+internal fun OutputSize?.toImageTargetSize(): ImageTargetSize? {
+    return this?.let {
+        if (it.aspectRatio != UNASSIGNED_ASPECT_RATIO) {
+            ImageTargetSize(aspectRatio = it.aspectRatio)
+        } else {
+            ImageTargetSize(size = it.resolution)
+        }
+    }
+}
+
