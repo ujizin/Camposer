@@ -12,6 +12,7 @@ public expect class CameraState {
     internal var flashMode: FlashMode
     internal var scaleType: ScaleType
     internal var implementationMode: ImplementationMode
+    internal var imageAnalyzer: ImageAnalyzer?
     internal var isImageAnalysisEnabled: Boolean
     internal var isFocusOnTapEnabled: Boolean
     internal var enableTorch: Boolean
@@ -19,6 +20,7 @@ public expect class CameraState {
     public val isZoomSupported: Boolean
 
     public var isPinchToZoomEnabled: Boolean
+
     @Deprecated("Use ResolutionPreset instead")
     internal var imageCaptureTargetSize: ImageTargetSize?
 

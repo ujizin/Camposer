@@ -23,7 +23,7 @@ import platform.UIKit.UIView
 
 @OptIn(ExperimentalForeignApi::class)
 public actual class CameraState internal constructor(
-    private val controller: IOSCameraController = IOSCameraController(),
+    public val controller: IOSCameraController = IOSCameraController(),
 ) {
 
     internal actual var camSelector: CamSelector = CamSelector.Back
@@ -80,9 +80,18 @@ public actual class CameraState internal constructor(
     // No-op in iOS
     internal actual var implementationMode: ImplementationMode = ImplementationMode.Performance
 
-    internal actual var isImageAnalysisEnabled: Boolean
-        get() = true
-        set(value) {}
+    internal actual var isImageAnalysisEnabled: Boolean = false
+        set(value) {
+            field = value
+            imageAnalyzer?.isEnabled = isImageAnalysisEnabled
+        }
+
+    internal actual var imageAnalyzer: ImageAnalyzer? = null
+        set(value) {
+            if (value == null || field == value) return
+            value.isEnabled = isImageAnalysisEnabled
+            field = value
+        }
 
     internal actual var isFocusOnTapEnabled: Boolean = true
 
@@ -128,7 +137,7 @@ public actual class CameraState internal constructor(
         get() = controller.device.maxExposureTargetBias
         private set
 
-    public actual val initialExposure: Float by lazy { exposureCompensation }
+    public actual val initialExposure: Float by lazy { exposureCompensation ?: 0F }
 
     public actual val isExposureSupported: Boolean
         get() = true
@@ -252,6 +261,7 @@ public actual class CameraState internal constructor(
         this.resolutionPreset = resolutionPreset
         this.exposureCompensation = exposureCompensation
         this.isPinchToZoomEnabled = isPinchToZoomEnabled
+        this.imageAnalyzer = imageAnalyzer
     }
 
     private fun onCameraSwitched() = with(controller.device) {

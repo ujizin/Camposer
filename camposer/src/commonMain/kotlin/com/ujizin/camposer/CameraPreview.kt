@@ -68,7 +68,7 @@ public fun CameraPreview(
     imageAnalyzer: ImageAnalyzer? = null,
     resolutionPreset: ResolutionPreset = cameraState.resolutionPreset,
     implementationMode: ImplementationMode = cameraState.implementationMode,
-    isImageAnalysisEnabled: Boolean = cameraState.isImageAnalysisEnabled,
+    isImageAnalysisEnabled: Boolean = imageAnalyzer != null,
     isFocusOnTapEnabled: Boolean = cameraState.isFocusOnTapEnabled,
     isPinchToZoomEnabled: Boolean = cameraState.isZoomSupported,
     onPreviewStreamChanged: () -> Unit = {},

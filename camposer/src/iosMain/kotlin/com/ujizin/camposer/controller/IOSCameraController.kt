@@ -12,16 +12,12 @@ import com.ujizin.camposer.extensions.tryAddOutput
 import com.ujizin.camposer.extensions.withConfigurationLock
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.io.files.Path
 import platform.AVFoundation.AVCaptureDevice
 import platform.AVFoundation.AVCaptureDevice.Companion.defaultDeviceWithMediaType
 import platform.AVFoundation.AVCaptureDeviceInput
 import platform.AVFoundation.AVCaptureDevicePosition
 import platform.AVFoundation.AVCaptureDevicePositionFront
-import platform.AVFoundation.AVCaptureDevicePositionUnspecified
 import platform.AVFoundation.AVCaptureExposureModeAutoExpose
 import platform.AVFoundation.AVCaptureFlashMode
 import platform.AVFoundation.AVCaptureFocusModeAutoFocus
@@ -53,7 +49,7 @@ import platform.UIKit.UIDevice
 import platform.UIKit.UIView
 
 @OptIn(ExperimentalForeignApi::class)
-internal class IOSCameraController(
+public class IOSCameraController internal constructor(
     private val captureSession: AVCaptureSession = AVCaptureSession(),
     private val takePictureCommand: TakePictureCommand = TakePictureCommand(captureSession),
     private val recordVideoController: RecordVideoController = RecordVideoController(captureSession),
@@ -68,16 +64,13 @@ internal class IOSCameraController(
     internal val device: AVCaptureDevice
         get() = captureDeviceInput.device
 
-    private val _cameraPositionState = MutableStateFlow(AVCaptureDevicePositionUnspecified)
-    val cameraPositionState = _cameraPositionState.asStateFlow()
-
-    val isRunning: Boolean
+    public val isRunning: Boolean
         get() = captureSession.isRunning()
 
-    val isFocusOnTapSupported: Boolean
+    public val isFocusOnTapSupported: Boolean
         get() = device.isFocusPointOfInterestSupported() || device.isExposurePointOfInterestSupported()
 
-    fun start(
+    internal fun start(
         view: UIView,
         output: AVCaptureOutput,
         position: AVCaptureDevicePosition,
@@ -102,7 +95,7 @@ internal class IOSCameraController(
         captureSession.startRunning()
     }
 
-    fun setCameraPreset(presets: List<AVCaptureSessionPreset>) {
+    internal fun setCameraPreset(presets: List<AVCaptureSessionPreset>) {
         for (preset in presets) {
             if (captureSession.canSetSessionPreset(preset)) {
                 captureSession.sessionPreset = preset
@@ -111,40 +104,42 @@ internal class IOSCameraController(
         }
     }
 
-    fun renderPreviewLayer(view: UIView) = previewLayer?.apply {
+    internal fun renderPreviewLayer(view: UIView) = previewLayer?.apply {
         setFrame(view.bounds)
         connection?.videoOrientation = UIDevice.currentDevice.orientation.toVideoOrientation()
     }
 
-    fun startRecording(
+    public fun startRecording(
         path: Path,
         onVideoCapture: (Result<Path>) -> Unit
-    ) = recordVideoController.start(
+    ): Unit = recordVideoController.start(
         isMirrorEnabled = captureDeviceInput.device.position == AVCaptureDevicePositionFront,
         path = path,
         onVideoCapture = onVideoCapture,
     )
 
-    fun stopRecording() = recordVideoController.stop()
+    public fun stopRecording(): Unit = recordVideoController.stop()
 
-    fun pauseRecording() = recordVideoController.pause()
+    public fun pauseRecording(): Unit = recordVideoController.pause()
 
-    fun resumeRecording() = recordVideoController.resume()
+    public fun resumeRecording(): Unit = recordVideoController.resume()
 
-    fun takePicture(onPictureCaptured: (Result<ByteArray>) -> Unit) = takePictureCommand(
-        isMirrorEnabled = captureDeviceInput.device.position == AVCaptureDevicePositionFront,
-        flashMode = captureDeviceInput.device.flashMode,
-        onPictureCaptured = onPictureCaptured,
-    )
+    public fun takePicture(onPictureCaptured: (Result<ByteArray>) -> Unit): Unit =
+        takePictureCommand(
+            isMirrorEnabled = captureDeviceInput.device.position == AVCaptureDevicePositionFront,
+            flashMode = captureDeviceInput.device.flashMode,
+            onPictureCaptured = onPictureCaptured,
+        )
 
-    fun takePicture(path: Path, onPictureCaptured: (Result<Path>) -> Unit) = takePictureCommand(
-        path = path,
-        isMirrorEnabled = captureDeviceInput.device.position == AVCaptureDevicePositionFront,
-        flashMode = captureDeviceInput.device.flashMode,
-        onPictureCaptured = onPictureCaptured,
-    )
+    public fun takePicture(path: Path, onPictureCaptured: (Result<Path>) -> Unit): Unit =
+        takePictureCommand(
+            path = path,
+            isMirrorEnabled = captureDeviceInput.device.position == AVCaptureDevicePositionFront,
+            flashMode = captureDeviceInput.device.flashMode,
+            onPictureCaptured = onPictureCaptured,
+        )
 
-    fun setCameraPosition(
+    internal fun setCameraPosition(
         position: AVCaptureDevicePosition,
     ) {
         if (_captureDeviceInput?.device?.position == position) {
@@ -158,11 +153,9 @@ internal class IOSCameraController(
 
         _captureDeviceInput = position.captureDevice.toDeviceInput()
         captureSession.tryAddInput(captureDeviceInput)
-
-        _cameraPositionState.update { position }
     }
 
-    fun setAudioEnabled(isEnabled: Boolean) {
+    public fun setAudioEnabled(isEnabled: Boolean) {
         val audioInput = defaultDeviceWithMediaType(AVMediaTypeAudio)?.toDeviceInput()
             ?: throw AudioInputNotFoundException()
 
@@ -173,7 +166,7 @@ internal class IOSCameraController(
         }
     }
 
-    fun setFocusPoint(focusPoint: CValue<CGPoint>) = device.withConfigurationLock {
+    internal fun setFocusPoint(focusPoint: CValue<CGPoint>) = device.withConfigurationLock {
         when {
             isFocusPointOfInterestSupported() -> {
                 focusPointOfInterest = focusPoint
@@ -187,19 +180,19 @@ internal class IOSCameraController(
         }
     }
 
-    fun switchCameraOutput(old: AVCaptureOutput, new: AVCaptureOutput) {
-        captureSession.removeOutput(old)
+    internal fun switchCameraOutput(old: AVCaptureOutput?, new: AVCaptureOutput) {
+        old?.let(captureSession::removeOutput)
         captureSession.tryAddOutput(new)
     }
 
-    fun setTorchEnabled(isEnabled: Boolean) {
+    internal fun setTorchEnabled(isEnabled: Boolean) {
         if (!device.hasTorch || !device.isTorchAvailable()) return
         device.withConfigurationLock {
             torchMode = if (isEnabled) AVCaptureTorchModeOn else AVCaptureTorchModeOff
         }
     }
 
-    fun setFlashMode(mode: AVCaptureFlashMode) {
+    internal fun setFlashMode(mode: AVCaptureFlashMode) {
         val isFlashModeAvailable = device.hasFlash && device.isFlashAvailable()
         if (!isFlashModeAvailable || !captureSession.isFlashModeSupported(mode)) {
             return
@@ -208,7 +201,7 @@ internal class IOSCameraController(
         device.withConfigurationLock { flashMode = mode }
     }
 
-    fun setCameraOutputQuality(
+    internal fun setCameraOutputQuality(
         quality: AVCapturePhotoQualityPrioritization,
         highResolutionEnabled: Boolean,
     ) {
@@ -217,7 +210,11 @@ internal class IOSCameraController(
         output?.setHighResolutionCaptureEnabled(highResolutionEnabled)
     }
 
-    fun release() {
+    public fun addOutput(output: AVCaptureOutput): Boolean = captureSession.tryAddOutput(output)
+
+    public fun removeOutput(output: AVCaptureOutput): Unit = captureSession.removeOutput(output)
+
+    public fun release() {
         _captureDeviceInput = null
         captureSession.stopRunning()
         previewLayer?.removeFromSuperlayer()

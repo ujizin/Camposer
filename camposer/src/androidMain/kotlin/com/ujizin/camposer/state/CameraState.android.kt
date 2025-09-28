@@ -21,13 +21,13 @@ import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.MeteringPoint
 import androidx.camera.core.TorchState
+import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.video.FileDescriptorOutputOptions
 import androidx.camera.video.FileOutputOptions
 import androidx.camera.video.MediaStoreOutputOptions
 import androidx.camera.video.Recording
 import androidx.camera.video.VideoRecordEvent
 import androidx.camera.view.CameraController.IMAGE_ANALYSIS
-import androidx.camera.view.CameraController.OutputSize
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.video.AudioConfig
 import androidx.compose.runtime.Stable
@@ -124,8 +124,11 @@ public actual class CameraState(context: Context) {
         internal set
 
     public actual var isMuted: Boolean by mutableStateOf(false)
-    public actual val initialExposure: Float = INITIAL_EXPOSURE_VALUE
-        get() = controller.cameraInfo?.exposureState?.exposureCompensationIndex?.toFloat() ?: field
+
+    public actual val initialExposure: Float by lazy {
+        controller.cameraInfo?.exposureState?.exposureCompensationIndex?.toFloat()
+            ?: INITIAL_EXPOSURE_VALUE
+    }
 
     /**
      * Check if compensation exposure is supported.
@@ -234,10 +237,10 @@ public actual class CameraState(context: Context) {
     /**
      * Get Image Analyzer from camera.
      * */
-    private var imageAnalyzer: ImageAnalysis.Analyzer? = null
+    internal actual var imageAnalyzer: ImageAnalyzer? = null
         set(value) {
             field = value
-            updateImageAnalyzer(value)
+            updateImageAnalyzer(value?.analyzer)
         }
 
     private val cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as? CameraManager
@@ -281,11 +284,12 @@ public actual class CameraState(context: Context) {
      * Image analysis target size, use [rememberImageAnalyzer] to set value.
      * @see rememberImageAnalyzer
      * */
-    internal var imageAnalysisTargetSize: OutputSize?
-        get() = controller.imageAnalysisTargetSize
+    internal var imageAnalysisResolutionSelector: ResolutionSelector?
+        get() = controller.imageAnalysisResolutionSelector
         set(value) {
-            if (imageAnalysisTargetSize != value) {
-                controller.imageAnalysisTargetSize = value
+            // TODO check if this works as expected
+            if (value != null && imageAnalysisResolutionSelector != value) {
+                controller.imageAnalysisResolutionSelector = value
             }
         }
 
@@ -293,9 +297,9 @@ public actual class CameraState(context: Context) {
      * Image analysis image queue depth, use [rememberImageAnalyzer] to set value.
      * @see rememberImageAnalyzer
      * */
-    internal var imageAnalysisImageQueueDepth: Int
+    public var imageAnalysisImageQueueDepth: Int
         get() = controller.imageAnalysisImageQueueDepth
-        set(value) {
+        internal set(value) {
             if (imageAnalysisImageQueueDepth != value) {
                 controller.imageAnalysisImageQueueDepth = value
             }
@@ -379,7 +383,7 @@ public actual class CameraState(context: Context) {
             var useCases = captureMode.value
             if (captureMode == CaptureMode.Image && isImageAnalysisEnabled) {
                 useCases = useCases or IMAGE_ANALYSIS
-                updateImageAnalyzer(imageAnalyzer)
+                updateImageAnalyzer(imageAnalyzer?.analyzer)
             } else {
                 updateImageAnalyzer(null)
             }
@@ -391,7 +395,7 @@ public actual class CameraState(context: Context) {
     }
 
     private fun updateImageAnalyzer(
-        analyzer: ImageAnalysis.Analyzer? = imageAnalyzer
+        analyzer: ImageAnalysis.Analyzer?,
     ) = with(controller) {
         clearImageAnalysisAnalyzer()
         if (Build.VERSION.SDK_INT >= VERSION_CODES.N && captureMode == CaptureMode.Video) {
@@ -760,7 +764,7 @@ public actual class CameraState(context: Context) {
         this.scaleType = scaleType
         this.imageCaptureTargetSize = imageCaptureTargetSize
         this.isImageAnalysisEnabled = isImageAnalysisEnabled
-        this.imageAnalyzer = imageAnalyzer?.analyzer
+        this.imageAnalyzer = imageAnalyzer
         this.implementationMode = implementationMode
         this.isFocusOnTapEnabled = isFocusOnTapEnabled
         this.flashMode = flashMode

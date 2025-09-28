@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
@@ -17,17 +18,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.decodeToImageBitmap
 import androidx.compose.ui.unit.dp
 import com.ujizin.camposer.CameraPreview
+import com.ujizin.camposer.code_scanner.rememberCodeImageAnalyzer
 import com.ujizin.camposer.result.CaptureResult
 import com.ujizin.camposer.state.CamSelector
 import com.ujizin.camposer.state.CaptureMode
 import com.ujizin.camposer.state.FlashMode
-import com.ujizin.camposer.state.ResolutionPreset
 import com.ujizin.camposer.state.inverse
 import com.ujizin.camposer.state.rememberCamSelector
 import com.ujizin.camposer.state.rememberCameraState
@@ -52,6 +54,10 @@ fun CameraScreen() {
     val isRecording by rememberUpdatedState(cameraState.isRecording)
     var exposureCompensation by remember { mutableStateOf(cameraState.initialExposure) }
     var videoPath by remember { mutableStateOf("") }
+    var text by remember { mutableStateOf("") }
+    val codeImageAnalyzer = cameraState.rememberCodeImageAnalyzer {
+        text = "${it.type}: ${it.text}"
+    }
 
     CameraPreview(
         modifier = Modifier.fillMaxSize(),
@@ -61,8 +67,8 @@ fun CameraScreen() {
         camSelector = camSelector,
         zoomRatio = zoomRatio,
         exposureCompensation = exposureCompensation,
-        resolutionPreset = ResolutionPreset.UltraHigh,
         captureMode = captureMode,
+        imageAnalyzer = codeImageAnalyzer,
         onZoomRatioChanged = { zoomRatio = it }
     ) {
         FlowRow {
@@ -102,12 +108,12 @@ fun CameraScreen() {
                     }
 
                     CaptureMode.Video -> cameraState.startRecording(path) {
-                        println("video result: $it")
                         if (it is CaptureResult.Success) {
-                            println("Video saved to ${it.data}")
                             videoPath = it.data.toString()
                         }
                     }
+
+                    else -> {}
                 }
             }) {
                 Text("Take picture")
@@ -127,6 +133,13 @@ fun CameraScreen() {
             ) {
                 Text("exposureCompensation: $exposureCompensation")
             }
+
+            Text(
+                modifier = Modifier
+                    .align(Alignment.Bottom)
+                    .padding(16.dp),
+                text = text
+            )
         }
     }
 

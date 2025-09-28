@@ -1,6 +1,7 @@
 package com.ujizin.camposer.state
 
 import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
@@ -26,14 +27,14 @@ public actual fun rememberCameraState(): CameraState {
 @Composable
 public fun CameraState.rememberImageAnalyzer(
     imageAnalysisBackpressureStrategy: ImageAnalysisBackpressureStrategy = ImageAnalysisBackpressureStrategy.KeepOnlyLatest,
-    imageAnalysisTargetSize: ImageTargetSize? = ImageTargetSize(this.imageAnalysisTargetSize),
+    imageAnalysisResolutionSelector: ResolutionSelector? = this.imageAnalysisResolutionSelector,
     imageAnalysisImageQueueDepth: Int = this.imageAnalysisImageQueueDepth,
     analyze: ImageAnalysis.Analyzer,
 ): ImageAnalyzer = remember(this) {
     ImageAnalyzer(
         this,
         imageAnalysisBackpressureStrategy,
-        imageAnalysisTargetSize,
+        imageAnalysisResolutionSelector,
         imageAnalysisImageQueueDepth,
         analyze
     )

@@ -7,7 +7,7 @@ import androidx.camera.core.ImageAnalysis
  *
  * For more information, check it out [CameraX ImageAnalysis operating modes](https://developer.android.com/training/camerax/analyze#operating-modes)
  * */
-public actual enum class ImageAnalysisBackpressureStrategy(internal val strategy: Int) {
+public enum class ImageAnalysisBackpressureStrategy(internal val strategy: Int) {
     /**
      * always caches the latest image, used for non-blocking operation.
      * */

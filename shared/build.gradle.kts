@@ -66,6 +66,7 @@ kotlin {
                 implementation(compose.foundation)
                 implementation(libs.media.kmp)
                 implementation(project(":camposer"))
+                implementation(project(":camposer-code-scanner"))
             }
         }
 

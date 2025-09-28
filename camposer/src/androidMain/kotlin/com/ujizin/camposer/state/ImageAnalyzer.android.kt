@@ -1,13 +1,14 @@
 package com.ujizin.camposer.state
 
 import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.compose.runtime.Stable
 
 /**
  * Intermediate Image analyzer from cameraX
  *
  * @param imageAnalysisBackpressureStrategy the backpressure strategy applied to the image producer
- * @param imageAnalysisTargetSize the intended output size for ImageAnalysis
+ * @param resolutionSelector the intended resolution for ImageAnalysis
  * @param imageAnalysisImageQueueDepth the image queue depth of ImageAnalysis.
  * @param analyzer receive images and perform custom processing.
  *
@@ -16,27 +17,29 @@ import androidx.compose.runtime.Stable
 @Stable
 public actual class ImageAnalyzer(
     private val cameraState: CameraState,
-    imageAnalysisBackpressureStrategy: ImageAnalysisBackpressureStrategy,
-    imageAnalysisTargetSize: ImageTargetSize?,
-    imageAnalysisImageQueueDepth: Int,
+    imageAnalysisBackpressureStrategy: ImageAnalysisBackpressureStrategy = ImageAnalysisBackpressureStrategy.find(
+        cameraState.imageAnalysisBackpressureStrategy
+    ),
+    resolutionSelector: ResolutionSelector? = null,
+    imageAnalysisImageQueueDepth: Int = cameraState.imageAnalysisImageQueueDepth,
     internal var analyzer: ImageAnalysis.Analyzer,
 ) {
 
     init {
         updateCameraState(
             imageAnalysisBackpressureStrategy,
-            imageAnalysisTargetSize,
+            resolutionSelector,
             imageAnalysisImageQueueDepth
         )
     }
 
     private fun updateCameraState(
         imageAnalysisBackpressureStrategy: ImageAnalysisBackpressureStrategy,
-        imageAnalysisTargetSize: ImageTargetSize?,
+        imageAnalysisSelector: ResolutionSelector?,
         imageAnalysisImageQueueDepth: Int,
     ) = with(cameraState) {
         this.imageAnalysisBackpressureStrategy = imageAnalysisBackpressureStrategy.strategy
-        this.imageAnalysisTargetSize = imageAnalysisTargetSize?.toOutputSize()
+        this.imageAnalysisResolutionSelector = imageAnalysisSelector
         this.imageAnalysisImageQueueDepth = imageAnalysisImageQueueDepth
     }
 
@@ -47,7 +50,7 @@ public actual class ImageAnalyzer(
         imageAnalysisBackpressureStrategy: ImageAnalysisBackpressureStrategy = ImageAnalysisBackpressureStrategy.find(
             cameraState.imageAnalysisBackpressureStrategy
         ),
-        imageAnalysisTargetSize: ImageTargetSize? = ImageTargetSize(cameraState.imageAnalysisTargetSize),
+        imageAnalysisTargetSize: ResolutionSelector? = cameraState.imageAnalysisResolutionSelector,
         imageAnalysisImageQueueDepth: Int = cameraState.imageAnalysisImageQueueDepth,
         analyzer: ImageAnalysis.Analyzer = this.analyzer,
     ) {
