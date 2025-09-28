@@ -9,6 +9,7 @@ import com.ujizin.camposer.state.ImageAnalyzer
 @Composable
 public actual fun CameraState.rememberCodeImageAnalyzer(
     codeTypes: List<CodeType>,
+    onError: (Throwable) -> Unit,
     codeAnalyzerListener: CodeAnalyzerListener,
 ): ImageAnalyzer = remember(codeTypes, codeAnalyzerListener) {
     ImageAnalyzer(

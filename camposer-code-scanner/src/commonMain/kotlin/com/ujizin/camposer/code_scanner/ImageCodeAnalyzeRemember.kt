@@ -8,5 +8,6 @@ import com.ujizin.camposer.state.ImageAnalyzer
 @Composable
 public expect fun CameraState.rememberCodeImageAnalyzer(
     codeTypes: List<CodeType> = listOf(CodeType.QRCode),
+    onError: (Throwable) -> Unit = {},
     codeAnalyzerListener: CodeAnalyzerListener,
 ): ImageAnalyzer

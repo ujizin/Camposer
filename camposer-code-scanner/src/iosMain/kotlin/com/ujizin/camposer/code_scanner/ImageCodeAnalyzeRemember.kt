@@ -5,6 +5,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import com.ujizin.camposer.code_scanner.CodeScannerQueue.codeAnalyzerQueue
 import com.ujizin.camposer.code_scanner.model.CodeType
+import com.ujizin.camposer.code_scanner.model.CodeTypeNotSupportedException
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.ImageAnalyzer
 import platform.AVFoundation.AVCaptureMetadataOutput
@@ -12,6 +13,7 @@ import platform.AVFoundation.AVCaptureMetadataOutput
 @Composable
 public actual fun CameraState.rememberCodeImageAnalyzer(
     codeTypes: List<CodeType>,
+    onError: (Throwable) -> Unit,
     codeAnalyzerListener: CodeAnalyzerListener,
 ): ImageAnalyzer {
     val codeAnalyzer = remember(codeTypes, codeAnalyzerListener) {
@@ -22,10 +24,16 @@ public actual fun CameraState.rememberCodeImageAnalyzer(
                 output = AVCaptureMetadataOutput(),
                 onOutputAttached = { output ->
                     output.setMetadataObjectsDelegate(codeAnalyzerDelegate, codeAnalyzerQueue)
-                    val codeTypes = codeTypes.flatMap { type ->
-                        type.rawType.filter { output.availableMetadataObjectTypes.contains(it) }
+                    val supportedTypes = codeTypes.mapNotNull { type ->
+                        val isSupported = output.availableMetadataObjectTypes.contains(type.rawType)
+                        if (!isSupported) {
+                            onError(CodeTypeNotSupportedException(type))
+                            return@mapNotNull null
+                        }
+
+                        type.rawType
                     }
-                    output.metadataObjectTypes = codeTypes
+                    output.metadataObjectTypes = supportedTypes
                 }
             ),
         )

@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.decodeToImageBitmap
 import androidx.compose.ui.unit.dp
 import com.ujizin.camposer.CameraPreview
+import com.ujizin.camposer.code_scanner.model.CodeType
 import com.ujizin.camposer.code_scanner.rememberCodeImageAnalyzer
 import com.ujizin.camposer.result.CaptureResult
 import com.ujizin.camposer.state.CamSelector
@@ -55,7 +56,10 @@ fun CameraScreen() {
     var exposureCompensation by remember { mutableStateOf(cameraState.initialExposure) }
     var videoPath by remember { mutableStateOf("") }
     var text by remember { mutableStateOf("") }
-    val codeImageAnalyzer = cameraState.rememberCodeImageAnalyzer {
+    val codeImageAnalyzer = cameraState.rememberCodeImageAnalyzer(
+        codeTypes = listOf(CodeType.Barcode39),
+        onError = {}
+    ) {
         text = "${it.type}: ${it.text}"
     }
 
