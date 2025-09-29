@@ -1,21 +1,15 @@
 package com.ujizin.camposer.state
 
 import android.annotation.SuppressLint
-import android.content.ContentResolver
-import android.content.ContentValues
 import android.content.Context
 import android.hardware.camera2.CameraManager
-import android.net.Uri
 import android.os.Build
 import android.os.Build.VERSION_CODES
-import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.camera.core.CameraEffect
 import androidx.camera.core.FocusMeteringAction
 import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.MeteringPoint
 import androidx.camera.core.TorchState
 import androidx.camera.core.resolutionselector.ResolutionSelector
@@ -27,17 +21,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.ujizin.camposer.controller.record.AndroidRecordController
+import com.ujizin.camposer.command.AndroidTakePictureCommand
+import com.ujizin.camposer.command.DefaultTakePictureCommand
 import com.ujizin.camposer.controller.CameraController
+import com.ujizin.camposer.controller.record.AndroidRecordController
 import com.ujizin.camposer.controller.record.DefaultRecordController
 import com.ujizin.camposer.extensions.compatMainExecutor
 import com.ujizin.camposer.extensions.isImageAnalysisSupported
-import com.ujizin.camposer.extensions.toFile
-import com.ujizin.camposer.extensions.toPath
-import com.ujizin.camposer.result.CaptureResult
-import kotlinx.io.files.Path
-import java.io.ByteArrayOutputStream
-import java.io.File
 import java.util.concurrent.Executor
 import kotlin.math.roundToInt
 
@@ -47,21 +37,44 @@ import kotlin.math.roundToInt
  * To be created use [rememberCameraState].
  * */
 @Stable
-public actual class CameraState(
+public actual class CameraState private constructor(
     context: Context,
+    public val controller: LifecycleCameraController,
     private val cameraController: CameraController,
-    public val controller: LifecycleCameraController = LifecycleCameraController(context),
     private val mainExecutor: Executor = context.compatMainExecutor,
-    private val androidRecordController: AndroidRecordController = DefaultRecordController(
-        cameraController = controller,
-        mainExecutor = mainExecutor,
-    )
-) : AndroidRecordController by androidRecordController {
+    private val androidRecordController: AndroidRecordController,
+    private val androidTakePictureCommand: AndroidTakePictureCommand,
+) : AndroidRecordController by androidRecordController,
+    AndroidTakePictureCommand by androidTakePictureCommand {
 
-    /**
-     * Content resolver to picture and video.
-     * */
-    private val contentResolver: ContentResolver = context.contentResolver
+    public constructor(
+        context: Context,
+        cameraController: CameraController,
+    ) : this(
+        context = context,
+        cameraController = cameraController,
+        controller = LifecycleCameraController(context),
+    )
+
+    internal constructor(
+        context: Context,
+        cameraController: CameraController,
+        controller: LifecycleCameraController,
+    ) : this(
+        context = context,
+        cameraController = cameraController,
+        controller = controller,
+        mainExecutor = context.compatMainExecutor,
+        androidRecordController = DefaultRecordController(
+            cameraController = controller,
+            mainExecutor = context.compatMainExecutor,
+        ),
+        androidTakePictureCommand = DefaultTakePictureCommand(
+            controller = controller,
+            mainExecutor = context.compatMainExecutor,
+            contentResolver = context.contentResolver,
+        )
+    )
 
     /**
      * Check if focus metering is supported
@@ -358,7 +371,10 @@ public actual class CameraState(
 
     init {
         controller.initializationFuture.addListener({
-            cameraController.initialize(androidRecordController)
+            cameraController.initialize(
+                recordController = androidRecordController,
+                takePictureCommand = androidTakePictureCommand,
+            )
             rebindCamera()
             isInitialized = true
         }, mainExecutor)
@@ -394,77 +410,6 @@ public actual class CameraState(
     private fun startExposure() {
         minExposure = exposureCompensationRange?.lower?.toFloat() ?: INITIAL_EXPOSURE_VALUE
         maxExposure = exposureCompensationRange?.upper?.toFloat() ?: INITIAL_EXPOSURE_VALUE
-    }
-
-    /**
-     *  Take a picture with the camera.
-     *
-     *  @param saveCollection Uri collection where the photo will be saved.
-     *  @param contentValues Content values of the photo.
-     *  @param onResult Callback called when [CaptureResult<Uri?>] is ready
-     * */
-    public fun takePicture(
-        contentValues: ContentValues,
-        saveCollection: Uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-        onResult: (CaptureResult<Uri?>) -> Unit,
-    ) {
-        takePicture(
-            outputFileOptions = ImageCapture.OutputFileOptions.Builder(
-                contentResolver, saveCollection, contentValues
-            ).build(), onResult = onResult
-        )
-    }
-
-    /**
-     * Take a picture with the camera.
-     * @param file file where the photo will be saved
-     * @param onResult Callback called when [CaptureResult<Uri?>] is ready
-     * */
-    public fun takePicture(
-        file: File, onResult: (CaptureResult<Uri?>) -> Unit
-    ) {
-        takePicture(ImageCapture.OutputFileOptions.Builder(file).build(), onResult)
-    }
-
-    /**
-     * Take a picture with the camera.
-     *
-     * @param outputFileOptions Output file options of the photo.
-     * @param onResult Callback called when [CaptureResult] is ready
-     * */
-    public fun takePicture(
-        outputFileOptions: ImageCapture.OutputFileOptions,
-        onResult: (CaptureResult<Uri?>) -> Unit,
-    ) {
-        try {
-            controller.takePicture(
-                outputFileOptions,
-                mainExecutor,
-                object : ImageCapture.OnImageSavedCallback {
-                    override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                        onResult(CaptureResult.Success(outputFileResults.savedUri))
-                    }
-
-                    override fun onError(exception: ImageCaptureException) {
-                        onResult(CaptureResult.Error(exception))
-                    }
-                })
-        } catch (exception: Exception) {
-            onResult(CaptureResult.Error(exception))
-        }
-    }
-
-    public actual fun takePicture(
-        path: Path,
-        onImageCaptured: (CaptureResult<Path>) -> Unit,
-    ): Unit = takePicture(
-        ImageCapture.OutputFileOptions.Builder(path.toFile()).build(),
-    ) { androidResult ->
-        val result = when (androidResult) {
-            is CaptureResult.Error -> CaptureResult.Error(androidResult.throwable)
-            is CaptureResult.Success -> CaptureResult.Success(androidResult.data!!.toPath())
-        }
-        onImageCaptured(result)
     }
 
     /**
@@ -519,19 +464,6 @@ public actual class CameraState(
     ): Boolean = cameraManager?.isImageAnalysisSupported(
         cameraSelector.selector.lensFacing
     ) ?: false
-
-    public actual fun takePicture(onImageCaptured: (CaptureResult<ByteArray>) -> Unit) {
-        val byteArrayOS = ByteArrayOutputStream()
-        takePicture(
-            outputFileOptions = ImageCapture.OutputFileOptions.Builder(byteArrayOS).build(),
-            onResult = { result ->
-                when (result) {
-                    is CaptureResult.Error -> CaptureResult.Error(result.throwable)
-                    is CaptureResult.Success<Uri?> -> CaptureResult.Success(byteArrayOS.toByteArray())
-                }
-            },
-        )
-    }
 
     private fun setResolutionPreset(value: ResolutionPreset) {
         value.getQualitySelector()?.let { controller.videoCaptureQualitySelector = it }

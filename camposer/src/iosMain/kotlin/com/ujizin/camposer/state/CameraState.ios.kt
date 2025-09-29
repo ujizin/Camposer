@@ -3,16 +3,15 @@ package com.ujizin.camposer.state
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.ujizin.camposer.command.DefaultTakePictureCommand
+import com.ujizin.camposer.command.TakePictureCommand
 import com.ujizin.camposer.controller.CameraController
 import com.ujizin.camposer.controller.IOSCameraManager
 import com.ujizin.camposer.controller.record.DefaultRecordController
 import com.ujizin.camposer.controller.record.RecordController
-import com.ujizin.camposer.extensions.toCaptureResult
 import com.ujizin.camposer.extensions.withConfigurationLock
-import com.ujizin.camposer.result.CaptureResult
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.io.files.Path
 import platform.AVFoundation.hasFlash
 import platform.AVFoundation.hasTorch
 import platform.AVFoundation.isFlashAvailable
@@ -28,7 +27,7 @@ import platform.UIKit.UIView
 public actual class CameraState internal constructor(
     public val controller: CameraController,
     public val cameraManager: IOSCameraManager = IOSCameraManager(),
-) : RecordController by controller {
+) : RecordController by controller, TakePictureCommand by controller {
 
     internal actual var camSelector: CamSelector = CamSelector.Back
         set(value) {
@@ -179,6 +178,10 @@ public actual class CameraState internal constructor(
             recordController = DefaultRecordController(
                 cameraManager = cameraManager,
                 captureModeProvider = { captureMode }
+            ),
+            takePictureCommand = DefaultTakePictureCommand(
+                cameraManager = cameraManager,
+                captureModeProvider = { captureMode },
             )
         )
     }
@@ -197,16 +200,6 @@ public actual class CameraState internal constructor(
 
     internal fun setFocusPoint(focusPoint: CValue<CGPoint>) =
         cameraManager.setFocusPoint(focusPoint)
-
-    public actual fun takePicture(onImageCaptured: (CaptureResult<ByteArray>) -> Unit) {
-        require(captureMode == CaptureMode.Image) { "Capture mode must be CaptureMode.Image" }
-        cameraManager.takePicture { result -> onImageCaptured(result.toCaptureResult()) }
-    }
-
-    public actual fun takePicture(path: Path, onImageCaptured: (CaptureResult<Path>) -> Unit) {
-        require(captureMode == CaptureMode.Image) { "Capture mode must be CaptureMode.Image" }
-        cameraManager.takePicture(path) { result -> onImageCaptured(result.toCaptureResult()) }
-    }
 
     /**
      * Update all values from camera state.

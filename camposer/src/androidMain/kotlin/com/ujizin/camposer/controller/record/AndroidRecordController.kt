@@ -11,7 +11,7 @@ import androidx.camera.video.MediaStoreOutputOptions
 import androidx.camera.view.video.AudioConfig
 import com.ujizin.camposer.result.CaptureResult
 
-public interface AndroidRecordController : RecordController {
+internal interface AndroidRecordController : RecordController {
 
     /**
      * Start recording camera.
@@ -20,7 +20,7 @@ public interface AndroidRecordController : RecordController {
      * @param onResult Callback called when [CaptureResult<Uri?>] is ready
      * */
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
-    public fun startRecording(
+    fun startRecording(
         fileOutputOptions: FileOutputOptions,
         audioConfig: AudioConfig = AudioConfig.create(true),
         onResult: (CaptureResult<Uri?>) -> Unit,
@@ -34,7 +34,7 @@ public interface AndroidRecordController : RecordController {
      * */
     @RequiresApi(VERSION_CODES.O)
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
-    public fun startRecording(
+    fun startRecording(
         fileDescriptorOutputOptions: FileDescriptorOutputOptions,
         audioConfig: AudioConfig = AudioConfig.create(true),
         onResult: (CaptureResult<Uri?>) -> Unit,
@@ -58,7 +58,7 @@ public interface AndroidRecordController : RecordController {
      * */
     @RequiresApi(VERSION_CODES.O)
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
-    public fun toggleRecording(
+    fun toggleRecording(
         fileDescriptorOutputOptions: FileDescriptorOutputOptions,
         audioConfig: AudioConfig = AudioConfig.create(true),
         onResult: (CaptureResult<Uri?>) -> Unit
@@ -73,7 +73,7 @@ public interface AndroidRecordController : RecordController {
      * Toggle recording camera.
      * */
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
-    public fun toggleRecording(
+    fun toggleRecording(
         mediaStoreOutputOptions: MediaStoreOutputOptions,
         audioConfig: AudioConfig = AudioConfig.create(true),
         onResult: (CaptureResult<Uri?>) -> Unit
@@ -88,7 +88,7 @@ public interface AndroidRecordController : RecordController {
      * Toggle recording camera.
      * */
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
-    public fun toggleRecording(
+    fun toggleRecording(
         fileOutputOptions: FileOutputOptions,
         audioConfig: AudioConfig = AudioConfig.create(true),
         onResult: (CaptureResult<Uri?>) -> Unit

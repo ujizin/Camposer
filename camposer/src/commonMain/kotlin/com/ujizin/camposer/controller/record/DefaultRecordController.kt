@@ -3,16 +3,16 @@ package com.ujizin.camposer.controller.record
 import com.ujizin.camposer.result.CaptureResult
 import kotlinx.io.files.Path
 
-public interface RecordController {
+internal interface RecordController {
 
-    public val isRecording: Boolean
+    val isRecording: Boolean
 
-    public fun startRecording(path: Path, onVideoCaptured: (CaptureResult<Path>) -> Unit)
-    public fun resumeRecording()
-    public fun pauseRecording()
-    public fun stopRecording()
+    fun startRecording(path: Path, onVideoCaptured: (CaptureResult<Path>) -> Unit)
+    fun resumeRecording()
+    fun pauseRecording()
+    fun stopRecording()
 
-    public fun muteRecording(isMuted: Boolean)
+    fun muteRecording(isMuted: Boolean)
 }
 
 internal expect class DefaultRecordController : RecordController {
