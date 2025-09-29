@@ -3,14 +3,18 @@ package com.ujizin.camposer.state
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import com.ujizin.camposer.CameraPreviewImpl
+import com.ujizin.camposer.controller.CameraController
 
 /**
  * Camera State from [CameraPreviewImpl] Composable.
  * */
 @Composable
-public expect fun rememberCameraState(): CameraState
+public expect fun rememberCameraState(
+    controller: CameraController = remember { CameraController() },
+): CameraState
 
 /**
  * Camera selector's State to [CameraPreviewImpl] Composable.

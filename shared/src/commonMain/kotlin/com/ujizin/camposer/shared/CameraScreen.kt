@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.ujizin.camposer.CameraPreview
 import com.ujizin.camposer.code_scanner.model.CodeType
 import com.ujizin.camposer.code_scanner.rememberCodeImageAnalyzer
+import com.ujizin.camposer.controller.CameraController
 import com.ujizin.camposer.result.CaptureResult
 import com.ujizin.camposer.state.CamSelector
 import com.ujizin.camposer.state.CaptureMode
@@ -44,15 +45,15 @@ import kotlin.uuid.Uuid
 @OptIn(ExperimentalUuidApi::class)
 @Composable
 fun CameraScreen() {
-    val cameraState = rememberCameraState()
+    val cameraController = remember { CameraController() }
+    val cameraState = rememberCameraState(cameraController)
     var flashMode: FlashMode by remember { mutableStateOf(FlashMode.Off) }
     var enableTorch by cameraState.rememberTorch(false)
     var camSelector by rememberCamSelector(CamSelector.Back)
     var zoomRatio by remember { mutableStateOf(cameraState.minZoom) }
     var bitmap by remember { mutableStateOf<ImageBitmap?>(null) }
-
     var captureMode by remember { mutableStateOf(CaptureMode.Image) }
-    val isRecording by rememberUpdatedState(cameraState.isRecording)
+    val isRecording by rememberUpdatedState(cameraController.isRecording)
     var exposureCompensation by remember { mutableStateOf(cameraState.initialExposure) }
     var videoPath by remember { mutableStateOf("") }
     var text by remember { mutableStateOf("") }
@@ -100,7 +101,7 @@ fun CameraScreen() {
                 val path = Path("$SystemTemporaryDirectory/video-${Uuid.random()}.mov")
 
                 if (isRecording) {
-                    cameraState.stopRecording()
+                    cameraController.stopRecording()
                     return@Button
                 }
 
@@ -111,7 +112,7 @@ fun CameraScreen() {
                         }
                     }
 
-                    CaptureMode.Video -> cameraState.startRecording(path) {
+                    CaptureMode.Video -> cameraController.startRecording(path) {
                         if (it is CaptureResult.Success) {
                             videoPath = it.data.toString()
                         }

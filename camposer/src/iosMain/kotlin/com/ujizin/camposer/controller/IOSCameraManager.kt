@@ -49,16 +49,15 @@ import platform.UIKit.UIDevice
 import platform.UIKit.UIView
 
 @OptIn(ExperimentalForeignApi::class)
-public class IOSCameraController internal constructor(
-    private val captureSession: AVCaptureSession = AVCaptureSession(),
+public class IOSCameraManager internal constructor(
+    internal val captureSession: AVCaptureSession = AVCaptureSession(),
     private val takePictureCommand: TakePictureCommand = TakePictureCommand(captureSession),
-    private val recordVideoController: RecordVideoController = RecordVideoController(captureSession),
 ) {
 
     internal var previewLayer: AVCaptureVideoPreviewLayer? = null
 
     private var _captureDeviceInput: AVCaptureDeviceInput? = null
-    private val captureDeviceInput: AVCaptureDeviceInput
+    internal val captureDeviceInput: AVCaptureDeviceInput
         get() = _captureDeviceInput!!
 
     internal val device: AVCaptureDevice
@@ -108,21 +107,6 @@ public class IOSCameraController internal constructor(
         setFrame(view.bounds)
         connection?.videoOrientation = UIDevice.currentDevice.orientation.toVideoOrientation()
     }
-
-    public fun startRecording(
-        path: Path,
-        onVideoCapture: (Result<Path>) -> Unit
-    ): Unit = recordVideoController.start(
-        isMirrorEnabled = captureDeviceInput.device.position == AVCaptureDevicePositionFront,
-        path = path,
-        onVideoCapture = onVideoCapture,
-    )
-
-    public fun stopRecording(): Unit = recordVideoController.stop()
-
-    public fun pauseRecording(): Unit = recordVideoController.pause()
-
-    public fun resumeRecording(): Unit = recordVideoController.resume()
 
     public fun takePicture(onPictureCaptured: (Result<ByteArray>) -> Unit): Unit =
         takePictureCommand(

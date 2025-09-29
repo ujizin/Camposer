@@ -1,9 +1,10 @@
 package com.ujizin.camposer.state
 
+import com.ujizin.camposer.controller.record.RecordController
 import com.ujizin.camposer.result.CaptureResult
 import kotlinx.io.files.Path
 
-public expect class CameraState {
+public expect class CameraState : RecordController {
     internal var camSelector: CamSelector
     internal var captureMode: CaptureMode
     internal var imageCaptureMode: ImageCaptureMode
@@ -87,12 +88,6 @@ public expect class CameraState {
         private set
 
     /**
-     * Return true if it's recording.
-     * */
-    public var isRecording: Boolean
-        private set
-
-    /**
      * Return true if it's muted.
      * */
     public var isMuted: Boolean
@@ -101,10 +96,14 @@ public expect class CameraState {
     public fun takePicture(onImageCaptured: (CaptureResult<ByteArray>) -> Unit)
     public fun takePicture(path: Path, onImageCaptured: (CaptureResult<Path>) -> Unit)
 
-    public fun startRecording(path: Path, onVideoCaptured: (CaptureResult<Path>) -> Unit)
-    public fun resumeRecording()
-    public fun pauseRecording()
-    public fun stopRecording()
+    override val isRecording: Boolean
+    override fun startRecording(
+        path: Path,
+        onVideoCaptured: (CaptureResult<Path>) -> Unit
+    )
 
-    public fun muteRecording(isMuted: Boolean)
+    override fun resumeRecording()
+    override fun pauseRecording()
+    override fun stopRecording()
+    override fun muteRecording(isMuted: Boolean)
 }

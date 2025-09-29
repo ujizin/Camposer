@@ -1,28 +1,72 @@
-package com.ujizin.camposer.controller
+package com.ujizin.camposer.controller.record
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import com.ujizin.camposer.controller.IOSCameraManager
 import com.ujizin.camposer.error.CameraNotRunningException
 import com.ujizin.camposer.error.ErrorRecordVideoException
 import com.ujizin.camposer.error.VideoOutputNotFoundException
 import com.ujizin.camposer.extensions.firstIsInstanceOrNull
 import com.ujizin.camposer.extensions.setMirrorEnabled
+import com.ujizin.camposer.extensions.toCaptureResult
+import com.ujizin.camposer.result.CaptureResult
+import com.ujizin.camposer.state.CaptureMode
 import kotlinx.io.files.Path
+import platform.AVFoundation.AVCaptureDevicePositionFront
 import platform.AVFoundation.AVCaptureFileOutput
 import platform.AVFoundation.AVCaptureFileOutputRecordingDelegateProtocol
 import platform.AVFoundation.AVCaptureMovieFileOutput
 import platform.AVFoundation.AVCaptureSession
+import platform.AVFoundation.position
 import platform.Foundation.NSError
 import platform.Foundation.NSURL
 import platform.darwin.NSObject
 
-internal class RecordVideoController(
+internal actual class DefaultRecordController(
+    private val cameraManager: IOSCameraManager,
+    private val captureModeProvider: RecordCaptureModeProvider,
+) : RecordController {
+
     private val captureSession: AVCaptureSession
-) {
+        get() = cameraManager.captureSession
 
     private val videoRecordOutput: AVCaptureMovieFileOutput?
         get() = captureSession.outputs.firstIsInstanceOrNull<AVCaptureMovieFileOutput>()
 
-    // This is needed because delegate is weak reference
     private var videoDelegate: AVCaptureFileOutputRecordingDelegateProtocol? = null
+
+    actual override var isRecording: Boolean by mutableStateOf(false)
+
+    actual override fun startRecording(
+        path: Path,
+        onVideoCaptured: (CaptureResult<Path>) -> Unit
+    ) = start(
+        isMirrorEnabled = cameraManager.captureDeviceInput.device.position == AVCaptureDevicePositionFront,
+        path = path,
+        onVideoCapture = { result -> onVideoCaptured(result.toCaptureResult()) },
+    ).apply { isRecording = true }
+
+    actual override fun resumeRecording() {
+        require(captureModeProvider.get() == CaptureMode.Video) { "Capture mode must be CaptureMode.Video" }
+
+        videoRecordOutput?.resumeRecording() ?: throw VideoOutputNotFoundException()
+    }
+
+    actual override fun pauseRecording() {
+        require(captureModeProvider.get() == CaptureMode.Video) { "Capture mode must be CaptureMode.Video" }
+
+        videoRecordOutput?.pauseRecording() ?: throw VideoOutputNotFoundException()
+    }
+
+    actual override fun stopRecording() {
+        require(captureModeProvider.get() == CaptureMode.Video) { "Capture mode must be CaptureMode.Video" }
+        videoRecordOutput?.stopRecording() ?: throw VideoOutputNotFoundException()
+        isRecording = false
+    }
+
+    actual override fun muteRecording(isMuted: Boolean) {
+    }
 
     fun start(
         path: Path,
@@ -49,10 +93,7 @@ internal class RecordVideoController(
                 error: NSError?
             ) {
                 val result = when {
-                    error != null -> Result.failure(
-                        ErrorRecordVideoException(error)
-                    )
-
+                    error != null -> Result.failure(ErrorRecordVideoException(error))
                     else -> Result.success(path)
                 }
                 onVideoCapture(result)
@@ -64,17 +105,5 @@ internal class RecordVideoController(
             outputFileURL = NSURL.Companion.fileURLWithPath(path.toString()),
             recordingDelegate = videoDelegate,
         )
-    }
-
-    fun resume() {
-        videoRecordOutput?.resumeRecording() ?: throw VideoOutputNotFoundException()
-    }
-
-    fun pause() {
-        videoRecordOutput?.pauseRecording() ?: throw VideoOutputNotFoundException()
-    }
-
-    fun stop() {
-        videoRecordOutput?.stopRecording() ?: throw VideoOutputNotFoundException()
     }
 }

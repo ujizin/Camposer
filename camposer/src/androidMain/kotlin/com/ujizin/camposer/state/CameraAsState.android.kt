@@ -7,14 +7,15 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import com.ujizin.camposer.CameraPreviewImpl
+import com.ujizin.camposer.controller.CameraController
 
 /**
  * Camera State from [CameraPreviewImpl] Composable.
  * */
 @Composable
-public actual fun rememberCameraState(): CameraState {
+public actual fun rememberCameraState(controller: CameraController): CameraState {
     val context = LocalContext.current
-    val cameraState = remember { CameraState(context) }
+    val cameraState = remember(controller) { CameraState(context, controller) }
     DisposableEffect(Unit) { onDispose(cameraState::dispose) }
     return cameraState
 }

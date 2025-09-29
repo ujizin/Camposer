@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.rule.GrantPermissionRule
+import com.ujizin.camposer.controller.CameraController
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.rememberCameraState
 import org.junit.Rule

@@ -3,7 +3,10 @@ package com.ujizin.camposer.state
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.ujizin.camposer.controller.IOSCameraController
+import com.ujizin.camposer.controller.CameraController
+import com.ujizin.camposer.controller.IOSCameraManager
+import com.ujizin.camposer.controller.record.DefaultRecordController
+import com.ujizin.camposer.controller.record.RecordController
 import com.ujizin.camposer.extensions.toCaptureResult
 import com.ujizin.camposer.extensions.withConfigurationLock
 import com.ujizin.camposer.result.CaptureResult
@@ -23,15 +26,16 @@ import platform.UIKit.UIView
 
 @OptIn(ExperimentalForeignApi::class)
 public actual class CameraState internal constructor(
-    public val controller: IOSCameraController = IOSCameraController(),
-) {
+    public val controller: CameraController,
+    public val cameraManager: IOSCameraManager = IOSCameraManager(),
+) : RecordController by controller {
 
     internal actual var camSelector: CamSelector = CamSelector.Back
         set(value) {
             if (value == field) return
             field = value
-            controller.setCameraPosition(position = value.position)
-            onCameraSwitched()
+            cameraManager.setCameraPosition(position = value.position)
+            rebindCamera()
         }
 
     internal actual var captureMode: CaptureMode = CaptureMode.Image
@@ -39,7 +43,7 @@ public actual class CameraState internal constructor(
             if (value == field) return
             val previousMode = field
             field = value
-            controller.switchCameraOutput(previousMode.output, value.output)
+            cameraManager.switchCameraOutput(previousMode.output, value.output)
             onCaptureModeChanged()
         }
 
@@ -47,14 +51,14 @@ public actual class CameraState internal constructor(
         set(value) {
             if (field == value) return
             field = value
-            controller.setCameraPreset(value.presets.toList())
+            cameraManager.setCameraPreset(value.presets.toList())
         }
 
     internal actual var imageCaptureMode: ImageCaptureMode = ImageCaptureMode.Balanced
         set(value) {
             if (value == field) return
             field = value
-            controller.setCameraOutputQuality(
+            cameraManager.setCameraOutputQuality(
                 quality = value.strategy,
                 highResolutionEnabled = value.highResolutionEnabled
             )
@@ -67,14 +71,14 @@ public actual class CameraState internal constructor(
         set(value) {
             if (field == value) return
             field = value
-            controller.setFlashMode(value.mode)
+            cameraManager.setFlashMode(value.mode)
         }
 
     internal actual var scaleType: ScaleType = ScaleType.FillCenter
         set(value) {
             if (value == field) return
             field = value
-            controller.previewLayer?.videoGravity = value.gravity
+            cameraManager.previewLayer?.videoGravity = value.gravity
         }
 
     // No-op in iOS
@@ -99,14 +103,14 @@ public actual class CameraState internal constructor(
         set(value) {
             if (field == value) return
             field = value
-            controller.setTorchEnabled(value)
+            cameraManager.setTorchEnabled(value)
         }
 
     internal var zoomRatio: Float
-        get() = controller.device.videoZoomFactor.toFloat()
+        get() = cameraManager.device.videoZoomFactor.toFloat()
         set(value) {
             if (zoomRatio == value || value !in minZoom..maxZoom) return
-            controller.device.withConfigurationLock {
+            cameraManager.device.withConfigurationLock {
                 videoZoomFactor = value.toDouble()
             }
         }
@@ -115,7 +119,7 @@ public actual class CameraState internal constructor(
         private set(value) {
             if (value == null || field == value) return
             field = value
-            controller.device.withConfigurationLock {
+            cameraManager.device.withConfigurationLock {
                 setExposureTargetBias(value, {})
             }
         }
@@ -123,18 +127,18 @@ public actual class CameraState internal constructor(
     public actual val isZoomSupported: Boolean = true
 
     public actual var maxZoom: Float = 1F
-        get() = controller.device.activeFormat.videoMaxZoomFactor.toFloat()
+        get() = cameraManager.device.activeFormat.videoMaxZoomFactor.toFloat()
         private set
 
     public actual var minZoom: Float = 1F
         private set
 
     public actual var minExposure: Float = 0F
-        get() = controller.device.minExposureTargetBias
+        get() = cameraManager.device.minExposureTargetBias
         private set
 
     public actual var maxExposure: Float = 0F
-        get() = controller.device.maxExposureTargetBias
+        get() = cameraManager.device.maxExposureTargetBias
         private set
 
     public actual val initialExposure: Float by lazy { exposureCompensation ?: 0F }
@@ -143,20 +147,17 @@ public actual class CameraState internal constructor(
         get() = true
 
     public actual var isFocusOnTapSupported: Boolean = false
-        get() = controller.isFocusOnTapSupported
+        get() = cameraManager.isFocusOnTapSupported
         private set
 
     public actual var isInitialized: Boolean = false
-        get() = controller.isRunning
+        get() = cameraManager.isRunning
         private set
 
     public actual var hasFlashUnit: Boolean by mutableStateOf(false)
         private set
 
     public actual var hasTorchAvailable: Boolean by mutableStateOf(false)
-        private set
-
-    public actual var isRecording: Boolean by mutableStateOf(false)
         private set
 
     public actual var isMuted: Boolean by mutableStateOf(false)
@@ -168,16 +169,22 @@ public actual class CameraState internal constructor(
         get() = isInitialized
 
     init {
-        prepareCamera()
+        setupCamera()
     }
 
-    private fun prepareCamera() = with(controller) {
+    private fun setupCamera() = with(cameraManager) {
         setCameraPosition(position = camSelector.position)
-        onCameraSwitched()
+        rebindCamera()
+        controller.initialize(
+            recordController = DefaultRecordController(
+                cameraManager = cameraManager,
+                captureModeProvider = { captureMode }
+            )
+        )
     }
 
     @OptIn(ExperimentalForeignApi::class)
-    internal fun startCamera(view: UIView) = controller.start(
+    internal fun startCamera(view: UIView) = cameraManager.start(
         view = view,
         output = captureMode.output,
         position = camSelector.position,
@@ -186,45 +193,19 @@ public actual class CameraState internal constructor(
         presets = resolutionPreset.presets.toList(),
     )
 
-    internal fun renderCamera(view: UIView) = controller.renderPreviewLayer(view)
+    internal fun renderCamera(view: UIView) = cameraManager.renderPreviewLayer(view)
 
-    internal fun setFocusPoint(focusPoint: CValue<CGPoint>) = controller.setFocusPoint(focusPoint)
+    internal fun setFocusPoint(focusPoint: CValue<CGPoint>) =
+        cameraManager.setFocusPoint(focusPoint)
 
     public actual fun takePicture(onImageCaptured: (CaptureResult<ByteArray>) -> Unit) {
         require(captureMode == CaptureMode.Image) { "Capture mode must be CaptureMode.Image" }
-        controller.takePicture { result -> onImageCaptured(result.toCaptureResult()) }
+        cameraManager.takePicture { result -> onImageCaptured(result.toCaptureResult()) }
     }
 
     public actual fun takePicture(path: Path, onImageCaptured: (CaptureResult<Path>) -> Unit) {
         require(captureMode == CaptureMode.Image) { "Capture mode must be CaptureMode.Image" }
-        controller.takePicture(path) { result -> onImageCaptured(result.toCaptureResult()) }
-    }
-
-    public actual fun startRecording(path: Path, onVideoCaptured: (CaptureResult<Path>) -> Unit) {
-        require(captureMode == CaptureMode.Video) { "Capture mode must be CaptureMode.Video" }
-        controller.startRecording(path) { result -> onVideoCaptured(result.toCaptureResult()) }
-        isRecording = true
-    }
-
-    public actual fun resumeRecording() {
-        require(captureMode == CaptureMode.Video) { "Capture mode must be CaptureMode.Video" }
-        controller.resumeRecording()
-    }
-
-    public actual fun pauseRecording() {
-        require(captureMode == CaptureMode.Video) { "Capture mode must be CaptureMode.Video" }
-        controller.pauseRecording()
-    }
-
-    public actual fun stopRecording() {
-        require(captureMode == CaptureMode.Video) { "Capture mode must be CaptureMode.Video" }
-        controller.stopRecording()
-        isRecording = false
-    }
-
-    public actual fun muteRecording(isMuted: Boolean) {
-        controller.setAudioEnabled(!isMuted)
-        this.isMuted = isMuted
+        cameraManager.takePicture(path) { result -> onImageCaptured(result.toCaptureResult()) }
     }
 
     /**
@@ -264,23 +245,23 @@ public actual class CameraState internal constructor(
         this.imageAnalyzer = imageAnalyzer
     }
 
-    private fun onCameraSwitched() = with(controller.device) {
+    private fun rebindCamera() = with(cameraManager.device) {
         hasFlashUnit = hasFlash && isFlashAvailable()
         hasTorchAvailable = hasTorch && isTorchAvailable()
     }
 
     private fun onCaptureModeChanged() {
-        controller.setCameraOutputQuality(
+        cameraManager.setCameraOutputQuality(
             quality = imageCaptureMode.strategy,
             highResolutionEnabled = imageCaptureMode.highResolutionEnabled,
         )
     }
 
     internal fun recoveryState() {
-        controller.setTorchEnabled(enableTorch)
+        cameraManager.setTorchEnabled(enableTorch)
     }
 
     internal fun dispose() {
-        controller.release()
+        cameraManager.release()
     }
 }
