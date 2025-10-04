@@ -14,6 +14,6 @@ public actual fun CameraState.rememberCodeImageAnalyzer(
 ): ImageAnalyzer = remember(codeTypes, codeAnalyzerListener) {
     ImageAnalyzer(
         cameraState = this,
-        analyzer = ImageCodeAnalyzer(codeTypes, codeAnalyzerListener),
+        analyzer = ImageCodeAnalyzer(codeTypes, codeAnalyzerListener, onError),
     )
 }

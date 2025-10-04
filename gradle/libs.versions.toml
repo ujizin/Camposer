@@ -11,6 +11,10 @@ camerax = "1.5.0"
 compose-bom = "2025.09.01"
 kotlinx-io = "0.8.0"
 
+# Camposer scanner
+
+mlkit-barcode = "17.3.0"
+
 # Sample app libraries
 
 androidx-core = "1.17.0"
@@ -79,6 +83,8 @@ media-kmp = { module = "io.github.khubaibkhan4:mediaplayer-kmp", version.ref = "
 
 androidx-test-core = { module = "androidx.test:core-ktx", version.ref = "androidx-test" }
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-test" }
+
+mlkit-barcode-scanning = { module = "com.google.mlkit:barcode-scanning", version.ref = "mlkit-barcode" }
 
 [bundles]
 

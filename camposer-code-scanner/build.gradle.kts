@@ -46,7 +46,7 @@ kotlin {
 
         androidMain {
             dependencies {
-
+                implementation(libs.mlkit.barcode.scanning)
             }
         }
 
