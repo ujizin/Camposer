@@ -13,6 +13,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -22,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.skydoves.cloudy.cloudy
 import com.ujizin.camposer.CameraPreview
+import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.state.CamSelector
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.ResolutionPreset
@@ -48,9 +50,11 @@ fun CameraScreen(
     onConfigurationClick: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     when (val result: CameraUiState = uiState) {
         is CameraUiState.Ready -> {
-            val cameraState = rememberCameraState()
+            val cameraController = remember { CameraController() }
+            val cameraState = rememberCameraState(cameraController)
             val context = LocalContext.current
             CameraSection(
                 cameraState = cameraState,
@@ -61,9 +65,15 @@ fun CameraScreen(
                 qrCodeText = result.qrCodeText,
                 onGalleryClick = onGalleryClick,
                 onConfigurationClick = onConfigurationClick,
-                onRecording = { viewModel.toggleRecording(context.contentResolver, cameraState) },
-                onTakePicture = { viewModel.takePicture(cameraState) },
-                onAnalyzeImage = viewModel::analyzeImage
+                onRecording = {
+                    viewModel.toggleRecording(
+                        context.contentResolver,
+                        cameraController
+                    )
+                },
+                onTakePicture = { viewModel.takePicture(cameraController) },
+                isRecording = cameraController.isRecording,
+                onAnalyzeImage = viewModel::analyzeImage,
             )
 
             LaunchedEffect(result.throwable) {
@@ -80,6 +90,7 @@ fun CameraScreen(
 @Composable
 fun CameraSection(
     cameraState: CameraState,
+    isRecording: Boolean,
     useFrontCamera: Boolean,
     usePinchToZoom: Boolean,
     useTapToFocus: Boolean,
@@ -97,7 +108,6 @@ fun CameraSection(
     var zoomHasChanged by rememberSaveable { mutableStateOf(false) }
     val hasFlashUnit by rememberUpdatedState(cameraState.hasFlashUnit)
     var cameraOption by rememberSaveable { mutableStateOf(CameraOption.Photo) }
-    val isRecording by rememberUpdatedState(cameraState.isRecording)
     var enableTorch by cameraState.rememberTorch(initialTorch = false)
     val imageAnalyzer = cameraState.rememberImageAnalyzer(analyze = onAnalyzeImage)
     CameraPreview(

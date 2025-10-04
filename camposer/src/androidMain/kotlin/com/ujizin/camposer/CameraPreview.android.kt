@@ -18,7 +18,7 @@ import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.ujizin.camposer.controller.PinchToZoomController
+import com.ujizin.camposer.controller.zoom.PinchToZoomController
 import com.ujizin.camposer.extensions.setCameraTouchEvent
 import com.ujizin.camposer.focus.SquareCornerFocus
 import com.ujizin.camposer.state.CamSelector

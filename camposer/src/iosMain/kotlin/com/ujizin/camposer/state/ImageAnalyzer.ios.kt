@@ -1,10 +1,10 @@
 package com.ujizin.camposer.state
 
-import com.ujizin.camposer.controller.IOSCameraManager
+import com.ujizin.camposer.session.IOSCameraSession
 import platform.AVFoundation.AVCaptureOutput
 
 public actual class ImageAnalyzer(
-    internal val cameraManager: IOSCameraManager,
+    internal val iosCameraSession: IOSCameraSession,
     internal val analyzer: Analyzer<*>,
 ) {
 
@@ -23,18 +23,18 @@ public actual class ImageAnalyzer(
         }
 
     internal fun add() {
-        cameraManager.addOutput(analyzer.output)
+        iosCameraSession.addOutput(analyzer.output)
         analyzer.onOutputAttached(analyzer.output)
         isOutputAdded = true
     }
 
     private fun remove() {
-        cameraManager.removeOutput(analyzer.output)
+        iosCameraSession.removeOutput(analyzer.output)
         isOutputAdded = false
     }
 
     public fun onDispose() {
         isOutputAdded = false
-        cameraManager.removeOutput(analyzer.output)
+        iosCameraSession.removeOutput(analyzer.output)
     }
 }

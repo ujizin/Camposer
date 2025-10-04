@@ -1,5 +1,6 @@
-package com.ujizin.camposer.controller
+package com.ujizin.camposer.controller.zoom
 
+import android.view.ScaleGestureDetector
 import androidx.compose.ui.util.fastCoerceIn
 import com.ujizin.camposer.state.CameraState
 
@@ -20,5 +21,11 @@ internal class PinchToZoomController(
         onZoomRatioChanged(zoomRatio)
 
         return true
+    }
+
+    inner class PinchToZoomGesture() : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+        override fun onScale(detector: ScaleGestureDetector): Boolean {
+            return onPinchToZoom(detector.scaleFactor)
+        }
     }
 }

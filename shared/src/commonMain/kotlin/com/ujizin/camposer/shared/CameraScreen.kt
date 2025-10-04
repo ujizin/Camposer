@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.ujizin.camposer.CameraPreview
 import com.ujizin.camposer.code_scanner.model.CodeType
 import com.ujizin.camposer.code_scanner.rememberCodeImageAnalyzer
-import com.ujizin.camposer.controller.CameraController
+import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.result.CaptureResult
 import com.ujizin.camposer.state.CamSelector
 import com.ujizin.camposer.state.CaptureMode
@@ -106,7 +106,7 @@ fun CameraScreen() {
                 }
 
                 when (captureMode) {
-                    CaptureMode.Image -> cameraState.takePicture {
+                    CaptureMode.Image -> cameraController.takePicture {
                         if (it is CaptureResult.Success) {
                             bitmap = it.data.decodeToImageBitmap()
                         }

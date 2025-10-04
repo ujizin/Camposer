@@ -7,7 +7,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import com.ujizin.camposer.CameraPreviewImpl
-import com.ujizin.camposer.controller.CameraController
+import com.ujizin.camposer.controller.camera.CameraController
 
 /**
  * Camera State from [CameraPreviewImpl] Composable.

@@ -1,6 +1,6 @@
-package com.ujizin.camposer.controller
+package com.ujizin.camposer.session
 
-import com.ujizin.camposer.controller.command.TakePictureCommand
+import com.ujizin.camposer.controller.command.IOSTakePictureCommand
 import com.ujizin.camposer.error.AudioInputNotFoundException
 import com.ujizin.camposer.extensions.captureDevice
 import com.ujizin.camposer.extensions.firstIsInstanceOrNull
@@ -49,18 +49,18 @@ import platform.UIKit.UIDevice
 import platform.UIKit.UIView
 
 @OptIn(ExperimentalForeignApi::class)
-public class IOSCameraManager internal constructor(
+public class IOSCameraSession internal constructor(
     internal val captureSession: AVCaptureSession = AVCaptureSession(),
-    private val takePictureCommand: TakePictureCommand = TakePictureCommand(captureSession),
+    private val takePictureCommand: IOSTakePictureCommand = IOSTakePictureCommand(captureSession),
 ) {
 
-    internal var previewLayer: AVCaptureVideoPreviewLayer? = null
+    public var previewLayer: AVCaptureVideoPreviewLayer? = null
 
     private var _captureDeviceInput: AVCaptureDeviceInput? = null
-    internal val captureDeviceInput: AVCaptureDeviceInput
+    public val captureDeviceInput: AVCaptureDeviceInput
         get() = _captureDeviceInput!!
 
-    internal val device: AVCaptureDevice
+    public val device: AVCaptureDevice
         get() = captureDeviceInput.device
 
     public val isRunning: Boolean
@@ -108,20 +108,22 @@ public class IOSCameraManager internal constructor(
         connection?.videoOrientation = UIDevice.currentDevice.orientation.toVideoOrientation()
     }
 
-    public fun takePicture(onPictureCaptured: (Result<ByteArray>) -> Unit): Unit =
+    internal fun takePicture(onPictureCaptured: (Result<ByteArray>) -> Unit): Unit =
         takePictureCommand(
             isMirrorEnabled = captureDeviceInput.device.position == AVCaptureDevicePositionFront,
             flashMode = captureDeviceInput.device.flashMode,
             onPictureCaptured = onPictureCaptured,
         )
 
-    public fun takePicture(path: Path, onPictureCaptured: (Result<Path>) -> Unit): Unit =
-        takePictureCommand(
-            path = path,
-            isMirrorEnabled = captureDeviceInput.device.position == AVCaptureDevicePositionFront,
-            flashMode = captureDeviceInput.device.flashMode,
-            onPictureCaptured = onPictureCaptured,
-        )
+    internal fun takePicture(
+        path: Path,
+        onPictureCaptured: (Result<Path>) -> Unit,
+    ): Unit = takePictureCommand(
+        path = path,
+        isMirrorEnabled = captureDeviceInput.device.position == AVCaptureDevicePositionFront,
+        flashMode = captureDeviceInput.device.flashMode,
+        onPictureCaptured = onPictureCaptured,
+    )
 
     internal fun setCameraPosition(
         position: AVCaptureDevicePosition,
@@ -139,7 +141,7 @@ public class IOSCameraManager internal constructor(
         captureSession.tryAddInput(captureDeviceInput)
     }
 
-    public fun setAudioEnabled(isEnabled: Boolean) {
+    internal fun setAudioEnabled(isEnabled: Boolean) {
         val audioInput = defaultDeviceWithMediaType(AVMediaTypeAudio)?.toDeviceInput()
             ?: throw AudioInputNotFoundException()
 

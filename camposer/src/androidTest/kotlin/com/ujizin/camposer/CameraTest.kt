@@ -1,13 +1,12 @@
 package com.ujizin.camposer
 
 import android.Manifest
-import android.app.UiAutomation
 import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.rule.GrantPermissionRule
-import com.ujizin.camposer.controller.CameraController
+import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.rememberCameraState
 import org.junit.Rule
@@ -38,12 +37,13 @@ internal abstract class CameraTest {
     )
 
     protected lateinit var cameraState: CameraState
+    protected val cameraController: CameraController = CameraController()
 
     protected fun ComposeContentTestRule.initCameraState(
         block: @Composable (CameraState) -> Unit
     ) {
         setContent {
-            cameraState = rememberCameraState()
+            cameraState = rememberCameraState(cameraController)
             block(cameraState)
         }
         waitUntil(CAMERA_TIMEOUT) { cameraState.isStreaming }

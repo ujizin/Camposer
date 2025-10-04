@@ -3,7 +3,6 @@ package com.ujizin.camposer.controller.record
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.ujizin.camposer.controller.IOSCameraManager
 import com.ujizin.camposer.error.CameraNotRunningException
 import com.ujizin.camposer.error.ErrorRecordVideoException
 import com.ujizin.camposer.error.VideoOutputNotFoundException
@@ -11,6 +10,7 @@ import com.ujizin.camposer.extensions.firstIsInstanceOrNull
 import com.ujizin.camposer.extensions.setMirrorEnabled
 import com.ujizin.camposer.extensions.toCaptureResult
 import com.ujizin.camposer.result.CaptureResult
+import com.ujizin.camposer.session.IOSCameraSession
 import com.ujizin.camposer.state.CaptureMode
 import kotlinx.io.files.Path
 import platform.AVFoundation.AVCaptureDevicePositionFront
@@ -24,7 +24,7 @@ import platform.Foundation.NSURL
 import platform.darwin.NSObject
 
 internal actual class DefaultRecordController(
-    private val cameraManager: IOSCameraManager,
+    private val cameraManager: IOSCameraSession,
     private val captureModeProvider: RecordCaptureModeProvider,
 ) : RecordController {
 

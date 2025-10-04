@@ -33,7 +33,7 @@ internal class CaptureModeTest : CameraTest() {
         var isFinalized = false
         runOnIdle {
             val imageFile = File(context.filesDir, IMAGE_TEST_FILENAME).apply { createNewFile() }
-            cameraState.takePicture(imageFile) { result ->
+            cameraController.takePicture(imageFile) { result ->
                 when (result) {
                     is CaptureResult.Error -> throw result.throwable
                     is CaptureResult.Success -> {
@@ -64,7 +64,7 @@ internal class CaptureModeTest : CameraTest() {
 
         var isFinished = false
         runOnIdle {
-            cameraState.startRecording(
+            cameraController.startRecording(
                 FileOutputOptions.Builder(videoFile).build(),
                 AudioConfig.AUDIO_DISABLED
             ) { result ->
@@ -81,7 +81,7 @@ internal class CaptureModeTest : CameraTest() {
 
         runBlocking {
             delay(RECORD_VIDEO_DELAY)
-            cameraState.stopRecording()
+            cameraController.stopRecording()
         }
 
         waitUntil(CAPTURE_MODE_TIMEOUT) { isFinished }

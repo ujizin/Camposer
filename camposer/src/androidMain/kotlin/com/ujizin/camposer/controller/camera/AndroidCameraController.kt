@@ -1,0 +1,5 @@
+import com.ujizin.camposer.command.AndroidTakePictureCommand
+import com.ujizin.camposer.controller.camera.CommonCameraController
+import com.ujizin.camposer.controller.record.AndroidRecordController
+
+internal typealias AndroidCameraController = CommonCameraController<AndroidRecordController, AndroidTakePictureCommand>

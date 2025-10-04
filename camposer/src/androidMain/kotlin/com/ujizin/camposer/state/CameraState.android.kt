@@ -23,7 +23,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.ujizin.camposer.command.AndroidTakePictureCommand
 import com.ujizin.camposer.command.DefaultTakePictureCommand
-import com.ujizin.camposer.controller.CameraController
+import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.controller.record.AndroidRecordController
 import com.ujizin.camposer.controller.record.DefaultRecordController
 import com.ujizin.camposer.extensions.compatMainExecutor
@@ -44,8 +44,7 @@ public actual class CameraState private constructor(
     private val mainExecutor: Executor = context.compatMainExecutor,
     private val androidRecordController: AndroidRecordController,
     private val androidTakePictureCommand: AndroidTakePictureCommand,
-) : AndroidRecordController by androidRecordController,
-    AndroidTakePictureCommand by androidTakePictureCommand {
+) {
 
     public constructor(
         context: Context,

@@ -23,7 +23,7 @@ import platform.Foundation.NSData
 import platform.Foundation.NSError
 import platform.darwin.NSObject
 
-internal class TakePictureCommand(
+internal class IOSTakePictureCommand(
     private val captureSession: AVCaptureSession,
 ) {
 

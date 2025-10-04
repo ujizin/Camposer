@@ -17,8 +17,8 @@ import androidx.lifecycle.viewModelScope
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.DecodeHintType
 import com.google.zxing.MultiFormatReader
+import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.result.CaptureResult
-import com.ujizin.camposer.state.CameraState
 import com.ujizin.sample.data.local.datasource.FileDataSource
 import com.ujizin.sample.data.local.datasource.UserDataSource
 import com.ujizin.sample.domain.User
@@ -61,7 +61,7 @@ class CameraViewModel(
         }
     }
 
-    fun takePicture(cameraState: CameraState) = with(cameraState) {
+    fun takePicture(cameraController: CameraController) = with(cameraController) {
         viewModelScope.launch {
             when {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> takePicture(
@@ -78,8 +78,8 @@ class CameraViewModel(
     }
 
     @SuppressLint("MissingPermission")
-    fun toggleRecording(contentResolver: ContentResolver, cameraState: CameraState) =
-        with(cameraState) {
+    fun toggleRecording(contentResolver: ContentResolver, cameraController: CameraController) =
+        with(cameraController) {
             viewModelScope.launch {
                 when {
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> toggleRecording(

@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import com.ujizin.camposer.CameraPreviewImpl
-import com.ujizin.camposer.controller.CameraController
+import com.ujizin.camposer.controller.camera.CameraController
 
 /**
  * Camera State from [CameraPreviewImpl] Composable.

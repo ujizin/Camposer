@@ -1,14 +1,14 @@
 package com.ujizin.camposer.command
 
-import com.ujizin.camposer.controller.IOSCameraManager
 import com.ujizin.camposer.controller.record.RecordCaptureModeProvider
 import com.ujizin.camposer.extensions.toCaptureResult
 import com.ujizin.camposer.result.CaptureResult
+import com.ujizin.camposer.session.IOSCameraSession
 import com.ujizin.camposer.state.CaptureMode
 import kotlinx.io.files.Path
 
 internal actual class DefaultTakePictureCommand(
-    private val cameraManager: IOSCameraManager,
+    private val cameraManager: IOSCameraSession,
     private val captureModeProvider: RecordCaptureModeProvider,
 ) : TakePictureCommand {
 

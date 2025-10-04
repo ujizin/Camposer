@@ -5,11 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.ujizin.camposer.command.DefaultTakePictureCommand
 import com.ujizin.camposer.command.TakePictureCommand
-import com.ujizin.camposer.controller.CameraController
-import com.ujizin.camposer.controller.IOSCameraManager
+import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.controller.record.DefaultRecordController
 import com.ujizin.camposer.controller.record.RecordController
 import com.ujizin.camposer.extensions.withConfigurationLock
+import com.ujizin.camposer.session.IOSCameraSession
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.AVFoundation.hasFlash
@@ -26,7 +26,7 @@ import platform.UIKit.UIView
 @OptIn(ExperimentalForeignApi::class)
 public actual class CameraState internal constructor(
     public val controller: CameraController,
-    public val cameraManager: IOSCameraManager = IOSCameraManager(),
+    public val cameraManager: IOSCameraSession = IOSCameraSession(),
 ) : RecordController by controller, TakePictureCommand by controller {
 
     internal actual var camSelector: CamSelector = CamSelector.Back
