@@ -6,9 +6,7 @@ import android.hardware.camera2.CameraManager
 import android.os.Build
 import android.os.Build.VERSION_CODES
 import android.util.Log
-import androidx.annotation.VisibleForTesting
 import androidx.camera.core.CameraEffect
-import androidx.camera.core.FocusMeteringAction
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.MeteringPoint
 import androidx.camera.core.TorchState
@@ -16,9 +14,7 @@ import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.view.CameraController.IMAGE_ANALYSIS
 import androidx.camera.view.LifecycleCameraController
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.ujizin.camposer.command.AndroidTakePictureCommand
@@ -27,7 +23,8 @@ import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.controller.record.AndroidRecordController
 import com.ujizin.camposer.controller.record.DefaultRecordController
 import com.ujizin.camposer.extensions.compatMainExecutor
-import com.ujizin.camposer.extensions.isImageAnalysisSupported
+import com.ujizin.camposer.info.AndroidCameraInfo
+import com.ujizin.camposer.info.CameraInfo
 import java.util.concurrent.Executor
 import kotlin.math.roundToInt
 
@@ -44,12 +41,10 @@ public actual class CameraState private constructor(
     private val mainExecutor: Executor = context.compatMainExecutor,
     private val androidRecordController: AndroidRecordController,
     private val androidTakePictureCommand: AndroidTakePictureCommand,
+    public actual val info: CameraInfo,
 ) {
 
-    public constructor(
-        context: Context,
-        cameraController: CameraController,
-    ) : this(
+    public constructor(context: Context, cameraController: CameraController) : this(
         context = context,
         cameraController = cameraController,
         controller = LifecycleCameraController(context),
@@ -61,8 +56,8 @@ public actual class CameraState private constructor(
         controller: LifecycleCameraController,
     ) : this(
         context = context,
-        cameraController = cameraController,
         controller = controller,
+        cameraController = cameraController,
         mainExecutor = context.compatMainExecutor,
         androidRecordController = DefaultRecordController(
             cameraController = controller,
@@ -72,67 +67,16 @@ public actual class CameraState private constructor(
             controller = controller,
             mainExecutor = context.compatMainExecutor,
             contentResolver = context.contentResolver,
+        ),
+        info = CameraInfo(
+            cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as CameraManager,
+            cameraInfo = AndroidCameraInfo(controller),
         )
     )
 
-    /**
-     * Check if focus metering is supported
-     * */
-    private val MeteringPoint.isFocusMeteringSupported: Boolean
-        get() = controller.cameraInfo?.isFocusMeteringSupported(
-            FocusMeteringAction.Builder(this).build()
-        ) ?: false
-
-    /**
-     * Get max zoom from camera.
-     * */
-    public actual var maxZoom: Float by mutableFloatStateOf(
-        controller.zoomState.value?.maxZoomRatio ?: INITIAL_ZOOM_VALUE
-    )
-        internal set
-
-    /**
-     * Get min zoom from camera.
-     * */
-    public actual var minZoom: Float by mutableFloatStateOf(
-        controller.zoomState.value?.minZoomRatio ?: INITIAL_ZOOM_VALUE
-    )
-        internal set
-
-
-    /**
-     * Get range compensation range from camera.
-     * */
-    private val exposureCompensationRange
-        get() = controller.cameraInfo?.exposureState?.exposureCompensationRange
-
-    /**
-     * Get min exposure from camera.
-     * */
-    public actual var minExposure: Float by mutableFloatStateOf(
-        exposureCompensationRange?.lower?.toFloat() ?: INITIAL_EXPOSURE_VALUE
-    )
-        internal set
-
-    /**
-     * Get max exposure from camera.
-     * */
-    public actual var maxExposure: Float by mutableFloatStateOf(
-        exposureCompensationRange?.upper?.toFloat() ?: INITIAL_EXPOSURE_VALUE
-    )
-        internal set
+    private var lastMeteringPoint: MeteringPoint? = null
 
     public actual var isMuted: Boolean by mutableStateOf(false)
-
-    public actual val initialExposure: Float by lazy {
-        controller.cameraInfo?.exposureState?.exposureCompensationIndex?.toFloat()
-            ?: INITIAL_EXPOSURE_VALUE
-    }
-
-    /**
-     * Check if compensation exposure is supported.
-     * */
-    public actual val isExposureSupported: Boolean by derivedStateOf { maxExposure != INITIAL_EXPOSURE_VALUE }
 
     /**
      * Check if camera is streaming or not.
@@ -141,27 +85,10 @@ public actual class CameraState private constructor(
         internal set
 
     /**
-     * Check if zoom is supported.
-     * */
-    public actual val isZoomSupported: Boolean by derivedStateOf { maxZoom != 1F }
-
-    /**
-     * Check if focus on tap supported
-     * */
-    public actual var isFocusOnTapSupported: Boolean by mutableStateOf(true)
-
-    /**
      * Check if camera state is initialized or not.
      * */
     public actual var isInitialized: Boolean by mutableStateOf(false)
         internal set
-
-    /**
-     * Verify if camera has flash or not.
-     * */
-    public actual var hasFlashUnit: Boolean by mutableStateOf(
-        controller.cameraInfo?.hasFlashUnit() ?: true
-    )
 
     /**
      * Capture mode to be added on camera.
@@ -243,28 +170,17 @@ public actual class CameraState private constructor(
     internal actual var imageAnalyzer: ImageAnalyzer? = null
         set(value) {
             field = value
+            if (!isImageAnalyzerEnabled) return
             updateImageAnalyzer(value?.analyzer)
         }
-
-    private val cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as? CameraManager
-
-    /**
-     * Check if image analysis is supported by camera hardware level.
-     * */
-    public var isImageAnalysisSupported: Boolean by mutableStateOf(
-        isImageAnalysisSupported(
-            camSelector
-        )
-    )
-        private set
 
     /**
      * Enable/Disable Image analysis from the camera.
      * */
-    internal actual var isImageAnalysisEnabled: Boolean = isImageAnalysisSupported
+    internal actual var isImageAnalyzerEnabled: Boolean = false
         set(value) {
             if (field == value) return
-            if (!isImageAnalysisSupported) {
+            if (!info.isImageAnalyzerSupported) {
                 Log.e(TAG, "Image analysis is not supported")
                 return
             }
@@ -326,13 +242,10 @@ public actual class CameraState private constructor(
     internal actual var flashMode: FlashMode
         get() = FlashMode.find(controller.imageCaptureFlashMode)
         set(value) {
-            if (hasFlashUnit && flashMode != value) {
+            if (info.isFlashSupported && flashMode != value) {
                 controller.imageCaptureFlashMode = value.mode
             }
         }
-
-    public actual var hasTorchAvailable: Boolean by mutableStateOf(hasFlashUnit)
-        private set
 
     /**
      * Enabled/Disable torch from camera.
@@ -341,7 +254,7 @@ public actual class CameraState private constructor(
         get() = controller.torchState.value == TorchState.ON
         set(value) {
             if (enableTorch != value) {
-                controller.enableTorch(hasTorchAvailable && value)
+                controller.enableTorch(info.isTorchSupported && value)
             }
         }
 
@@ -363,7 +276,7 @@ public actual class CameraState private constructor(
         set(value) {
             if (value == null || field == value) return
             field = value
-            if (value in minExposure..maxExposure) {
+            if (value in info.minExposure..info.maxExposure) {
                 controller.cameraControl?.setExposureCompensationIndex(value.roundToInt())
             }
         }
@@ -382,7 +295,7 @@ public actual class CameraState private constructor(
     private fun updateCaptureMode() {
         try {
             var useCases = captureMode.value
-            if (captureMode == CaptureMode.Image && isImageAnalysisEnabled) {
+            if (captureMode == CaptureMode.Image && isImageAnalyzerEnabled) {
                 useCases = useCases or IMAGE_ANALYSIS
                 updateImageAnalyzer(imageAnalyzer?.analyzer)
             } else {
@@ -406,17 +319,12 @@ public actual class CameraState private constructor(
         setImageAnalysisAnalyzer(mainExecutor, analyzer ?: return)
     }
 
-    private fun startExposure() {
-        minExposure = exposureCompensationRange?.lower?.toFloat() ?: INITIAL_EXPOSURE_VALUE
-        maxExposure = exposureCompensationRange?.upper?.toFloat() ?: INITIAL_EXPOSURE_VALUE
-    }
-
     /**
      * Set zoom ratio to camera.
      * @param zoomRatio zoomRatio to be added
      * */
     private fun setZoomRatio(zoomRatio: Float) {
-        controller.setZoomRatio(zoomRatio.coerceIn(minZoom, maxZoom))
+        controller.setZoomRatio(zoomRatio.coerceIn(info.minZoom, info.maxZoom))
     }
 
     /**
@@ -425,21 +333,14 @@ public actual class CameraState private constructor(
     public fun hasCamera(cameraSelector: CamSelector): Boolean =
         isInitialized && controller.hasCamera(cameraSelector.selector)
 
-    private fun startZoom() {
-        // Turn off is pinch to zoom and use manually
-        controller.isPinchToZoomEnabled = false
-
-        val zoom = controller.zoomState.value
-        minZoom = zoom?.minZoomRatio ?: INITIAL_ZOOM_VALUE
-        maxZoom = zoom?.maxZoomRatio ?: INITIAL_ZOOM_VALUE
-    }
-
+    @SuppressLint("RestrictedApi")
     private fun rebindCamera() {
-        hasFlashUnit = controller.cameraInfo?.hasFlashUnit() ?: false
-        hasTorchAvailable = hasFlashUnit
-        isImageAnalysisSupported = isImageAnalysisSupported(camSelector)
-        startZoom()
-        startExposure()
+        // Disable from pinch to zoom from cameraX controller
+        controller.isPinchToZoomEnabled = false
+        info.rebind(
+            lensFacing = camSelector.selector.lensFacing,
+            meteringPoint = lastMeteringPoint,
+        )
     }
 
     /**
@@ -455,14 +356,6 @@ public actual class CameraState private constructor(
     public fun clearEffects() {
         controller.clearEffects()
     }
-
-    @SuppressLint("RestrictedApi")
-    @VisibleForTesting
-    internal fun isImageAnalysisSupported(
-        cameraSelector: CamSelector = camSelector
-    ): Boolean = cameraManager?.isImageAnalysisSupported(
-        cameraSelector.selector.lensFacing
-    ) ?: false
 
     private fun setResolutionPreset(value: ResolutionPreset) {
         value.getQualitySelector()?.let { controller.videoCaptureQualitySelector = it }
@@ -495,13 +388,13 @@ public actual class CameraState private constructor(
         this.captureMode = captureMode
         this.scaleType = scaleType
         this.imageCaptureTargetSize = imageCaptureTargetSize
-        this.isImageAnalysisEnabled = isImageAnalysisEnabled
+        this.isImageAnalyzerEnabled = isImageAnalysisEnabled
         this.imageAnalyzer = imageAnalyzer
         this.implementationMode = implementationMode
         this.isFocusOnTapEnabled = isFocusOnTapEnabled
         this.flashMode = flashMode
         this.enableTorch = enableTorch
-        this.isFocusOnTapSupported = meteringPoint.isFocusMeteringSupported
+        this.lastMeteringPoint = meteringPoint
         this.imageCaptureMode = imageCaptureMode
         this.resolutionPreset = resolutionPreset
         this.isPinchToZoomEnabled = isPinchToZoomEnabled
@@ -515,7 +408,5 @@ public actual class CameraState private constructor(
 
     private companion object {
         private val TAG = this::class.java.name
-        private const val INITIAL_ZOOM_VALUE = 1F
-        private const val INITIAL_EXPOSURE_VALUE = 0F
     }
 }

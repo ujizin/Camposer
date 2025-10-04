@@ -14,8 +14,8 @@ internal class PinchToZoomController(
         if (!cameraState.isPinchToZoomEnabled) return false
 
         zoomRatio = (zoomRatio * scaleFactor).fastCoerceIn(
-            minimumValue = cameraState.minZoom,
-            maximumValue = cameraState.maxZoom,
+            minimumValue = cameraState.info.minZoom,
+            maximumValue = cameraState.info.maxZoom,
         )
 
         onZoomRatioChanged(zoomRatio)

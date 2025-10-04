@@ -1,5 +1,7 @@
 package com.ujizin.camposer.state
 
+import com.ujizin.camposer.info.CameraInfo
+
 public expect class CameraState {
     internal var camSelector: CamSelector
     internal var captureMode: CaptureMode
@@ -10,48 +12,19 @@ public expect class CameraState {
     internal var scaleType: ScaleType
     internal var implementationMode: ImplementationMode
     internal var imageAnalyzer: ImageAnalyzer?
-    internal var isImageAnalysisEnabled: Boolean
+    internal var isImageAnalyzerEnabled: Boolean
     internal var isFocusOnTapEnabled: Boolean
     internal var enableTorch: Boolean
-    public val initialExposure: Float
-    public val isZoomSupported: Boolean
 
     public var isPinchToZoomEnabled: Boolean
 
     @Deprecated("Use ResolutionPreset instead")
     internal var imageCaptureTargetSize: ImageTargetSize?
 
-    /**
-     * Get max zoom from camera.
-     * */
-    public var maxZoom: Float
-        private set
-
-    /**
-     * Get min zoom from camera.
-     * */
-    public var minZoom: Float
-        private set
+    public val info: CameraInfo
 
     public var exposureCompensation: Float?
         private set
-
-    /**
-     * Get min exposure from camera.
-     * */
-    public var minExposure: Float
-        private set
-
-    /**
-     * Get max exposure from camera.
-     * */
-    public var maxExposure: Float
-        private set
-
-    /**
-     * Check if compensation exposure is supported.
-     * */
-    public val isExposureSupported: Boolean
 
     /**
      * Check if camera is streaming or not.
@@ -60,27 +33,9 @@ public expect class CameraState {
         internal set
 
     /**
-     * Check if focus on tap supported
-     * */
-    public var isFocusOnTapSupported: Boolean
-        private set
-
-    /**
      * Check if camera state is initialized or not.
      * */
     public var isInitialized: Boolean
-        private set
-
-    /**
-     * Verify if camera has torch available.
-     * */
-    public var hasTorchAvailable: Boolean
-        private set
-
-    /**
-     * Verify if camera has flash or not.
-     * */
-    public var hasFlashUnit: Boolean
         private set
 
     /**

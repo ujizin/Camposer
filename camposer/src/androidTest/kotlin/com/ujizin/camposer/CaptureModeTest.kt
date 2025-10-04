@@ -95,9 +95,9 @@ internal class CaptureModeTest : CameraTest() {
             cameraState = state,
             captureMode = captureMode,
             imageAnalyzer = analyzer?.takeIf {
-                cameraState.isImageAnalysisSupported
+                cameraState.info.isImageAnalyzerSupported
             }?.let { state.rememberImageAnalyzer(analyze = it) },
-            isImageAnalysisEnabled = cameraState.isImageAnalysisSupported && analyzer != null
+            isImageAnalysisEnabled = cameraState.info.isImageAnalyzerSupported && analyzer != null
         )
     }
 

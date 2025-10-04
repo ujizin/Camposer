@@ -104,9 +104,9 @@ fun CameraSection(
 ) {
     var flashMode by cameraState.rememberFlashMode()
     var camSelector by rememberCamSelector(if (useFrontCamera) CamSelector.Front else CamSelector.Back)
-    var zoomRatio by rememberSaveable { mutableFloatStateOf(cameraState.minZoom) }
+    var zoomRatio by rememberSaveable { mutableFloatStateOf(cameraState.info.minZoom) }
     var zoomHasChanged by rememberSaveable { mutableStateOf(false) }
-    val hasFlashUnit by rememberUpdatedState(cameraState.hasFlashUnit)
+    val hasFlashUnit by rememberUpdatedState(cameraState.info.isFlashSupported)
     var cameraOption by rememberSaveable { mutableStateOf(CameraOption.Photo) }
     var enableTorch by cameraState.rememberTorch(initialTorch = false)
     val imageAnalyzer = cameraState.rememberImageAnalyzer(analyze = onAnalyzeImage)

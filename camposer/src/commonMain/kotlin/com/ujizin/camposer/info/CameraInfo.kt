@@ -1,0 +1,28 @@
+package com.ujizin.camposer.info
+
+public expect class CameraInfo {
+    public var isImageAnalyzerSupported: Boolean
+        private set
+    public var isFocusOnTapSupported: Boolean
+        private set
+    public val isZoomSupported: Boolean
+    public var minZoom: Float
+        private set
+    public var maxZoom: Float
+        private set
+    public val isExposureSupported: Boolean
+    public var minExposure: Float
+        private set
+    public var maxExposure: Float
+        private set
+    public var isFlashSupported: Boolean
+        private set
+    public var isFlashAvailable: Boolean
+        private set
+    public var isTorchSupported: Boolean
+        private set
+    public var isTorchAvailable: Boolean
+        private set
+    public var isZeroShutterLagSupported: Boolean
+        private set
+}

@@ -27,8 +27,8 @@ internal class ImageAnalyzerTest : CameraTest() {
         waitUntil(ANALYZER_TIME_OUT) { isAnalyzeCalled }
 
         runOnIdle {
-            if (cameraState.isImageAnalysisSupported) {
-                assertEquals(true, cameraState.isImageAnalysisEnabled)
+            if (cameraState.info.isImageAnalyzerSupported) {
+                assertEquals(true, cameraState.isImageAnalyzerEnabled)
                 assertEquals(true, isAnalyzeCalled)
             }
         }
@@ -40,8 +40,8 @@ internal class ImageAnalyzerTest : CameraTest() {
         initImageAnalyzerCamera(isImageAnalyzeEnabled = false) { isAnalyzeCalled = true }
 
         runOnIdle {
-            if (cameraState.isImageAnalysisSupported) {
-                assertEquals(false, cameraState.isImageAnalysisEnabled)
+            if (cameraState.info.isImageAnalyzerSupported) {
+                assertEquals(false, cameraState.isImageAnalyzerEnabled)
                 assertEquals(false, isAnalyzeCalled)
             }
         }
@@ -52,11 +52,11 @@ internal class ImageAnalyzerTest : CameraTest() {
         val expectImageAnalysisSupported: Boolean?
         initImageAnalyzerCamera(isImageAnalyzeEnabled = true)
 
-        expectImageAnalysisSupported = cameraState.isImageAnalysisSupported()
+        expectImageAnalysisSupported = cameraState.info.isImageAnalyzerSupported
 
         runOnIdle {
-            assertEquals(expectImageAnalysisSupported, cameraState.isImageAnalysisSupported)
-            assertEquals(expectImageAnalysisSupported, cameraState.isImageAnalysisEnabled)
+            assertEquals(expectImageAnalysisSupported, cameraState.info.isImageAnalyzerSupported)
+            assertEquals(expectImageAnalysisSupported, cameraState.isImageAnalyzerEnabled)
         }
     }
 

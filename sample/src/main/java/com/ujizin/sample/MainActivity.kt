@@ -24,8 +24,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             CamposerTheme {
                 AppPermission {
-                    val navHost = rememberNavController()
-                    NavGraph(navHost)
+//                    val navHost = rememberNavController()
+//                    NavGraph(navHost)
+                    com.ujizin.camposer.shared.CameraScreen()
                 }
             }
         }

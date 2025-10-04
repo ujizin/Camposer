@@ -24,12 +24,12 @@ internal class ExposureCompensationTest: CameraTest() {
     fun test_minExposureCompensation() = with(composeTestRule) {
         initCameraWithExposure(0F)
 
-        exposureCompensation.value = cameraState.minExposure
+        exposureCompensation.value = cameraState.info.minExposure
 
         runOnIdle {
-            if (!cameraState.isExposureSupported) return@runOnIdle
+            if (!cameraState.info.isExposureSupported) return@runOnIdle
 
-            assertEquals(cameraState.minExposure, currentExposure)
+            assertEquals(cameraState.info.minExposure, currentExposure)
             assertEquals(exposureCompensation.value, currentExposure)
         }
     }
@@ -38,12 +38,12 @@ internal class ExposureCompensationTest: CameraTest() {
     fun test_maxExposureCompensation() = with(composeTestRule) {
         initCameraWithExposure(0F)
 
-        exposureCompensation.value = cameraState.maxExposure
+        exposureCompensation.value = cameraState.info.maxExposure
 
         runOnIdle {
-            if (!cameraState.isExposureSupported) return@runOnIdle
+            if (!cameraState.info.isExposureSupported) return@runOnIdle
 
-            assertEquals(cameraState.maxExposure, currentExposure)
+            assertEquals(cameraState.info.maxExposure, currentExposure)
             assertEquals(exposureCompensation.value, currentExposure)
         }
     }
@@ -56,11 +56,11 @@ internal class ExposureCompensationTest: CameraTest() {
         exposureCompensation.value = Float.MAX_VALUE
 
         runOnIdle {
-            if (!cameraState.isExposureSupported) return@runOnIdle
+            if (!cameraState.info.isExposureSupported) return@runOnIdle
 
-            assertNotEquals(cameraState.maxExposure, currentExposure)
+            assertNotEquals(cameraState.info.maxExposure, currentExposure)
             assertNotEquals(exposureCompensation.value, currentExposure)
-            assertEquals(cameraState.initialExposure, currentExposure)
+            assertEquals(0F, currentExposure)
         }
     }
 

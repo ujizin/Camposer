@@ -63,14 +63,14 @@ public fun CameraPreview(
     flashMode: FlashMode = cameraState.flashMode,
     scaleType: ScaleType = cameraState.scaleType,
     enableTorch: Boolean = cameraState.enableTorch,
-    exposureCompensation: Float = cameraState.initialExposure,
+    exposureCompensation: Float? = null,
     zoomRatio: Float = 1F,
     imageAnalyzer: ImageAnalyzer? = null,
     resolutionPreset: ResolutionPreset = cameraState.resolutionPreset,
     implementationMode: ImplementationMode = cameraState.implementationMode,
     isImageAnalysisEnabled: Boolean = imageAnalyzer != null,
     isFocusOnTapEnabled: Boolean = cameraState.isFocusOnTapEnabled,
-    isPinchToZoomEnabled: Boolean = cameraState.isZoomSupported,
+    isPinchToZoomEnabled: Boolean = cameraState.info.isZoomSupported,
     onPreviewStreamChanged: () -> Unit = {},
     onSwitchToFront: @Composable (ImageBitmap) -> Unit = {},
     onSwitchToBack: @Composable (ImageBitmap) -> Unit = {},
@@ -124,7 +124,7 @@ public fun CameraPreview(
             }
             LaunchedEffect(latestBitmap) {
                 onPreviewStreamChanged()
-                if (latestBitmap != null) onZoomRatioChanged(cameraState.minZoom)
+                if (latestBitmap != null) onZoomRatioChanged(cameraState.info.minZoom)
             }
         }
     }

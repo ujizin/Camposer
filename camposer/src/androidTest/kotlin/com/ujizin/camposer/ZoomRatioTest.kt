@@ -43,7 +43,7 @@ internal class ZoomRatioTest : CameraTest() {
         initZoomCamera(UNREACHABLE_MAX_ZOOM_VALUE)
         runOnIdle {
             assertNotEquals(UNREACHABLE_MAX_ZOOM_VALUE, currentCameraXZoom)
-            assertEquals(cameraState.maxZoom, currentCameraXZoom)
+            assertEquals(cameraState.info.maxZoom, currentCameraXZoom)
         }
     }
 
@@ -52,7 +52,7 @@ internal class ZoomRatioTest : CameraTest() {
         initZoomCamera(UNREACHABLE_MIN_ZOOM_VALUE)
         runOnIdle {
             assertNotEquals(UNREACHABLE_MIN_ZOOM_VALUE, currentCameraXZoom)
-            assertEquals(cameraState.minZoom, currentCameraXZoom)
+            assertEquals(cameraState.info.minZoom, currentCameraXZoom)
         }
     }
 
@@ -60,9 +60,9 @@ internal class ZoomRatioTest : CameraTest() {
     fun test_zoomChangeValueToMax() = with(composeTestRule) {
         initZoomCamera(DEFAULT_ZOOM_VALUE)
 
-        zoomRatio.value = cameraState.maxZoom
+        zoomRatio.value = cameraState.info.maxZoom
         runOnIdle {
-            assertEquals(cameraState.maxZoom, zoomRatio.value)
+            assertEquals(cameraState.info.maxZoom, zoomRatio.value)
             assertEquals(currentCameraXZoom, zoomRatio.value)
         }
     }
@@ -78,7 +78,7 @@ internal class ZoomRatioTest : CameraTest() {
             }
 
         runOnIdle {
-            if (cameraState.isZoomSupported) {
+            if (cameraState.info.isZoomSupported) {
                 assertNotEquals(DEFAULT_ZOOM_VALUE, zoomRatio.value)
             }
             assertEquals(currentCameraXZoom, zoomRatio.value)

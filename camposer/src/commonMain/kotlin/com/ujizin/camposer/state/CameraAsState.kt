@@ -37,7 +37,7 @@ public fun CameraState.rememberFlashMode(
     initialValue = initialFlashMode,
     defaultValue = FlashMode.Off,
     useSaver = useSaver,
-    predicate = hasFlashUnit
+    predicate = info.isFlashSupported && info.isFlashAvailable
 )
 
 /**
@@ -51,5 +51,5 @@ public fun CameraState.rememberTorch(
     initialValue = initialTorch,
     defaultValue = false,
     useSaver = useSaver,
-    predicate = hasTorchAvailable
+    predicate = info.isTorchSupported && info.isTorchAvailable
 )

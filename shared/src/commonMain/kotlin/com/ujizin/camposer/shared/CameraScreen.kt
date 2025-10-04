@@ -50,11 +50,11 @@ fun CameraScreen() {
     var flashMode: FlashMode by remember { mutableStateOf(FlashMode.Off) }
     var enableTorch by cameraState.rememberTorch(false)
     var camSelector by rememberCamSelector(CamSelector.Back)
-    var zoomRatio by remember { mutableStateOf(cameraState.minZoom) }
+    var zoomRatio by remember { mutableStateOf(cameraState.info.minZoom) }
     var bitmap by remember { mutableStateOf<ImageBitmap?>(null) }
     var captureMode by remember { mutableStateOf(CaptureMode.Image) }
     val isRecording by rememberUpdatedState(cameraController.isRecording)
-    var exposureCompensation by remember { mutableStateOf(cameraState.initialExposure) }
+    var exposureCompensation by remember { mutableStateOf(0F) }
     var videoPath by remember { mutableStateOf("") }
     var text by remember { mutableStateOf("") }
     val codeImageAnalyzer = cameraState.rememberCodeImageAnalyzer(
@@ -132,7 +132,7 @@ fun CameraScreen() {
             Button(
                 onClick = {
                     exposureCompensation = (exposureCompensation + 1).coerceAtMost(
-                        cameraState.maxExposure
+                        cameraState.info.maxExposure
                     )
                 },
             ) {

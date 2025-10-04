@@ -19,7 +19,7 @@ public actual fun CameraState.rememberCodeImageAnalyzer(
     val codeAnalyzer = remember(codeTypes, codeAnalyzerListener) {
         val codeAnalyzerDelegate = ImageCodeAnalyzer(codeTypes, codeAnalyzerListener)
         ImageAnalyzer(
-            iosCameraSession = cameraManager,
+            iosCameraSession = iosCameraSession,
             analyzer = ImageAnalyzer.Analyzer(
                 output = AVCaptureMetadataOutput(),
                 onOutputAttached = { output ->

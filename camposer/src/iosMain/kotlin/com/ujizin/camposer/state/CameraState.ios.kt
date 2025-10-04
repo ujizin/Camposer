@@ -4,20 +4,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.ujizin.camposer.command.DefaultTakePictureCommand
-import com.ujizin.camposer.command.TakePictureCommand
 import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.controller.record.DefaultRecordController
-import com.ujizin.camposer.controller.record.RecordController
 import com.ujizin.camposer.extensions.withConfigurationLock
+import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.session.IOSCameraSession
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
-import platform.AVFoundation.hasFlash
-import platform.AVFoundation.hasTorch
-import platform.AVFoundation.isFlashAvailable
-import platform.AVFoundation.isTorchAvailable
-import platform.AVFoundation.maxExposureTargetBias
-import platform.AVFoundation.minExposureTargetBias
 import platform.AVFoundation.setExposureTargetBias
 import platform.AVFoundation.videoZoomFactor
 import platform.CoreGraphics.CGPoint
@@ -25,15 +18,16 @@ import platform.UIKit.UIView
 
 @OptIn(ExperimentalForeignApi::class)
 public actual class CameraState internal constructor(
-    public val controller: CameraController,
-    public val cameraManager: IOSCameraSession = IOSCameraSession(),
-) : RecordController by controller, TakePictureCommand by controller {
+    internal val controller: CameraController,
+    public val iosCameraSession: IOSCameraSession = IOSCameraSession(),
+    public actual val info: CameraInfo = CameraInfo(iosCameraSession)
+) {
 
     internal actual var camSelector: CamSelector = CamSelector.Back
         set(value) {
             if (value == field) return
             field = value
-            cameraManager.setCameraPosition(position = value.position)
+            iosCameraSession.setCameraPosition(position = value.position)
             rebindCamera()
         }
 
@@ -42,7 +36,7 @@ public actual class CameraState internal constructor(
             if (value == field) return
             val previousMode = field
             field = value
-            cameraManager.switchCameraOutput(previousMode.output, value.output)
+            iosCameraSession.switchCameraOutput(previousMode.output, value.output)
             onCaptureModeChanged()
         }
 
@@ -50,14 +44,14 @@ public actual class CameraState internal constructor(
         set(value) {
             if (field == value) return
             field = value
-            cameraManager.setCameraPreset(value.presets.toList())
+            iosCameraSession.setCameraPreset(value.presets.toList())
         }
 
     internal actual var imageCaptureMode: ImageCaptureMode = ImageCaptureMode.Balanced
         set(value) {
             if (value == field) return
             field = value
-            cameraManager.setCameraOutputQuality(
+            iosCameraSession.setCameraOutputQuality(
                 quality = value.strategy,
                 highResolutionEnabled = value.highResolutionEnabled
             )
@@ -70,29 +64,29 @@ public actual class CameraState internal constructor(
         set(value) {
             if (field == value) return
             field = value
-            cameraManager.setFlashMode(value.mode)
+            iosCameraSession.setFlashMode(value.mode)
         }
 
     internal actual var scaleType: ScaleType = ScaleType.FillCenter
         set(value) {
             if (value == field) return
             field = value
-            cameraManager.previewLayer?.videoGravity = value.gravity
+            iosCameraSession.previewLayer?.videoGravity = value.gravity
         }
 
     // No-op in iOS
     internal actual var implementationMode: ImplementationMode = ImplementationMode.Performance
 
-    internal actual var isImageAnalysisEnabled: Boolean = false
+    internal actual var isImageAnalyzerEnabled: Boolean = false
         set(value) {
             field = value
-            imageAnalyzer?.isEnabled = isImageAnalysisEnabled
+            imageAnalyzer?.isEnabled = isImageAnalyzerEnabled
         }
 
     internal actual var imageAnalyzer: ImageAnalyzer? = null
         set(value) {
             if (value == null || field == value) return
-            value.isEnabled = isImageAnalysisEnabled
+            value.isEnabled = isImageAnalyzerEnabled
             field = value
         }
 
@@ -102,14 +96,14 @@ public actual class CameraState internal constructor(
         set(value) {
             if (field == value) return
             field = value
-            cameraManager.setTorchEnabled(value)
+            iosCameraSession.setTorchEnabled(value)
         }
 
     internal var zoomRatio: Float
-        get() = cameraManager.device.videoZoomFactor.toFloat()
+        get() = iosCameraSession.device.videoZoomFactor.toFloat()
         set(value) {
-            if (zoomRatio == value || value !in minZoom..maxZoom) return
-            cameraManager.device.withConfigurationLock {
+            if (zoomRatio == value || value !in info.minZoom..info.maxZoom) return
+            iosCameraSession.device.withConfigurationLock {
                 videoZoomFactor = value.toDouble()
             }
         }
@@ -118,45 +112,13 @@ public actual class CameraState internal constructor(
         private set(value) {
             if (value == null || field == value) return
             field = value
-            cameraManager.device.withConfigurationLock {
+            iosCameraSession.device.withConfigurationLock {
                 setExposureTargetBias(value, {})
             }
         }
 
-    public actual val isZoomSupported: Boolean = true
-
-    public actual var maxZoom: Float = 1F
-        get() = cameraManager.device.activeFormat.videoMaxZoomFactor.toFloat()
-        private set
-
-    public actual var minZoom: Float = 1F
-        private set
-
-    public actual var minExposure: Float = 0F
-        get() = cameraManager.device.minExposureTargetBias
-        private set
-
-    public actual var maxExposure: Float = 0F
-        get() = cameraManager.device.maxExposureTargetBias
-        private set
-
-    public actual val initialExposure: Float by lazy { exposureCompensation ?: 0F }
-
-    public actual val isExposureSupported: Boolean
-        get() = true
-
-    public actual var isFocusOnTapSupported: Boolean = false
-        get() = cameraManager.isFocusOnTapSupported
-        private set
-
     public actual var isInitialized: Boolean = false
-        get() = cameraManager.isRunning
-        private set
-
-    public actual var hasFlashUnit: Boolean by mutableStateOf(false)
-        private set
-
-    public actual var hasTorchAvailable: Boolean by mutableStateOf(false)
+        get() = iosCameraSession.isRunning
         private set
 
     public actual var isMuted: Boolean by mutableStateOf(false)
@@ -171,23 +133,23 @@ public actual class CameraState internal constructor(
         setupCamera()
     }
 
-    private fun setupCamera() = with(cameraManager) {
+    private fun setupCamera() = with(iosCameraSession) {
         setCameraPosition(position = camSelector.position)
         rebindCamera()
         controller.initialize(
             recordController = DefaultRecordController(
-                cameraManager = cameraManager,
+                cameraManager = iosCameraSession,
                 captureModeProvider = { captureMode }
             ),
             takePictureCommand = DefaultTakePictureCommand(
-                cameraManager = cameraManager,
+                cameraManager = iosCameraSession,
                 captureModeProvider = { captureMode },
             )
         )
     }
 
     @OptIn(ExperimentalForeignApi::class)
-    internal fun startCamera(view: UIView) = cameraManager.start(
+    internal fun startCamera(view: UIView) = iosCameraSession.start(
         view = view,
         output = captureMode.output,
         position = camSelector.position,
@@ -196,10 +158,10 @@ public actual class CameraState internal constructor(
         presets = resolutionPreset.presets.toList(),
     )
 
-    internal fun renderCamera(view: UIView) = cameraManager.renderPreviewLayer(view)
+    internal fun renderCamera(view: UIView) = iosCameraSession.renderPreviewLayer(view)
 
     internal fun setFocusPoint(focusPoint: CValue<CGPoint>) =
-        cameraManager.setFocusPoint(focusPoint)
+        iosCameraSession.setFocusPoint(focusPoint)
 
     /**
      * Update all values from camera state.
@@ -225,7 +187,7 @@ public actual class CameraState internal constructor(
         this.captureMode = captureMode
         this.scaleType = scaleType
         this.imageCaptureTargetSize = imageCaptureTargetSize
-        this.isImageAnalysisEnabled = isImageAnalysisEnabled
+        this.isImageAnalyzerEnabled = isImageAnalysisEnabled
         this.implementationMode = implementationMode
         this.isFocusOnTapEnabled = isFocusOnTapEnabled
         this.flashMode = flashMode
@@ -238,23 +200,23 @@ public actual class CameraState internal constructor(
         this.imageAnalyzer = imageAnalyzer
     }
 
-    private fun rebindCamera() = with(cameraManager.device) {
-        hasFlashUnit = hasFlash && isFlashAvailable()
-        hasTorchAvailable = hasTorch && isTorchAvailable()
+    private fun rebindCamera() = with(iosCameraSession.device) {
+        info.rebind(captureMode.output)
     }
 
     private fun onCaptureModeChanged() {
-        cameraManager.setCameraOutputQuality(
+        rebindCamera()
+        iosCameraSession.setCameraOutputQuality(
             quality = imageCaptureMode.strategy,
             highResolutionEnabled = imageCaptureMode.highResolutionEnabled,
         )
     }
 
     internal fun recoveryState() {
-        cameraManager.setTorchEnabled(enableTorch)
+        iosCameraSession.setTorchEnabled(enableTorch)
     }
 
     internal fun dispose() {
-        cameraManager.release()
+        iosCameraSession.release()
     }
 }
