@@ -9,6 +9,8 @@ public expect class CameraController : RecordController, TakePictureCommand {
 
     public constructor()
 
+    override val isMuted: Boolean
+
     override val isRecording: Boolean
     override fun startRecording(
         path: Path,

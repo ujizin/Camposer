@@ -12,8 +12,7 @@ import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.CaptureMode
 import com.ujizin.camposer.state.FlashMode
 import com.ujizin.camposer.state.ImageAnalyzer
-import com.ujizin.camposer.state.ImageCaptureMode
-import com.ujizin.camposer.state.ImageTargetSize
+import com.ujizin.camposer.state.ImageCaptureStrategy
 import com.ujizin.camposer.state.ImplementationMode
 import com.ujizin.camposer.state.ResolutionPreset
 import com.ujizin.camposer.state.ScaleType
@@ -29,11 +28,10 @@ internal actual fun CameraPreviewImpl(
     camSelector: CamSelector,
     captureMode: CaptureMode,
     resolutionPreset: ResolutionPreset,
-    imageCaptureMode: ImageCaptureMode,
-    imageCaptureTargetSize: ImageTargetSize?,
+    imageCaptureMode: ImageCaptureStrategy,
     flashMode: FlashMode,
     scaleType: ScaleType,
-    enableTorch: Boolean,
+    isTorchEnabled: Boolean,
     exposureCompensation: Float?,
     zoomRatio: Float,
     imageAnalyzer: ImageAnalyzer?, // TODO
@@ -67,14 +65,13 @@ internal actual fun CameraPreviewImpl(
             cameraViewController.update(
                 camSelector = camSelector,
                 captureMode = captureMode,
-                imageCaptureTargetSize = imageCaptureTargetSize,
                 scaleType = scaleType,
                 isImageAnalysisEnabled = isImageAnalysisEnabled,
                 imageAnalyzer = imageAnalyzer,
                 implementationMode = implementationMode,
                 isFocusOnTapEnabled = isFocusOnTapEnabled,
                 flashMode = flashMode,
-                enableTorch = enableTorch,
+                isTorchEnabled = isTorchEnabled,
                 zoomRatio = zoomRatio,
                 imageCaptureMode = imageCaptureMode,
                 exposureCompensation = exposureCompensation,

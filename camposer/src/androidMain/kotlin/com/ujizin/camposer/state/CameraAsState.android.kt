@@ -28,12 +28,12 @@ public actual fun rememberCameraState(controller: CameraController): CameraState
 @Composable
 public fun CameraState.rememberImageAnalyzer(
     imageAnalysisBackpressureStrategy: ImageAnalysisBackpressureStrategy = ImageAnalysisBackpressureStrategy.KeepOnlyLatest,
-    imageAnalysisResolutionSelector: ResolutionSelector? = this.imageAnalysisResolutionSelector,
-    imageAnalysisImageQueueDepth: Int = this.imageAnalysisImageQueueDepth,
+    imageAnalysisResolutionSelector: ResolutionSelector? = controller.imageAnalysisResolutionSelector,
+    imageAnalysisImageQueueDepth: Int = controller.imageAnalysisImageQueueDepth,
     analyze: ImageAnalysis.Analyzer,
 ): ImageAnalyzer = remember(this) {
     ImageAnalyzer(
-        this,
+        controller,
         imageAnalysisBackpressureStrategy,
         imageAnalysisResolutionSelector,
         imageAnalysisImageQueueDepth,

@@ -4,7 +4,6 @@ import androidx.camera.core.TorchState
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.rememberTorch
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -19,7 +18,7 @@ internal class TorchTest : CameraTest() {
         get() = cameraState.controller.torchState.value == TorchState.ON
 
     /**
-     * AVD does not have torch and [CameraState.hasFlashUnit] it's not enough in this case
+     * AVD does not have torch and [com.ujizin.camposer.info.CameraInfo.isTorchSupported] it's not enough in this case
      * */
     private val isCameraXFlashSupported: Boolean
         get() = with(cameraState.controller) {
@@ -35,7 +34,7 @@ internal class TorchTest : CameraTest() {
         initTorchCamera()
 
         runOnIdle {
-            assertEquals(false, cameraState.enableTorch)
+            assertEquals(false, cameraState.config.isTorchEnabled)
             assertEquals(false, cameraXEnableTorch)
         }
 
@@ -43,7 +42,7 @@ internal class TorchTest : CameraTest() {
 
         runOnIdle {
             if (isCameraXFlashSupported) {
-                assertEquals(true, cameraState.enableTorch)
+                assertEquals(true, cameraState.config.isTorchEnabled)
                 assertEquals(true, cameraXEnableTorch)
             }
         }
@@ -55,7 +54,7 @@ internal class TorchTest : CameraTest() {
         torchState = state.rememberTorch(initialValue)
         CameraPreview(
             cameraState = state,
-            enableTorch = torchState.value
+            isTorchEnabled = torchState.value
         )
     }
 }

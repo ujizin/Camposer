@@ -5,7 +5,7 @@ import platform.AVFoundation.AVCapturePhotoQualityPrioritizationBalanced
 import platform.AVFoundation.AVCapturePhotoQualityPrioritizationQuality
 import platform.AVFoundation.AVCapturePhotoQualityPrioritizationSpeed
 
-public actual enum class ImageCaptureMode(
+public actual enum class ImageCaptureStrategy(
     internal val strategy: AVCapturePhotoQualityPrioritization,
     internal val highResolutionEnabled: Boolean,
 ) {

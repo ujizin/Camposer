@@ -41,7 +41,7 @@ public actual class CameraInfo internal constructor(
     public actual var isZeroShutterLagSupported: Boolean by mutableStateOf(cameraInfo.isZeroShutterLagSupported)
         private set
 
-    internal fun rebind(
+    internal fun bind(
         lensFacing: Int?,
         meteringPoint: MeteringPoint?,
     ) {

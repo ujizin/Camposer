@@ -5,6 +5,8 @@ import kotlinx.io.files.Path
 
 public interface RecordController {
 
+    public val isMuted: Boolean
+
     public val isRecording: Boolean
 
     public fun startRecording(path: Path, onVideoCaptured: (CaptureResult<Path>) -> Unit)
@@ -16,6 +18,9 @@ public interface RecordController {
 }
 
 internal expect class DefaultRecordController : RecordController {
+    override var isMuted: Boolean
+        internal set
+
     override var isRecording: Boolean
         internal set
 

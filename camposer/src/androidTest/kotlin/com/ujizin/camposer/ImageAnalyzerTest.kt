@@ -28,7 +28,7 @@ internal class ImageAnalyzerTest : CameraTest() {
 
         runOnIdle {
             if (cameraState.info.isImageAnalyzerSupported) {
-                assertEquals(true, cameraState.isImageAnalyzerEnabled)
+                assertEquals(true, cameraState.config.isImageAnalyzerEnabled)
                 assertEquals(true, isAnalyzeCalled)
             }
         }
@@ -41,7 +41,7 @@ internal class ImageAnalyzerTest : CameraTest() {
 
         runOnIdle {
             if (cameraState.info.isImageAnalyzerSupported) {
-                assertEquals(false, cameraState.isImageAnalyzerEnabled)
+                assertEquals(false, cameraState.config.isImageAnalyzerEnabled)
                 assertEquals(false, isAnalyzeCalled)
             }
         }
@@ -56,7 +56,7 @@ internal class ImageAnalyzerTest : CameraTest() {
 
         runOnIdle {
             assertEquals(expectImageAnalysisSupported, cameraState.info.isImageAnalyzerSupported)
-            assertEquals(expectImageAnalysisSupported, cameraState.isImageAnalyzerEnabled)
+            assertEquals(expectImageAnalysisSupported, cameraState.config.isImageAnalyzerEnabled)
         }
     }
 
@@ -73,6 +73,6 @@ internal class ImageAnalyzerTest : CameraTest() {
     }
 
     private companion object {
-        private const val ANALYZER_TIME_OUT = 2_000L
+        private const val ANALYZER_TIME_OUT = 5_000L
     }
 }

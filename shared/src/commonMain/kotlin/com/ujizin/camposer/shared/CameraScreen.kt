@@ -68,7 +68,7 @@ fun CameraScreen() {
         modifier = Modifier.fillMaxSize(),
         cameraState = cameraState,
         flashMode = flashMode,
-        enableTorch = enableTorch,
+        isTorchEnabled = enableTorch,
         camSelector = camSelector,
         zoomRatio = zoomRatio,
         exposureCompensation = exposureCompensation,

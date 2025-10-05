@@ -11,7 +11,7 @@ internal class PinchToZoomController(
 ) {
 
     internal fun onPinchToZoom(scaleFactor: Float): Boolean {
-        if (!cameraState.isPinchToZoomEnabled) return false
+        if (!cameraState.config.isPinchToZoomEnabled) return false
 
         zoomRatio = (zoomRatio * scaleFactor).fastCoerceIn(
             minimumValue = cameraState.info.minZoom,

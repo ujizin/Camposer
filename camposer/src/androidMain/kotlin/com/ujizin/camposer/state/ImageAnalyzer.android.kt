@@ -2,7 +2,9 @@ package com.ujizin.camposer.state
 
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.resolutionselector.ResolutionSelector
+import androidx.camera.view.CameraController
 import androidx.compose.runtime.Stable
+import com.ujizin.camposer.config.config
 
 /**
  * Intermediate Image analyzer from cameraX
@@ -16,14 +18,47 @@ import androidx.compose.runtime.Stable
  * */
 @Stable
 public actual class ImageAnalyzer(
-    private val cameraState: CameraState,
+    private val controller: CameraController,
     imageAnalysisBackpressureStrategy: ImageAnalysisBackpressureStrategy = ImageAnalysisBackpressureStrategy.find(
-        cameraState.imageAnalysisBackpressureStrategy
+        controller.imageAnalysisBackpressureStrategy
     ),
     resolutionSelector: ResolutionSelector? = null,
-    imageAnalysisImageQueueDepth: Int = cameraState.imageAnalysisImageQueueDepth,
+    imageAnalysisImageQueueDepth: Int = controller.imageAnalysisImageQueueDepth,
     internal var analyzer: ImageAnalysis.Analyzer,
 ) {
+
+    /**
+     * Image analysis backpressure strategy, use [rememberImageAnalyzer] to set value.
+     * */
+    internal var imageAnalysisBackpressureStrategy: Int
+        get() = controller.imageAnalysisBackpressureStrategy
+        set(value) {
+            if (imageAnalysisBackpressureStrategy != value) {
+                controller.imageAnalysisBackpressureStrategy = value
+            }
+        }
+
+    /**
+     * Image analysis target size, use [rememberImageAnalyzer] to set value.
+     * @see rememberImageAnalyzer
+     * */
+    internal var imageAnalysisResolutionSelector: ResolutionSelector?
+        get() = controller.imageAnalysisResolutionSelector
+        set(value) {
+            // TODO check if this works as expected
+            if (value != null && imageAnalysisResolutionSelector != value) {
+                controller.imageAnalysisResolutionSelector = value
+            }
+        }
+
+    /**
+     * Image analysis image queue depth, use [rememberImageAnalyzer] to set value.
+     * @see rememberImageAnalyzer
+     * */
+    public var imageAnalysisImageQueueDepth: Int by config(controller.imageAnalysisImageQueueDepth) {
+        controller.imageAnalysisImageQueueDepth = it
+    }
+        internal set
 
     init {
         updateCameraState(
@@ -37,7 +72,7 @@ public actual class ImageAnalyzer(
         imageAnalysisBackpressureStrategy: ImageAnalysisBackpressureStrategy,
         imageAnalysisSelector: ResolutionSelector?,
         imageAnalysisImageQueueDepth: Int,
-    ) = with(cameraState) {
+    ) {
         this.imageAnalysisBackpressureStrategy = imageAnalysisBackpressureStrategy.strategy
         this.imageAnalysisResolutionSelector = imageAnalysisSelector
         this.imageAnalysisImageQueueDepth = imageAnalysisImageQueueDepth
@@ -48,10 +83,10 @@ public actual class ImageAnalyzer(
      * */
     public fun update(
         imageAnalysisBackpressureStrategy: ImageAnalysisBackpressureStrategy = ImageAnalysisBackpressureStrategy.find(
-            cameraState.imageAnalysisBackpressureStrategy
+            controller.imageAnalysisBackpressureStrategy
         ),
-        imageAnalysisTargetSize: ResolutionSelector? = cameraState.imageAnalysisResolutionSelector,
-        imageAnalysisImageQueueDepth: Int = cameraState.imageAnalysisImageQueueDepth,
+        imageAnalysisTargetSize: ResolutionSelector? = controller.imageAnalysisResolutionSelector,
+        imageAnalysisImageQueueDepth: Int = controller.imageAnalysisImageQueueDepth,
         analyzer: ImageAnalysis.Analyzer = this.analyzer,
     ) {
         updateCameraState(

@@ -166,11 +166,6 @@ public class IOSCameraSession internal constructor(
         }
     }
 
-    internal fun switchCameraOutput(old: AVCaptureOutput?, new: AVCaptureOutput) {
-        old?.let(captureSession::removeOutput)
-        captureSession.tryAddOutput(new)
-    }
-
     internal fun setTorchEnabled(isEnabled: Boolean) {
         if (!device.hasTorch || !device.isTorchAvailable()) return
         device.withConfigurationLock {

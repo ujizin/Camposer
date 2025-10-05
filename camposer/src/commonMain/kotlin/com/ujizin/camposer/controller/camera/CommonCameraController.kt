@@ -8,9 +8,11 @@ import kotlinx.io.files.Path
 
 public abstract class CommonCameraController<RC : RecordController, TPC : TakePictureCommand> :
     CameraControllerContract {
-
     protected var recordController: RC? = null
     protected var takePictureCommand: TPC? = null
+
+    override val isMuted: Boolean
+        get() = recordController?.isMuted ?: false
 
     override val isRecording: Boolean
         get() = recordController?.isRecording ?: false

@@ -6,39 +6,39 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.ujizin.camposer.state.ImageCaptureMode
+import com.ujizin.camposer.state.ImageCaptureStrategy
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
-internal class ImageCaptureModeTest : CameraTest() {
+internal class ImageCaptureStrategyTest : CameraTest() {
 
-    private lateinit var imageCaptureMode: MutableState<ImageCaptureMode>
+    private lateinit var imageCaptureMode: MutableState<ImageCaptureStrategy>
 
     @Test
     fun test_imageCaptureMode() = with(composeTestRule) {
-        initImageCaptureModeCamera(ImageCaptureMode.Balanced)
+        initImageCaptureModeCamera(ImageCaptureStrategy.Balanced)
 
-        Assert.assertEquals(cameraState.imageCaptureMode, ImageCaptureMode.Balanced)
-        imageCaptureMode.value = ImageCaptureMode.MaxQuality
+        Assert.assertEquals(cameraState.config.imageCaptureStrategy, ImageCaptureStrategy.Balanced)
+        imageCaptureMode.value = ImageCaptureStrategy.MaxQuality
 
         runOnIdle {
             Assert.assertEquals(
-                cameraState.imageCaptureMode,
-                ImageCaptureMode.MaxQuality
+                ImageCaptureStrategy.MaxQuality,
+                cameraState.config.imageCaptureStrategy
             )
         }
     }
 
     private fun ComposeContentTestRule.initImageCaptureModeCamera(
-        initialValue: ImageCaptureMode
+        initialValue: ImageCaptureStrategy
     ) = initCameraState { state ->
         imageCaptureMode = remember { mutableStateOf(initialValue) }
         CameraPreview(
             cameraState = state,
-            imageCaptureMode = imageCaptureMode.value,
+            captureStrategy = imageCaptureMode.value,
         )
     }
 }

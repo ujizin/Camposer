@@ -29,6 +29,7 @@ internal actual class DefaultRecordController(
 
     private var recordController: Recording? = null
 
+    actual override var isMuted: Boolean by mutableStateOf(false)
     actual override var isRecording: Boolean by mutableStateOf(false)
 
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
@@ -50,8 +51,9 @@ internal actual class DefaultRecordController(
     override fun startRecording(
         fileDescriptorOutputOptions: FileDescriptorOutputOptions,
         audioConfig: AudioConfig,
-        onResult: (CaptureResult<Uri?>) -> Unit
+        onResult: (CaptureResult<Uri?>) -> Unit,
     ) = prepareRecording(onResult) {
+        isMuted = !audioConfig.audioEnabled
         cameraController.startRecording(
             fileDescriptorOutputOptions,
             audioConfig,
@@ -66,6 +68,7 @@ internal actual class DefaultRecordController(
         audioConfig: AudioConfig,
         onResult: (CaptureResult<Uri?>) -> Unit,
     ): Unit = prepareRecording(onResult) {
+        isMuted = !audioConfig.audioEnabled
         cameraController.startRecording(
             fileOutputOptions,
             audioConfig,
@@ -77,8 +80,9 @@ internal actual class DefaultRecordController(
     override fun startRecording(
         mediaStoreOutputOptions: MediaStoreOutputOptions,
         audioConfig: AudioConfig,
-        onResult: (CaptureResult<Uri?>) -> Unit
+        onResult: (CaptureResult<Uri?>) -> Unit,
     ) = prepareRecording(onError = onResult) {
+        isMuted = !audioConfig.audioEnabled
         cameraController.startRecording(
             mediaStoreOutputOptions,
             audioConfig,
@@ -101,6 +105,7 @@ internal actual class DefaultRecordController(
 
     actual override fun muteRecording(isMuted: Boolean) {
         recordController?.mute(isMuted)
+        this.isMuted = isMuted
     }
 
 
@@ -118,10 +123,11 @@ internal actual class DefaultRecordController(
     }
 
     private fun getConsumerEvent(
-        onResult: (CaptureResult<Uri?>) -> Unit
+        onResult: (CaptureResult<Uri?>) -> Unit,
     ): Consumer<VideoRecordEvent> = Consumer { event ->
         if (event is VideoRecordEvent.Finalize) {
             isRecording = false
+            isMuted = false
             val result = when {
                 !event.hasError() -> CaptureResult.Success(event.outputResults.outputUri)
                 else -> CaptureResult.Error(

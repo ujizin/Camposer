@@ -11,7 +11,7 @@ import androidx.camera.core.ImageCapture
  * @see ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY
  * @see ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY
  * */
-public actual enum class ImageCaptureMode(
+public actual enum class ImageCaptureStrategy(
     @ImageCapture.CaptureMode internal val mode: Int,
     internal val fallback: Int = mode,
 ) {

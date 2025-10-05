@@ -1,12 +1,12 @@
 package com.ujizin.camposer.view
 
+import com.ujizin.camposer.config.update
 import com.ujizin.camposer.state.CamSelector
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.CaptureMode
 import com.ujizin.camposer.state.FlashMode
 import com.ujizin.camposer.state.ImageAnalyzer
-import com.ujizin.camposer.state.ImageCaptureMode
-import com.ujizin.camposer.state.ImageTargetSize
+import com.ujizin.camposer.state.ImageCaptureStrategy
 import com.ujizin.camposer.state.ImplementationMode
 import com.ujizin.camposer.state.ResolutionPreset
 import com.ujizin.camposer.state.ScaleType
@@ -44,9 +44,10 @@ internal class CameraViewController(
         cameraState.renderCamera(view)
     }
 
+    // TODO refactor to new class
     @ObjCAction
     private fun onTap(sender: UITapGestureRecognizer) {
-        if (!cameraState.isFocusOnTapSupported || !cameraState.isFocusOnTapEnabled) return
+        if (!cameraState.info.isFocusOnTapSupported || !cameraState.config.isFocusOnTapEnabled) return
         memScoped {
             val size = view.bounds.placeTo(this).pointed.size
             val cgPoint = sender.locationInView(view).placeTo(this).pointed
@@ -59,14 +60,15 @@ internal class CameraViewController(
         }
     }
 
+    // TODO refactor to new class
     @ObjCAction
     private fun onPinch(sender: UIPinchGestureRecognizer) {
-        if (!cameraState.isPinchToZoomEnabled || sender.state != UIGestureRecognizerStateChanged) return
+        if (!cameraState.config.isPinchToZoomEnabled || sender.state != UIGestureRecognizerStateChanged) return
         memScoped {
             val scale = sender.scale.toFloat()
-            val clampedZoom = (cameraState.zoomRatio * scale).coerceIn(
-                minimumValue = cameraState.minZoom,
-                maximumValue = cameraState.maxZoom,
+            val clampedZoom = (cameraState.config.zoomRatio * scale).coerceIn(
+                minimumValue = cameraState.info.minZoom,
+                maximumValue = cameraState.info.maxZoom,
             )
             cameraViewDelegate.onZoomChanged(clampedZoom)
             sender.scale = 1.0
@@ -77,37 +79,35 @@ internal class CameraViewController(
         camSelector: CamSelector,
         captureMode: CaptureMode,
         scaleType: ScaleType,
-        imageCaptureTargetSize: ImageTargetSize?,
         isImageAnalysisEnabled: Boolean,
         imageAnalyzer: ImageAnalyzer?,
         implementationMode: ImplementationMode,
         isFocusOnTapEnabled: Boolean,
         flashMode: FlashMode,
         zoomRatio: Float,
-        imageCaptureMode: ImageCaptureMode,
-        enableTorch: Boolean,
+        imageCaptureMode: ImageCaptureStrategy,
+        isTorchEnabled: Boolean,
         exposureCompensation: Float?,
         isPinchToZoomEnabled: Boolean,
         resolutionPreset: ResolutionPreset,
     ) {
-        val hasCameraChanged = cameraState.camSelector != camSelector
+        val hasCameraChanged = cameraState.config.camSelector != camSelector
         if (hasCameraChanged) {
             onBeforeSwitchCamera()
         }
 
-        cameraState.update(
+        cameraState.config.update(
             camSelector = camSelector,
             captureMode = captureMode,
-            imageCaptureTargetSize = imageCaptureTargetSize,
             scaleType = scaleType,
             isImageAnalysisEnabled = isImageAnalysisEnabled,
             imageAnalyzer = imageAnalyzer,
             implementationMode = implementationMode,
             isFocusOnTapEnabled = isFocusOnTapEnabled,
             flashMode = flashMode,
-            enableTorch = enableTorch,
+            isTorchEnabled = isTorchEnabled,
             zoomRatio = zoomRatio,
-            imageCaptureMode = imageCaptureMode,
+            imageCaptureStrategy = imageCaptureMode,
             resolutionPreset = resolutionPreset,
             exposureCompensation = exposureCompensation,
             isPinchToZoomEnabled = isPinchToZoomEnabled,
@@ -115,7 +115,7 @@ internal class CameraViewController(
     }
 
     private fun onBeforeSwitchCamera() {
-        cameraViewDelegate.onZoomChanged(cameraState.minZoom)
+        cameraViewDelegate.onZoomChanged(cameraState.info.minZoom)
     }
 
     private fun addCameraGesturesRecognizer() {

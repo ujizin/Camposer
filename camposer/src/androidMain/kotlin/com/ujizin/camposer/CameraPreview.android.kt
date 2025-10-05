@@ -18,6 +18,7 @@ import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.ujizin.camposer.config.update
 import com.ujizin.camposer.controller.zoom.PinchToZoomController
 import com.ujizin.camposer.extensions.setCameraTouchEvent
 import com.ujizin.camposer.focus.SquareCornerFocus
@@ -26,8 +27,7 @@ import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.CaptureMode
 import com.ujizin.camposer.state.FlashMode
 import com.ujizin.camposer.state.ImageAnalyzer
-import com.ujizin.camposer.state.ImageCaptureMode
-import com.ujizin.camposer.state.ImageTargetSize
+import com.ujizin.camposer.state.ImageCaptureStrategy
 import com.ujizin.camposer.state.ImplementationMode
 import com.ujizin.camposer.state.ResolutionPreset
 import com.ujizin.camposer.state.ScaleType
@@ -39,10 +39,9 @@ import com.ujizin.camposer.state.ScaleType
  * @param camSelector camera selector to be added, default is back
  * @param captureMode camera capture mode, default is image
  * @param imageCaptureMode camera image capture mode, default is minimum latency for better performance
- * @param imageCaptureTargetSize suggested target size for image camera capture, default is camera's preferred size
  * @param flashMode flash mode to be added, default is off
  * @param scaleType scale type to be added, default is fill center
- * @param enableTorch enable torch from camera, default is false.
+ * @param isTorchEnabled enable torch from camera, default is false.
  * @param exposureCompensation camera exposure compensation to be added
  * @param zoomRatio zoom ratio to be added, default is 1.0
  * @param imageAnalyzer image analyzer from camera, see [ImageAnalyzer]
@@ -63,11 +62,10 @@ internal actual fun CameraPreviewImpl(
     camSelector: CamSelector,
     captureMode: CaptureMode,
     resolutionPreset: ResolutionPreset,
-    imageCaptureMode: ImageCaptureMode,
-    imageCaptureTargetSize: ImageTargetSize?,
+    imageCaptureMode: ImageCaptureStrategy,
     flashMode: FlashMode,
     scaleType: ScaleType,
-    enableTorch: Boolean,
+    isTorchEnabled: Boolean,
     exposureCompensation: Float?,
     zoomRatio: Float,
     imageAnalyzer: ImageAnalyzer?,
@@ -79,7 +77,7 @@ internal actual fun CameraPreviewImpl(
     onSwitchCamera: (ImageBitmap) -> Unit,
     onZoomRatioChanged: (Float) -> Unit,
     focusTapContent: @Composable (() -> Unit),
-    content: @Composable (() -> Unit)
+    content: @Composable (() -> Unit),
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val lifecycleEvent by lifecycleOwner.lifecycle.observeAsState()
@@ -95,6 +93,7 @@ internal actual fun CameraPreviewImpl(
     AndroidView(
         modifier = modifier.onGloballyPositioned { cameraOffset = it.positionInParent() },
         factory = { context ->
+            // TODO keep reference of preview view due to camera state now can be recomposed by controller
             PreviewView(context).apply {
                 layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
@@ -103,6 +102,7 @@ internal actual fun CameraPreviewImpl(
                     bindToLifecycle(lifecycleOwner)
                 }
 
+                cameraState.meteringPointFactory = meteringPointFactory
                 previewStreamState.observe(lifecycleOwner) { state ->
                     cameraState.isStreaming = state == PreviewView.StreamState.STREAMING
                 }
@@ -128,23 +128,22 @@ internal actual fun CameraPreviewImpl(
                 }
                 latestBitmap = when {
                     lifecycleEvent == Lifecycle.Event.ON_STOP -> null
-                    !isCameraIdle && camSelector != cameraState.camSelector -> bitmap?.asImageBitmap()
+                    !isCameraIdle && camSelector != cameraState.config.camSelector -> bitmap?.asImageBitmap()
                     else -> latestBitmap
                 }
-                cameraState.update(
+
+                cameraState.config.update(
                     camSelector = camSelector,
                     captureMode = captureMode,
-                    imageCaptureTargetSize = imageCaptureTargetSize,
                     scaleType = scaleType,
                     isImageAnalysisEnabled = isImageAnalysisEnabled,
                     imageAnalyzer = imageAnalyzer,
                     implementationMode = implementationMode,
                     isFocusOnTapEnabled = isFocusOnTapEnabled,
                     flashMode = flashMode,
-                    enableTorch = enableTorch,
+                    isTorchEnabled = isTorchEnabled,
                     zoomRatio = zoomRatio,
-                    imageCaptureMode = imageCaptureMode,
-                    meteringPoint = meteringPointFactory.createPoint(x, y),
+                    imageCaptureStrategy = imageCaptureMode,
                     resolutionPreset = resolutionPreset,
                     exposureCompensation = exposureCompensation,
                     isPinchToZoomEnabled = isPinchToZoomEnabled,

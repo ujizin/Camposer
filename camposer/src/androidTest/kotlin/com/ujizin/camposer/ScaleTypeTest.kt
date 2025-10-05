@@ -20,12 +20,12 @@ internal class ScaleTypeTest : CameraTest() {
         initScaleTypeCamera()
         ScaleType.entries.forEach { scale ->
             scaleType.value = scale
-            runOnIdle { assertEquals(cameraState.scaleType, scaleType.value) }
+            runOnIdle { assertEquals(cameraState.config.scaleType, scaleType.value) }
         }
     }
 
     private fun ComposeContentTestRule.initScaleTypeCamera(
-        initialValue: ScaleType = ScaleType.FitStart
+        initialValue: ScaleType = ScaleType.FitStart,
     ) = initCameraState { state ->
         scaleType = remember { mutableStateOf(initialValue) }
         CameraPreview(

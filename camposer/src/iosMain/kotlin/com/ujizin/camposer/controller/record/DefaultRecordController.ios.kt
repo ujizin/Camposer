@@ -24,25 +24,26 @@ import platform.Foundation.NSURL
 import platform.darwin.NSObject
 
 internal actual class DefaultRecordController(
-    private val cameraManager: IOSCameraSession,
+    private val iosCameraSession: IOSCameraSession,
     private val captureModeProvider: RecordCaptureModeProvider,
 ) : RecordController {
 
     private val captureSession: AVCaptureSession
-        get() = cameraManager.captureSession
+        get() = iosCameraSession.captureSession
 
     private val videoRecordOutput: AVCaptureMovieFileOutput?
         get() = captureSession.outputs.firstIsInstanceOrNull<AVCaptureMovieFileOutput>()
 
     private var videoDelegate: AVCaptureFileOutputRecordingDelegateProtocol? = null
 
+    actual override var isMuted: Boolean by mutableStateOf(false)
     actual override var isRecording: Boolean by mutableStateOf(false)
 
     actual override fun startRecording(
         path: Path,
         onVideoCaptured: (CaptureResult<Path>) -> Unit
     ) = start(
-        isMirrorEnabled = cameraManager.captureDeviceInput.device.position == AVCaptureDevicePositionFront,
+        isMirrorEnabled = iosCameraSession.captureDeviceInput.device.position == AVCaptureDevicePositionFront,
         path = path,
         onVideoCapture = { result -> onVideoCaptured(result.toCaptureResult()) },
     ).apply { isRecording = true }
@@ -66,6 +67,8 @@ internal actual class DefaultRecordController(
     }
 
     actual override fun muteRecording(isMuted: Boolean) {
+        this.isMuted = isMuted
+        iosCameraSession.setAudioEnabled(!isMuted)
     }
 
     fun start(

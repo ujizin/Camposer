@@ -29,7 +29,7 @@ internal class FlashModeTest : CameraTest() {
         FlashMode.entries.forEach { mode ->
             flashMode.value = mode
             onNodeWithTag("${flashMode.value}").assertIsDisplayed()
-            runOnIdle { assertEquals(mode, cameraState.flashMode) }
+            runOnIdle { assertEquals(mode, cameraState.config.flashMode) }
         }
     }
 
@@ -41,7 +41,7 @@ internal class FlashModeTest : CameraTest() {
 
         flashMode.value = FlashMode.On
         onNodeWithTag("${FlashMode.On}").assertDoesNotExist()
-        runOnIdle { assertEquals(FlashMode.Off, cameraState.flashMode) }
+        runOnIdle { assertEquals(FlashMode.Off, cameraState.config.flashMode) }
     }
 
     private fun ComposeContentTestRule.initFlashCamera(

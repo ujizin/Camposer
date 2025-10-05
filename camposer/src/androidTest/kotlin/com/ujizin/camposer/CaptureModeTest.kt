@@ -38,7 +38,7 @@ internal class CaptureModeTest : CameraTest() {
                     is CaptureResult.Error -> throw result.throwable
                     is CaptureResult.Success -> {
                         assertEquals(Uri.fromFile(imageFile), result.data)
-                        assertEquals(CaptureMode.Image, cameraState.captureMode)
+                        assertEquals(CaptureMode.Image, cameraState.config.captureMode)
                         isFinalized = true
                     }
                 }
@@ -51,8 +51,6 @@ internal class CaptureModeTest : CameraTest() {
     @Test
     fun test_videoCaptureMode() = with(composeTestRule) {
         initCaptureModeCamera(CaptureMode.Video)
-
-        if (!cameraState.isVideoSupported) return
 
         // Create file
         val videoFile = File(context.filesDir, VIDEO_TEST_FILENAME).apply {
@@ -72,7 +70,7 @@ internal class CaptureModeTest : CameraTest() {
                     is CaptureResult.Error -> throw result.throwable
                     is CaptureResult.Success -> {
                         assertEquals(Uri.fromFile(videoFile), result.data)
-                        assertEquals(CaptureMode.Video, cameraState.captureMode)
+                        assertEquals(CaptureMode.Video, cameraState.config.captureMode)
                         isFinished = true
                     }
                 }

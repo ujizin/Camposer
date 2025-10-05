@@ -114,7 +114,7 @@ fun CameraSection(
         cameraState = cameraState,
         camSelector = camSelector,
         captureMode = cameraOption.toCaptureMode(),
-        enableTorch = enableTorch,
+        isTorchEnabled = enableTorch,
         flashMode = flashMode,
         resolutionPreset = ResolutionPreset.Low,
         zoomRatio = zoomRatio,
@@ -150,7 +150,7 @@ fun CameraSection(
             cameraOption = cameraOption,
             hasFlashUnit = hasFlashUnit,
             qrCodeText = qrCodeText,
-            isVideoSupported = cameraState.isVideoSupported,
+            isVideoSupported = true,
             onFlashModeChanged = { flash ->
                 enableTorch = flash == Flash.Always
                 flashMode = flash.toFlashMode()

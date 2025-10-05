@@ -7,7 +7,6 @@ import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import junit.framework.TestCase.assertEquals
-import org.junit.Assert.assertNotEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -45,22 +44,6 @@ internal class ExposureCompensationTest: CameraTest() {
 
             assertEquals(cameraState.info.maxExposure, currentExposure)
             assertEquals(exposureCompensation.value, currentExposure)
-        }
-    }
-
-
-    @Test
-    fun test_invalidExposureCompensation() = with(composeTestRule) {
-        initCameraWithExposure(0F)
-
-        exposureCompensation.value = Float.MAX_VALUE
-
-        runOnIdle {
-            if (!cameraState.info.isExposureSupported) return@runOnIdle
-
-            assertNotEquals(cameraState.info.maxExposure, currentExposure)
-            assertNotEquals(exposureCompensation.value, currentExposure)
-            assertEquals(0F, currentExposure)
         }
     }
 

@@ -17,8 +17,7 @@ import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.CaptureMode
 import com.ujizin.camposer.state.FlashMode
 import com.ujizin.camposer.state.ImageAnalyzer
-import com.ujizin.camposer.state.ImageCaptureMode
-import com.ujizin.camposer.state.ImageTargetSize
+import com.ujizin.camposer.state.ImageCaptureStrategy
 import com.ujizin.camposer.state.ImplementationMode
 import com.ujizin.camposer.state.ResolutionPreset
 import com.ujizin.camposer.state.ScaleType
@@ -30,11 +29,10 @@ import kotlinx.coroutines.delay
  * @param cameraState camera state hold some states and camera's controller, it can be useful to given action like [CameraState.takePicture]
  * @param camSelector camera selector to be added, default is back
  * @param captureMode camera capture mode, default is image
- * @param imageCaptureMode camera image capture mode, default is minimum latency for better performance
- * @param imageCaptureTargetSize suggested target size for image camera capture, default is camera's preferred size
+ * @param captureStrategy camera image capture mode, default is minimum latency for better performance
  * @param flashMode flash mode to be added, default is off
  * @param scaleType scale type to be added, default is fill center
- * @param enableTorch enable torch from camera, default is false.
+ * @param isTorchEnabled enable torch from camera, default is false.
  * @param exposureCompensation camera exposure compensation to be added
  * @param zoomRatio zoom ratio to be added, default is 1.0
  * @param imageAnalyzer image analyzer from camera, see [ImageAnalyzer]
@@ -56,21 +54,20 @@ import kotlinx.coroutines.delay
 public fun CameraPreview(
     modifier: Modifier = Modifier,
     cameraState: CameraState,
-    camSelector: CamSelector = cameraState.camSelector,
-    captureMode: CaptureMode = cameraState.captureMode,
-    imageCaptureMode: ImageCaptureMode = cameraState.imageCaptureMode,
-    imageCaptureTargetSize: ImageTargetSize? = cameraState.imageCaptureTargetSize,
-    flashMode: FlashMode = cameraState.flashMode,
-    scaleType: ScaleType = cameraState.scaleType,
-    enableTorch: Boolean = cameraState.enableTorch,
+    camSelector: CamSelector = cameraState.config.camSelector,
+    captureMode: CaptureMode = cameraState.config.captureMode,
+    captureStrategy: ImageCaptureStrategy = cameraState.config.imageCaptureStrategy,
+    flashMode: FlashMode = cameraState.config.flashMode,
+    scaleType: ScaleType = cameraState.config.scaleType,
+    isTorchEnabled: Boolean = cameraState.config.isTorchEnabled,
     exposureCompensation: Float? = null,
     zoomRatio: Float = 1F,
     imageAnalyzer: ImageAnalyzer? = null,
-    resolutionPreset: ResolutionPreset = cameraState.resolutionPreset,
-    implementationMode: ImplementationMode = cameraState.implementationMode,
+    resolutionPreset: ResolutionPreset = cameraState.config.resolutionPreset,
+    implementationMode: ImplementationMode = cameraState.config.implementationMode,
     isImageAnalysisEnabled: Boolean = imageAnalyzer != null,
-    isFocusOnTapEnabled: Boolean = cameraState.isFocusOnTapEnabled,
-    isPinchToZoomEnabled: Boolean = cameraState.info.isZoomSupported,
+    isFocusOnTapEnabled: Boolean = cameraState.config.isFocusOnTapEnabled,
+    isPinchToZoomEnabled: Boolean = cameraState.config.isPinchToZoomEnabled,
     onPreviewStreamChanged: () -> Unit = {},
     onSwitchToFront: @Composable (ImageBitmap) -> Unit = {},
     onSwitchToBack: @Composable (ImageBitmap) -> Unit = {},
@@ -91,12 +88,11 @@ public fun CameraPreview(
         cameraState = cameraState,
         captureMode = captureMode,
         camSelector = camSelector,
-        imageCaptureMode = imageCaptureMode,
-        imageCaptureTargetSize = imageCaptureTargetSize,
+        imageCaptureMode = captureStrategy,
         flashMode = flashMode,
         resolutionPreset = resolutionPreset,
         scaleType = scaleType,
-        enableTorch = enableTorch,
+        isTorchEnabled = isTorchEnabled,
         exposureCompensation = exposureCompensation,
         zoomRatio = zoomRatio,
         imageAnalyzer = imageAnalyzer,
@@ -139,11 +135,10 @@ internal expect fun CameraPreviewImpl(
     camSelector: CamSelector,
     captureMode: CaptureMode,
     resolutionPreset: ResolutionPreset,
-    imageCaptureMode: ImageCaptureMode,
-    imageCaptureTargetSize: ImageTargetSize?,
+    imageCaptureMode: ImageCaptureStrategy,
     flashMode: FlashMode,
     scaleType: ScaleType,
-    enableTorch: Boolean,
+    isTorchEnabled: Boolean,
     exposureCompensation: Float?,
     zoomRatio: Float,
     imageAnalyzer: ImageAnalyzer?,
