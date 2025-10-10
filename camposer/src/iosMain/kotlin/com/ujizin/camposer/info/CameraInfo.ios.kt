@@ -20,26 +20,48 @@ public actual class CameraInfo(
     private val cameraSession: IOSCameraSession,
 ) {
     public actual var isImageAnalyzerSupported: Boolean by mutableStateOf(true)
-    public actual var isFocusOnTapSupported: Boolean by mutableStateOf(cameraSession.isFocusOnTapSupported)
+        private set
+
+    public actual var isFocusOnTapSupported: Boolean by mutableStateOf(true)
+        private set
 
     public actual val isZoomSupported: Boolean by mutableStateOf(true)
-    public actual var minZoom: Float by mutableFloatStateOf(cameraSession.device.minAvailableVideoZoomFactor.toFloat())
-    public actual var maxZoom: Float by mutableFloatStateOf(cameraSession.device.maxAvailableVideoZoomFactor.toFloat())
+        private set
+
+    public actual var minZoom: Float by mutableFloatStateOf(1F)
+        private set
+
+    public actual var maxZoom: Float by mutableFloatStateOf(1F)
+        private set
 
     public actual val isExposureSupported: Boolean by mutableStateOf(true)
-    public actual var minExposure: Float by mutableFloatStateOf(cameraSession.device.minExposureTargetBias)
-    public actual var maxExposure: Float by mutableFloatStateOf(cameraSession.device.maxExposureTargetBias)
+        private set
 
-    public actual var isFlashSupported: Boolean by mutableStateOf(cameraSession.device.hasFlash)
-    public actual var isFlashAvailable: Boolean by mutableStateOf(cameraSession.device.isFlashAvailable())
-    public actual var isTorchSupported: Boolean by mutableStateOf(cameraSession.device.hasTorch)
-    public actual var isTorchAvailable: Boolean by mutableStateOf(cameraSession.device.isTorchAvailable())
+    public actual var minExposure: Float by mutableFloatStateOf(0F)
+        private set
+
+    public actual var maxExposure: Float by mutableFloatStateOf(0F)
+        private set
+
+    public actual var isFlashSupported: Boolean by mutableStateOf(false)
+        private set
+
+    public actual var isFlashAvailable: Boolean by mutableStateOf(false)
+        private set
+
+    public actual var isTorchSupported: Boolean by mutableStateOf(false)
+        private set
+
+    public actual var isTorchAvailable: Boolean by mutableStateOf(false)
+        private set
 
     public actual var isZeroShutterLagSupported: Boolean by mutableStateOf(false)
+        private set
 
     internal fun rebind(
         output: AVCaptureOutput,
     ) {
+        isFocusOnTapSupported = cameraSession.isFocusOnTapSupported
         minZoom = cameraSession.device.minAvailableVideoZoomFactor.toFloat()
         maxZoom = cameraSession.device.maxAvailableVideoZoomFactor.toFloat()
         minExposure = cameraSession.device.minExposureTargetBias

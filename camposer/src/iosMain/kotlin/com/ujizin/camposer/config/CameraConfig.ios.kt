@@ -41,10 +41,13 @@ public actual class CameraConfig(
         internal set
 
     public actual var scaleType: ScaleType = ScaleType.FillCenter
+        internal set
+
     public actual var flashMode: FlashMode by config(FlashMode.Off) {
         iosCameraSession.setFlashMode(it.mode)
     }
         internal set
+
     public actual var resolutionPreset: ResolutionPreset by config(ResolutionPreset.Default) {
         iosCameraSession.setCameraPreset(it.presets.toList())
     }
@@ -69,7 +72,8 @@ public actual class CameraConfig(
         imageAnalyzer?.isEnabled = isEnabled
     }
         internal set
-    public actual var isPinchToZoomEnabled: Boolean by mutableStateOf(false)
+
+    public actual var isPinchToZoomEnabled: Boolean by mutableStateOf(true)
         internal set
 
     public actual var exposureCompensation: Float? by config(
@@ -92,6 +96,7 @@ public actual class CameraConfig(
         )
     }
         internal set
+
     public actual var zoomRatio: Float by config(cameraInfo.minZoom) {
         iosCameraSession.device.withConfigurationLock {
             videoZoomFactor = it.coerceIn(cameraInfo.minZoom, cameraInfo.maxZoom).toDouble()
@@ -99,8 +104,11 @@ public actual class CameraConfig(
     }
         internal set
 
-    public actual var isFocusOnTapEnabled: Boolean by mutableStateOf(false)
+    public actual var isFocusOnTapEnabled: Boolean by mutableStateOf(true)
+        internal set
+
     public actual var isTorchEnabled: Boolean by config(false) {
         iosCameraSession.setTorchEnabled(it)
     }
+        internal set
 }

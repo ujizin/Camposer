@@ -14,8 +14,8 @@ public actual enum class ResolutionPreset(
     Default,
     UltraHigh(Size(3840, 2160), Quality.UHD),
     High(Size(1920, 1080), Quality.FHD),
-    Medium(Size(1080, 720), Quality.HD),
-    Low(Size(640, 480), Quality.SD);
+    Medium(Size(1280, 720), Quality.HD),
+    Low(Size(720, 480), Quality.SD);
 
     internal fun getResolutionSelector(): ResolutionSelector? {
         if (imageQuality == null) return null

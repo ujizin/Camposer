@@ -54,6 +54,9 @@ public class IOSCameraSession internal constructor(
     private val takePictureCommand: IOSTakePictureCommand = IOSTakePictureCommand(captureSession),
 ) {
 
+    private val audioInput = defaultDeviceWithMediaType(AVMediaTypeAudio)?.toDeviceInput()
+        ?: throw AudioInputNotFoundException()
+
     public var previewLayer: AVCaptureVideoPreviewLayer? = null
 
     private var _captureDeviceInput: AVCaptureDeviceInput? = null
@@ -142,9 +145,6 @@ public class IOSCameraSession internal constructor(
     }
 
     internal fun setAudioEnabled(isEnabled: Boolean) {
-        val audioInput = defaultDeviceWithMediaType(AVMediaTypeAudio)?.toDeviceInput()
-            ?: throw AudioInputNotFoundException()
-
         if (isEnabled) {
             captureSession.tryAddInput(audioInput)
         } else {

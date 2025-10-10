@@ -12,9 +12,9 @@ import androidx.compose.ui.util.fastCoerceIn
 import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.state.CamSelector
 import com.ujizin.camposer.state.CaptureMode
-import com.ujizin.camposer.state.ImageCaptureStrategy
 import com.ujizin.camposer.state.FlashMode
 import com.ujizin.camposer.state.ImageAnalyzer
+import com.ujizin.camposer.state.ImageCaptureStrategy
 import com.ujizin.camposer.state.ImplementationMode
 import com.ujizin.camposer.state.ResolutionPreset
 import com.ujizin.camposer.state.ScaleType
@@ -41,6 +41,7 @@ public actual class CameraConfig internal constructor(
         }
         controller.imageCaptureMode = mode
     }
+        internal set
 
     public actual var camSelector: CamSelector by config(
         value = CamSelector.Back,
@@ -84,13 +85,14 @@ public actual class CameraConfig internal constructor(
         value = imageAnalyzer != null,
         predicate = { old, new -> old != new && cameraInfo.isImageAnalyzerSupported },
     ) {
-        controller.setEnabledUseCases(getUseCases()) }
+        controller.setEnabledUseCases(getUseCases())
+    }
         internal set
 
-    public actual var isPinchToZoomEnabled: Boolean by mutableStateOf(false)
+    public actual var isPinchToZoomEnabled: Boolean by mutableStateOf(true)
         internal set
 
-    public actual var isFocusOnTapEnabled: Boolean by config(false) {
+    public actual var isFocusOnTapEnabled: Boolean by config(true) {
         controller.isTapToFocusEnabled = it
     }
         internal set
@@ -103,6 +105,7 @@ public actual class CameraConfig internal constructor(
             it!!.fastCoerceIn(cameraInfo.minExposure, cameraInfo.maxExposure).roundToInt()
         )
     }
+        internal set
 
     public actual var isTorchEnabled: Boolean by config(
         value = controller.torchState.value == TorchState.ON,
@@ -116,7 +119,11 @@ public actual class CameraConfig internal constructor(
         predicate = { old, new -> old != new },
     ) {
         controller.setZoomRatio(it.fastCoerceIn(cameraInfo.minZoom, cameraInfo.maxZoom))
+    }
+        internal set
 
+    init {
+        controller.setEnabledUseCases(getUseCases())
     }
 
     public fun setEffects(effects: Set<CameraEffect>) {
@@ -125,10 +132,6 @@ public actual class CameraConfig internal constructor(
 
     public fun clearEffects() {
         controller.clearEffects()
-    }
-
-    init {
-        controller.setEnabledUseCases(getUseCases())
     }
 
     private fun getUseCases(mode: CaptureMode = captureMode) = when {

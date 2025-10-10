@@ -34,9 +34,9 @@ internal actual fun CameraPreviewImpl(
     isTorchEnabled: Boolean,
     exposureCompensation: Float?,
     zoomRatio: Float,
-    imageAnalyzer: ImageAnalyzer?, // TODO
+    imageAnalyzer: ImageAnalyzer?,
     implementationMode: ImplementationMode,
-    isImageAnalysisEnabled: Boolean, // TODO
+    isImageAnalysisEnabled: Boolean,
     isFocusOnTapEnabled: Boolean,
     isPinchToZoomEnabled: Boolean,
     onTapFocus: (Offset) -> Unit,

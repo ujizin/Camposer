@@ -64,6 +64,7 @@ internal actual class DefaultRecordController(
         require(captureModeProvider.get() == CaptureMode.Video) { "Capture mode must be CaptureMode.Video" }
         videoRecordOutput?.stopRecording() ?: throw VideoOutputNotFoundException()
         isRecording = false
+        isMuted = false
     }
 
     actual override fun muteRecording(isMuted: Boolean) {
