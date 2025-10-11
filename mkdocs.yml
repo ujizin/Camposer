@@ -1,0 +1,67 @@
+site_name: Camposer
+
+repo_name: Camposer
+site_url: https://github.com/ujizin/camposer
+repo_url: https://github.com/ujizin/camposer"
+site_description: Camera library for Jetpack Compose 📸✨"
+remote_branch: gh-pages
+
+theme:
+  name: 'material'
+  logo: assets/ic_launcher_round.png
+  favicon: assets/ic_launcher_round.png
+  features:
+    - navigation.footer
+    - navigation.instant
+  font:
+    text: Inter
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: deep purple
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: deep purple
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+
+markdown_extensions:
+  - pymdownx.smartsymbols
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+
+nav:
+  - Overview: index.md
+  - Getting Started: getting-started.md
+  - Camera Selector: camera-selector.md
+  - Capture Mode: camera-capture-mode.md
+  - Camera Controller:
+    - camera-controller/camera-controller.md
+    - camera-controller/take-picture.md
+    - camera-controller/record-video.md
+  - Resolution Preset: resolution-preset.md
+  - Flash Mode: flash-mode.md
+  - Torch: torch.md
+  - Focus on Tap: focus-on-tap.md 
+  - Zoom: zoom.md
+  - Image Capture Strategy: image-capture-strategy.md
+  - Exposure Compensation: exposure-compensation.md
+  - Scale Type: scale-type.md
+  - Implementation Mode: implementation-mode.md
+  - Image Analyzer: 
+    - image-analyzer/code-analyzer.md
+    - image-analyzer/image-analyzer.md
+  
+# extra:
+#   version:
+#     provider: mike
+    

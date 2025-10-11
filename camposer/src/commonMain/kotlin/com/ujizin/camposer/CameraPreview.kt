@@ -41,8 +41,7 @@ import kotlinx.coroutines.delay
  * @param isFocusOnTapEnabled turn on feature focus on tap if true
  * @param isPinchToZoomEnabled turn on feature pinch to zoom if true
  * @param onPreviewStreamChanged dispatch when preview is switching to front or back
- * @param onSwitchToFront composable preview when change camera to front and it's not been streaming yet
- * @param onSwitchToBack composable preview when change camera to back and it's not been streaming yet
+ * @param onSwitchCameraContent composable preview when change camera and it's not been streaming yet
  * @param onZoomRatioChanged dispatch when zoom is changed by pinch to zoom
  * @param focusTapContent content of focus tap, default is [SquareCornerFocus]
  * @param onFocus callback to use when on focus tap is triggered, call onComplete to [focusTapContent] gone.
@@ -69,8 +68,7 @@ public fun CameraPreview(
     isFocusOnTapEnabled: Boolean = cameraState.config.isFocusOnTapEnabled,
     isPinchToZoomEnabled: Boolean = cameraState.config.isPinchToZoomEnabled,
     onPreviewStreamChanged: () -> Unit = {},
-    onSwitchToFront: @Composable (ImageBitmap) -> Unit = {},
-    onSwitchToBack: @Composable (ImageBitmap) -> Unit = {},
+    onSwitchCameraContent: @Composable (ImageBitmap) -> Unit = {},
     onFocus: suspend (onComplete: () -> Unit) -> Unit = { onComplete ->
         delay(1000L)
         onComplete()
@@ -113,11 +111,7 @@ public fun CameraPreview(
 
     if (isCameraIdle) {
         latestBitmap?.let {
-            when (camSelector) {
-                CamSelector.Front -> onSwitchToFront(it)
-                CamSelector.Back -> onSwitchToBack(it)
-                else -> Unit
-            }
+            onSwitchCameraContent(it)
             LaunchedEffect(latestBitmap) {
                 onPreviewStreamChanged()
                 if (latestBitmap != null) onZoomRatioChanged(cameraState.info.minZoom)

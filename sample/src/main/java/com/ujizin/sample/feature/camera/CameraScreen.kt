@@ -125,14 +125,7 @@ fun CameraSection(
             zoomHasChanged = true
             zoomRatio = it
         },
-        onSwitchToFront = { bitmap ->
-            Image(
-                modifier = Modifier.cloudy(radius = 20),
-                bitmap = bitmap,
-                contentDescription = null
-            )
-        },
-        onSwitchToBack = { bitmap ->
+        onSwitchCameraContent = { bitmap ->
             Image(
                 modifier = Modifier.cloudy(radius = 20),
                 bitmap = bitmap,
