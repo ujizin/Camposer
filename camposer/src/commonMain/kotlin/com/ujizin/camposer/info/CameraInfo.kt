@@ -1,8 +1,6 @@
 package com.ujizin.camposer.info
 
 public expect class CameraInfo {
-    public var isImageAnalyzerSupported: Boolean
-        private set
     public var isFocusOnTapSupported: Boolean
         private set
     public val isZoomSupported: Boolean

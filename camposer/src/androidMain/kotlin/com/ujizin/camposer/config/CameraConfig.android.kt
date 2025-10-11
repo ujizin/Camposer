@@ -83,7 +83,7 @@ public actual class CameraConfig internal constructor(
 
     public actual var isImageAnalyzerEnabled: Boolean by config(
         value = imageAnalyzer != null,
-        predicate = { old, new -> old != new && cameraInfo.isImageAnalyzerSupported },
+        predicate = { old, new -> old != new /*&& cameraInfo.isImageAnalyzerSupported */},
     ) {
         controller.setEnabledUseCases(getUseCases())
     }

@@ -7,15 +7,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.ujizin.camposer.extensions.isImageAnalysisSupported
 
 public actual class CameraInfo internal constructor(
     private val cameraManager: CameraManager,
     private val cameraInfo: AndroidCameraInfo,
 ) {
 
-    public actual var isImageAnalyzerSupported: Boolean by mutableStateOf(false)
-        private set
     public actual var isFocusOnTapSupported: Boolean by mutableStateOf(false)
         private set
 
@@ -45,7 +42,6 @@ public actual class CameraInfo internal constructor(
         lensFacing: Int?,
         meteringPoint: MeteringPoint?,
     ) {
-        isImageAnalyzerSupported = cameraManager.isImageAnalysisSupported(lensFacing)
         isFocusOnTapSupported = meteringPoint?.let(cameraInfo::isFocusMeteringSupported) ?: false
         minZoom = cameraInfo.minZoom
         maxZoom = cameraInfo.maxZoom

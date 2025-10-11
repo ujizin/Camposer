@@ -19,8 +19,6 @@ import platform.AVFoundation.minExposureTargetBias
 public actual class CameraInfo(
     private val cameraSession: IOSCameraSession,
 ) {
-    public actual var isImageAnalyzerSupported: Boolean by mutableStateOf(true)
-        private set
 
     public actual var isFocusOnTapSupported: Boolean by mutableStateOf(true)
         private set
