@@ -9,7 +9,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.util.fastCoerceIn
-import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.config.properties.CamSelector
 import com.ujizin.camposer.config.properties.CaptureMode
 import com.ujizin.camposer.config.properties.FlashMode
@@ -18,6 +17,7 @@ import com.ujizin.camposer.config.properties.ImageCaptureStrategy
 import com.ujizin.camposer.config.properties.ImplementationMode
 import com.ujizin.camposer.config.properties.ResolutionPreset
 import com.ujizin.camposer.config.properties.ScaleType
+import com.ujizin.camposer.info.CameraInfo
 import java.util.concurrent.Executor
 import kotlin.math.roundToInt
 
@@ -81,10 +81,7 @@ public actual class CameraConfig internal constructor(
     }
         internal set
 
-    public actual var isImageAnalyzerEnabled: Boolean by config(
-        value = imageAnalyzer != null,
-        predicate = { old, new -> old != new /*&& cameraInfo.isImageAnalyzerSupported */},
-    ) {
+    public actual var isImageAnalyzerEnabled: Boolean by config(value = imageAnalyzer != null) {
         controller.setEnabledUseCases(getUseCases())
     }
         internal set

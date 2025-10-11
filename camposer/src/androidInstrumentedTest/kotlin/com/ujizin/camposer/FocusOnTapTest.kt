@@ -40,8 +40,6 @@ internal class FocusOnTapTest : CameraTest() {
     fun test_focusOnTap(): Unit = with(composeTestRule) {
         initFocusCamera(initialValue = true)
 
-        if (!cameraState.info.isFocusOnTapSupported) return
-
         onNodeWithTag(FOCUS_TEST_TAG).performClick()
 
         runOnIdle {
@@ -56,7 +54,6 @@ internal class FocusOnTapTest : CameraTest() {
     fun test_focusOnTapDisable() = with(composeTestRule) {
         initFocusCamera(initialValue = false)
 
-        if (!cameraState.info.isFocusOnTapSupported) return
 
         onNodeWithTag(FOCUS_TEST_TAG).performClick()
 
@@ -74,8 +71,6 @@ internal class FocusOnTapTest : CameraTest() {
             onComplete()
             completed = true
         }
-
-        if (!cameraState.info.isFocusOnTapSupported) return
 
         onNodeWithTag(FOCUS_TEST_TAG).performClick()
         onNodeWithTag(FOCUS_TAP_CONTENT_TAG).assertIsDisplayed()
@@ -95,7 +90,7 @@ internal class FocusOnTapTest : CameraTest() {
         onFocus: suspend (onComplete: () -> Unit) -> Unit = { onComplete ->
             delay(DEFAULT_FOCUS_DELAY)
             onComplete()
-        }
+        },
     ) = initCameraState { state ->
         val isFocusOnTapEnabled by remember { mutableStateOf(initialValue) }
         isFocusTappedState = remember { mutableStateOf(false) }

@@ -69,9 +69,6 @@ public class IOSCameraSession internal constructor(
     public val isRunning: Boolean
         get() = captureSession.isRunning()
 
-    public val isFocusOnTapSupported: Boolean
-        get() = device.isFocusPointOfInterestSupported() || device.isExposurePointOfInterestSupported()
-
     internal fun start(
         view: UIView,
         output: AVCaptureOutput,

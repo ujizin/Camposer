@@ -47,7 +47,7 @@ internal class CameraViewController(
     // TODO refactor to new class
     @ObjCAction
     private fun onTap(sender: UITapGestureRecognizer) {
-        if (!cameraState.info.isFocusOnTapSupported || !cameraState.config.isFocusOnTapEnabled) return
+        if (!cameraState.config.isFocusOnTapEnabled) return
         memScoped {
             val size = view.bounds.placeTo(this).pointed.size
             val cgPoint = sender.locationInView(view).placeTo(this).pointed

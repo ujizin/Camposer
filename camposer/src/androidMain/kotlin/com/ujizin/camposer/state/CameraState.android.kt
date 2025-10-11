@@ -3,7 +3,6 @@ package com.ujizin.camposer.state
 import android.annotation.SuppressLint
 import android.content.Context
 import android.hardware.camera2.CameraManager
-import androidx.camera.core.MeteringPointFactory
 import androidx.camera.view.LifecycleCameraController
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -90,9 +89,6 @@ public actual class CameraState private constructor(
         )
     )
 
-    internal var meteringPointFactory: MeteringPointFactory? = null
-
-
     /**
      * Check if camera is streaming or not.
      * */
@@ -121,14 +117,10 @@ public actual class CameraState private constructor(
     private fun rebindCamera() {
         // Disable from pinch to zoom from cameraX controller
         controller.isPinchToZoomEnabled = false
-        info.bind(
-            lensFacing = config.camSelector.selector.lensFacing,
-            meteringPoint = meteringPointFactory?.createPoint(0F, 0F),
-        )
+        info.bind()
     }
 
     internal fun dispose() {
         controller.unbind()
-        meteringPointFactory = null
     }
 }

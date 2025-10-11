@@ -2,19 +2,11 @@ package com.ujizin.camposer.info
 
 import androidx.annotation.OptIn
 import androidx.camera.core.ExperimentalZeroShutterLag
-import androidx.camera.core.FocusMeteringAction
-import androidx.camera.core.MeteringPoint
 import androidx.camera.view.CameraController
 
 internal class AndroidCameraInfo(
     private val controller: CameraController,
 ) {
-
-    internal fun isFocusMeteringSupported(
-        point: MeteringPoint,
-    ) = controller.cameraInfo?.isFocusMeteringSupported(
-        /* action = */ FocusMeteringAction.Builder(point).build()
-    ) ?: false
 
     internal val initialExposure: Float = INITIAL_EXPOSURE_VALUE
     internal val initialZoom: Float = INITIAL_ZOOM_VALUE

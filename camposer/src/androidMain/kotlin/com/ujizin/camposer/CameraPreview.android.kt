@@ -17,13 +17,9 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.ujizin.camposer.config.update
-import com.ujizin.camposer.controller.zoom.PinchToZoomController
-import com.ujizin.camposer.extensions.setCameraTouchEvent
-import com.ujizin.camposer.focus.SquareCornerFocus
 import com.ujizin.camposer.config.properties.CamSelector
-import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.config.properties.CaptureMode
 import com.ujizin.camposer.config.properties.FlashMode
 import com.ujizin.camposer.config.properties.ImageAnalyzer
@@ -31,6 +27,11 @@ import com.ujizin.camposer.config.properties.ImageCaptureStrategy
 import com.ujizin.camposer.config.properties.ImplementationMode
 import com.ujizin.camposer.config.properties.ResolutionPreset
 import com.ujizin.camposer.config.properties.ScaleType
+import com.ujizin.camposer.config.update
+import com.ujizin.camposer.controller.zoom.PinchToZoomController
+import com.ujizin.camposer.extensions.setCameraTouchEvent
+import com.ujizin.camposer.focus.SquareCornerFocus
+import com.ujizin.camposer.state.CameraState
 
 /**
  * Creates a Camera Preview's composable.
@@ -44,7 +45,7 @@ import com.ujizin.camposer.config.properties.ScaleType
  * @param isTorchEnabled enable torch from camera, default is false.
  * @param exposureCompensation camera exposure compensation to be added
  * @param zoomRatio zoom ratio to be added, default is 1.0
- * @param imageAnalyzer image analyzer from camera, see [com.ujizin.camposer.config.properties.ImageAnalyzer]
+ * @param imageAnalyzer image analyzer from camera, see [ImageAnalyzer]
  * @param implementationMode implementation mode to be added, default is performance
  * @param isImageAnalysisEnabled enable or disable image analysis
  * @param isFocusOnTapEnabled turn on feature focus on tap if true
@@ -52,7 +53,7 @@ import com.ujizin.camposer.config.properties.ScaleType
  * @param onZoomRatioChanged dispatch when zoom is changed by pinch to zoom
  * @param focusTapContent content of focus tap, default is [SquareCornerFocus]
  * @param content content composable within of camera preview.
- * @see com.ujizin.camposer.config.properties.ImageAnalyzer
+ * @see ImageAnalyzer
  * @see CameraState
  * */
 @Composable
@@ -82,40 +83,32 @@ internal actual fun CameraPreviewImpl(
     val lifecycleOwner = LocalLifecycleOwner.current
     val lifecycleEvent by lifecycleOwner.lifecycle.observeAsState()
     val cameraIsInitialized by rememberUpdatedState(cameraState.isInitialized)
-    var tapOffset by remember { mutableStateOf(Offset.Zero) }
     val isCameraIdle by rememberUpdatedState(!cameraState.isStreaming)
     var latestBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
     var cameraOffset by remember { mutableStateOf(Offset.Zero) }
+    var previewViewRef by remember { mutableStateOf<PreviewView?>(null) }
 
-    LaunchedEffect(tapOffset) { onTapFocus(tapOffset) }
     LaunchedEffect(latestBitmap) { latestBitmap?.let(onSwitchCamera) }
+
+    LaunchedEffect(cameraState, previewViewRef) {
+        val previewView = previewViewRef ?: return@LaunchedEffect
+        previewView.onViewBind(
+            cameraState = cameraState,
+            lifecycleOwner = lifecycleOwner,
+            zoomRatio = zoomRatio,
+            onZoomRatioChanged = onZoomRatioChanged,
+            onTapFocus = {
+                if (cameraState.config.isFocusOnTapEnabled) {
+                    onTapFocus(it + cameraOffset)
+                }
+            },
+        )
+    }
 
     AndroidView(
         modifier = modifier.onGloballyPositioned { cameraOffset = it.positionInParent() },
         factory = { context ->
-            // TODO keep reference of preview view due to camera state now can be recomposed by controller
-            PreviewView(context).apply {
-                layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
-                )
-                controller = cameraState.controller.apply {
-                    bindToLifecycle(lifecycleOwner)
-                }
-
-                cameraState.meteringPointFactory = meteringPointFactory
-                previewStreamState.observe(lifecycleOwner) { state ->
-                    cameraState.isStreaming = state == PreviewView.StreamState.STREAMING
-                }
-
-                setCameraTouchEvent(
-                    pinchZoomController = PinchToZoomController(
-                        cameraState = cameraState,
-                        zoomRatio = zoomRatio,
-                        onZoomRatioChanged = onZoomRatioChanged
-                    ),
-                    onTap = { if (isFocusOnTapEnabled) tapOffset = it + cameraOffset },
-                )
-            }
+            PreviewView(context).apply { previewViewRef = this }
         },
         update = { previewView ->
             if (!cameraIsInitialized) return@AndroidView
@@ -153,4 +146,33 @@ internal actual fun CameraPreviewImpl(
     )
 
     content()
+}
+
+private fun PreviewView.onViewBind(
+    cameraState: CameraState,
+    lifecycleOwner: LifecycleOwner,
+    zoomRatio: Float,
+    onZoomRatioChanged: (Float) -> Unit,
+    onTapFocus: (Offset) -> Unit,
+) {
+    layoutParams = ViewGroup.LayoutParams(
+        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
+    )
+    controller = cameraState.controller.apply {
+        bindToLifecycle(lifecycleOwner)
+    }
+
+    previewStreamState.observe(lifecycleOwner) { state ->
+        cameraState.isStreaming = state == PreviewView.StreamState.STREAMING
+    }
+
+    setCameraTouchEvent(
+        pinchZoomController = PinchToZoomController(
+            cameraState = cameraState,
+            zoomRatio = zoomRatio,
+            onZoomRatioChanged = onZoomRatioChanged
+        ),
+        onTap = onTapFocus,
+    )
+
 }

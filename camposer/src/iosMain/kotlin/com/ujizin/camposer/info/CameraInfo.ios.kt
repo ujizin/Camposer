@@ -20,9 +20,6 @@ public actual class CameraInfo(
     private val cameraSession: IOSCameraSession,
 ) {
 
-    public actual var isFocusOnTapSupported: Boolean by mutableStateOf(true)
-        private set
-
     public actual val isZoomSupported: Boolean by mutableStateOf(true)
 
     public actual var minZoom: Float by mutableFloatStateOf(1F)
@@ -57,7 +54,6 @@ public actual class CameraInfo(
     internal fun rebind(
         output: AVCaptureOutput,
     ) {
-        isFocusOnTapSupported = cameraSession.isFocusOnTapSupported
         minZoom = cameraSession.device.minAvailableVideoZoomFactor.toFloat()
         maxZoom = cameraSession.device.maxAvailableVideoZoomFactor.toFloat()
         minExposure = cameraSession.device.minExposureTargetBias

@@ -1,7 +1,6 @@
 package com.ujizin.camposer.info
 
 import android.hardware.camera2.CameraManager
-import androidx.camera.core.MeteringPoint
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -13,10 +12,8 @@ public actual class CameraInfo internal constructor(
     private val cameraInfo: AndroidCameraInfo,
 ) {
 
-    public actual var isFocusOnTapSupported: Boolean by mutableStateOf(false)
-        private set
-
     public actual val isZoomSupported: Boolean by derivedStateOf { maxZoom != cameraInfo.initialZoom }
+
     public actual var minZoom: Float by mutableFloatStateOf(cameraInfo.minZoom)
         private set
     public actual var maxZoom: Float by mutableFloatStateOf(cameraInfo.maxZoom)
@@ -38,11 +35,7 @@ public actual class CameraInfo internal constructor(
     public actual var isZeroShutterLagSupported: Boolean by mutableStateOf(cameraInfo.isZeroShutterLagSupported)
         private set
 
-    internal fun bind(
-        lensFacing: Int?,
-        meteringPoint: MeteringPoint?,
-    ) {
-        isFocusOnTapSupported = meteringPoint?.let(cameraInfo::isFocusMeteringSupported) ?: false
+    internal fun bind() {
         minZoom = cameraInfo.minZoom
         maxZoom = cameraInfo.maxZoom
         minExposure = cameraInfo.minExposure
