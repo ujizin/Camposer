@@ -20,7 +20,7 @@ public abstract class CommonCameraController<RC : RecordController, TPC : TakePi
     override fun startRecording(
         path: Path,
         onVideoCaptured: (CaptureResult<Path>) -> Unit,
-    ): Unit = bindRun { startRecording(path, onVideoCaptured) }
+    ): Unit = recordController.bindRun { startRecording(path, onVideoCaptured) }
 
     override fun resumeRecording(): Unit = recordController.bindRun { resumeRecording() }
 
