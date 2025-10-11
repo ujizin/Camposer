@@ -6,14 +6,13 @@ import com.ujizin.camposer.state.CameraState
 
 internal class PinchToZoomController(
     private val cameraState: CameraState,
-    private var zoomRatio: Float,
     private val onZoomRatioChanged: (Float) -> Unit,
 ) {
 
     internal fun onPinchToZoom(scaleFactor: Float): Boolean {
         if (!cameraState.config.isPinchToZoomEnabled) return false
 
-        zoomRatio = (zoomRatio * scaleFactor).fastCoerceIn(
+        val zoomRatio = (cameraState.config.zoomRatio * scaleFactor).fastCoerceIn(
             minimumValue = cameraState.info.minZoom,
             maximumValue = cameraState.info.maxZoom,
         )

@@ -1,16 +1,12 @@
 package com.ujizin.camposer.info
 
-import android.hardware.camera2.CameraManager
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 
-public actual class CameraInfo internal constructor(
-    private val cameraManager: CameraManager,
-    private val cameraInfo: AndroidCameraInfo,
-) {
+public actual class CameraInfo internal constructor(private val cameraInfo: AndroidCameraInfo) {
 
     public actual val isZoomSupported: Boolean by derivedStateOf { maxZoom != cameraInfo.initialZoom }
 
@@ -35,7 +31,7 @@ public actual class CameraInfo internal constructor(
     public actual var isZeroShutterLagSupported: Boolean by mutableStateOf(cameraInfo.isZeroShutterLagSupported)
         private set
 
-    internal fun bind() {
+    internal fun rebind() {
         minZoom = cameraInfo.minZoom
         maxZoom = cameraInfo.maxZoom
         minExposure = cameraInfo.minExposure

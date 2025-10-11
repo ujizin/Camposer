@@ -1,6 +1,7 @@
 package com.ujizin.camposer.config
 
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.camera.core.CameraEffect
 import androidx.camera.core.TorchState
 import androidx.camera.view.CameraController
@@ -9,6 +10,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.util.fastCoerceIn
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.ujizin.camposer.config.properties.CamSelector
 import com.ujizin.camposer.config.properties.CaptureMode
 import com.ujizin.camposer.config.properties.FlashMode
@@ -23,6 +26,7 @@ import kotlin.math.roundToInt
 
 @SuppressLint("UnsafeOptInUsageError")
 public actual class CameraConfig internal constructor(
+    context: Context,
     private val mainExecutor: Executor,
     private val controller: CameraController,
     private val cameraInfo: CameraInfo,
@@ -96,12 +100,9 @@ public actual class CameraConfig internal constructor(
 
     public actual var exposureCompensation: Float? by config(
         value = null,
-        predicate = { old, new -> new != null && old != new }
-    ) {
-        controller.cameraControl?.setExposureCompensationIndex(
-            it!!.fastCoerceIn(cameraInfo.minExposure, cameraInfo.maxExposure).roundToInt()
-        )
-    }
+        predicate = { old, new -> new != null && old != new },
+        block = ::setExposureCompensation,
+    )
         internal set
 
     public actual var isTorchEnabled: Boolean by config(
@@ -111,15 +112,11 @@ public actual class CameraConfig internal constructor(
     )
         internal set
 
-    public actual var zoomRatio: Float by config(
-        value = cameraInfo.minZoom,
-        predicate = { old, new -> old != new },
-    ) {
-        controller.setZoomRatio(it.fastCoerceIn(cameraInfo.minZoom, cameraInfo.maxZoom))
-    }
+    public actual var zoomRatio: Float by config(cameraInfo.minZoom, block = ::setZoomRatio)
         internal set
 
     init {
+        (context as LifecycleOwner).lifecycle.addObserver(CameraConfigSaver())
         controller.setEnabledUseCases(getUseCases())
     }
 
@@ -131,8 +128,34 @@ public actual class CameraConfig internal constructor(
         controller.clearEffects()
     }
 
+    private fun setExposureCompensation(exposureCompensation: Float?) {
+        if (exposureCompensation == null) return
+        controller.cameraControl?.setExposureCompensationIndex(
+            exposureCompensation
+                .fastCoerceIn(cameraInfo.minExposure, cameraInfo.maxExposure)
+                .roundToInt(),
+        )
+    }
+
+    private fun setZoomRatio(zoomRatio: Float) {
+        controller.setZoomRatio(zoomRatio.fastCoerceIn(cameraInfo.minZoom, cameraInfo.maxZoom))
+    }
+
     private fun getUseCases(mode: CaptureMode = captureMode) = when {
         isImageAnalyzerEnabled && mode != CaptureMode.Video -> mode.value or IMAGE_ANALYSIS
         else -> mode.value
+    }
+
+    internal fun rebind() {
+        setExposureCompensation(exposureCompensation)
+    }
+
+    internal inner class CameraConfigSaver : DefaultLifecycleObserver {
+
+        override fun onResume(owner: LifecycleOwner) {
+            super.onResume(owner)
+            setZoomRatio(zoomRatio)
+            setExposureCompensation(exposureCompensation)
+        }
     }
 }

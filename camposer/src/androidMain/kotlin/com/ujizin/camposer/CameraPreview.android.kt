@@ -95,7 +95,6 @@ internal actual fun CameraPreviewImpl(
         previewView.onViewBind(
             cameraState = cameraState,
             lifecycleOwner = lifecycleOwner,
-            zoomRatio = zoomRatio,
             onZoomRatioChanged = onZoomRatioChanged,
             onTapFocus = {
                 if (cameraState.config.isFocusOnTapEnabled) {
@@ -151,7 +150,6 @@ internal actual fun CameraPreviewImpl(
 private fun PreviewView.onViewBind(
     cameraState: CameraState,
     lifecycleOwner: LifecycleOwner,
-    zoomRatio: Float,
     onZoomRatioChanged: (Float) -> Unit,
     onTapFocus: (Offset) -> Unit,
 ) {
@@ -169,7 +167,6 @@ private fun PreviewView.onViewBind(
     setCameraTouchEvent(
         pinchZoomController = PinchToZoomController(
             cameraState = cameraState,
-            zoomRatio = zoomRatio,
             onZoomRatioChanged = onZoomRatioChanged
         ),
         onTap = onTapFocus,

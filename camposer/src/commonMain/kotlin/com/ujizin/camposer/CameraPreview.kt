@@ -114,7 +114,10 @@ public fun CameraPreview(
             onSwitchCameraContent(it)
             LaunchedEffect(latestBitmap) {
                 onPreviewStreamChanged()
-                if (latestBitmap != null) onZoomRatioChanged(cameraState.info.minZoom)
+                if (latestBitmap != null) {
+                    onZoomRatioChanged(cameraState.info.minZoom)
+                    latestBitmap = null
+                }
             }
         }
     }

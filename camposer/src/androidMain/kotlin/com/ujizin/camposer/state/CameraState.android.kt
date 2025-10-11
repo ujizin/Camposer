@@ -2,7 +2,6 @@ package com.ujizin.camposer.state
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.hardware.camera2.CameraManager
 import androidx.camera.view.LifecycleCameraController
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -61,7 +60,6 @@ public actual class CameraState private constructor(
             contentResolver = context.contentResolver,
         ),
         info = CameraInfo(
-            cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as CameraManager,
             cameraInfo = AndroidCameraInfo(controller),
         ),
     )
@@ -83,6 +81,7 @@ public actual class CameraState private constructor(
         androidTakePictureCommand = androidTakePictureCommand,
         info = info,
         config = CameraConfig(
+            context = context,
             mainExecutor = mainExecutor,
             controller = controller,
             cameraInfo = info,
@@ -117,7 +116,8 @@ public actual class CameraState private constructor(
     private fun rebindCamera() {
         // Disable from pinch to zoom from cameraX controller
         controller.isPinchToZoomEnabled = false
-        info.bind()
+        info.rebind()
+        config.rebind()
     }
 
     internal fun dispose() {
