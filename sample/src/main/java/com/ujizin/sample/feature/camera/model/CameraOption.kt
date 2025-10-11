@@ -2,7 +2,7 @@ package com.ujizin.sample.feature.camera.model
 
 import android.os.Build
 import androidx.annotation.StringRes
-import com.ujizin.camposer.state.CaptureMode
+import com.ujizin.camposer.config.properties.CaptureMode
 import com.ujizin.sample.R
 
 enum class CameraOption(@StringRes val titleRes: Int) {

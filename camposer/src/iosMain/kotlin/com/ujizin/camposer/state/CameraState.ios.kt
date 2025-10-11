@@ -2,6 +2,14 @@ package com.ujizin.camposer.state
 
 import com.ujizin.camposer.command.DefaultTakePictureCommand
 import com.ujizin.camposer.config.CameraConfig
+import com.ujizin.camposer.config.properties.CamSelector
+import com.ujizin.camposer.config.properties.CaptureMode
+import com.ujizin.camposer.config.properties.FlashMode
+import com.ujizin.camposer.config.properties.ImageAnalyzer
+import com.ujizin.camposer.config.properties.ImageCaptureStrategy
+import com.ujizin.camposer.config.properties.ImplementationMode
+import com.ujizin.camposer.config.properties.ResolutionPreset
+import com.ujizin.camposer.config.properties.ScaleType
 import com.ujizin.camposer.config.update
 import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.controller.record.DefaultRecordController

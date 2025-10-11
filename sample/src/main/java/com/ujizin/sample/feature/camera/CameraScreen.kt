@@ -24,9 +24,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.skydoves.cloudy.cloudy
 import com.ujizin.camposer.CameraPreview
 import com.ujizin.camposer.controller.camera.CameraController
-import com.ujizin.camposer.state.CamSelector
+import com.ujizin.camposer.config.properties.CamSelector
 import com.ujizin.camposer.state.CameraState
-import com.ujizin.camposer.state.ResolutionPreset
+import com.ujizin.camposer.config.properties.ResolutionPreset
 import com.ujizin.camposer.state.rememberCamSelector
 import com.ujizin.camposer.state.rememberCameraState
 import com.ujizin.camposer.state.rememberFlashMode

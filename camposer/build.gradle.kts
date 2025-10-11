@@ -81,12 +81,6 @@ android {
     }
 
 
-    sourceSets {
-        getByName("androidTest") {
-            manifest.srcFile("src/androidTest/AndroidManifest.xml")
-        }
-    }
-
     publishing {
         singleVariant("release") {
             withJavadocJar()

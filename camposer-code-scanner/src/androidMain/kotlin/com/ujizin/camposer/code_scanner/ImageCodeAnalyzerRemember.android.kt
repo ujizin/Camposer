@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.ujizin.camposer.code_scanner.model.CodeType
 import com.ujizin.camposer.state.CameraState
-import com.ujizin.camposer.state.ImageAnalyzer
+import com.ujizin.camposer.config.properties.ImageAnalyzer
 
 @Composable
 public actual fun CameraState.rememberCodeImageAnalyzer(

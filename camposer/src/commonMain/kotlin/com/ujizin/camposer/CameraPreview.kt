@@ -12,15 +12,15 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ImageBitmap
 import com.ujizin.camposer.focus.FocusTap
 import com.ujizin.camposer.focus.SquareCornerFocus
-import com.ujizin.camposer.state.CamSelector
+import com.ujizin.camposer.config.properties.CamSelector
 import com.ujizin.camposer.state.CameraState
-import com.ujizin.camposer.state.CaptureMode
-import com.ujizin.camposer.state.FlashMode
-import com.ujizin.camposer.state.ImageAnalyzer
-import com.ujizin.camposer.state.ImageCaptureStrategy
-import com.ujizin.camposer.state.ImplementationMode
-import com.ujizin.camposer.state.ResolutionPreset
-import com.ujizin.camposer.state.ScaleType
+import com.ujizin.camposer.config.properties.CaptureMode
+import com.ujizin.camposer.config.properties.FlashMode
+import com.ujizin.camposer.config.properties.ImageAnalyzer
+import com.ujizin.camposer.config.properties.ImageCaptureStrategy
+import com.ujizin.camposer.config.properties.ImplementationMode
+import com.ujizin.camposer.config.properties.ResolutionPreset
+import com.ujizin.camposer.config.properties.ScaleType
 import kotlinx.coroutines.delay
 
 /**
@@ -35,7 +35,7 @@ import kotlinx.coroutines.delay
  * @param isTorchEnabled enable torch from camera, default is false.
  * @param exposureCompensation camera exposure compensation to be added
  * @param zoomRatio zoom ratio to be added, default is 1.0
- * @param imageAnalyzer image analyzer from camera, see [ImageAnalyzer]
+ * @param imageAnalyzer image analyzer from camera, see [com.ujizin.camposer.config.properties.ImageAnalyzer]
  * @param implementationMode implementation mode to be added, default is performance
  * @param isImageAnalysisEnabled enable or disable image analysis
  * @param isFocusOnTapEnabled turn on feature focus on tap if true
@@ -46,7 +46,7 @@ import kotlinx.coroutines.delay
  * @param focusTapContent content of focus tap, default is [SquareCornerFocus]
  * @param onFocus callback to use when on focus tap is triggered, call onComplete to [focusTapContent] gone.
  * @param content content composable within of camera preview.
- * @see ImageAnalyzer
+ * @see com.ujizin.camposer.config.properties.ImageAnalyzer
  * @see CameraState
  * */
 @Composable

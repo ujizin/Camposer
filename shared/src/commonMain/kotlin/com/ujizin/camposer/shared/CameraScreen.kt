@@ -29,10 +29,10 @@ import com.ujizin.camposer.code_scanner.model.CodeType
 import com.ujizin.camposer.code_scanner.rememberCodeImageAnalyzer
 import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.result.CaptureResult
-import com.ujizin.camposer.state.CamSelector
-import com.ujizin.camposer.state.CaptureMode
-import com.ujizin.camposer.state.FlashMode
-import com.ujizin.camposer.state.inverse
+import com.ujizin.camposer.config.properties.CamSelector
+import com.ujizin.camposer.config.properties.CaptureMode
+import com.ujizin.camposer.config.properties.FlashMode
+import com.ujizin.camposer.config.properties.inverse
 import com.ujizin.camposer.state.rememberCamSelector
 import com.ujizin.camposer.state.rememberCameraState
 import com.ujizin.camposer.state.rememberTorch

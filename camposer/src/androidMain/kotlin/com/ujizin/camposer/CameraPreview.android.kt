@@ -22,15 +22,15 @@ import com.ujizin.camposer.config.update
 import com.ujizin.camposer.controller.zoom.PinchToZoomController
 import com.ujizin.camposer.extensions.setCameraTouchEvent
 import com.ujizin.camposer.focus.SquareCornerFocus
-import com.ujizin.camposer.state.CamSelector
+import com.ujizin.camposer.config.properties.CamSelector
 import com.ujizin.camposer.state.CameraState
-import com.ujizin.camposer.state.CaptureMode
-import com.ujizin.camposer.state.FlashMode
-import com.ujizin.camposer.state.ImageAnalyzer
-import com.ujizin.camposer.state.ImageCaptureStrategy
-import com.ujizin.camposer.state.ImplementationMode
-import com.ujizin.camposer.state.ResolutionPreset
-import com.ujizin.camposer.state.ScaleType
+import com.ujizin.camposer.config.properties.CaptureMode
+import com.ujizin.camposer.config.properties.FlashMode
+import com.ujizin.camposer.config.properties.ImageAnalyzer
+import com.ujizin.camposer.config.properties.ImageCaptureStrategy
+import com.ujizin.camposer.config.properties.ImplementationMode
+import com.ujizin.camposer.config.properties.ResolutionPreset
+import com.ujizin.camposer.config.properties.ScaleType
 
 /**
  * Creates a Camera Preview's composable.
@@ -44,7 +44,7 @@ import com.ujizin.camposer.state.ScaleType
  * @param isTorchEnabled enable torch from camera, default is false.
  * @param exposureCompensation camera exposure compensation to be added
  * @param zoomRatio zoom ratio to be added, default is 1.0
- * @param imageAnalyzer image analyzer from camera, see [ImageAnalyzer]
+ * @param imageAnalyzer image analyzer from camera, see [com.ujizin.camposer.config.properties.ImageAnalyzer]
  * @param implementationMode implementation mode to be added, default is performance
  * @param isImageAnalysisEnabled enable or disable image analysis
  * @param isFocusOnTapEnabled turn on feature focus on tap if true
@@ -52,7 +52,7 @@ import com.ujizin.camposer.state.ScaleType
  * @param onZoomRatioChanged dispatch when zoom is changed by pinch to zoom
  * @param focusTapContent content of focus tap, default is [SquareCornerFocus]
  * @param content content composable within of camera preview.
- * @see ImageAnalyzer
+ * @see com.ujizin.camposer.config.properties.ImageAnalyzer
  * @see CameraState
  * */
 @Composable

@@ -1,13 +1,13 @@
 package com.ujizin.camposer.config
 
-import com.ujizin.camposer.state.CamSelector
-import com.ujizin.camposer.state.CaptureMode
-import com.ujizin.camposer.state.ImageCaptureStrategy
-import com.ujizin.camposer.state.FlashMode
-import com.ujizin.camposer.state.ImageAnalyzer
-import com.ujizin.camposer.state.ImplementationMode
-import com.ujizin.camposer.state.ResolutionPreset
-import com.ujizin.camposer.state.ScaleType
+import com.ujizin.camposer.config.properties.CamSelector
+import com.ujizin.camposer.config.properties.CaptureMode
+import com.ujizin.camposer.config.properties.ImageCaptureStrategy
+import com.ujizin.camposer.config.properties.FlashMode
+import com.ujizin.camposer.config.properties.ImageAnalyzer
+import com.ujizin.camposer.config.properties.ImplementationMode
+import com.ujizin.camposer.config.properties.ResolutionPreset
+import com.ujizin.camposer.config.properties.ScaleType
 
 public expect class CameraConfig {
     public var isImageAnalyzerEnabled: Boolean

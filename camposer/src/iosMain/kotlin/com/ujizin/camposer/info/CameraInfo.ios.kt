@@ -26,7 +26,6 @@ public actual class CameraInfo(
         private set
 
     public actual val isZoomSupported: Boolean by mutableStateOf(true)
-        private set
 
     public actual var minZoom: Float by mutableFloatStateOf(1F)
         private set
@@ -35,7 +34,6 @@ public actual class CameraInfo(
         private set
 
     public actual val isExposureSupported: Boolean by mutableStateOf(true)
-        private set
 
     public actual var minExposure: Float by mutableFloatStateOf(0F)
         private set

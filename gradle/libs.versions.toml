@@ -10,6 +10,8 @@ androidx-test = "1.7.0"
 camerax = "1.5.0"
 compose-bom = "2025.09.01"
 kotlinx-io = "0.8.0"
+compose-multiplatform = "1.8.2"
+binary-compatibility-validator = "0.18.1"
 
 # Camposer scanner
 
@@ -30,7 +32,6 @@ accompanist = "0.37.3"
 coil = "2.7.0"
 koin = "4.1.0"
 datastore = "1.1.7"
-compose-multiplatform = "1.8.2"
 media-kmp = "2.0.6"
 
 [libraries]
@@ -115,3 +116,4 @@ dokka-java-doc = { id = "org.jetbrains.dokka-javadoc", version.ref = "dokka" }
 gradle-nexus = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "gradle-nexus" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
+binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binary-compatibility-validator" }
