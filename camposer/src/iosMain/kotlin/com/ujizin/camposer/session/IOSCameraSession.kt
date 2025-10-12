@@ -1,6 +1,6 @@
 package com.ujizin.camposer.session
 
-import com.ujizin.camposer.controller.command.IOSTakePictureCommand
+import com.ujizin.camposer.OrientationListener
 import com.ujizin.camposer.error.AudioInputNotFoundException
 import com.ujizin.camposer.extensions.captureDevice
 import com.ujizin.camposer.extensions.firstIsInstanceOrNull
@@ -12,12 +12,10 @@ import com.ujizin.camposer.extensions.tryAddOutput
 import com.ujizin.camposer.extensions.withConfigurationLock
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.io.files.Path
 import platform.AVFoundation.AVCaptureDevice
 import platform.AVFoundation.AVCaptureDevice.Companion.defaultDeviceWithMediaType
 import platform.AVFoundation.AVCaptureDeviceInput
 import platform.AVFoundation.AVCaptureDevicePosition
-import platform.AVFoundation.AVCaptureDevicePositionFront
 import platform.AVFoundation.AVCaptureExposureModeAutoExpose
 import platform.AVFoundation.AVCaptureFlashMode
 import platform.AVFoundation.AVCaptureFocusModeAutoFocus
@@ -51,8 +49,9 @@ import platform.UIKit.UIView
 @OptIn(ExperimentalForeignApi::class)
 public class IOSCameraSession internal constructor(
     internal val captureSession: AVCaptureSession = AVCaptureSession(),
-    private val takePictureCommand: IOSTakePictureCommand = IOSTakePictureCommand(captureSession),
 ) {
+
+    internal val orientationListener: OrientationListener = OrientationListener()
 
     private val audioInput = defaultDeviceWithMediaType(AVMediaTypeAudio)?.toDeviceInput()
         ?: throw AudioInputNotFoundException()
@@ -91,6 +90,7 @@ public class IOSCameraSession internal constructor(
             view.layer.addSublayer(this)
         }
 
+        orientationListener.start()
         captureSession.startRunning()
     }
 
@@ -107,23 +107,6 @@ public class IOSCameraSession internal constructor(
         setFrame(view.bounds)
         connection?.videoOrientation = UIDevice.currentDevice.orientation.toVideoOrientation()
     }
-
-    internal fun takePicture(onPictureCaptured: (Result<ByteArray>) -> Unit): Unit =
-        takePictureCommand(
-            isMirrorEnabled = captureDeviceInput.device.position == AVCaptureDevicePositionFront,
-            flashMode = captureDeviceInput.device.flashMode,
-            onPictureCaptured = onPictureCaptured,
-        )
-
-    internal fun takePicture(
-        path: Path,
-        onPictureCaptured: (Result<Path>) -> Unit,
-    ): Unit = takePictureCommand(
-        path = path,
-        isMirrorEnabled = captureDeviceInput.device.position == AVCaptureDevicePositionFront,
-        flashMode = captureDeviceInput.device.flashMode,
-        onPictureCaptured = onPictureCaptured,
-    )
 
     internal fun setCameraPosition(
         position: AVCaptureDevicePosition,
@@ -193,6 +176,7 @@ public class IOSCameraSession internal constructor(
     public fun removeOutput(output: AVCaptureOutput): Unit = captureSession.removeOutput(output)
 
     public fun release() {
+        orientationListener.stop()
         _captureDeviceInput = null
         captureSession.stopRunning()
         previewLayer?.removeFromSuperlayer()

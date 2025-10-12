@@ -1,8 +1,6 @@
 package com.ujizin.camposer.view
 
-import com.ujizin.camposer.config.update
 import com.ujizin.camposer.config.properties.CamSelector
-import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.config.properties.CaptureMode
 import com.ujizin.camposer.config.properties.FlashMode
 import com.ujizin.camposer.config.properties.ImageAnalyzer
@@ -10,6 +8,8 @@ import com.ujizin.camposer.config.properties.ImageCaptureStrategy
 import com.ujizin.camposer.config.properties.ImplementationMode
 import com.ujizin.camposer.config.properties.ResolutionPreset
 import com.ujizin.camposer.config.properties.ScaleType
+import com.ujizin.camposer.config.update
+import com.ujizin.camposer.state.CameraState
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.ObjCAction

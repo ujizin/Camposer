@@ -77,17 +77,20 @@ public actual class CameraConfig(
         internal set
 
     public actual var exposureCompensation: Float? by config(
-        value = null,
-        predicate = { old, new -> new != null && old != new },
-    ) { value ->
+        null,
+        block = ::setExposureCompensation,
+    )
+        internal set
+
+    private fun setExposureCompensation(exposureCompensation: Float?) {
+        if (exposureCompensation == null) return
         iosCameraSession.device.withConfigurationLock {
             setExposureTargetBias(
-                bias = value!!.coerceIn(cameraInfo.minExposure, cameraInfo.maxExposure),
+                bias = exposureCompensation.coerceIn(cameraInfo.minExposure, cameraInfo.maxExposure),
                 completionHandler = {},
             )
         }
     }
-        internal set
 
     public actual var imageCaptureStrategy: ImageCaptureStrategy by config(ImageCaptureStrategy.Balanced) { value ->
         iosCameraSession.setCameraOutputQuality(
@@ -111,4 +114,8 @@ public actual class CameraConfig(
         iosCameraSession.setTorchEnabled(it)
     }
         internal set
+
+    internal fun rebind() {
+        setExposureCompensation(exposureCompensation)
+    }
 }

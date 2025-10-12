@@ -1,4 +1,4 @@
-package com.ujizin.camposer.controller.command
+package com.ujizin.camposer.command
 
 import com.ujizin.camposer.error.CameraNotRunningException
 import com.ujizin.camposer.error.ErrorTakePhotoException
@@ -16,11 +16,21 @@ import platform.AVFoundation.AVCapturePhotoCaptureDelegateProtocol
 import platform.AVFoundation.AVCapturePhotoOutput
 import platform.AVFoundation.AVCapturePhotoSettings
 import platform.AVFoundation.AVCaptureSession
+import platform.AVFoundation.AVCaptureVideoOrientation
+import platform.AVFoundation.AVCaptureVideoOrientationLandscapeLeft
+import platform.AVFoundation.AVCaptureVideoOrientationLandscapeRight
+import platform.AVFoundation.AVCaptureVideoOrientationPortrait
+import platform.AVFoundation.AVCaptureVideoOrientationPortraitUpsideDown
+import platform.AVFoundation.AVMediaTypeVideo
 import platform.AVFoundation.AVVideoCodecJPEG
 import platform.AVFoundation.AVVideoCodecKey
 import platform.AVFoundation.fileDataRepresentation
 import platform.Foundation.NSData
 import platform.Foundation.NSError
+import platform.UIKit.UIInterfaceOrientation
+import platform.UIKit.UIInterfaceOrientationLandscapeLeft
+import platform.UIKit.UIInterfaceOrientationLandscapeRight
+import platform.UIKit.UIInterfaceOrientationPortraitUpsideDown
 import platform.darwin.NSObject
 
 internal class IOSTakePictureCommand(
@@ -30,10 +40,12 @@ internal class IOSTakePictureCommand(
     operator fun invoke(
         isMirrorEnabled: Boolean,
         flashMode: AVCaptureFlashMode,
+        videoOrientation: AVCaptureVideoOrientation,
         onPictureCaptured: (Result<ByteArray>) -> Unit,
     ) = takePicture(
         isMirrorEnabled = isMirrorEnabled,
         flashMode = flashMode,
+        videoOrientation = videoOrientation,
         onPictureCaptured = { result ->
             transformPictureCaptured(
                 result = result,
@@ -47,10 +59,12 @@ internal class IOSTakePictureCommand(
         path: Path,
         isMirrorEnabled: Boolean,
         flashMode: AVCaptureFlashMode,
+        videoOrientation: AVCaptureVideoOrientation,
         onPictureCaptured: (Result<Path>) -> Unit,
     ) = takePicture(
         isMirrorEnabled = isMirrorEnabled,
         flashMode = flashMode,
+        videoOrientation = videoOrientation,
         onPictureCaptured = { result ->
             transformPictureCaptured(
                 result = result,
@@ -68,6 +82,7 @@ internal class IOSTakePictureCommand(
     private fun takePicture(
         isMirrorEnabled: Boolean,
         flashMode: AVCaptureFlashMode,
+        videoOrientation: AVCaptureVideoOrientation,
         onPictureCaptured: (Result<NSData>) -> Unit,
     ) {
         if (!captureSession.isRunning()) return onPictureCaptured(
@@ -80,11 +95,14 @@ internal class IOSTakePictureCommand(
             return
         }
 
+        val videoMediaType = cameraOutput.connectionWithMediaType(AVMediaTypeVideo)
+        videoMediaType?.videoOrientation = videoOrientation
+
         val delegate = object : NSObject(), AVCapturePhotoCaptureDelegateProtocol {
             override fun captureOutput(
                 output: AVCapturePhotoOutput,
                 didFinishProcessingPhoto: AVCapturePhoto,
-                error: NSError?
+                error: NSError?,
             ) {
                 val result = when {
                     error != null -> Result.failure(ErrorTakePhotoException(error))
@@ -124,3 +142,11 @@ internal class IOSTakePictureCommand(
         onPictureCaptured(transform(result.getOrThrow()))
     }
 }
+
+internal fun UIInterfaceOrientation.toVideoOrientation(): AVCaptureVideoOrientation =
+    when (this) {
+        UIInterfaceOrientationLandscapeLeft -> AVCaptureVideoOrientationLandscapeRight
+        UIInterfaceOrientationLandscapeRight -> AVCaptureVideoOrientationLandscapeLeft
+        UIInterfaceOrientationPortraitUpsideDown -> AVCaptureVideoOrientationPortraitUpsideDown
+        else -> AVCaptureVideoOrientationPortrait
+    }

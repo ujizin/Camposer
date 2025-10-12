@@ -2,15 +2,6 @@ package com.ujizin.camposer.state
 
 import com.ujizin.camposer.command.DefaultTakePictureCommand
 import com.ujizin.camposer.config.CameraConfig
-import com.ujizin.camposer.config.properties.CamSelector
-import com.ujizin.camposer.config.properties.CaptureMode
-import com.ujizin.camposer.config.properties.FlashMode
-import com.ujizin.camposer.config.properties.ImageAnalyzer
-import com.ujizin.camposer.config.properties.ImageCaptureStrategy
-import com.ujizin.camposer.config.properties.ImplementationMode
-import com.ujizin.camposer.config.properties.ResolutionPreset
-import com.ujizin.camposer.config.properties.ScaleType
-import com.ujizin.camposer.config.update
 import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.controller.record.DefaultRecordController
 import com.ujizin.camposer.info.CameraInfo
@@ -46,11 +37,11 @@ public actual class CameraState internal constructor(
         controller.initialize(
             recordController = DefaultRecordController(
                 iosCameraSession = iosCameraSession,
-                captureModeProvider = { config.captureMode }
+                cameraConfig = config,
             ),
             takePictureCommand = DefaultTakePictureCommand(
-                cameraManager = iosCameraSession,
-                captureModeProvider = { config.captureMode },
+                iosCameraSession = iosCameraSession,
+                cameraConfig = config,
             )
         )
     }
@@ -67,48 +58,13 @@ public actual class CameraState internal constructor(
 
     internal fun renderCamera(view: UIView) = iosCameraSession.renderPreviewLayer(view)
 
-    internal fun setFocusPoint(focusPoint: CValue<CGPoint>) =
-        iosCameraSession.setFocusPoint(focusPoint)
-
-    /**
-     * Update all values from camera state.
-     * */
-    internal fun update(
-        camSelector: CamSelector,
-        captureMode: CaptureMode,
-        scaleType: ScaleType,
-        isImageAnalysisEnabled: Boolean,
-        imageAnalyzer: ImageAnalyzer?,
-        implementationMode: ImplementationMode,
-        isFocusOnTapEnabled: Boolean,
-        flashMode: FlashMode,
-        zoomRatio: Float,
-        imageCaptureStrategy: ImageCaptureStrategy,
-        enableTorch: Boolean,
-        exposureCompensation: Float?,
-        resolutionPreset: ResolutionPreset,
-        isPinchToZoomEnabled: Boolean,
-    ) {
-        config.update(
-            camSelector = camSelector,
-            captureMode = captureMode,
-            scaleType = scaleType,
-            isImageAnalysisEnabled = isImageAnalysisEnabled,
-            imageAnalyzer = imageAnalyzer,
-            implementationMode = implementationMode,
-            isFocusOnTapEnabled = isFocusOnTapEnabled,
-            flashMode = flashMode,
-            zoomRatio = zoomRatio,
-            imageCaptureStrategy = imageCaptureStrategy,
-            isTorchEnabled = enableTorch,
-            exposureCompensation = exposureCompensation,
-            resolutionPreset = resolutionPreset,
-            isPinchToZoomEnabled = isPinchToZoomEnabled,
-        )
-    }
+    internal fun setFocusPoint(
+        focusPoint: CValue<CGPoint>,
+    ) = iosCameraSession.setFocusPoint(focusPoint)
 
     private fun rebindCamera() = with(iosCameraSession.device) {
         info.rebind(config.captureMode.output)
+        config.rebind()
         iosCameraSession.setCameraOutputQuality(
             quality = config.imageCaptureStrategy.strategy,
             highResolutionEnabled = config.imageCaptureStrategy.highResolutionEnabled,
