@@ -77,7 +77,6 @@ internal actual fun CameraPreviewImpl(
     onTapFocus: (Offset) -> Unit,
     onSwitchCamera: (ImageBitmap) -> Unit,
     onZoomRatioChanged: (Float) -> Unit,
-    focusTapContent: @Composable (() -> Unit),
     content: @Composable (() -> Unit),
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -106,9 +105,7 @@ internal actual fun CameraPreviewImpl(
 
     AndroidView(
         modifier = modifier.onGloballyPositioned { cameraOffset = it.positionInParent() },
-        factory = { context ->
-            PreviewView(context).apply { previewViewRef = this }
-        },
+        factory = { context -> PreviewView(context).apply { previewViewRef = this } },
         update = { previewView ->
             if (!cameraIsInitialized) return@AndroidView
             with(previewView) {

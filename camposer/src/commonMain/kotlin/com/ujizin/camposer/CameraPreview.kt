@@ -10,10 +10,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ImageBitmap
-import com.ujizin.camposer.focus.FocusTap
-import com.ujizin.camposer.focus.SquareCornerFocus
 import com.ujizin.camposer.config.properties.CamSelector
-import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.config.properties.CaptureMode
 import com.ujizin.camposer.config.properties.FlashMode
 import com.ujizin.camposer.config.properties.ImageAnalyzer
@@ -21,6 +18,9 @@ import com.ujizin.camposer.config.properties.ImageCaptureStrategy
 import com.ujizin.camposer.config.properties.ImplementationMode
 import com.ujizin.camposer.config.properties.ResolutionPreset
 import com.ujizin.camposer.config.properties.ScaleType
+import com.ujizin.camposer.focus.FocusTap
+import com.ujizin.camposer.focus.SquareCornerFocus
+import com.ujizin.camposer.state.CameraState
 import kotlinx.coroutines.delay
 
 /**
@@ -99,7 +99,6 @@ public fun CameraPreview(
         isFocusOnTapEnabled = isFocusOnTapEnabled,
         isPinchToZoomEnabled = isPinchToZoomEnabled,
         onZoomRatioChanged = onZoomRatioChanged,
-        focusTapContent = focusTapContent,
         onTapFocus = { tapOffset = it },
         onSwitchCamera = { latestBitmap = it },
     )
@@ -146,6 +145,5 @@ internal expect fun CameraPreviewImpl(
     onTapFocus: (Offset) -> Unit,
     onSwitchCamera: (ImageBitmap) -> Unit,
     onZoomRatioChanged: (Float) -> Unit = {},
-    focusTapContent: @Composable () -> Unit = { SquareCornerFocus() },
     content: @Composable () -> Unit = {},
 )

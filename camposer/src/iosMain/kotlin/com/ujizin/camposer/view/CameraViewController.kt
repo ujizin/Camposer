@@ -10,19 +10,14 @@ import com.ujizin.camposer.config.properties.ResolutionPreset
 import com.ujizin.camposer.config.properties.ScaleType
 import com.ujizin.camposer.config.update
 import com.ujizin.camposer.state.CameraState
+import com.ujizin.camposer.view.gesture.PinchToZoomGestureHandler
+import com.ujizin.camposer.view.gesture.TapToFocusGestureHandler
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.ObjCAction
-import kotlinx.cinterop.memScoped
-import kotlinx.cinterop.placeTo
-import kotlinx.cinterop.pointed
-import platform.CoreGraphics.CGPointMake
 import platform.Foundation.NSNotificationCenter
 import platform.Foundation.NSSelectorFromString
 import platform.UIKit.UIApplicationDidBecomeActiveNotification
-import platform.UIKit.UIGestureRecognizerStateChanged
-import platform.UIKit.UIPinchGestureRecognizer
-import platform.UIKit.UITapGestureRecognizer
 import platform.UIKit.UIViewController
 
 @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
@@ -30,6 +25,16 @@ internal class CameraViewController(
     internal val cameraState: CameraState,
     internal val cameraViewDelegate: CameraViewDelegate,
 ) : UIViewController(null, null) {
+
+    private val tapToFocusGesture = TapToFocusGestureHandler(
+        cameraState = cameraState,
+        cameraViewDelegate = cameraViewDelegate,
+    )
+
+    private val pinchToZoomGesture = PinchToZoomGestureHandler(
+        cameraState = cameraState,
+        cameraViewDelegate = cameraViewDelegate,
+    )
 
     override fun viewDidLoad() {
         super.viewDidLoad()
@@ -42,37 +47,6 @@ internal class CameraViewController(
     override fun viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         cameraState.renderCamera(view)
-    }
-
-    // TODO refactor to new class
-    @ObjCAction
-    private fun onTap(sender: UITapGestureRecognizer) {
-        if (!cameraState.config.isFocusOnTapEnabled) return
-        memScoped {
-            val size = view.bounds.placeTo(this).pointed.size
-            val cgPoint = sender.locationInView(view).placeTo(this).pointed
-            val x = cgPoint.y / size.height
-            val y = 1 - cgPoint.x / size.width
-            val focusPoint = CGPointMake(x = x, y = y)
-
-            cameraViewDelegate.onFocusTap(cgPoint.x.toFloat(), cgPoint.y.toFloat())
-            cameraState.setFocusPoint(focusPoint)
-        }
-    }
-
-    // TODO refactor to new class
-    @ObjCAction
-    private fun onPinch(sender: UIPinchGestureRecognizer) {
-        if (!cameraState.config.isPinchToZoomEnabled || sender.state != UIGestureRecognizerStateChanged) return
-        memScoped {
-            val scale = sender.scale.toFloat()
-            val clampedZoom = (cameraState.config.zoomRatio * scale).coerceIn(
-                minimumValue = cameraState.info.minZoom,
-                maximumValue = cameraState.info.maxZoom,
-            )
-            cameraViewDelegate.onZoomChanged(clampedZoom)
-            sender.scale = 1.0
-        }
     }
 
     internal fun update(
@@ -114,29 +88,21 @@ internal class CameraViewController(
         )
     }
 
+    // FIXME this might not be need when preview stream initialized be implemented
     private fun onBeforeSwitchCamera() {
         cameraViewDelegate.onZoomChanged(cameraState.info.minZoom)
     }
 
     private fun addCameraGesturesRecognizer() {
-        view.addGestureRecognizer(
-            UITapGestureRecognizer(
-                target = this, action = NSSelectorFromString("onTap:"),
-            )
-        )
-        view.addGestureRecognizer(
-            UIPinchGestureRecognizer(
-                target = this,
-                action = NSSelectorFromString("onPinch:")
-            )
-        )
+        view.addGestureRecognizer(tapToFocusGesture.recognizer)
+        view.addGestureRecognizer(pinchToZoomGesture.recognizer)
     }
 
     private fun observeAppLifecycle() {
         val notificationCenter = NSNotificationCenter.defaultCenter
         notificationCenter.addObserver(
             observer = this,
-            selector = NSSelectorFromString("appDidBecomeActive"),
+            selector = NSSelectorFromString(::appDidBecomeActive.name),
             name = UIApplicationDidBecomeActiveNotification,
             `object` = null
         )

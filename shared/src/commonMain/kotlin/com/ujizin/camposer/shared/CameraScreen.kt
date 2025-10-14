@@ -117,6 +117,8 @@ fun CameraScreen() {
                             videoPath = it.data.toString()
                         }
                     }
+
+                    else -> {}
                 }
             }) {
                 Text("Take picture")

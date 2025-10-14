@@ -42,7 +42,6 @@ internal actual fun CameraPreviewImpl(
     onTapFocus: (Offset) -> Unit,
     onSwitchCamera: (ImageBitmap) -> Unit,
     onZoomRatioChanged: (Float) -> Unit,
-    focusTapContent: @Composable () -> Unit,
     content: @Composable () -> Unit,
 ) {
     val density = LocalDensity.current
