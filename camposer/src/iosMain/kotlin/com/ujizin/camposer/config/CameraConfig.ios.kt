@@ -3,17 +3,17 @@ package com.ujizin.camposer.config
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.ujizin.camposer.extensions.withConfigurationLock
-import com.ujizin.camposer.info.CameraInfo
-import com.ujizin.camposer.session.IOSCameraSession
 import com.ujizin.camposer.config.properties.CamSelector
 import com.ujizin.camposer.config.properties.CaptureMode
-import com.ujizin.camposer.config.properties.ImageCaptureStrategy
 import com.ujizin.camposer.config.properties.FlashMode
 import com.ujizin.camposer.config.properties.ImageAnalyzer
+import com.ujizin.camposer.config.properties.ImageCaptureStrategy
 import com.ujizin.camposer.config.properties.ImplementationMode
 import com.ujizin.camposer.config.properties.ResolutionPreset
 import com.ujizin.camposer.config.properties.ScaleType
+import com.ujizin.camposer.extensions.withConfigurationLock
+import com.ujizin.camposer.info.CameraInfo
+import com.ujizin.camposer.session.IOSCameraSession
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.AVFoundation.setExposureTargetBias
 import platform.AVFoundation.videoZoomFactor
@@ -40,7 +40,9 @@ public actual class CameraConfig(
     }
         internal set
 
-    public actual var scaleType: ScaleType = ScaleType.FillCenter
+    public actual var scaleType: ScaleType by config(ScaleType.FillCenter) {
+        iosCameraSession.setPreviewGravity(it.gravity)
+    }
         internal set
 
     public actual var flashMode: FlashMode by config(FlashMode.Off) {
@@ -86,7 +88,10 @@ public actual class CameraConfig(
         if (exposureCompensation == null) return
         iosCameraSession.device.withConfigurationLock {
             setExposureTargetBias(
-                bias = exposureCompensation.coerceIn(cameraInfo.minExposure, cameraInfo.maxExposure),
+                bias = exposureCompensation.coerceIn(
+                    cameraInfo.minExposure,
+                    cameraInfo.maxExposure
+                ),
                 completionHandler = {},
             )
         }

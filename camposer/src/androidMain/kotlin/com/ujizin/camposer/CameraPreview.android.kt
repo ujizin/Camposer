@@ -30,13 +30,12 @@ import com.ujizin.camposer.config.properties.ScaleType
 import com.ujizin.camposer.config.update
 import com.ujizin.camposer.controller.zoom.PinchToZoomController
 import com.ujizin.camposer.extensions.setCameraTouchEvent
-import com.ujizin.camposer.focus.SquareCornerFocus
 import com.ujizin.camposer.state.CameraState
 
 /**
  * Creates a Camera Preview's composable.
  *
- * @param cameraState camera state hold some states and camera's controller, it can be useful to given action like [CameraState.takePicture]
+ * @param cameraState camera state hold some states and camera's controller
  * @param camSelector camera selector to be added, default is back
  * @param captureMode camera capture mode, default is image
  * @param imageCaptureMode camera image capture mode, default is minimum latency for better performance
@@ -51,7 +50,6 @@ import com.ujizin.camposer.state.CameraState
  * @param isFocusOnTapEnabled turn on feature focus on tap if true
  * @param isPinchToZoomEnabled turn on feature pinch to zoom if true
  * @param onZoomRatioChanged dispatch when zoom is changed by pinch to zoom
- * @param focusTapContent content of focus tap, default is [SquareCornerFocus]
  * @param content content composable within of camera preview.
  * @see ImageAnalyzer
  * @see CameraState

@@ -26,7 +26,7 @@ import kotlinx.coroutines.delay
 /**
  * Creates a Camera Preview's composable.
  *
- * @param cameraState camera state hold some states and camera's controller, it can be useful to given action like [CameraState.takePicture]
+ * @param cameraState camera state hold some states and camera's controller
  * @param camSelector camera selector to be added, default is back
  * @param captureMode camera capture mode, default is image
  * @param captureStrategy camera image capture mode, default is minimum latency for better performance

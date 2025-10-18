@@ -51,22 +51,26 @@ public class IOSCameraSession internal constructor(
     internal val captureSession: AVCaptureSession = AVCaptureSession(),
 ) {
 
-    internal val orientationListener: OrientationListener = OrientationListener()
-
-    private val audioInput = defaultDeviceWithMediaType(AVMediaTypeAudio)?.toDeviceInput()
-        ?: throw AudioInputNotFoundException()
-
     public var previewLayer: AVCaptureVideoPreviewLayer? = null
 
     private var _captureDeviceInput: AVCaptureDeviceInput? = null
+
     public val captureDeviceInput: AVCaptureDeviceInput
         get() = _captureDeviceInput!!
-
     public val device: AVCaptureDevice
         get() = captureDeviceInput.device
 
     public val isRunning: Boolean
         get() = captureSession.isRunning()
+
+    internal val orientationListener: OrientationListener = OrientationListener()
+
+    private val audioInput = defaultDeviceWithMediaType(AVMediaTypeAudio)?.toDeviceInput()
+        ?: throw AudioInputNotFoundException()
+
+    public fun addOutput(output: AVCaptureOutput): Boolean = captureSession.tryAddOutput(output)
+
+    public fun removeOutput(output: AVCaptureOutput): Unit = captureSession.removeOutput(output)
 
     internal fun start(
         view: UIView,
@@ -86,8 +90,8 @@ public class IOSCameraSession internal constructor(
         captureSession.commitConfiguration()
 
         previewLayer = AVCaptureVideoPreviewLayer(session = captureSession).apply {
-            videoGravity = gravity
             view.layer.addSublayer(this)
+            setPreviewGravity(gravity)
         }
 
         orientationListener.start()
@@ -101,6 +105,10 @@ public class IOSCameraSession internal constructor(
                 break
             }
         }
+    }
+
+    internal fun setPreviewGravity(gravity: AVLayerVideoGravity) {
+        previewLayer?.videoGravity = gravity
     }
 
     internal fun renderPreviewLayer(view: UIView) = previewLayer?.apply {
@@ -170,10 +178,6 @@ public class IOSCameraSession internal constructor(
         output?.setMaxPhotoQualityPrioritization(quality)
         output?.setHighResolutionCaptureEnabled(highResolutionEnabled)
     }
-
-    public fun addOutput(output: AVCaptureOutput): Boolean = captureSession.tryAddOutput(output)
-
-    public fun removeOutput(output: AVCaptureOutput): Unit = captureSession.removeOutput(output)
 
     public fun release() {
         orientationListener.stop()
