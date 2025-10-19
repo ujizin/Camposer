@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.ujizin.camposer.config.properties.ScaleType
+import com.ujizin.camposer.state.properties.ScaleType
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -20,7 +20,7 @@ internal class ScaleTypeTest : CameraTest() {
         initScaleTypeCamera()
         ScaleType.entries.forEach { scale ->
             scaleType.value = scale
-            runOnIdle { assertEquals(cameraSession.config.scaleType, scaleType.value) }
+            runOnIdle { assertEquals(cameraSession.state.scaleType, scaleType.value) }
         }
     }
 

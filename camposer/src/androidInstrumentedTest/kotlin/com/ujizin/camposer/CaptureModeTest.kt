@@ -10,7 +10,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.ujizin.camposer.result.CaptureResult
-import com.ujizin.camposer.config.properties.CaptureMode
+import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.session.rememberImageAnalyzer
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -38,7 +38,7 @@ internal class CaptureModeTest : CameraTest() {
                     is CaptureResult.Error -> throw result.throwable
                     is CaptureResult.Success -> {
                         assertEquals(Uri.fromFile(imageFile), result.data)
-                        assertEquals(CaptureMode.Image, cameraSession.config.captureMode)
+                        assertEquals(CaptureMode.Image, cameraSession.state.captureMode)
                         isFinalized = true
                     }
                 }
@@ -70,7 +70,7 @@ internal class CaptureModeTest : CameraTest() {
                     is CaptureResult.Error -> throw result.throwable
                     is CaptureResult.Success -> {
                         assertEquals(Uri.fromFile(videoFile), result.data)
-                        assertEquals(CaptureMode.Video, cameraSession.config.captureMode)
+                        assertEquals(CaptureMode.Video, cameraSession.state.captureMode)
                         isFinished = true
                     }
                 }

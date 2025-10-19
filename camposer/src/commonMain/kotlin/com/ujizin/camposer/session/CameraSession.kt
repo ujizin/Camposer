@@ -1,11 +1,11 @@
 package com.ujizin.camposer.session
 
-import com.ujizin.camposer.config.CameraConfig
+import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.info.CameraInfo
 
 public expect class CameraSession {
 
-    public val config: CameraConfig
+    public val state: CameraState
     public val info: CameraInfo
 
     /**

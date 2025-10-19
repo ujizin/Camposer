@@ -19,15 +19,15 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.ujizin.camposer.config.properties.CamSelector
-import com.ujizin.camposer.config.properties.CaptureMode
-import com.ujizin.camposer.config.properties.FlashMode
-import com.ujizin.camposer.config.properties.ImageAnalyzer
-import com.ujizin.camposer.config.properties.ImageCaptureStrategy
-import com.ujizin.camposer.config.properties.ImplementationMode
-import com.ujizin.camposer.config.properties.ResolutionPreset
-import com.ujizin.camposer.config.properties.ScaleType
-import com.ujizin.camposer.config.update
+import com.ujizin.camposer.state.properties.CamSelector
+import com.ujizin.camposer.state.properties.CaptureMode
+import com.ujizin.camposer.state.properties.FlashMode
+import com.ujizin.camposer.state.properties.ImageAnalyzer
+import com.ujizin.camposer.state.properties.ImageCaptureStrategy
+import com.ujizin.camposer.state.properties.ImplementationMode
+import com.ujizin.camposer.state.properties.ResolutionPreset
+import com.ujizin.camposer.state.properties.ScaleType
+import com.ujizin.camposer.state.update
 import com.ujizin.camposer.controller.zoom.PinchToZoomController
 import com.ujizin.camposer.extensions.setCameraTouchEvent
 import com.ujizin.camposer.session.CameraSession
@@ -94,7 +94,7 @@ internal actual fun CameraPreviewImpl(
             lifecycleOwner = lifecycleOwner,
             onZoomRatioChanged = onZoomRatioChanged,
             onTapFocus = {
-                if (cameraSession.config.isFocusOnTapEnabled) {
+                if (cameraSession.state.isFocusOnTapEnabled) {
                     onTapFocus(it + cameraOffset)
                 }
             },
@@ -115,11 +115,11 @@ internal actual fun CameraPreviewImpl(
                 }
                 latestBitmap = when {
                     lifecycleEvent == Lifecycle.Event.ON_STOP -> null
-                    !isCameraIdle && camSelector != cameraSession.config.camSelector -> bitmap?.asImageBitmap()
+                    !isCameraIdle && camSelector != cameraSession.state.camSelector -> bitmap?.asImageBitmap()
                     else -> latestBitmap
                 }
 
-                cameraSession.config.update(
+                cameraSession.state.update(
                     camSelector = camSelector,
                     captureMode = captureMode,
                     scaleType = scaleType,

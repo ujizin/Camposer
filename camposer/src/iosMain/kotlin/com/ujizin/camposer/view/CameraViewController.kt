@@ -1,14 +1,14 @@
 package com.ujizin.camposer.view
 
-import com.ujizin.camposer.config.properties.CamSelector
-import com.ujizin.camposer.config.properties.CaptureMode
-import com.ujizin.camposer.config.properties.FlashMode
-import com.ujizin.camposer.config.properties.ImageAnalyzer
-import com.ujizin.camposer.config.properties.ImageCaptureStrategy
-import com.ujizin.camposer.config.properties.ImplementationMode
-import com.ujizin.camposer.config.properties.ResolutionPreset
-import com.ujizin.camposer.config.properties.ScaleType
-import com.ujizin.camposer.config.update
+import com.ujizin.camposer.state.properties.CamSelector
+import com.ujizin.camposer.state.properties.CaptureMode
+import com.ujizin.camposer.state.properties.FlashMode
+import com.ujizin.camposer.state.properties.ImageAnalyzer
+import com.ujizin.camposer.state.properties.ImageCaptureStrategy
+import com.ujizin.camposer.state.properties.ImplementationMode
+import com.ujizin.camposer.state.properties.ResolutionPreset
+import com.ujizin.camposer.state.properties.ScaleType
+import com.ujizin.camposer.state.update
 import com.ujizin.camposer.session.CameraSession
 import com.ujizin.camposer.view.gesture.PinchToZoomGestureHandler
 import com.ujizin.camposer.view.gesture.TapToFocusGestureHandler
@@ -65,12 +65,12 @@ internal class CameraViewController(
         isPinchToZoomEnabled: Boolean,
         resolutionPreset: ResolutionPreset,
     ) {
-        val hasCameraChanged = cameraession.config.camSelector != camSelector
+        val hasCameraChanged = cameraession.state.camSelector != camSelector
         if (hasCameraChanged) {
             onBeforeSwitchCamera()
         }
 
-        cameraession.config.update(
+        cameraession.state.update(
             camSelector = camSelector,
             captureMode = captureMode,
             scaleType = scaleType,

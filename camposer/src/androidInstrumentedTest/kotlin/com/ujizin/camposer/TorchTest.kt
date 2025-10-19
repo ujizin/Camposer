@@ -34,7 +34,7 @@ internal class TorchTest : CameraTest() {
         initTorchCamera()
 
         runOnIdle {
-            assertEquals(false, cameraSession.config.isTorchEnabled)
+            assertEquals(false, cameraSession.state.isTorchEnabled)
             assertEquals(false, cameraXEnableTorch)
         }
 
@@ -42,7 +42,7 @@ internal class TorchTest : CameraTest() {
 
         runOnIdle {
             if (isCameraXFlashSupported) {
-                assertEquals(true, cameraSession.config.isTorchEnabled)
+                assertEquals(true, cameraSession.state.isTorchEnabled)
                 assertEquals(true, cameraXEnableTorch)
             }
         }

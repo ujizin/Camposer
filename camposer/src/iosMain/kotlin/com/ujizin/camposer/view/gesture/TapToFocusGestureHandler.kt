@@ -26,7 +26,7 @@ internal class TapToFocusGestureHandler(
 
     @ObjCAction
     internal fun onTap(sender: UITapGestureRecognizer) {
-        if (!cameraSession.config.isFocusOnTapEnabled) return
+        if (!cameraSession.state.isFocusOnTapEnabled) return
         memScoped {
             val view = sender.view ?: return
             val size = view.bounds.placeTo(this).pointed.size

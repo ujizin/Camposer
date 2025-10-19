@@ -1,7 +1,7 @@
 package com.ujizin.camposer.command
 
-import com.ujizin.camposer.config.CameraConfig
-import com.ujizin.camposer.config.properties.CaptureMode
+import com.ujizin.camposer.state.CameraState
+import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.extensions.toCaptureResult
 import com.ujizin.camposer.result.CaptureResult
 import com.ujizin.camposer.session.IOSCameraSession
@@ -13,7 +13,7 @@ import platform.AVFoundation.position
 
 internal actual class DefaultTakePictureCommand(
     private val iosCameraSession: IOSCameraSession,
-    private val cameraConfig: CameraConfig,
+    private val cameraConfig: CameraState,
     private val takePictureCommand: IOSTakePictureCommand = IOSTakePictureCommand(
         captureSession = iosCameraSession.captureSession,
     ),

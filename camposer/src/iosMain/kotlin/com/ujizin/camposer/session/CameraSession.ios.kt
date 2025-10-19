@@ -1,10 +1,10 @@
 package com.ujizin.camposer.session
 
 import com.ujizin.camposer.command.DefaultTakePictureCommand
-import com.ujizin.camposer.config.CameraConfig
 import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.controller.record.DefaultRecordController
 import com.ujizin.camposer.info.CameraInfo
+import com.ujizin.camposer.state.CameraState
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.AVFoundation.AVCaptureSession
@@ -17,7 +17,7 @@ public actual class CameraSession private constructor(
     public val captureSession: AVCaptureSession = AVCaptureSession(),
     public val iosCameraSession: IOSCameraSession = IOSCameraSession(captureSession),
     public actual val info: CameraInfo = CameraInfo(iosCameraSession),
-    public actual val config: CameraConfig = CameraConfig(iosCameraSession, info),
+    public actual val state: CameraState = CameraState(iosCameraSession, info),
 ) {
 
     public constructor(
@@ -43,28 +43,28 @@ public actual class CameraSession private constructor(
     }
 
     private fun setupCamera() = with(iosCameraSession) {
-        setCameraPosition(position = config.camSelector.position)
+        setCameraPosition(position = state.camSelector.position)
         rebindCamera()
-        config.rebindCamera = ::rebindCamera
+        state.rebindCamera = ::rebindCamera
         controller.initialize(
             recordController = DefaultRecordController(
                 iosCameraSession = iosCameraSession,
-                cameraConfig = config,
+                cameraConfig = state,
             ),
             takePictureCommand = DefaultTakePictureCommand(
                 iosCameraSession = iosCameraSession,
-                cameraConfig = config,
+                cameraConfig = state,
             )
         )
     }
 
     @OptIn(ExperimentalForeignApi::class)
     internal fun startCamera() = iosCameraSession.start(
-        captureOutput = config.captureMode.output,
-        position = config.camSelector.position,
-        gravity = config.scaleType.gravity,
+        captureOutput = state.captureMode.output,
+        position = state.camSelector.position,
+        gravity = state.scaleType.gravity,
         isMuted = controller.isMuted,
-        presets = config.resolutionPreset.presets.toList(),
+        presets = state.resolutionPreset.presets.toList(),
     )
 
     internal fun renderCamera(view: UIView) = iosCameraSession.renderPreviewLayer(view)
@@ -74,16 +74,16 @@ public actual class CameraSession private constructor(
     ) = iosCameraSession.setFocusPoint(focusPoint)
 
     private fun rebindCamera() = with(iosCameraSession.device) {
-        info.rebind(config.captureMode.output)
-        config.rebind()
+        info.rebind(state.captureMode.output)
+        state.rebind()
         iosCameraSession.setCameraOutputQuality(
-            quality = config.imageCaptureStrategy.strategy,
-            highResolutionEnabled = config.imageCaptureStrategy.highResolutionEnabled,
+            quality = state.imageCaptureStrategy.strategy,
+            highResolutionEnabled = state.imageCaptureStrategy.highResolutionEnabled,
         )
     }
 
     internal fun recoveryState() {
-        iosCameraSession.setTorchEnabled(config.isTorchEnabled)
+        iosCameraSession.setTorchEnabled(state.isTorchEnabled)
     }
 
     internal fun dispose() {

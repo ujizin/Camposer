@@ -8,8 +8,8 @@ import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.ujizin.camposer.config.properties.CamSelector
-import com.ujizin.camposer.config.properties.FlashMode
+import com.ujizin.camposer.state.properties.CamSelector
+import com.ujizin.camposer.state.properties.FlashMode
 import com.ujizin.camposer.session.rememberFlashMode
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
@@ -29,7 +29,7 @@ internal class FlashModeTest : CameraTest() {
         FlashMode.entries.forEach { mode ->
             flashMode.value = mode
             onNodeWithTag("${flashMode.value}").assertIsDisplayed()
-            runOnIdle { assertEquals(mode, cameraSession.config.flashMode) }
+            runOnIdle { assertEquals(mode, cameraSession.state.flashMode) }
         }
     }
 
@@ -41,7 +41,7 @@ internal class FlashModeTest : CameraTest() {
 
         flashMode.value = FlashMode.On
         onNodeWithTag("${FlashMode.On}").assertDoesNotExist()
-        runOnIdle { assertEquals(FlashMode.Off, cameraSession.config.flashMode) }
+        runOnIdle { assertEquals(FlashMode.Off, cameraSession.state.flashMode) }
     }
 
     private fun ComposeContentTestRule.initFlashCamera(

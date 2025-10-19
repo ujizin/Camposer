@@ -9,7 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.ujizin.camposer.command.AndroidTakePictureCommand
 import com.ujizin.camposer.command.DefaultTakePictureCommand
-import com.ujizin.camposer.config.CameraConfig
+import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.controller.record.AndroidRecordController
 import com.ujizin.camposer.controller.record.DefaultRecordController
@@ -32,7 +32,7 @@ public actual class CameraSession private constructor(
     private val androidRecordController: AndroidRecordController,
     private val androidTakePictureCommand: AndroidTakePictureCommand,
     public actual val info: CameraInfo,
-    public actual val config: CameraConfig,
+    public actual val state: CameraState,
 ) {
 
     public constructor(context: Context, cameraController: CameraController) : this(
@@ -80,7 +80,7 @@ public actual class CameraSession private constructor(
         androidRecordController = androidRecordController,
         androidTakePictureCommand = androidTakePictureCommand,
         info = info,
-        config = CameraConfig(
+        state = CameraState(
             context = context,
             mainExecutor = mainExecutor,
             controller = controller,
@@ -106,7 +106,7 @@ public actual class CameraSession private constructor(
                 recordController = androidRecordController,
                 takePictureCommand = androidTakePictureCommand,
             )
-            config.rebindCamera = ::rebindCamera
+            state.rebindCamera = ::rebindCamera
             rebindCamera()
             isInitialized = true
         }, mainExecutor)
@@ -117,7 +117,7 @@ public actual class CameraSession private constructor(
         // Disable from pinch to zoom from cameraX controller
         controller.isPinchToZoomEnabled = false
         info.rebind()
-        config.rebind()
+        state.rebind()
     }
 
     internal fun dispose() {

@@ -3,8 +3,8 @@ package com.ujizin.camposer.session
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import com.ujizin.camposer.CameraPreviewImpl
-import com.ujizin.camposer.config.properties.FlashMode
-import com.ujizin.camposer.config.properties.rememberConditionalState
+import com.ujizin.camposer.state.properties.FlashMode
+import com.ujizin.camposer.state.properties.rememberConditionalState
 import com.ujizin.camposer.controller.camera.CameraController
 
 /**

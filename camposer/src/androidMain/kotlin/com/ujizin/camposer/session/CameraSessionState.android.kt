@@ -7,8 +7,8 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import com.ujizin.camposer.CameraPreviewImpl
-import com.ujizin.camposer.config.properties.ImageAnalysisBackpressureStrategy
-import com.ujizin.camposer.config.properties.ImageAnalyzer
+import com.ujizin.camposer.state.properties.ImageAnalysisBackpressureStrategy
+import com.ujizin.camposer.state.properties.ImageAnalyzer
 import com.ujizin.camposer.controller.camera.CameraController
 
 /**
@@ -25,7 +25,7 @@ public actual fun rememberCameraSession(controller: CameraController): CameraSes
 /**
  * Create instance remember of ImageAnalyzer.
  *
- * @see com.ujizin.camposer.config.properties.ImageAnalyzer
+ * @see com.ujizin.camposer.state.properties.ImageAnalyzer
  * */
 @Composable
 public fun CameraSession.rememberImageAnalyzer(

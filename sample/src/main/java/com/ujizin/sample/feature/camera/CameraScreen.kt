@@ -23,8 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.skydoves.cloudy.cloudy
 import com.ujizin.camposer.CameraPreview
-import com.ujizin.camposer.config.properties.CamSelector
-import com.ujizin.camposer.config.properties.ResolutionPreset
+import com.ujizin.camposer.state.properties.CamSelector
+import com.ujizin.camposer.state.properties.ResolutionPreset
 import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.session.CameraSession
 import com.ujizin.camposer.session.rememberCameraSession

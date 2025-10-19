@@ -1,6 +1,6 @@
 package com.ujizin.sample.feature.camera.mapper
 
-import com.ujizin.camposer.config.properties.FlashMode
+import com.ujizin.camposer.state.properties.FlashMode
 import com.ujizin.sample.feature.camera.model.Flash
 
 fun Flash.toFlashMode() = when (this) {

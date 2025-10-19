@@ -4,8 +4,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.ujizin.camposer.command.toVideoOrientation
-import com.ujizin.camposer.config.CameraConfig
-import com.ujizin.camposer.config.properties.CaptureMode
+import com.ujizin.camposer.state.CameraState
+import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.error.CameraNotRunningException
 import com.ujizin.camposer.error.ErrorRecordVideoException
 import com.ujizin.camposer.error.VideoOutputNotFoundException
@@ -29,7 +29,7 @@ import platform.darwin.NSObject
 
 internal actual class DefaultRecordController(
     private val iosCameraSession: IOSCameraSession,
-    private val cameraConfig: CameraConfig,
+    private val cameraConfig: CameraState,
 ) : RecordController {
 
     private val captureSession: AVCaptureSession

@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.ujizin.camposer.config.properties.ImplementationMode
+import com.ujizin.camposer.state.properties.ImplementationMode
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,11 +19,11 @@ internal class ImplementationModeTest : CameraTest() {
     fun test_implementationMode() = with(composeTestRule) {
         initImplementationModeCamera(ImplementationMode.Performance)
 
-        assertEquals(cameraSession.config.implementationMode, ImplementationMode.Performance)
+        assertEquals(cameraSession.state.implementationMode, ImplementationMode.Performance)
         implementationMode.value = ImplementationMode.Compatible
 
         runOnIdle {
-            assertEquals(cameraSession.config.implementationMode, ImplementationMode.Compatible)
+            assertEquals(cameraSession.state.implementationMode, ImplementationMode.Compatible)
         }
     }
 

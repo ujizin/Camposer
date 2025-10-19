@@ -4,7 +4,7 @@ import androidx.camera.core.ImageProxy
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.ujizin.camposer.config.properties.ImageAnalyzer
+import com.ujizin.camposer.state.properties.ImageAnalyzer
 import com.ujizin.camposer.session.rememberImageAnalyzer
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -27,7 +27,7 @@ internal class ImageAnalyzerTest : CameraTest() {
         waitUntil(ANALYZER_TIME_OUT) { isAnalyzeCalled }
 
         runOnIdle {
-            assertEquals(true, cameraSession.config.isImageAnalyzerEnabled)
+            assertEquals(true, cameraSession.state.isImageAnalyzerEnabled)
             assertEquals(true, isAnalyzeCalled)
         }
     }
@@ -38,7 +38,7 @@ internal class ImageAnalyzerTest : CameraTest() {
         initImageAnalyzerCamera(isImageAnalyzeEnabled = false) { isAnalyzeCalled = true }
 
         runOnIdle {
-            assertEquals(false, cameraSession.config.isImageAnalyzerEnabled)
+            assertEquals(false, cameraSession.state.isImageAnalyzerEnabled)
             assertEquals(false, isAnalyzeCalled)
         }
     }

@@ -6,7 +6,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.ujizin.camposer.config.properties.ImageCaptureStrategy
+import com.ujizin.camposer.state.properties.ImageCaptureStrategy
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -21,13 +21,13 @@ internal class ImageCaptureStrategyTest : CameraTest() {
     fun test_imageCaptureMode() = with(composeTestRule) {
         initImageCaptureModeCamera(ImageCaptureStrategy.Balanced)
 
-        Assert.assertEquals(cameraSession.config.imageCaptureStrategy, ImageCaptureStrategy.Balanced)
+        Assert.assertEquals(cameraSession.state.imageCaptureStrategy, ImageCaptureStrategy.Balanced)
         imageCaptureMode.value = ImageCaptureStrategy.MaxQuality
 
         runOnIdle {
             Assert.assertEquals(
                 ImageCaptureStrategy.MaxQuality,
-                cameraSession.config.imageCaptureStrategy
+                cameraSession.state.imageCaptureStrategy
             )
         }
     }

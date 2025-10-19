@@ -29,10 +29,10 @@ import com.ujizin.camposer.code_scanner.model.CodeType
 import com.ujizin.camposer.code_scanner.rememberCodeImageAnalyzer
 import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.result.CaptureResult
-import com.ujizin.camposer.config.properties.CamSelector
-import com.ujizin.camposer.config.properties.CaptureMode
-import com.ujizin.camposer.config.properties.FlashMode
-import com.ujizin.camposer.config.properties.inverse
+import com.ujizin.camposer.state.properties.CamSelector
+import com.ujizin.camposer.state.properties.CaptureMode
+import com.ujizin.camposer.state.properties.FlashMode
+import com.ujizin.camposer.state.properties.inverse
 import com.ujizin.camposer.session.rememberCameraSession
 import com.ujizin.camposer.session.rememberTorch
 import kotlinx.io.files.Path

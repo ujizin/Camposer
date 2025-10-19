@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.ujizin.camposer.config.properties.CamSelector
+import com.ujizin.camposer.state.properties.CamSelector
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
