@@ -65,7 +65,7 @@ internal class CamSelectorTest : CameraTest() {
         CameraPreview(
             cameraState = state,
             camSelector = camSelectorState.value,
-            onSwitchCameraContent = {
+            switchCameraContent = {
                 LaunchedEffect(Unit) {
                     isCamSwitchedToBack.value = camSelectorState.value == CamSelector.Back
                     isCamSwitchedToFront.value = camSelectorState.value == CamSelector.Front

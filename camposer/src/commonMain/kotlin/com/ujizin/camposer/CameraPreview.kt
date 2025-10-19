@@ -1,5 +1,7 @@
 package com.ujizin.camposer
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -41,7 +43,7 @@ import kotlinx.coroutines.delay
  * @param isFocusOnTapEnabled turn on feature focus on tap if true
  * @param isPinchToZoomEnabled turn on feature pinch to zoom if true
  * @param onPreviewStreamChanged dispatch when preview is switching to front or back
- * @param onSwitchCameraContent composable preview when change camera and it's not been streaming yet
+ * @param switchCameraContent composable preview when change camera and it's not been streaming yet
  * @param onZoomRatioChanged dispatch when zoom is changed by pinch to zoom
  * @param focusTapContent content of focus tap, default is [SquareCornerFocus]
  * @param onFocus callback to use when on focus tap is triggered, call onComplete to [focusTapContent] gone.
@@ -68,60 +70,83 @@ public fun CameraPreview(
     isFocusOnTapEnabled: Boolean = cameraState.config.isFocusOnTapEnabled,
     isPinchToZoomEnabled: Boolean = cameraState.config.isPinchToZoomEnabled,
     onPreviewStreamChanged: () -> Unit = {},
-    onSwitchCameraContent: @Composable (ImageBitmap) -> Unit = {},
+    switchCameraContent: @Composable (ImageBitmap) -> Unit = {},
     onFocus: suspend (onComplete: () -> Unit) -> Unit = { onComplete ->
         delay(1000L)
         onComplete()
     },
     onZoomRatioChanged: (Float) -> Unit = {},
     focusTapContent: @Composable () -> Unit = { SquareCornerFocus() },
-    content: @Composable () -> Unit = {},
+    content: @Composable BoxScope.() -> Unit = {},
 ) {
     val isCameraIdle by rememberUpdatedState(!cameraState.isStreaming)
     var tapOffset by remember { mutableStateOf(Offset.Zero) }
     var latestBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
 
-    CameraPreviewImpl(
-        modifier = modifier,
-        cameraState = cameraState,
-        captureMode = captureMode,
-        camSelector = camSelector,
-        imageCaptureMode = captureStrategy,
-        flashMode = flashMode,
-        resolutionPreset = resolutionPreset,
-        scaleType = scaleType,
-        isTorchEnabled = isTorchEnabled,
-        exposureCompensation = exposureCompensation,
-        zoomRatio = zoomRatio,
-        imageAnalyzer = imageAnalyzer,
-        implementationMode = implementationMode,
-        isImageAnalysisEnabled = isImageAnalysisEnabled,
-        isFocusOnTapEnabled = isFocusOnTapEnabled,
-        isPinchToZoomEnabled = isPinchToZoomEnabled,
-        onZoomRatioChanged = onZoomRatioChanged,
-        onTapFocus = { tapOffset = it },
-        onSwitchCamera = { latestBitmap = it },
-    )
+    Box(modifier = modifier) {
+        CameraPreviewImpl(
+            modifier = Modifier.matchParentSize(),
+            cameraState = cameraState,
+            captureMode = captureMode,
+            camSelector = camSelector,
+            imageCaptureMode = captureStrategy,
+            flashMode = flashMode,
+            resolutionPreset = resolutionPreset,
+            scaleType = scaleType,
+            isTorchEnabled = isTorchEnabled,
+            exposureCompensation = exposureCompensation,
+            zoomRatio = zoomRatio,
+            imageAnalyzer = imageAnalyzer,
+            implementationMode = implementationMode,
+            isImageAnalysisEnabled = isImageAnalysisEnabled,
+            isFocusOnTapEnabled = isFocusOnTapEnabled,
+            isPinchToZoomEnabled = isPinchToZoomEnabled,
+            onZoomRatioChanged = onZoomRatioChanged,
+            onTapFocus = { tapOffset = it },
+            onSwitchCamera = { latestBitmap = it },
+        )
 
-    FocusTap(
-        offset = tapOffset,
-        onFocus = { onFocus { tapOffset = Offset.Zero } },
-    ) { focusTapContent() }
+        FocusTap(
+            offset = tapOffset,
+            onFocus = { onFocus { tapOffset = Offset.Zero } },
+        ) { focusTapContent() }
 
-    if (isCameraIdle) {
-        latestBitmap?.let {
-            onSwitchCameraContent(it)
-            LaunchedEffect(latestBitmap) {
+        CameraSwitchContent(
+            modifier = Modifier.matchParentSize(),
+            isCameraIdle = isCameraIdle,
+            bitmap = latestBitmap,
+            onPreviewStreamChanged = {
+                onZoomRatioChanged(cameraState.info.minZoom)
                 onPreviewStreamChanged()
-                if (latestBitmap != null) {
-                    onZoomRatioChanged(cameraState.info.minZoom)
-                    latestBitmap = null
-                }
-            }
-        }
+            },
+            onResetBitmap = { latestBitmap = null },
+            switchCameraContent = switchCameraContent,
+        )
+
+        content()
+    }
+}
+
+@Composable
+private fun CameraSwitchContent(
+    modifier: Modifier = Modifier,
+    bitmap: ImageBitmap?,
+    isCameraIdle: Boolean,
+    onPreviewStreamChanged: () -> Unit,
+    onResetBitmap: () -> Unit,
+    switchCameraContent: @Composable (ImageBitmap) -> Unit,
+) {
+    LaunchedEffect(isCameraIdle) {
+        if (!isCameraIdle) onResetBitmap()
     }
 
-    content()
+    if (!isCameraIdle || bitmap == null) {
+        return
+    }
+
+    LaunchedEffect(bitmap) { onPreviewStreamChanged() }
+
+    switchCameraContent(bitmap)
 }
 
 @Composable

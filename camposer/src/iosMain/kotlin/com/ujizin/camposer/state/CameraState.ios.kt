@@ -8,13 +8,15 @@ import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.session.IOSCameraSession
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
+import platform.AVFoundation.AVCaptureSession
 import platform.CoreGraphics.CGPoint
 import platform.UIKit.UIView
 
 @OptIn(ExperimentalForeignApi::class)
 public actual class CameraState internal constructor(
     internal val controller: CameraController,
-    public val iosCameraSession: IOSCameraSession = IOSCameraSession(),
+    public val captureSession: AVCaptureSession = AVCaptureSession(),
+    public val iosCameraSession: IOSCameraSession = IOSCameraSession(captureSession),
     public actual val info: CameraInfo = CameraInfo(iosCameraSession),
     public actual val config: CameraConfig = CameraConfig(iosCameraSession, info),
 ) {
@@ -47,9 +49,8 @@ public actual class CameraState internal constructor(
     }
 
     @OptIn(ExperimentalForeignApi::class)
-    internal fun startCamera(view: UIView) = iosCameraSession.start(
-        view = view,
-        output = config.captureMode.output,
+    internal fun startCamera() = iosCameraSession.start(
+        captureOutput = config.captureMode.output,
         position = config.camSelector.position,
         gravity = config.scaleType.gravity,
         isMuted = controller.isMuted,

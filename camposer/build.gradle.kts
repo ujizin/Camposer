@@ -41,6 +41,9 @@ kotlin {
             baseName = "Camposer"
             isStatic = true
         }
+        iosTarget.compilations.getByName("main") {
+            val NSKeyValueObserving by cinterops.creating
+        }
     }
 
     sourceSets {

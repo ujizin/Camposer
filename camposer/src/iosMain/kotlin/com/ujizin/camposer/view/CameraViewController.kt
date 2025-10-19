@@ -41,7 +41,7 @@ internal class CameraViewController(
         observeAppLifecycle()
         addCameraGesturesRecognizer()
 
-        cameraState.startCamera(view)
+        cameraState.startCamera()
     }
 
     override fun viewDidLayoutSubviews() {
