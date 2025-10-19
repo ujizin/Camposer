@@ -11,7 +11,7 @@ import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.ujizin.camposer.result.CaptureResult
 import com.ujizin.camposer.config.properties.CaptureMode
-import com.ujizin.camposer.state.rememberImageAnalyzer
+import com.ujizin.camposer.session.rememberImageAnalyzer
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -38,7 +38,7 @@ internal class CaptureModeTest : CameraTest() {
                     is CaptureResult.Error -> throw result.throwable
                     is CaptureResult.Success -> {
                         assertEquals(Uri.fromFile(imageFile), result.data)
-                        assertEquals(CaptureMode.Image, cameraState.config.captureMode)
+                        assertEquals(CaptureMode.Image, cameraSession.config.captureMode)
                         isFinalized = true
                     }
                 }
@@ -70,7 +70,7 @@ internal class CaptureModeTest : CameraTest() {
                     is CaptureResult.Error -> throw result.throwable
                     is CaptureResult.Success -> {
                         assertEquals(Uri.fromFile(videoFile), result.data)
-                        assertEquals(CaptureMode.Video, cameraState.config.captureMode)
+                        assertEquals(CaptureMode.Video, cameraSession.config.captureMode)
                         isFinished = true
                     }
                 }
@@ -88,9 +88,9 @@ internal class CaptureModeTest : CameraTest() {
     private fun ComposeContentTestRule.initCaptureModeCamera(
         captureMode: CaptureMode,
         analyzer: ((ImageProxy) -> Unit)? = null,
-    ) = initCameraState { state ->
+    ) = initCameraSession { state ->
         CameraPreview(
-            cameraState = state,
+            cameraSession = state,
             captureMode = captureMode,
             imageAnalyzer = analyzer?.let { state.rememberImageAnalyzer(analyze = it) },
             isImageAnalysisEnabled = analyzer != null

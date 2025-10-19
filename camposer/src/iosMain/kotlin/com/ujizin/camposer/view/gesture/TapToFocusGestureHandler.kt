@@ -1,6 +1,6 @@
 package com.ujizin.camposer.view.gesture
 
-import com.ujizin.camposer.state.CameraState
+import com.ujizin.camposer.session.CameraSession
 import com.ujizin.camposer.view.CameraViewDelegate
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
@@ -15,7 +15,7 @@ import platform.darwin.NSObject
 
 @OptIn(BetaInteropApi::class, ExperimentalForeignApi::class)
 internal class TapToFocusGestureHandler(
-    private val cameraState: CameraState,
+    private val cameraSession: CameraSession,
     private val cameraViewDelegate: CameraViewDelegate,
 ) : NSObject() {
 
@@ -26,7 +26,7 @@ internal class TapToFocusGestureHandler(
 
     @ObjCAction
     internal fun onTap(sender: UITapGestureRecognizer) {
-        if (!cameraState.config.isFocusOnTapEnabled) return
+        if (!cameraSession.config.isFocusOnTapEnabled) return
         memScoped {
             val view = sender.view ?: return
             val size = view.bounds.placeTo(this).pointed.size
@@ -36,7 +36,7 @@ internal class TapToFocusGestureHandler(
             val focusPoint = CGPointMake(x = x, y = y)
 
             cameraViewDelegate.onFocusTap(cgPoint.x.toFloat(), cgPoint.y.toFloat())
-            cameraState.setFocusPoint(focusPoint)
+            cameraSession.setFocusPoint(focusPoint)
         }
     }
 }

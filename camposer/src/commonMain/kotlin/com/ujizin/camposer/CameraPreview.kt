@@ -2,6 +2,7 @@ package com.ujizin.camposer
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -22,15 +23,15 @@ import com.ujizin.camposer.config.properties.ResolutionPreset
 import com.ujizin.camposer.config.properties.ScaleType
 import com.ujizin.camposer.focus.FocusTap
 import com.ujizin.camposer.focus.SquareCornerFocus
-import com.ujizin.camposer.state.CameraState
+import com.ujizin.camposer.session.CameraSession
 import kotlinx.coroutines.delay
 
 /**
  * Creates a Camera Preview's composable.
  *
- * @param cameraState camera state hold some states and camera's controller
+ * @param cameraSession camera state hold some states and camera's controller
  * @param camSelector camera selector to be added, default is back
- * @param captureMode camera capture mode, default is image
+ * @param captureMode camera c  apture mode, default is image
  * @param captureStrategy camera image capture mode, default is minimum latency for better performance
  * @param flashMode flash mode to be added, default is off
  * @param scaleType scale type to be added, default is fill center
@@ -49,26 +50,26 @@ import kotlinx.coroutines.delay
  * @param onFocus callback to use when on focus tap is triggered, call onComplete to [focusTapContent] gone.
  * @param content content composable within of camera preview.
  * @see com.ujizin.camposer.config.properties.ImageAnalyzer
- * @see CameraState
+ * @see CameraSession
  * */
 @Composable
 public fun CameraPreview(
     modifier: Modifier = Modifier,
-    cameraState: CameraState,
-    camSelector: CamSelector = cameraState.config.camSelector,
-    captureMode: CaptureMode = cameraState.config.captureMode,
-    captureStrategy: ImageCaptureStrategy = cameraState.config.imageCaptureStrategy,
-    flashMode: FlashMode = cameraState.config.flashMode,
-    scaleType: ScaleType = cameraState.config.scaleType,
-    isTorchEnabled: Boolean = cameraState.config.isTorchEnabled,
+    cameraSession: CameraSession,
+    camSelector: CamSelector = cameraSession.config.camSelector,
+    captureMode: CaptureMode = cameraSession.config.captureMode,
+    captureStrategy: ImageCaptureStrategy = cameraSession.config.imageCaptureStrategy,
+    flashMode: FlashMode = cameraSession.config.flashMode,
+    scaleType: ScaleType = cameraSession.config.scaleType,
+    isTorchEnabled: Boolean = cameraSession.config.isTorchEnabled,
     exposureCompensation: Float? = null,
     zoomRatio: Float = 1F,
     imageAnalyzer: ImageAnalyzer? = null,
-    resolutionPreset: ResolutionPreset = cameraState.config.resolutionPreset,
-    implementationMode: ImplementationMode = cameraState.config.implementationMode,
+    resolutionPreset: ResolutionPreset = cameraSession.config.resolutionPreset,
+    implementationMode: ImplementationMode = cameraSession.config.implementationMode,
     isImageAnalysisEnabled: Boolean = imageAnalyzer != null,
-    isFocusOnTapEnabled: Boolean = cameraState.config.isFocusOnTapEnabled,
-    isPinchToZoomEnabled: Boolean = cameraState.config.isPinchToZoomEnabled,
+    isFocusOnTapEnabled: Boolean = cameraSession.config.isFocusOnTapEnabled,
+    isPinchToZoomEnabled: Boolean = cameraSession.config.isPinchToZoomEnabled,
     onPreviewStreamChanged: () -> Unit = {},
     switchCameraContent: @Composable (ImageBitmap) -> Unit = {},
     onFocus: suspend (onComplete: () -> Unit) -> Unit = { onComplete ->
@@ -79,14 +80,14 @@ public fun CameraPreview(
     focusTapContent: @Composable () -> Unit = { SquareCornerFocus() },
     content: @Composable BoxScope.() -> Unit = {},
 ) {
-    val isCameraIdle by rememberUpdatedState(!cameraState.isStreaming)
+    val isCameraIdle by rememberUpdatedState(!cameraSession.isStreaming)
     var tapOffset by remember { mutableStateOf(Offset.Zero) }
     var latestBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
 
     Box(modifier = modifier) {
         CameraPreviewImpl(
-            modifier = Modifier.matchParentSize(),
-            cameraState = cameraState,
+            modifier = Modifier.fillMaxSize(),
+            cameraSession = cameraSession,
             captureMode = captureMode,
             camSelector = camSelector,
             imageCaptureMode = captureStrategy,
@@ -112,11 +113,11 @@ public fun CameraPreview(
         ) { focusTapContent() }
 
         CameraSwitchContent(
-            modifier = Modifier.matchParentSize(),
+            modifier = Modifier.fillMaxSize(),
             isCameraIdle = isCameraIdle,
             bitmap = latestBitmap,
             onPreviewStreamChanged = {
-                onZoomRatioChanged(cameraState.info.minZoom)
+                onZoomRatioChanged(cameraSession.info.minZoom)
                 onPreviewStreamChanged()
             },
             onResetBitmap = { latestBitmap = null },
@@ -152,7 +153,7 @@ private fun CameraSwitchContent(
 @Composable
 internal expect fun CameraPreviewImpl(
     modifier: Modifier = Modifier,
-    cameraState: CameraState,
+    cameraSession: CameraSession,
     camSelector: CamSelector,
     captureMode: CaptureMode,
     resolutionPreset: ResolutionPreset,

@@ -9,7 +9,7 @@ import com.ujizin.camposer.config.properties.ImplementationMode
 import com.ujizin.camposer.config.properties.ResolutionPreset
 import com.ujizin.camposer.config.properties.ScaleType
 import com.ujizin.camposer.config.update
-import com.ujizin.camposer.state.CameraState
+import com.ujizin.camposer.session.CameraSession
 import com.ujizin.camposer.view.gesture.PinchToZoomGestureHandler
 import com.ujizin.camposer.view.gesture.TapToFocusGestureHandler
 import kotlinx.cinterop.BetaInteropApi
@@ -22,17 +22,17 @@ import platform.UIKit.UIViewController
 
 @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
 internal class CameraViewController(
-    internal val cameraState: CameraState,
+    internal val cameraession: CameraSession,
     internal val cameraViewDelegate: CameraViewDelegate,
 ) : UIViewController(null, null) {
 
     private val tapToFocusGesture = TapToFocusGestureHandler(
-        cameraState = cameraState,
+        cameraSession = cameraession,
         cameraViewDelegate = cameraViewDelegate,
     )
 
     private val pinchToZoomGesture = PinchToZoomGestureHandler(
-        cameraState = cameraState,
+        cameraSession = cameraession,
         cameraViewDelegate = cameraViewDelegate,
     )
 
@@ -41,12 +41,12 @@ internal class CameraViewController(
         observeAppLifecycle()
         addCameraGesturesRecognizer()
 
-        cameraState.startCamera()
+        cameraession.startCamera()
     }
 
     override fun viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        cameraState.renderCamera(view)
+        cameraession.renderCamera(view)
     }
 
     internal fun update(
@@ -65,12 +65,12 @@ internal class CameraViewController(
         isPinchToZoomEnabled: Boolean,
         resolutionPreset: ResolutionPreset,
     ) {
-        val hasCameraChanged = cameraState.config.camSelector != camSelector
+        val hasCameraChanged = cameraession.config.camSelector != camSelector
         if (hasCameraChanged) {
             onBeforeSwitchCamera()
         }
 
-        cameraState.config.update(
+        cameraession.config.update(
             camSelector = camSelector,
             captureMode = captureMode,
             scaleType = scaleType,
@@ -90,7 +90,7 @@ internal class CameraViewController(
 
     // FIXME this might not be need when preview stream initialized be implemented
     private fun onBeforeSwitchCamera() {
-        cameraViewDelegate.onZoomChanged(cameraState.info.minZoom)
+        cameraViewDelegate.onZoomChanged(cameraession.info.minZoom)
     }
 
     private fun addCameraGesturesRecognizer() {
@@ -110,12 +110,12 @@ internal class CameraViewController(
 
     @ObjCAction
     fun appDidBecomeActive() {
-        cameraState.recoveryState()
+        cameraession.recoveryState()
     }
 
     override fun viewDidDisappear(animated: Boolean) {
         NSNotificationCenter.defaultCenter.removeObserver(this)
-        cameraState.dispose()
+        cameraession.dispose()
         super.viewDidDisappear(animated)
     }
 }

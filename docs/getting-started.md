@@ -25,10 +25,10 @@ Camposer provides the CameraPreview composable, which displays a live camera fee
 @Composable
 fun MyScreen() {
     val cameraController = remember { CameraController() }
-    val cameraState = rememberCameraState(cameraController)
+    val cameraSession = remembercameraSession(cameraController)
     var camSelector by rememberCamSelector(CamSelector.Back)
     CameraPreview(
-        cameraState = cameraState,
+        cameraSession = cameraSession,
         camSelector = camSelector,
     ) {
         // Camera Preview UI

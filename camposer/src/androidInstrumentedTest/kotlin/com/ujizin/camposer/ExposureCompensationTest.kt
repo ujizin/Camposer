@@ -17,18 +17,18 @@ internal class ExposureCompensationTest: CameraTest() {
     private lateinit var exposureCompensation: MutableState<Float>
 
     private val currentExposure: Float?
-        get() = cameraState.controller.cameraInfo?.exposureState?.exposureCompensationIndex?.toFloat()
+        get() = cameraSession.controller.cameraInfo?.exposureState?.exposureCompensationIndex?.toFloat()
 
     @Test
     fun test_minExposureCompensation() = with(composeTestRule) {
         initCameraWithExposure(0F)
 
-        exposureCompensation.value = cameraState.info.minExposure
+        exposureCompensation.value = cameraSession.info.minExposure
 
         runOnIdle {
-            if (!cameraState.info.isExposureSupported) return@runOnIdle
+            if (!cameraSession.info.isExposureSupported) return@runOnIdle
 
-            assertEquals(cameraState.info.minExposure, currentExposure)
+            assertEquals(cameraSession.info.minExposure, currentExposure)
             assertEquals(exposureCompensation.value, currentExposure)
         }
     }
@@ -37,22 +37,22 @@ internal class ExposureCompensationTest: CameraTest() {
     fun test_maxExposureCompensation() = with(composeTestRule) {
         initCameraWithExposure(0F)
 
-        exposureCompensation.value = cameraState.info.maxExposure
+        exposureCompensation.value = cameraSession.info.maxExposure
 
         runOnIdle {
-            if (!cameraState.info.isExposureSupported) return@runOnIdle
+            if (!cameraSession.info.isExposureSupported) return@runOnIdle
 
-            assertEquals(cameraState.info.maxExposure, currentExposure)
+            assertEquals(cameraSession.info.maxExposure, currentExposure)
             assertEquals(exposureCompensation.value, currentExposure)
         }
     }
 
     private fun ComposeContentTestRule.initCameraWithExposure(
         exposure: Float,
-    ) = initCameraState { state ->
+    ) = initCameraSession { state ->
         exposureCompensation = remember { mutableStateOf(exposure) }
         CameraPreview(
-            cameraState = state,
+            cameraSession = state,
             exposureCompensation = exposureCompensation.value
         )
     }

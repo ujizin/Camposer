@@ -8,7 +8,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.UIKitViewController
 import com.ujizin.camposer.config.properties.CamSelector
-import com.ujizin.camposer.state.CameraState
+import com.ujizin.camposer.session.CameraSession
 import com.ujizin.camposer.config.properties.CaptureMode
 import com.ujizin.camposer.config.properties.FlashMode
 import com.ujizin.camposer.config.properties.ImageAnalyzer
@@ -24,7 +24,7 @@ import kotlinx.cinterop.ExperimentalForeignApi
 @Composable
 internal actual fun CameraPreviewImpl(
     modifier: Modifier,
-    cameraState: CameraState,
+    cameraSession: CameraSession,
     camSelector: CamSelector,
     captureMode: CaptureMode,
     resolutionPreset: ResolutionPreset,
@@ -50,7 +50,7 @@ internal actual fun CameraPreviewImpl(
         modifier = modifier,
         factory = {
             CameraViewController(
-                cameraState = cameraState,
+                cameraession = cameraSession,
                 cameraViewDelegate = object : CameraViewDelegate {
                     override fun onFocusTap(x: Float, y: Float): Unit = with(density) {
                         onTapFocus(Offset(x.dp.toPx(), y.dp.toPx()))

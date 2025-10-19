@@ -6,12 +6,12 @@ import androidx.compose.runtime.remember
 import com.ujizin.camposer.code_scanner.CodeScannerQueue.codeAnalyzerQueue
 import com.ujizin.camposer.code_scanner.model.CodeType
 import com.ujizin.camposer.code_scanner.model.CodeTypeNotSupportedException
-import com.ujizin.camposer.state.CameraState
+import com.ujizin.camposer.session.CameraSession
 import com.ujizin.camposer.config.properties.ImageAnalyzer
 import platform.AVFoundation.AVCaptureMetadataOutput
 
 @Composable
-public actual fun CameraState.rememberCodeImageAnalyzer(
+public actual fun CameraSession.rememberCodeImageAnalyzer(
     codeTypes: List<CodeType>,
     onError: (Throwable) -> Unit,
     codeAnalyzerListener: CodeAnalyzerListener,

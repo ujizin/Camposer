@@ -30,12 +30,12 @@ import com.ujizin.camposer.config.properties.ScaleType
 import com.ujizin.camposer.config.update
 import com.ujizin.camposer.controller.zoom.PinchToZoomController
 import com.ujizin.camposer.extensions.setCameraTouchEvent
-import com.ujizin.camposer.state.CameraState
+import com.ujizin.camposer.session.CameraSession
 
 /**
  * Creates a Camera Preview's composable.
  *
- * @param cameraState camera state hold some states and camera's controller
+ * @param cameraSession camera state hold some states and camera's controller
  * @param camSelector camera selector to be added, default is back
  * @param captureMode camera capture mode, default is image
  * @param imageCaptureMode camera image capture mode, default is minimum latency for better performance
@@ -52,12 +52,12 @@ import com.ujizin.camposer.state.CameraState
  * @param onZoomRatioChanged dispatch when zoom is changed by pinch to zoom
  * @param content content composable within of camera preview.
  * @see ImageAnalyzer
- * @see CameraState
+ * @see CameraSession
  * */
 @Composable
 internal actual fun CameraPreviewImpl(
     modifier: Modifier,
-    cameraState: CameraState,
+    cameraSession: CameraSession,
     camSelector: CamSelector,
     captureMode: CaptureMode,
     resolutionPreset: ResolutionPreset,
@@ -79,22 +79,22 @@ internal actual fun CameraPreviewImpl(
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val lifecycleEvent by lifecycleOwner.lifecycle.observeAsState()
-    val cameraIsInitialized by rememberUpdatedState(cameraState.isInitialized)
-    val isCameraIdle by rememberUpdatedState(!cameraState.isStreaming)
+    val cameraIsInitialized by rememberUpdatedState(cameraSession.isInitialized)
+    val isCameraIdle by rememberUpdatedState(!cameraSession.isStreaming)
     var latestBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
     var cameraOffset by remember { mutableStateOf(Offset.Zero) }
     var previewViewRef by remember { mutableStateOf<PreviewView?>(null) }
 
     LaunchedEffect(latestBitmap) { latestBitmap?.let(onSwitchCamera) }
 
-    LaunchedEffect(cameraState, previewViewRef) {
+    LaunchedEffect(cameraSession, previewViewRef) {
         val previewView = previewViewRef ?: return@LaunchedEffect
         previewView.onViewBind(
-            cameraState = cameraState,
+            cameraSession = cameraSession,
             lifecycleOwner = lifecycleOwner,
             onZoomRatioChanged = onZoomRatioChanged,
             onTapFocus = {
-                if (cameraState.config.isFocusOnTapEnabled) {
+                if (cameraSession.config.isFocusOnTapEnabled) {
                     onTapFocus(it + cameraOffset)
                 }
             },
@@ -115,11 +115,11 @@ internal actual fun CameraPreviewImpl(
                 }
                 latestBitmap = when {
                     lifecycleEvent == Lifecycle.Event.ON_STOP -> null
-                    !isCameraIdle && camSelector != cameraState.config.camSelector -> bitmap?.asImageBitmap()
+                    !isCameraIdle && camSelector != cameraSession.config.camSelector -> bitmap?.asImageBitmap()
                     else -> latestBitmap
                 }
 
-                cameraState.config.update(
+                cameraSession.config.update(
                     camSelector = camSelector,
                     captureMode = captureMode,
                     scaleType = scaleType,
@@ -143,7 +143,7 @@ internal actual fun CameraPreviewImpl(
 }
 
 private fun PreviewView.onViewBind(
-    cameraState: CameraState,
+    cameraSession: CameraSession,
     lifecycleOwner: LifecycleOwner,
     onZoomRatioChanged: (Float) -> Unit,
     onTapFocus: (Offset) -> Unit,
@@ -151,17 +151,17 @@ private fun PreviewView.onViewBind(
     layoutParams = ViewGroup.LayoutParams(
         ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
     )
-    controller = cameraState.controller.apply {
+    controller = cameraSession.controller.apply {
         bindToLifecycle(lifecycleOwner)
     }
 
     previewStreamState.observe(lifecycleOwner) { state ->
-        cameraState.isStreaming = state == PreviewView.StreamState.STREAMING
+        cameraSession.isStreaming = state == PreviewView.StreamState.STREAMING
     }
 
     setCameraTouchEvent(
         pinchZoomController = PinchToZoomController(
-            cameraState = cameraState,
+            cameraSession = cameraSession,
             onZoomRatioChanged = onZoomRatioChanged
         ),
         onTap = onTapFocus,

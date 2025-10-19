@@ -33,9 +33,8 @@ import com.ujizin.camposer.config.properties.CamSelector
 import com.ujizin.camposer.config.properties.CaptureMode
 import com.ujizin.camposer.config.properties.FlashMode
 import com.ujizin.camposer.config.properties.inverse
-import com.ujizin.camposer.state.rememberCamSelector
-import com.ujizin.camposer.state.rememberCameraState
-import com.ujizin.camposer.state.rememberTorch
+import com.ujizin.camposer.session.rememberCameraSession
+import com.ujizin.camposer.session.rememberTorch
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemTemporaryDirectory
 import kotlin.math.roundToInt
@@ -46,18 +45,19 @@ import kotlin.uuid.Uuid
 @Composable
 fun CameraScreen() {
     val cameraController = remember { CameraController() }
-    val cameraState = rememberCameraState(cameraController)
+    val cameraSession = rememberCameraSession(cameraController)
     var flashMode: FlashMode by remember { mutableStateOf(FlashMode.Off) }
-    var enableTorch by cameraState.rememberTorch(false)
-    var camSelector by rememberCamSelector(CamSelector.Back)
-    var zoomRatio by remember { mutableStateOf(cameraState.info.minZoom) }
+    var enableTorch by cameraSession.rememberTorch(false)
+    var camSelector by remember { mutableStateOf(CamSelector.Back) }
+    var zoomRatio by remember { mutableStateOf(cameraSession.info.minZoom) }
     var bitmap by remember { mutableStateOf<ImageBitmap?>(null) }
     var captureMode by remember { mutableStateOf(CaptureMode.Image) }
     val isRecording by rememberUpdatedState(cameraController.isRecording)
     var exposureCompensation by remember { mutableStateOf(0F) }
     var videoPath by remember { mutableStateOf("") }
     var text by remember { mutableStateOf("") }
-    val codeImageAnalyzer = cameraState.rememberCodeImageAnalyzer(
+    val isPreviewing by rememberUpdatedState(cameraSession.isStreaming)
+    val codeImageAnalyzer = cameraSession.rememberCodeImageAnalyzer(
         codeTypes = listOf(CodeType.Barcode39),
         onError = {}
     ) {
@@ -66,7 +66,7 @@ fun CameraScreen() {
 
     CameraPreview(
         modifier = Modifier.fillMaxSize(),
-        cameraState = cameraState,
+        cameraSession = cameraSession,
         flashMode = flashMode,
         isTorchEnabled = enableTorch,
         camSelector = camSelector,
@@ -77,6 +77,9 @@ fun CameraScreen() {
         onZoomRatioChanged = { zoomRatio = it }
     ) {
         FlowRow {
+            Button(onClick = {}) {
+                Text("Is previewing: $isPreviewing")
+            }
             if (isRecording) {
                 Box(Modifier.size(24.dp).background(Color.Red, CircleShape))
             }
@@ -132,7 +135,7 @@ fun CameraScreen() {
             Button(
                 onClick = {
                     exposureCompensation = (exposureCompensation + 1).coerceAtMost(
-                        cameraState.info.maxExposure
+                        cameraSession.info.maxExposure
                     )
                 },
             ) {

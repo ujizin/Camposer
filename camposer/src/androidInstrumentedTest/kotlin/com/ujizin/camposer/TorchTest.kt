@@ -4,7 +4,7 @@ import androidx.camera.core.TorchState
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.ujizin.camposer.state.rememberTorch
+import com.ujizin.camposer.session.rememberTorch
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -15,13 +15,13 @@ internal class TorchTest : CameraTest() {
     private lateinit var torchState: MutableState<Boolean>
 
     private val cameraXEnableTorch: Boolean
-        get() = cameraState.controller.torchState.value == TorchState.ON
+        get() = cameraSession.controller.torchState.value == TorchState.ON
 
     /**
      * AVD does not have torch and [com.ujizin.camposer.info.CameraInfo.isTorchSupported] it's not enough in this case
      * */
     private val isCameraXFlashSupported: Boolean
-        get() = with(cameraState.controller) {
+        get() = with(cameraSession.controller) {
             val oldValue = torchState.value == TorchState.ON
             enableTorch(true)
             val isSupported = torchState.value == TorchState.ON
@@ -34,7 +34,7 @@ internal class TorchTest : CameraTest() {
         initTorchCamera()
 
         runOnIdle {
-            assertEquals(false, cameraState.config.isTorchEnabled)
+            assertEquals(false, cameraSession.config.isTorchEnabled)
             assertEquals(false, cameraXEnableTorch)
         }
 
@@ -42,7 +42,7 @@ internal class TorchTest : CameraTest() {
 
         runOnIdle {
             if (isCameraXFlashSupported) {
-                assertEquals(true, cameraState.config.isTorchEnabled)
+                assertEquals(true, cameraSession.config.isTorchEnabled)
                 assertEquals(true, cameraXEnableTorch)
             }
         }
@@ -50,10 +50,10 @@ internal class TorchTest : CameraTest() {
 
     private fun ComposeContentTestRule.initTorchCamera(
         initialValue: Boolean = false
-    ) = initCameraState { state ->
+    ) = initCameraSession { state ->
         torchState = state.rememberTorch(initialValue)
         CameraPreview(
-            cameraState = state,
+            cameraSession = state,
             isTorchEnabled = torchState.value
         )
     }

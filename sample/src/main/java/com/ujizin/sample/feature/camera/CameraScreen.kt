@@ -26,12 +26,11 @@ import com.ujizin.camposer.CameraPreview
 import com.ujizin.camposer.config.properties.CamSelector
 import com.ujizin.camposer.config.properties.ResolutionPreset
 import com.ujizin.camposer.controller.camera.CameraController
-import com.ujizin.camposer.state.CameraState
-import com.ujizin.camposer.state.rememberCamSelector
-import com.ujizin.camposer.state.rememberCameraState
-import com.ujizin.camposer.state.rememberFlashMode
-import com.ujizin.camposer.state.rememberImageAnalyzer
-import com.ujizin.camposer.state.rememberTorch
+import com.ujizin.camposer.session.CameraSession
+import com.ujizin.camposer.session.rememberCameraSession
+import com.ujizin.camposer.session.rememberFlashMode
+import com.ujizin.camposer.session.rememberImageAnalyzer
+import com.ujizin.camposer.session.rememberTorch
 import com.ujizin.sample.extensions.noClickable
 import com.ujizin.sample.feature.camera.components.ActionBox
 import com.ujizin.sample.feature.camera.components.BlinkPictureBox
@@ -54,10 +53,10 @@ fun CameraScreen(
     when (val result: CameraUiState = uiState) {
         is CameraUiState.Ready -> {
             val cameraController = remember { CameraController() }
-            val cameraState = rememberCameraState(cameraController)
+            val cameraSession = rememberCameraSession(cameraController)
             val context = LocalContext.current
             CameraSection(
-                cameraState = cameraState,
+                cameraSession = cameraSession,
                 useFrontCamera = result.user.useCamFront,
                 usePinchToZoom = result.user.usePinchToZoom,
                 useTapToFocus = result.user.useTapToFocus,
@@ -89,7 +88,7 @@ fun CameraScreen(
 
 @Composable
 fun CameraSection(
-    cameraState: CameraState,
+    cameraSession: CameraSession,
     isRecording: Boolean,
     useFrontCamera: Boolean,
     usePinchToZoom: Boolean,
@@ -102,16 +101,16 @@ fun CameraSection(
     onAnalyzeImage: (ImageProxy) -> Unit,
     onConfigurationClick: () -> Unit,
 ) {
-    var flashMode by cameraState.rememberFlashMode()
-    var camSelector by rememberCamSelector(if (useFrontCamera) CamSelector.Front else CamSelector.Back)
-    var zoomRatio by rememberSaveable { mutableFloatStateOf(cameraState.info.minZoom) }
+    var flashMode by cameraSession.rememberFlashMode()
+    var camSelector by remember { mutableStateOf(if (useFrontCamera) CamSelector.Front else CamSelector.Back) }
+    var zoomRatio by rememberSaveable { mutableFloatStateOf(cameraSession.info.minZoom) }
     var zoomHasChanged by rememberSaveable { mutableStateOf(false) }
-    val hasFlashUnit by rememberUpdatedState(cameraState.info.isFlashSupported)
+    val hasFlashUnit by rememberUpdatedState(cameraSession.info.isFlashSupported)
     var cameraOption by rememberSaveable { mutableStateOf(CameraOption.Photo) }
-    var enableTorch by cameraState.rememberTorch(initialTorch = false)
-    val imageAnalyzer = cameraState.rememberImageAnalyzer(analyze = onAnalyzeImage)
+    var enableTorch by cameraSession.rememberTorch(initialTorch = false)
+    val imageAnalyzer = cameraSession.rememberImageAnalyzer(analyze = onAnalyzeImage)
     CameraPreview(
-        cameraState = cameraState,
+        cameraSession = cameraSession,
         camSelector = camSelector,
         captureMode = cameraOption.toCaptureMode(),
         isTorchEnabled = enableTorch,
@@ -153,7 +152,7 @@ fun CameraSection(
             onTakePicture = onTakePicture,
             onRecording = onRecording,
             onSwitchCamera = {
-                if (cameraState.isStreaming) {
+                if (cameraSession.isStreaming) {
                     camSelector = camSelector.inverse
                 }
             },

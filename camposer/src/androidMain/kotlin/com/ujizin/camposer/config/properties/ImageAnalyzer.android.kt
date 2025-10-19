@@ -14,7 +14,7 @@ import com.ujizin.camposer.config.config
  * @param imageAnalysisImageQueueDepth the image queue depth of ImageAnalysis.
  * @param analyzer receive images and perform custom processing.
  *
- * @see com.ujizin.camposer.state.rememberImageAnalyzer
+ * @see com.ujizin.camposer.session.rememberImageAnalyzer
  * */
 @Stable
 public actual class ImageAnalyzer(
@@ -28,7 +28,7 @@ public actual class ImageAnalyzer(
 ) {
 
     /**
-     * Image analysis backpressure strategy, use [com.ujizin.camposer.state.rememberImageAnalyzer] to set value.
+     * Image analysis backpressure strategy, use [com.ujizin.camposer.session.rememberImageAnalyzer] to set value.
      * */
     internal var imageAnalysisBackpressureStrategy: Int
         get() = controller.imageAnalysisBackpressureStrategy
@@ -39,8 +39,8 @@ public actual class ImageAnalyzer(
         }
 
     /**
-     * Image analysis target size, use [com.ujizin.camposer.state.rememberImageAnalyzer] to set value.
-     * @see com.ujizin.camposer.state.rememberImageAnalyzer
+     * Image analysis target size, use [com.ujizin.camposer.session.rememberImageAnalyzer] to set value.
+     * @see com.ujizin.camposer.session.rememberImageAnalyzer
      * */
     internal var imageAnalysisResolutionSelector: ResolutionSelector?
         get() = controller.imageAnalysisResolutionSelector
@@ -52,8 +52,8 @@ public actual class ImageAnalyzer(
         }
 
     /**
-     * Image analysis image queue depth, use [com.ujizin.camposer.state.rememberImageAnalyzer] to set value.
-     * @see com.ujizin.camposer.state.rememberImageAnalyzer
+     * Image analysis image queue depth, use [com.ujizin.camposer.session.rememberImageAnalyzer] to set value.
+     * @see com.ujizin.camposer.session.rememberImageAnalyzer
      * */
     public var imageAnalysisImageQueueDepth: Int by config(controller.imageAnalysisImageQueueDepth) {
         controller.imageAnalysisImageQueueDepth = it
@@ -61,14 +61,14 @@ public actual class ImageAnalyzer(
         internal set
 
     init {
-        updateCameraState(
+        updateCamera(
             imageAnalysisBackpressureStrategy,
             resolutionSelector,
             imageAnalysisImageQueueDepth
         )
     }
 
-    private fun updateCameraState(
+    private fun updateCamera(
         imageAnalysisBackpressureStrategy: ImageAnalysisBackpressureStrategy,
         imageAnalysisSelector: ResolutionSelector?,
         imageAnalysisImageQueueDepth: Int,
@@ -89,7 +89,7 @@ public actual class ImageAnalyzer(
         imageAnalysisImageQueueDepth: Int = controller.imageAnalysisImageQueueDepth,
         analyzer: ImageAnalysis.Analyzer = this.analyzer,
     ) {
-        updateCameraState(
+        updateCamera(
             imageAnalysisBackpressureStrategy,
             imageAnalysisTargetSize,
             imageAnalysisImageQueueDepth

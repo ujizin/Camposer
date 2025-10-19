@@ -10,7 +10,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.ujizin.camposer.config.properties.CamSelector
 import com.ujizin.camposer.config.properties.FlashMode
-import com.ujizin.camposer.state.rememberFlashMode
+import com.ujizin.camposer.session.rememberFlashMode
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -24,12 +24,12 @@ internal class FlashModeTest : CameraTest() {
     @Test
     fun test_flashModes() = with(composeTestRule) {
         initFlashCamera(camSelector = CamSelector.Back)
-        if (!cameraState.info.isFlashSupported) return
+        if (!cameraSession.info.isFlashSupported) return
 
         FlashMode.entries.forEach { mode ->
             flashMode.value = mode
             onNodeWithTag("${flashMode.value}").assertIsDisplayed()
-            runOnIdle { assertEquals(mode, cameraState.config.flashMode) }
+            runOnIdle { assertEquals(mode, cameraSession.config.flashMode) }
         }
     }
 
@@ -37,20 +37,20 @@ internal class FlashModeTest : CameraTest() {
     fun test_flashModeWithNoUnit() = with(composeTestRule) {
         initFlashCamera(camSelector = CamSelector.Front)
         // Ensure that there's no flash unit on device
-        cameraState.info.isFlashSupported = false
+        cameraSession.info.isFlashSupported = false
 
         flashMode.value = FlashMode.On
         onNodeWithTag("${FlashMode.On}").assertDoesNotExist()
-        runOnIdle { assertEquals(FlashMode.Off, cameraState.config.flashMode) }
+        runOnIdle { assertEquals(FlashMode.Off, cameraSession.config.flashMode) }
     }
 
     private fun ComposeContentTestRule.initFlashCamera(
         camSelector: CamSelector
-    ) = initCameraState { state ->
+    ) = initCameraSession { state ->
         flashMode = state.rememberFlashMode(FlashMode.Off)
         CameraPreview(
             Modifier.testTag("${flashMode.value}"),
-            cameraState = state,
+            cameraSession = state,
             flashMode = flashMode.value,
             camSelector = camSelector,
         )

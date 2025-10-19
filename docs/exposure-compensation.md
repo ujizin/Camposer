@@ -9,22 +9,22 @@ This value is represented as a Float, and its valid range depends on the active 
 You can check the minimum and maximum supported exposure values for the current camera using:
 
 ```kotlin
-val minExposure = cameraState.info.minExposure
-val maxExposure = cameraState.info.maxExposure
+val minExposure = cameraSession.info.minExposure
+val maxExposure = cameraSession.info.maxExposure
 ```
 
 ## Usage Example
 
 ```kotlin
-val cameraState = rememberCameraState()
+val cameraSession = remembercameraSession()
 var exposureCompensation by remember { mutableStateOf(0f) }
 
 CameraPreview(
-    cameraState = cameraState,
+    cameraSession = cameraSession,
     exposureCompensation = exposureCompensation,
 ) {
-    val minExposure = cameraState.info.minExposure
-    val maxExposure = cameraState.info.maxExposure
+    val minExposure = cameraSession.info.minExposure
+    val maxExposure = cameraSession.info.maxExposure
 
     Row {
         Button(onClick = {

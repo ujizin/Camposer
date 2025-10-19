@@ -1,4 +1,4 @@
-package com.ujizin.camposer.state
+package com.ujizin.camposer.session
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -21,10 +21,10 @@ import java.util.concurrent.Executor
 /**
  * A state object that can be hoisted to control camera, take picture or record video.
  *
- * To be created use [rememberCameraState].
+ * To be created use [rememberCameraSession].
  * */
 @Stable
-public actual class CameraState private constructor(
+public actual class CameraSession private constructor(
     context: Context,
     public val controller: LifecycleCameraController,
     private val cameraController: CameraController,

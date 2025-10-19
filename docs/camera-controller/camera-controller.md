@@ -8,16 +8,16 @@ The Camera Controller provides functionality for taking pictures and recording v
 
 ```kotlin
 val controller = remember { CameraController() }
-val cameraState = rememberCameraState(controller)
+val cameraSession = remembercameraSession(controller)
 
 CameraPreview(
-    cameraState = cameraState,
+    cameraSession = cameraSession,
 )
 ```
 
 ## Why Use a CameraController?
 
-In earlier versions of Camposer, actions such as taking pictures or recording videos were handled directly in `CameraState`. This approach limited camera operations to the UI layer, making it difficult to separate logic from presentation.
+In earlier versions of Camposer, actions such as taking pictures or recording videos were handled directly in `cameraSession`. This approach limited camera operations to the UI layer, making it difficult to separate logic from presentation.
 
 With Camposer 1.0, the `CameraController` was introduced to decouple camera operations from UI logic, following clean architecture principles.
 
@@ -54,9 +54,9 @@ fun CameraScreen(viewModel: MyViewModel) {
     // You can also store the CameraController in your UI state, 
     // allowing it to persist across recompositions while keeping it 
     // separate from the composable UI.
-    val cameraState = rememberCameraState(viewModel.cameraController)
+    val cameraSession = remembercameraSession(viewModel.cameraController)
 
-    CameraPreview(cameraState = cameraState)
+    CameraPreview(cameraSession = cameraSession)
 
     Row {
         Button(onClick = viewModel::takePicture) {

@@ -26,7 +26,7 @@ internal class ZoomRatioTest : CameraTest() {
     lateinit var zoomRatio: MutableState<Float>
 
     private val currentCameraXZoom: Float?
-        get() = cameraState.controller.zoomState.value?.zoomRatio
+        get() = cameraSession.controller.zoomState.value?.zoomRatio
 
     private lateinit var configurationScreen: Configuration
 
@@ -43,7 +43,7 @@ internal class ZoomRatioTest : CameraTest() {
         initZoomCamera(UNREACHABLE_MAX_ZOOM_VALUE)
         runOnIdle {
             assertNotEquals(UNREACHABLE_MAX_ZOOM_VALUE, currentCameraXZoom)
-            assertEquals(cameraState.info.maxZoom, currentCameraXZoom)
+            assertEquals(cameraSession.info.maxZoom, currentCameraXZoom)
         }
     }
 
@@ -52,7 +52,7 @@ internal class ZoomRatioTest : CameraTest() {
         initZoomCamera(UNREACHABLE_MIN_ZOOM_VALUE)
         runOnIdle {
             assertNotEquals(UNREACHABLE_MIN_ZOOM_VALUE, currentCameraXZoom)
-            assertEquals(cameraState.info.minZoom, currentCameraXZoom)
+            assertEquals(cameraSession.info.minZoom, currentCameraXZoom)
         }
     }
 
@@ -60,9 +60,9 @@ internal class ZoomRatioTest : CameraTest() {
     fun test_zoomChangeValueToMax() = with(composeTestRule) {
         initZoomCamera(DEFAULT_ZOOM_VALUE)
 
-        zoomRatio.value = cameraState.info.maxZoom
+        zoomRatio.value = cameraSession.info.maxZoom
         runOnIdle {
-            assertEquals(cameraState.info.maxZoom, zoomRatio.value)
+            assertEquals(cameraSession.info.maxZoom, zoomRatio.value)
             assertEquals(currentCameraXZoom, zoomRatio.value)
         }
     }
@@ -78,7 +78,7 @@ internal class ZoomRatioTest : CameraTest() {
             }
 
         runOnIdle {
-            if (cameraState.info.isZoomSupported) {
+            if (cameraSession.info.isZoomSupported) {
                 assertNotEquals(DEFAULT_ZOOM_VALUE, zoomRatio.value)
             }
             assertEquals(currentCameraXZoom, zoomRatio.value)
@@ -104,13 +104,13 @@ internal class ZoomRatioTest : CameraTest() {
     private fun ComposeContentTestRule.initZoomCamera(
         initialValue: Float = DEFAULT_ZOOM_VALUE,
         isPinchToZoomEnabled: Boolean = true,
-    ) = initCameraState { state ->
+    ) = initCameraSession { state ->
         configurationScreen = LocalConfiguration.current
         zoomRatio = remember { mutableStateOf(initialValue) }
 
         CameraPreview(
             modifier = Modifier.testTag(CAMERA_ZOOM_TAG),
-            cameraState = state,
+            cameraSession = state,
             zoomRatio = zoomRatio.value,
             onZoomRatioChanged = { zoomRatio.value = it },
             isPinchToZoomEnabled = isPinchToZoomEnabled

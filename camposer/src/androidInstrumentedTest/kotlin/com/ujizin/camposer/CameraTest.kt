@@ -7,8 +7,8 @@ import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.rule.GrantPermissionRule
 import com.ujizin.camposer.controller.camera.CameraController
-import com.ujizin.camposer.state.CameraState
-import com.ujizin.camposer.state.rememberCameraState
+import com.ujizin.camposer.session.CameraSession
+import com.ujizin.camposer.session.rememberCameraSession
 import org.junit.Rule
 
 internal abstract class CameraTest {
@@ -36,17 +36,17 @@ internal abstract class CameraTest {
         }.toTypedArray()
     )
 
-    protected lateinit var cameraState: CameraState
+    protected lateinit var cameraSession: CameraSession
     protected val cameraController: CameraController = CameraController()
 
-    protected fun ComposeContentTestRule.initCameraState(
-        block: @Composable (CameraState) -> Unit
+    protected fun ComposeContentTestRule.initCameraSession(
+        block: @Composable (CameraSession) -> Unit
     ) {
         setContent {
-            cameraState = rememberCameraState(cameraController)
-            block(cameraState)
+            cameraSession = rememberCameraSession(cameraController)
+            block(cameraSession)
         }
-        waitUntil(CAMERA_TIMEOUT) { cameraState.isStreaming }
+        waitUntil(CAMERA_TIMEOUT) { cameraSession.isStreaming }
     }
 
     private companion object {

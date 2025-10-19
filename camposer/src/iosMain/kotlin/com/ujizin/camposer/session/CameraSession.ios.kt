@@ -1,11 +1,10 @@
-package com.ujizin.camposer.state
+package com.ujizin.camposer.session
 
 import com.ujizin.camposer.command.DefaultTakePictureCommand
 import com.ujizin.camposer.config.CameraConfig
 import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.controller.record.DefaultRecordController
 import com.ujizin.camposer.info.CameraInfo
-import com.ujizin.camposer.session.IOSCameraSession
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.AVFoundation.AVCaptureSession
@@ -13,13 +12,24 @@ import platform.CoreGraphics.CGPoint
 import platform.UIKit.UIView
 
 @OptIn(ExperimentalForeignApi::class)
-public actual class CameraState internal constructor(
+public actual class CameraSession private constructor(
     internal val controller: CameraController,
     public val captureSession: AVCaptureSession = AVCaptureSession(),
     public val iosCameraSession: IOSCameraSession = IOSCameraSession(captureSession),
     public actual val info: CameraInfo = CameraInfo(iosCameraSession),
     public actual val config: CameraConfig = CameraConfig(iosCameraSession, info),
 ) {
+
+    public constructor(
+        controller: CameraController,
+        captureSession: AVCaptureSession = AVCaptureSession(),
+        iosCameraSession: IOSCameraSession = IOSCameraSession(captureSession),
+    ): this(
+        controller = controller,
+        iosCameraSession = iosCameraSession,
+        captureSession = captureSession,
+        info = CameraInfo(iosCameraSession),
+    )
 
     public actual var isInitialized: Boolean = false
         get() = iosCameraSession.isRunning

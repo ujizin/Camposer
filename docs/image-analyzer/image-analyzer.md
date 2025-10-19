@@ -3,7 +3,7 @@
 ## Introduction
 If you need to implement a custom image analyzer, for example, using TensorFlow or other ML frameworks, you can extend Camposer’s built-in analyzer. 
 
-This allows you to process camera frames directly while leveraging CameraPreview and CameraState features.
+This allows you to process camera frames directly while leveraging CameraPreview and cameraSession features.
 
 ## Defining a Custom Analyzer (Example)
 
@@ -51,7 +51,7 @@ actual class OCRImageAnalyzer(
 ### Common
 ```kotlin
 @Composable
-public expect fun CameraState.rememberOCRAnalyzer(
+public expect fun cameraSession.rememberOCRAnalyzer(
     ocrAnalyzer: OCRAnalyzer,
 ): ImageAnalyzer
 ```
@@ -60,7 +60,7 @@ public expect fun CameraState.rememberOCRAnalyzer(
 
 ```kotlin
 @Composable
-public actual fun CameraState.rememberOCRAnalyzer(
+public actual fun cameraSession.rememberOCRAnalyzer(
     ocrAnalyzer: OCRAnalyzer,
 ) = remember(ocrAnalyzer) {
     ImageAnalyzer(
@@ -74,7 +74,7 @@ public actual fun CameraState.rememberOCRAnalyzer(
 
 ```kotlin
 @Composable
-public actual fun CameraState.rememberOCRAnalyzer(
+public actual fun cameraSession.rememberOCRAnalyzer(
     ocrAnalyzer: OCRAnalyzer,
 ) = remember(ocrAnalyzer) {
     val queue = dispatch_queue_create("OCRAnalyzer_queue", null)
@@ -94,13 +94,13 @@ public actual fun CameraState.rememberOCRAnalyzer(
 ### Attaching the Analyzer in Compose (Example)
 
 ```kotlin
-val cameraState = rememberCameraState()
-val ocrImageAnalyzer = cameraState.rememberOCRAnalyzer {
+val cameraSession = remembercameraSession()
+val ocrImageAnalyzer = cameraSession.rememberOCRAnalyzer {
     // Result here!
 }
 
 CameraPreview(
-    cameraState = cameraState,
+    cameraSession = cameraSession,
     imageAnalyzer = ocrImageAnalyzer,
 )
 ```

@@ -21,23 +21,23 @@ internal class ImageCaptureStrategyTest : CameraTest() {
     fun test_imageCaptureMode() = with(composeTestRule) {
         initImageCaptureModeCamera(ImageCaptureStrategy.Balanced)
 
-        Assert.assertEquals(cameraState.config.imageCaptureStrategy, ImageCaptureStrategy.Balanced)
+        Assert.assertEquals(cameraSession.config.imageCaptureStrategy, ImageCaptureStrategy.Balanced)
         imageCaptureMode.value = ImageCaptureStrategy.MaxQuality
 
         runOnIdle {
             Assert.assertEquals(
                 ImageCaptureStrategy.MaxQuality,
-                cameraState.config.imageCaptureStrategy
+                cameraSession.config.imageCaptureStrategy
             )
         }
     }
 
     private fun ComposeContentTestRule.initImageCaptureModeCamera(
         initialValue: ImageCaptureStrategy
-    ) = initCameraState { state ->
+    ) = initCameraSession { state ->
         imageCaptureMode = remember { mutableStateOf(initialValue) }
         CameraPreview(
-            cameraState = state,
+            cameraSession = state,
             captureStrategy = imageCaptureMode.value,
         )
     }

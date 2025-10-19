@@ -1,4 +1,4 @@
-package com.ujizin.camposer.state
+package com.ujizin.camposer.session
 
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.resolutionselector.ResolutionSelector
@@ -15,11 +15,11 @@ import com.ujizin.camposer.controller.camera.CameraController
  * Camera State from [CameraPreviewImpl] Composable.
  * */
 @Composable
-public actual fun rememberCameraState(controller: CameraController): CameraState {
+public actual fun rememberCameraSession(controller: CameraController): CameraSession {
     val context = LocalContext.current
-    val cameraState = remember(controller) { CameraState(context, controller) }
-    DisposableEffect(Unit) { onDispose(cameraState::dispose) }
-    return cameraState
+    val cameraSession = remember(controller) { CameraSession(context, controller) }
+    DisposableEffect(Unit) { onDispose(cameraSession::dispose) }
+    return cameraSession
 }
 
 /**
@@ -28,13 +28,13 @@ public actual fun rememberCameraState(controller: CameraController): CameraState
  * @see com.ujizin.camposer.config.properties.ImageAnalyzer
  * */
 @Composable
-public fun CameraState.rememberImageAnalyzer(
+public fun CameraSession.rememberImageAnalyzer(
     imageAnalysisBackpressureStrategy: ImageAnalysisBackpressureStrategy = ImageAnalysisBackpressureStrategy.KeepOnlyLatest,
     imageAnalysisResolutionSelector: ResolutionSelector? = controller.imageAnalysisResolutionSelector,
     imageAnalysisImageQueueDepth: Int = controller.imageAnalysisImageQueueDepth,
     analyze: ImageAnalysis.Analyzer,
 ): ImageAnalyzer = remember(this) {
-    com.ujizin.camposer.config.properties.ImageAnalyzer(
+    ImageAnalyzer(
         controller,
         imageAnalysisBackpressureStrategy,
         imageAnalysisResolutionSelector,

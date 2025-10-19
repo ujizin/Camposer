@@ -51,7 +51,7 @@ public abstract class CommonCameraController<RC : RecordController, TPC : TakePi
 
     protected fun <T, R> T?.bindRun(block: T.() -> R): R {
         require(this != null) {
-            "CameraController must be bind to CameraState first to be used!"
+            "CameraController must be bind to cameraSession first to be used!"
         }
 
         return block()

@@ -14,7 +14,6 @@ import androidx.camera.video.MediaStoreOutputOptions
 import androidx.camera.view.video.AudioConfig
 import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.result.CaptureResult
-import com.ujizin.camposer.state.CameraState
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.File
 import kotlin.coroutines.Continuation

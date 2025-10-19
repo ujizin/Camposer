@@ -19,20 +19,20 @@ internal class ImplementationModeTest : CameraTest() {
     fun test_implementationMode() = with(composeTestRule) {
         initImplementationModeCamera(ImplementationMode.Performance)
 
-        assertEquals(cameraState.config.implementationMode, ImplementationMode.Performance)
+        assertEquals(cameraSession.config.implementationMode, ImplementationMode.Performance)
         implementationMode.value = ImplementationMode.Compatible
 
         runOnIdle {
-            assertEquals(cameraState.config.implementationMode, ImplementationMode.Compatible)
+            assertEquals(cameraSession.config.implementationMode, ImplementationMode.Compatible)
         }
     }
 
     private fun ComposeContentTestRule.initImplementationModeCamera(
         initialValue: ImplementationMode
-    ) = initCameraState { state ->
+    ) = initCameraSession { state ->
         implementationMode = remember { mutableStateOf(initialValue) }
         CameraPreview(
-            cameraState = state,
+            cameraSession = state,
             implementationMode = implementationMode.value,
         )
     }

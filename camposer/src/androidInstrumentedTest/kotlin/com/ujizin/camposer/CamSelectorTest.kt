@@ -56,14 +56,14 @@ internal class CamSelectorTest : CameraTest() {
 
     private fun ComposeContentTestRule.initCamSelectorCamera(
         initialValue: CamSelector
-    ) = initCameraState { state ->
+    ) = initCameraSession { state ->
         camSelectorState = remember { mutableStateOf(initialValue) }
         isCamSwitchedToBack = remember { mutableStateOf(false) }
         isCamSwitchedToFront = remember { mutableStateOf(false) }
         isPreviewStreamChanged = remember { mutableStateOf(false) }
 
         CameraPreview(
-            cameraState = state,
+            cameraSession = state,
             camSelector = camSelectorState.value,
             switchCameraContent = {
                 LaunchedEffect(Unit) {

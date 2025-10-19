@@ -17,8 +17,8 @@ implementation("io.github.ujizin:camposer-code-scanner:<version>")
 ### Usage example
 
 ```kotlin
-val cameraState = rememberCameraState()
-val codeImageAnalyzer = cameraState.rememberCodeImageAnalyzer(
+val cameraSession = remembercameraSession()
+val codeImageAnalyzer = cameraSession.rememberCodeImageAnalyzer(
     codeTypes = listOf(CodeType.QRCode),
     onError = {},
 ) { result ->
@@ -27,7 +27,7 @@ val codeImageAnalyzer = cameraState.rememberCodeImageAnalyzer(
 }
 
 CameraPreview(
-    cameraState = cameraState,
+    cameraSession = cameraSession,
     imageAnalyzer = codeImageAnalyzer,
 )
 ```

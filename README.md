@@ -38,10 +38,11 @@ implementation 'io.github.ujizin:camposer:<version>'
 To add `CameraPreview` composable, just use the example below:
 
 ```Kotlin
-val cameraState = rememberCameraState()
-var camSelector by rememberCamSelector(CamSelector.Back)
+val controller = remember { CameraController() }
+val cameraSession = rememberCameraSession(controller)
+var camSelector by remember { mutableStateOf(CamSelector.Back) }
 CameraPreview(
-  cameraState = cameraState,
+  cameraSession = cameraSession,
   camSelector = camSelector,
 ) {
   // Camera Preview UI
@@ -50,16 +51,16 @@ CameraPreview(
 
 ### Taking pictures
 
-To take picture use `CameraState` and call `takePicture` method from it.
+To take picture use `CameraSession` and call `takePicture` method from it.
 
 ```Kotlin
 // Using content values
-cameraState.takePicture(contentValues, mediaURI) { result ->
+cameraSession.takePicture(contentValues, mediaURI) { result ->
   /* ... */
 }
 
 // Using files
-cameraState.takePicture(file) { result -> /* ... */ }
+cameraSession.takePicture(file) { result -> /* ... */ }
 ```
 
 ### Recording videos
@@ -68,22 +69,22 @@ Change the capture mode for `CaptureMode.Video` on `CameraPreview` and call `tog
 
 ```Kotlin
 // Using content values
-cameraState.startRecording()
-cameraState.stopRecording(contentValues, mediaURI) { result ->
+cameraSession.startRecording()
+cameraSession.stopRecording(contentValues, mediaURI) { result ->
   /* ... */
 }
 
 // Using file
-cameraState.startRecording()
-cameraState.stopRecording(file) { result -> /* ... */ }
+cameraSession.startRecording()
+cameraSession.stopRecording(file) { result -> /* ... */ }
 
 // Using content values + toggle
-cameraState.toggleRecording(contentValues, mediaURI) { result ->
+cameraSession.toggleRecording(contentValues, mediaURI) { result ->
   /* ... */
 }
 
 // Using files + toggle
-cameraState.toggleRecording(file) { result -> /* ... */ }
+cameraSession.toggleRecording(file) { result -> /* ... */ }
 ```
 
 ### Switch cameras
