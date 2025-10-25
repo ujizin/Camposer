@@ -61,7 +61,7 @@ public actual class CameraState internal constructor(
 
     public actual var flashMode: FlashMode by config(
         value = FlashMode.find(controller.imageCaptureFlashMode),
-        predicate = { old, new -> new.isFlashSupported() && old != new }
+        predicate = { old, new -> old != new && new.isFlashSupported()}
     ) {
         mainExecutor.execute { controller.imageCaptureFlashMode = it.mode }
     }

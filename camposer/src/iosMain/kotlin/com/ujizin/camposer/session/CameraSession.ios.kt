@@ -59,7 +59,7 @@ public actual class CameraSession private constructor(
             ),
             takePictureCommand = DefaultTakePictureCommand(
                 iosCameraSession = iosCameraSession,
-                cameraConfig = state,
+                cameraState = state,
             ),
             cameraState = state,
             cameraInfo = info,

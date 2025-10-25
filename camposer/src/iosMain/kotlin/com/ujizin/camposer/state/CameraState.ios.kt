@@ -16,10 +16,6 @@ import com.ujizin.camposer.state.properties.ImplementationMode
 import com.ujizin.camposer.state.properties.ResolutionPreset
 import com.ujizin.camposer.state.properties.ScaleType
 import kotlinx.cinterop.ExperimentalForeignApi
-import platform.AVFoundation.hasFlash
-import platform.AVFoundation.hasTorch
-import platform.AVFoundation.isFlashAvailable
-import platform.AVFoundation.isTorchAvailable
 import platform.AVFoundation.setExposureTargetBias
 import platform.AVFoundation.videoZoomFactor
 
@@ -47,7 +43,7 @@ public actual class CameraState(
 
     public actual var flashMode: FlashMode by config(
         value = FlashMode.Off,
-        predicate = { old, new -> old != new && iosCameraSession.device.hasFlash() && iosCameraSession.device.isFlashAvailable() }
+        predicate = { old, new -> old != new && new.isFlashAvailable() }
     ) {
         iosCameraSession.setFlashMode(it.mode)
     }
@@ -120,7 +116,7 @@ public actual class CameraState(
 
     public actual var isTorchEnabled: Boolean by config(
         false,
-        predicate = { old, new -> old != new && iosCameraSession.device.hasTorch && iosCameraSession.device.isTorchAvailable() }
+        predicate = { old, new -> old != new && (!new || cameraInfo.isTorchAvailable) }
     ) {
         iosCameraSession.setTorchEnabled(it)
     }
@@ -140,6 +136,8 @@ public actual class CameraState(
             highResolutionEnabled = imageCaptureStrategy.highResolutionEnabled,
         )
     }
+
+    private fun FlashMode.isFlashAvailable() = this == FlashMode.Off || cameraInfo.isFlashAvailable
 }
 
 internal actual fun CameraSession.isToUpdateCameraInfo(
