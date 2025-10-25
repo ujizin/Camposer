@@ -27,10 +27,11 @@ internal actual class DefaultTakePictureCommand(
         takePicture(
             outputFileOptions = OutputFileOptions.Builder(byteArrayOS).build(),
             onResult = { result ->
-                when (result) {
+                val result = when (result) {
                     is CaptureResult.Error -> CaptureResult.Error(result.throwable)
                     is CaptureResult.Success<Uri?> -> CaptureResult.Success(byteArrayOS.toByteArray())
                 }
+                onImageCaptured(result)
             },
         )
     }
@@ -56,7 +57,8 @@ internal actual class DefaultTakePictureCommand(
                 /* contentResolver = */ contentResolver,
                 /* saveCollection = */ saveCollection,
                 /* contentValues = */ contentValues
-            ).build(), onResult = onResult
+            ).build(),
+            onResult = onResult,
         )
     }
 
