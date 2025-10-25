@@ -1,16 +1,14 @@
 package com.ujizin.camposer
 
-import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.UIKitViewController
-import com.ujizin.camposer.state.properties.CamSelector
 import com.ujizin.camposer.session.CameraSession
+import com.ujizin.camposer.state.properties.CamSelector
 import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.ImageAnalyzer
 import com.ujizin.camposer.state.properties.ImageCaptureStrategy

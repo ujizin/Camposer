@@ -51,8 +51,7 @@ public actual class CameraSession private constructor(
 
     private fun setupCamera() = with(iosCameraSession) {
         setCameraPosition(position = state.camSelector.position)
-        rebindCamera()
-        state.rebindCamera = ::rebindCamera
+        updateCameraInfo()
         controller.initialize(
             recordController = DefaultRecordController(
                 iosCameraSession = iosCameraSession,
@@ -82,12 +81,8 @@ public actual class CameraSession private constructor(
         focusPoint: CValue<CGPoint>,
     ) = iosCameraSession.setFocusPoint(focusPoint)
 
-    private fun rebindCamera() = with(iosCameraSession.device) {
+    internal actual fun updateCameraInfo() = with(iosCameraSession.device) {
         info.rebind(state.captureMode.output)
-        iosCameraSession.setCameraOutputQuality(
-            quality = state.imageCaptureStrategy.strategy,
-            highResolutionEnabled = state.imageCaptureStrategy.highResolutionEnabled,
-        )
     }
 
     internal fun recoveryState() {
@@ -96,12 +91,6 @@ public actual class CameraSession private constructor(
 
     internal fun dispose() {
         iosCameraSession.release()
-    }
-
-    internal actual fun onCamSelectorWillChange() {
-    }
-
-    internal actual fun onCamSelectorDidChange() {
     }
 
 }

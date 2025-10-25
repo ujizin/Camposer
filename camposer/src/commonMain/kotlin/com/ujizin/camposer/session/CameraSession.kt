@@ -6,6 +6,7 @@ import com.ujizin.camposer.info.CameraInfo
 public expect class CameraSession {
 
     public val state: CameraState
+
     public val info: CameraInfo
 
     /**
@@ -20,6 +21,5 @@ public expect class CameraSession {
     public var isInitialized: Boolean
         private set
 
-    internal fun onCamSelectorWillChange()
-    internal fun onCamSelectorDidChange()
+    internal fun updateCameraInfo()
 }

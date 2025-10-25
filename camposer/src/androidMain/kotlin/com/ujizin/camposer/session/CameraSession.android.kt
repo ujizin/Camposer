@@ -16,7 +16,6 @@ import com.ujizin.camposer.extensions.compatMainExecutor
 import com.ujizin.camposer.info.AndroidCameraInfo
 import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.state.CameraState
-import com.ujizin.camposer.state.properties.FlashMode
 import java.util.concurrent.Executor
 
 /**
@@ -109,29 +108,17 @@ public actual class CameraSession private constructor(
             cameraInfo = info,
         )
         cameraXController.initializationFuture.addListener({
-            state.rebindCamera = ::rebindCamera
-            rebindCamera()
+            updateCameraInfo()
             isInitialized = true
             controller.onSessionStarted()
         }, mainExecutor)
     }
 
     @SuppressLint("RestrictedApi")
-    private fun rebindCamera() {
+    internal actual fun updateCameraInfo() {
         // Disable from pinch to zoom from cameraX controller
         cameraXController.isPinchToZoomEnabled = false
         info.rebind()
-    }
-
-    internal actual fun onCamSelectorWillChange() {
-
-    }
-
-    internal actual fun onCamSelectorDidChange() = with(state) {
-        controller.setZoomRatio(info.minZoom)
-        controller.setExposureCompensation(0F)
-        controller.setFlashMode(FlashMode.Off)
-        controller.setTorchEnabled(false)
     }
 
     internal fun dispose() {

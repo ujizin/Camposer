@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.ujizin.camposer.extensions.withConfigurationLock
 import com.ujizin.camposer.info.CameraInfo
+import com.ujizin.camposer.session.CameraSession
 import com.ujizin.camposer.session.IOSCameraSession
 import com.ujizin.camposer.state.properties.CamSelector
 import com.ujizin.camposer.state.properties.CaptureMode
@@ -26,21 +27,16 @@ import platform.AVFoundation.videoZoomFactor
 public actual class CameraState(
     private val iosCameraSession: IOSCameraSession,
     private val cameraInfo: CameraInfo,
-    internal var rebindCamera: () -> Unit = {},
 ) {
     public actual var captureMode: CaptureMode by config(
         value = CaptureMode.Image,
         onDispose = { iosCameraSession.removeOutput(it.output) },
-        block = {
-            iosCameraSession.addOutput(it.output)
-            rebindCamera()
-        },
+        block = { iosCameraSession.addOutput(it.output) },
     )
         internal set
 
     public actual var camSelector: CamSelector by config(CamSelector.Back) {
         iosCameraSession.setCameraPosition(it.position)
-        rebindCamera()
     }
         internal set
 
@@ -133,4 +129,20 @@ public actual class CameraState(
     init {
         iosCameraSession.setPreviewGravity(scaleType.gravity)
     }
+
+    internal actual fun resetConfig() {
+        zoomRatio = cameraInfo.minZoom
+        exposureCompensation = 0F
+        flashMode = FlashMode.Off
+        isTorchEnabled = false
+        iosCameraSession.setCameraOutputQuality(
+            quality = imageCaptureStrategy.strategy,
+            highResolutionEnabled = imageCaptureStrategy.highResolutionEnabled,
+        )
+    }
 }
+
+internal actual fun CameraSession.isToUpdateCameraInfo(
+    isCamSelectorChanged: Boolean,
+    isCaptureModeChanged: Boolean,
+) = isCamSelectorChanged || isCaptureModeChanged

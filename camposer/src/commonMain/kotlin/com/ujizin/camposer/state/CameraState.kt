@@ -39,7 +39,14 @@ public expect class CameraState {
         internal set
     public var isTorchEnabled: Boolean
         internal set
+
+    internal fun resetConfig()
 }
+
+internal expect fun CameraSession.isToUpdateCameraInfo(
+    isCamSelectorChanged: Boolean,
+    isCaptureModeChanged: Boolean,
+): Boolean
 
 internal fun CameraSession.update(
     camSelector: CamSelector,
@@ -54,15 +61,9 @@ internal fun CameraSession.update(
     isPinchToZoomEnabled: Boolean,
 ) {
     val isCamSelectorChanged = state.camSelector != camSelector
-    with(state) {
-        if (isCamSelectorChanged) {
-            zoomRatio = info.minZoom
-            exposureCompensation = 0F
-            flashMode = FlashMode.Off
-            isTorchEnabled = false
-            onCamSelectorWillChange()
-        }
+    val isCaptureModeChanged = state.captureMode != captureMode
 
+    with(state) {
         this.camSelector = camSelector
         this.captureMode = captureMode
         this.scaleType = scaleType
@@ -74,8 +75,9 @@ internal fun CameraSession.update(
         this.resolutionPreset = resolutionPreset
         this.isPinchToZoomEnabled = isPinchToZoomEnabled
 
-        if (isCamSelectorChanged) {
-            onCamSelectorDidChange()
+        if (isToUpdateCameraInfo(isCamSelectorChanged, isCaptureModeChanged)) {
+            updateCameraInfo()
+            resetConfig()
         }
     }
 }

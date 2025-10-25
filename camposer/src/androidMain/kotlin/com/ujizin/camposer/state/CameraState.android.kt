@@ -13,6 +13,7 @@ import androidx.compose.ui.util.fastCoerceIn
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.ujizin.camposer.info.CameraInfo
+import com.ujizin.camposer.session.CameraSession
 import com.ujizin.camposer.state.properties.CamSelector
 import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.FlashMode
@@ -30,7 +31,6 @@ public actual class CameraState internal constructor(
     private val mainExecutor: Executor,
     private val controller: CameraController,
     private val cameraInfo: CameraInfo,
-    internal var rebindCamera: () -> Unit = {},
 ) {
 
     public actual var captureMode: CaptureMode by config(CaptureMode.Image) { mode ->
@@ -52,10 +52,7 @@ public actual class CameraState internal constructor(
         predicate = { old, new ->
             old != new && controller.hasCamera(new.selector) && !controller.isRecording
         },
-        block = {
-            controller.cameraSelector = it.selector
-            rebindCamera()
-        }
+        block = { controller.cameraSelector = it.selector }
     )
         internal set
 
@@ -64,7 +61,7 @@ public actual class CameraState internal constructor(
 
     public actual var flashMode: FlashMode by config(
         value = FlashMode.find(controller.imageCaptureFlashMode),
-        predicate = { old, new -> cameraInfo.isFlashSupported && old != new }
+        predicate = { old, new -> new.isFlashSupported() && old != new }
     ) {
         mainExecutor.execute { controller.imageCaptureFlashMode = it.mode }
     }
@@ -107,10 +104,8 @@ public actual class CameraState internal constructor(
 
     public actual var isTorchEnabled: Boolean by config(
         value = controller.torchState.value == TorchState.ON,
-        predicate = { old, new -> old != new && cameraInfo.isTorchSupported },
-        block = {
-            mainExecutor.execute { controller.enableTorch(it) }
-        }
+        predicate = { old, new -> old != new && (!new || cameraInfo.isTorchAvailable) },
+        block = { mainExecutor.execute { controller.enableTorch(it) } }
     )
         internal set
 
@@ -151,6 +146,9 @@ public actual class CameraState internal constructor(
         else -> mode.value
     }
 
+    private fun FlashMode.isFlashSupported(): Boolean =
+        this == FlashMode.Off || cameraInfo.isFlashSupported
+
     internal inner class CameraConfigSaver : DefaultLifecycleObserver {
 
         private var hasPaused: Boolean = false
@@ -167,4 +165,16 @@ public actual class CameraState internal constructor(
             super.onPause(owner)
         }
     }
+
+    internal actual fun resetConfig() {
+        zoomRatio = cameraInfo.minZoom
+        exposureCompensation = 0F
+        flashMode = FlashMode.Off
+        isTorchEnabled = false
+    }
 }
+
+internal actual fun CameraSession.isToUpdateCameraInfo(
+    isCamSelectorChanged: Boolean,
+    isCaptureModeChanged: Boolean,
+): Boolean = isCamSelectorChanged
