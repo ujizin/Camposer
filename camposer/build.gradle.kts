@@ -23,6 +23,10 @@ extra.apply {
 apply(from = "${rootDir}/scripts/publish-module.gradle")
 
 kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
+    }
+
     explicitApi()
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
