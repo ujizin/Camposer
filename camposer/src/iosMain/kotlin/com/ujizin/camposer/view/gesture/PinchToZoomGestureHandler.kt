@@ -1,7 +1,6 @@
 package com.ujizin.camposer.view.gesture
 
 import com.ujizin.camposer.session.CameraSession
-import com.ujizin.camposer.view.CameraViewDelegate
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.ObjCAction
@@ -14,7 +13,6 @@ import platform.darwin.NSObject
 @OptIn(ExperimentalForeignApi::class)
 internal class PinchToZoomGestureHandler(
     private val cameraSession: CameraSession,
-    private val cameraViewDelegate: CameraViewDelegate,
 ) : NSObject() {
 
     internal val recognizer = UIPinchGestureRecognizer(
@@ -33,7 +31,7 @@ internal class PinchToZoomGestureHandler(
                 maximumValue = cameraSession.info.maxZoom,
             )
 
-            cameraViewDelegate.onZoomChanged(clampedZoom)
+            cameraSession.controller.setZoomRatio(clampedZoom)
             sender.scale = 1.0
         }
     }

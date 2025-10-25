@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
@@ -23,14 +22,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.skydoves.cloudy.cloudy
 import com.ujizin.camposer.CameraPreview
-import com.ujizin.camposer.state.properties.CamSelector
-import com.ujizin.camposer.state.properties.ResolutionPreset
 import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.session.CameraSession
 import com.ujizin.camposer.session.rememberCameraSession
-import com.ujizin.camposer.session.rememberFlashMode
 import com.ujizin.camposer.session.rememberImageAnalyzer
-import com.ujizin.camposer.session.rememberTorch
+import com.ujizin.camposer.state.properties.CamSelector
+import com.ujizin.camposer.state.properties.ResolutionPreset
 import com.ujizin.sample.extensions.noClickable
 import com.ujizin.sample.feature.camera.components.ActionBox
 import com.ujizin.sample.feature.camera.components.BlinkPictureBox
@@ -101,29 +98,28 @@ fun CameraSection(
     onAnalyzeImage: (ImageProxy) -> Unit,
     onConfigurationClick: () -> Unit,
 ) {
-    var flashMode by cameraSession.rememberFlashMode()
     var camSelector by remember { mutableStateOf(if (useFrontCamera) CamSelector.Front else CamSelector.Back) }
-    var zoomRatio by rememberSaveable { mutableFloatStateOf(cameraSession.info.minZoom) }
-    var zoomHasChanged by rememberSaveable { mutableStateOf(false) }
+    val zoomRatio by rememberUpdatedState(cameraSession.state.zoomRatio)
+    var zoomHasChanged by remember { mutableStateOf(false) }
+
     val hasFlashUnit by rememberUpdatedState(cameraSession.info.isFlashSupported)
     var cameraOption by rememberSaveable { mutableStateOf(CameraOption.Photo) }
-    var enableTorch by cameraSession.rememberTorch(initialTorch = false)
+    val flashMode by rememberUpdatedState(cameraSession.state.flashMode)
+    val enableTorch by rememberUpdatedState(cameraSession.state.isTorchEnabled)
     val imageAnalyzer = cameraSession.rememberImageAnalyzer(analyze = onAnalyzeImage)
+
+    LaunchedEffect(zoomRatio) {
+        zoomHasChanged = true
+    }
+
     CameraPreview(
         cameraSession = cameraSession,
         camSelector = camSelector,
         captureMode = cameraOption.toCaptureMode(),
-        isTorchEnabled = enableTorch,
-        flashMode = flashMode,
         resolutionPreset = ResolutionPreset.Low,
-        zoomRatio = zoomRatio,
         imageAnalyzer = imageAnalyzer,
         isPinchToZoomEnabled = usePinchToZoom,
         isFocusOnTapEnabled = useTapToFocus,
-        onZoomRatioChanged = {
-            zoomHasChanged = true
-            zoomRatio = it
-        },
         switchCameraContent = { bitmap ->
             Image(
                 modifier = Modifier.cloudy(radius = 20),
@@ -144,8 +140,10 @@ fun CameraSection(
             qrCodeText = qrCodeText,
             isVideoSupported = true,
             onFlashModeChanged = { flash ->
-                enableTorch = flash == Flash.Always
-                flashMode = flash.toFlashMode()
+                with(cameraSession.controller) {
+                    setTorchEnabled(flash == Flash.Always)
+                    setFlashMode(flash.toFlashMode())
+                }
             },
             onZoomFinish = { zoomHasChanged = false },
             lastPicture = lastPicture,

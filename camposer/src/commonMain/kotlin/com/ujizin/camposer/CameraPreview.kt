@@ -13,17 +13,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ImageBitmap
+import com.ujizin.camposer.focus.FocusTap
+import com.ujizin.camposer.focus.SquareCornerFocus
+import com.ujizin.camposer.session.CameraSession
 import com.ujizin.camposer.state.properties.CamSelector
 import com.ujizin.camposer.state.properties.CaptureMode
-import com.ujizin.camposer.state.properties.FlashMode
 import com.ujizin.camposer.state.properties.ImageAnalyzer
 import com.ujizin.camposer.state.properties.ImageCaptureStrategy
 import com.ujizin.camposer.state.properties.ImplementationMode
 import com.ujizin.camposer.state.properties.ResolutionPreset
 import com.ujizin.camposer.state.properties.ScaleType
-import com.ujizin.camposer.focus.FocusTap
-import com.ujizin.camposer.focus.SquareCornerFocus
-import com.ujizin.camposer.session.CameraSession
 import kotlinx.coroutines.delay
 
 /**
@@ -31,13 +30,9 @@ import kotlinx.coroutines.delay
  *
  * @param cameraSession camera state hold some states and camera's controller
  * @param camSelector camera selector to be added, default is back
- * @param captureMode camera c  apture mode, default is image
+ * @param captureMode camera capture mode, default is image
  * @param captureStrategy camera image capture mode, default is minimum latency for better performance
- * @param flashMode flash mode to be added, default is off
  * @param scaleType scale type to be added, default is fill center
- * @param isTorchEnabled enable torch from camera, default is false.
- * @param exposureCompensation camera exposure compensation to be added
- * @param zoomRatio zoom ratio to be added, default is 1.0
  * @param imageAnalyzer image analyzer from camera, see [com.ujizin.camposer.state.properties.ImageAnalyzer]
  * @param implementationMode implementation mode to be added, default is performance
  * @param isImageAnalysisEnabled enable or disable image analysis
@@ -45,7 +40,6 @@ import kotlinx.coroutines.delay
  * @param isPinchToZoomEnabled turn on feature pinch to zoom if true
  * @param onPreviewStreamChanged dispatch when preview is switching to front or back
  * @param switchCameraContent composable preview when change camera and it's not been streaming yet
- * @param onZoomRatioChanged dispatch when zoom is changed by pinch to zoom
  * @param focusTapContent content of focus tap, default is [SquareCornerFocus]
  * @param onFocus callback to use when on focus tap is triggered, call onComplete to [focusTapContent] gone.
  * @param content content composable within of camera preview.
@@ -59,11 +53,7 @@ public fun CameraPreview(
     camSelector: CamSelector = cameraSession.state.camSelector,
     captureMode: CaptureMode = cameraSession.state.captureMode,
     captureStrategy: ImageCaptureStrategy = cameraSession.state.imageCaptureStrategy,
-    flashMode: FlashMode = cameraSession.state.flashMode,
     scaleType: ScaleType = cameraSession.state.scaleType,
-    isTorchEnabled: Boolean = cameraSession.state.isTorchEnabled,
-    exposureCompensation: Float? = null,
-    zoomRatio: Float = 1F,
     imageAnalyzer: ImageAnalyzer? = null,
     resolutionPreset: ResolutionPreset = cameraSession.state.resolutionPreset,
     implementationMode: ImplementationMode = cameraSession.state.implementationMode,
@@ -76,7 +66,6 @@ public fun CameraPreview(
         delay(1000L)
         onComplete()
     },
-    onZoomRatioChanged: (Float) -> Unit = {},
     focusTapContent: @Composable () -> Unit = { SquareCornerFocus() },
     content: @Composable BoxScope.() -> Unit = {},
 ) {
@@ -90,19 +79,14 @@ public fun CameraPreview(
             cameraSession = cameraSession,
             captureMode = captureMode,
             camSelector = camSelector,
-            imageCaptureMode = captureStrategy,
-            flashMode = flashMode,
+            imageCaptureStrategy = captureStrategy,
             resolutionPreset = resolutionPreset,
             scaleType = scaleType,
-            isTorchEnabled = isTorchEnabled,
-            exposureCompensation = exposureCompensation,
-            zoomRatio = zoomRatio,
             imageAnalyzer = imageAnalyzer,
-            implementationMode = implementationMode,
             isImageAnalysisEnabled = isImageAnalysisEnabled,
+            implementationMode = implementationMode,
             isFocusOnTapEnabled = isFocusOnTapEnabled,
             isPinchToZoomEnabled = isPinchToZoomEnabled,
-            onZoomRatioChanged = onZoomRatioChanged,
             onTapFocus = { tapOffset = it },
             onSwitchCamera = { latestBitmap = it },
         )
@@ -116,10 +100,7 @@ public fun CameraPreview(
             modifier = Modifier.fillMaxSize(),
             isCameraIdle = isCameraIdle,
             bitmap = latestBitmap,
-            onPreviewStreamChanged = {
-                onZoomRatioChanged(cameraSession.info.minZoom)
-                onPreviewStreamChanged()
-            },
+            onPreviewStreamChanged = onPreviewStreamChanged,
             onResetBitmap = { latestBitmap = null },
             switchCameraContent = switchCameraContent,
         )
@@ -157,12 +138,8 @@ internal expect fun CameraPreviewImpl(
     camSelector: CamSelector,
     captureMode: CaptureMode,
     resolutionPreset: ResolutionPreset,
-    imageCaptureMode: ImageCaptureStrategy,
-    flashMode: FlashMode,
+    imageCaptureStrategy: ImageCaptureStrategy,
     scaleType: ScaleType,
-    isTorchEnabled: Boolean,
-    exposureCompensation: Float?,
-    zoomRatio: Float,
     imageAnalyzer: ImageAnalyzer?,
     implementationMode: ImplementationMode,
     isImageAnalysisEnabled: Boolean,
@@ -170,6 +147,5 @@ internal expect fun CameraPreviewImpl(
     isPinchToZoomEnabled: Boolean,
     onTapFocus: (Offset) -> Unit,
     onSwitchCamera: (ImageBitmap) -> Unit,
-    onZoomRatioChanged: (Float) -> Unit = {},
     content: @Composable () -> Unit = {},
 )

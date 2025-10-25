@@ -9,13 +9,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.ujizin.camposer.command.AndroidTakePictureCommand
 import com.ujizin.camposer.command.DefaultTakePictureCommand
-import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.controller.record.AndroidRecordController
 import com.ujizin.camposer.controller.record.DefaultRecordController
 import com.ujizin.camposer.extensions.compatMainExecutor
 import com.ujizin.camposer.info.AndroidCameraInfo
 import com.ujizin.camposer.info.CameraInfo
+import com.ujizin.camposer.state.CameraState
+import com.ujizin.camposer.state.properties.FlashMode
 import java.util.concurrent.Executor
 
 /**
@@ -26,8 +27,8 @@ import java.util.concurrent.Executor
 @Stable
 public actual class CameraSession private constructor(
     context: Context,
-    public val controller: LifecycleCameraController,
-    private val cameraController: CameraController,
+    public val cameraXController: LifecycleCameraController,
+    public val controller: CameraController,
     private val mainExecutor: Executor = context.compatMainExecutor,
     private val androidRecordController: AndroidRecordController,
     private val androidTakePictureCommand: AndroidTakePictureCommand,
@@ -74,8 +75,8 @@ public actual class CameraSession private constructor(
         info: CameraInfo,
     ) : this(
         context = context,
-        controller = controller,
-        cameraController = cameraController,
+        cameraXController = controller,
+        controller = cameraController,
         mainExecutor = mainExecutor,
         androidRecordController = androidRecordController,
         androidTakePictureCommand = androidTakePictureCommand,
@@ -101,26 +102,40 @@ public actual class CameraSession private constructor(
         internal set
 
     init {
-        controller.initializationFuture.addListener({
-            cameraController.initialize(
-                recordController = androidRecordController,
-                takePictureCommand = androidTakePictureCommand,
-            )
+        controller.initialize(
+            recordController = androidRecordController,
+            takePictureCommand = androidTakePictureCommand,
+            cameraState = state,
+            cameraInfo = info,
+        )
+        cameraXController.initializationFuture.addListener({
             state.rebindCamera = ::rebindCamera
             rebindCamera()
             isInitialized = true
+            controller.onSessionStarted()
         }, mainExecutor)
     }
 
     @SuppressLint("RestrictedApi")
     private fun rebindCamera() {
         // Disable from pinch to zoom from cameraX controller
-        controller.isPinchToZoomEnabled = false
+        cameraXController.isPinchToZoomEnabled = false
         info.rebind()
-        state.rebind()
+    }
+
+    internal actual fun onCamSelectorWillChange() {
+
+    }
+
+    internal actual fun onCamSelectorDidChange() = with(state) {
+        controller.setZoomRatio(info.minZoom)
+        controller.setExposureCompensation(0F)
+        controller.setFlashMode(FlashMode.Off)
+        controller.setTorchEnabled(false)
     }
 
     internal fun dispose() {
-        controller.unbind()
+        cameraXController.unbind()
     }
+
 }

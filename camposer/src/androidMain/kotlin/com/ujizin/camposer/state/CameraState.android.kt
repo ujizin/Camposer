@@ -12,6 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.util.fastCoerceIn
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.state.properties.CamSelector
 import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.FlashMode
@@ -20,7 +21,6 @@ import com.ujizin.camposer.state.properties.ImageCaptureStrategy
 import com.ujizin.camposer.state.properties.ImplementationMode
 import com.ujizin.camposer.state.properties.ResolutionPreset
 import com.ujizin.camposer.state.properties.ScaleType
-import com.ujizin.camposer.info.CameraInfo
 import java.util.concurrent.Executor
 import kotlin.math.roundToInt
 
@@ -66,7 +66,7 @@ public actual class CameraState internal constructor(
         value = FlashMode.find(controller.imageCaptureFlashMode),
         predicate = { old, new -> cameraInfo.isFlashSupported && old != new }
     ) {
-        controller.imageCaptureFlashMode = it.mode
+        mainExecutor.execute { controller.imageCaptureFlashMode = it.mode }
     }
         internal set
 
@@ -98,9 +98,9 @@ public actual class CameraState internal constructor(
     }
         internal set
 
-    public actual var exposureCompensation: Float? by config(
-        value = null,
-        predicate = { old, new -> new != null && old != new },
+    public actual var exposureCompensation: Float by config(
+        value = 0F,
+        onSet = { it.fastCoerceIn(cameraInfo.minExposure, cameraInfo.maxExposure) },
         block = ::setExposureCompensation,
     )
         internal set
@@ -108,11 +108,17 @@ public actual class CameraState internal constructor(
     public actual var isTorchEnabled: Boolean by config(
         value = controller.torchState.value == TorchState.ON,
         predicate = { old, new -> old != new && cameraInfo.isTorchSupported },
-        block = controller::enableTorch
+        block = {
+            mainExecutor.execute { controller.enableTorch(it) }
+        }
     )
         internal set
 
-    public actual var zoomRatio: Float by config(cameraInfo.minZoom, block = ::setZoomRatio)
+    public actual var zoomRatio: Float by config(
+        value = cameraInfo.minZoom,
+        onSet = { it.fastCoerceIn(cameraInfo.minZoom, cameraInfo.maxZoom) },
+        block = ::setZoomRatio,
+    )
         internal set
 
     init {
@@ -128,17 +134,16 @@ public actual class CameraState internal constructor(
         controller.clearEffects()
     }
 
-    private fun setExposureCompensation(exposureCompensation: Float?) {
-        if (exposureCompensation == null) return
-        controller.cameraControl?.setExposureCompensationIndex(
-            exposureCompensation
-                .fastCoerceIn(cameraInfo.minExposure, cameraInfo.maxExposure)
-                .roundToInt(),
-        )
+    private fun setExposureCompensation(exposureCompensation: Float) {
+        mainExecutor.execute {
+            controller.cameraControl?.setExposureCompensationIndex(
+                exposureCompensation.roundToInt(),
+            )
+        }
     }
 
     private fun setZoomRatio(zoomRatio: Float) {
-        controller.setZoomRatio(zoomRatio.fastCoerceIn(cameraInfo.minZoom, cameraInfo.maxZoom))
+        mainExecutor.execute { controller.setZoomRatio(zoomRatio) }
     }
 
     private fun getUseCases(mode: CaptureMode = captureMode) = when {
@@ -146,16 +151,20 @@ public actual class CameraState internal constructor(
         else -> mode.value
     }
 
-    internal fun rebind() {
-        setExposureCompensation(exposureCompensation)
-    }
-
     internal inner class CameraConfigSaver : DefaultLifecycleObserver {
+
+        private var hasPaused: Boolean = false
 
         override fun onResume(owner: LifecycleOwner) {
             super.onResume(owner)
-            setZoomRatio(zoomRatio)
+            if (!hasPaused) return
+            setZoomRatio(zoomRatio.fastCoerceIn(cameraInfo.minZoom, cameraInfo.maxZoom))
             setExposureCompensation(exposureCompensation)
+        }
+
+        override fun onPause(owner: LifecycleOwner) {
+            hasPaused = true
+            super.onPause(owner)
         }
     }
 }

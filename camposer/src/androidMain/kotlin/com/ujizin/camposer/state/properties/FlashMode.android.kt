@@ -23,6 +23,6 @@ public actual enum class FlashMode(internal val mode: Int) {
     }
 
     internal companion object {
-        internal fun find(mode: Int) = values().firstOrNull { it.mode == mode } ?: Off
+        internal fun find(mode: Int) = entries.firstOrNull { it.mode == mode } ?: Off
     }
 }

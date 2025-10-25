@@ -15,6 +15,10 @@ import com.ujizin.camposer.state.properties.ImplementationMode
 import com.ujizin.camposer.state.properties.ResolutionPreset
 import com.ujizin.camposer.state.properties.ScaleType
 import kotlinx.cinterop.ExperimentalForeignApi
+import platform.AVFoundation.hasFlash
+import platform.AVFoundation.hasTorch
+import platform.AVFoundation.isFlashAvailable
+import platform.AVFoundation.isTorchAvailable
 import platform.AVFoundation.setExposureTargetBias
 import platform.AVFoundation.videoZoomFactor
 
@@ -45,7 +49,10 @@ public actual class CameraState(
     }
         internal set
 
-    public actual var flashMode: FlashMode by config(FlashMode.Off) {
+    public actual var flashMode: FlashMode by config(
+        value = FlashMode.Off,
+        predicate = { old, new -> old != new && iosCameraSession.device.hasFlash() && iosCameraSession.device.isFlashAvailable() }
+    ) {
         iosCameraSession.setFlashMode(it.mode)
     }
         internal set
@@ -78,8 +85,8 @@ public actual class CameraState(
     public actual var isPinchToZoomEnabled: Boolean by mutableStateOf(true)
         internal set
 
-    public actual var exposureCompensation: Float? by config(
-        null,
+    public actual var exposureCompensation: Float by config(
+        0F,
         block = ::setExposureCompensation,
     )
         internal set
@@ -115,12 +122,15 @@ public actual class CameraState(
     public actual var isFocusOnTapEnabled: Boolean by mutableStateOf(true)
         internal set
 
-    public actual var isTorchEnabled: Boolean by config(false) {
+    public actual var isTorchEnabled: Boolean by config(
+        false,
+        predicate = { old, new -> old != new && iosCameraSession.device.hasTorch && iosCameraSession.device.isTorchAvailable() }
+    ) {
         iosCameraSession.setTorchEnabled(it)
     }
         internal set
 
-    internal fun rebind() {
-        setExposureCompensation(exposureCompensation)
+    init {
+        iosCameraSession.setPreviewGravity(scaleType.gravity)
     }
 }

@@ -1,8 +1,10 @@
 package com.ujizin.camposer
 
+import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
@@ -10,12 +12,12 @@ import androidx.compose.ui.viewinterop.UIKitViewController
 import com.ujizin.camposer.state.properties.CamSelector
 import com.ujizin.camposer.session.CameraSession
 import com.ujizin.camposer.state.properties.CaptureMode
-import com.ujizin.camposer.state.properties.FlashMode
 import com.ujizin.camposer.state.properties.ImageAnalyzer
 import com.ujizin.camposer.state.properties.ImageCaptureStrategy
 import com.ujizin.camposer.state.properties.ImplementationMode
 import com.ujizin.camposer.state.properties.ResolutionPreset
 import com.ujizin.camposer.state.properties.ScaleType
+import com.ujizin.camposer.state.update
 import com.ujizin.camposer.view.CameraViewController
 import com.ujizin.camposer.view.CameraViewDelegate
 import kotlinx.cinterop.ExperimentalForeignApi
@@ -28,12 +30,8 @@ internal actual fun CameraPreviewImpl(
     camSelector: CamSelector,
     captureMode: CaptureMode,
     resolutionPreset: ResolutionPreset,
-    imageCaptureMode: ImageCaptureStrategy,
-    flashMode: FlashMode,
+    imageCaptureStrategy: ImageCaptureStrategy,
     scaleType: ScaleType,
-    isTorchEnabled: Boolean,
-    exposureCompensation: Float?,
-    zoomRatio: Float,
     imageAnalyzer: ImageAnalyzer?,
     implementationMode: ImplementationMode,
     isImageAnalysisEnabled: Boolean,
@@ -41,7 +39,6 @@ internal actual fun CameraPreviewImpl(
     isPinchToZoomEnabled: Boolean,
     onTapFocus: (Offset) -> Unit,
     onSwitchCamera: (ImageBitmap) -> Unit,
-    onZoomRatioChanged: (Float) -> Unit,
     content: @Composable () -> Unit,
 ) {
     val density = LocalDensity.current
@@ -50,18 +47,16 @@ internal actual fun CameraPreviewImpl(
         modifier = modifier,
         factory = {
             CameraViewController(
-                cameraession = cameraSession,
+                cameraSession = cameraSession,
                 cameraViewDelegate = object : CameraViewDelegate {
                     override fun onFocusTap(x: Float, y: Float): Unit = with(density) {
                         onTapFocus(Offset(x.dp.toPx(), y.dp.toPx()))
                     }
-
-                    override fun onZoomChanged(zoomRatio: Float) = onZoomRatioChanged(zoomRatio)
                 }
             )
         },
         update = { cameraViewController ->
-            cameraViewController.update(
+            cameraViewController.cameraSession.update(
                 camSelector = camSelector,
                 captureMode = captureMode,
                 scaleType = scaleType,
@@ -69,11 +64,7 @@ internal actual fun CameraPreviewImpl(
                 imageAnalyzer = imageAnalyzer,
                 implementationMode = implementationMode,
                 isFocusOnTapEnabled = isFocusOnTapEnabled,
-                flashMode = flashMode,
-                isTorchEnabled = isTorchEnabled,
-                zoomRatio = zoomRatio,
-                imageCaptureMode = imageCaptureMode,
-                exposureCompensation = exposureCompensation,
+                imageCaptureStrategy = imageCaptureStrategy,
                 isPinchToZoomEnabled = isPinchToZoomEnabled,
                 resolutionPreset = resolutionPreset,
             )

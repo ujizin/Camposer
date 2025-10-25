@@ -1,8 +1,8 @@
 package com.ujizin.camposer
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
@@ -12,18 +12,20 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
-internal class ExposureCompensationTest: CameraTest() {
+internal class ExposureCompensationTest : CameraTest() {
 
-    private lateinit var exposureCompensation: MutableState<Float>
+    private lateinit var exposureCompensation: State<Float>
 
     private val currentExposure: Float?
-        get() = cameraSession.controller.cameraInfo?.exposureState?.exposureCompensationIndex?.toFloat()
+        get() = cameraSession.cameraXController.cameraInfo?.exposureState?.exposureCompensationIndex?.toFloat()
 
     @Test
     fun test_minExposureCompensation() = with(composeTestRule) {
         initCameraWithExposure(0F)
 
-        exposureCompensation.value = cameraSession.info.minExposure
+        runOnUiThread {
+            cameraController.setExposureCompensation(cameraSession.info.minExposure)
+        }
 
         runOnIdle {
             if (!cameraSession.info.isExposureSupported) return@runOnIdle
@@ -37,8 +39,9 @@ internal class ExposureCompensationTest: CameraTest() {
     fun test_maxExposureCompensation() = with(composeTestRule) {
         initCameraWithExposure(0F)
 
-        exposureCompensation.value = cameraSession.info.maxExposure
-
+        runOnUiThread {
+            cameraController.setExposureCompensation(cameraSession.info.maxExposure)
+        }
         runOnIdle {
             if (!cameraSession.info.isExposureSupported) return@runOnIdle
 
@@ -50,10 +53,12 @@ internal class ExposureCompensationTest: CameraTest() {
     private fun ComposeContentTestRule.initCameraWithExposure(
         exposure: Float,
     ) = initCameraSession { state ->
-        exposureCompensation = remember { mutableStateOf(exposure) }
-        CameraPreview(
-            cameraSession = state,
-            exposureCompensation = exposureCompensation.value
-        )
+        exposureCompensation = rememberUpdatedState(cameraSession.state.exposureCompensation)
+
+        LaunchedEffect(exposure) {
+            state.controller.setExposureCompensation(exposure)
+        }
+
+        CameraPreview(cameraSession = state)
     }
 }

@@ -1,9 +1,9 @@
 package com.ujizin.camposer
 
 import android.content.res.Configuration
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalConfiguration
@@ -23,10 +23,10 @@ import org.junit.runner.RunWith
 @LargeTest
 internal class ZoomRatioTest : CameraTest() {
 
-    lateinit var zoomRatio: MutableState<Float>
+    lateinit var zoomRatio: State<Float>
 
     private val currentCameraXZoom: Float?
-        get() = cameraSession.controller.zoomState.value?.zoomRatio
+        get() = cameraSession.cameraXController.zoomState.value?.zoomRatio
 
     private lateinit var configurationScreen: Configuration
 
@@ -41,8 +41,13 @@ internal class ZoomRatioTest : CameraTest() {
     @Test
     fun test_limitToMaxZoomRatio() = with(composeTestRule) {
         initZoomCamera(UNREACHABLE_MAX_ZOOM_VALUE)
+
+        runOnUiThread {
+            waitUntil(10000) { currentCameraXZoom != cameraSession.info.minZoom }
+        }
         runOnIdle {
             assertNotEquals(UNREACHABLE_MAX_ZOOM_VALUE, currentCameraXZoom)
+            assertEquals(cameraSession.info.maxZoom, zoomRatio.value)
             assertEquals(cameraSession.info.maxZoom, currentCameraXZoom)
         }
     }
@@ -60,7 +65,7 @@ internal class ZoomRatioTest : CameraTest() {
     fun test_zoomChangeValueToMax() = with(composeTestRule) {
         initZoomCamera(DEFAULT_ZOOM_VALUE)
 
-        zoomRatio.value = cameraSession.info.maxZoom
+        cameraController.setZoomRatio(cameraSession.info.maxZoom)
         runOnIdle {
             assertEquals(cameraSession.info.maxZoom, zoomRatio.value)
             assertEquals(currentCameraXZoom, zoomRatio.value)
@@ -106,13 +111,15 @@ internal class ZoomRatioTest : CameraTest() {
         isPinchToZoomEnabled: Boolean = true,
     ) = initCameraSession { state ->
         configurationScreen = LocalConfiguration.current
-        zoomRatio = remember { mutableStateOf(initialValue) }
+        zoomRatio = rememberUpdatedState(cameraSession.state.zoomRatio)
+
+        LaunchedEffect(initialValue) {
+            cameraController.setZoomRatio(initialValue)
+        }
 
         CameraPreview(
             modifier = Modifier.testTag(CAMERA_ZOOM_TAG),
             cameraSession = state,
-            zoomRatio = zoomRatio.value,
-            onZoomRatioChanged = { zoomRatio.value = it },
             isPinchToZoomEnabled = isPinchToZoomEnabled
         )
     }

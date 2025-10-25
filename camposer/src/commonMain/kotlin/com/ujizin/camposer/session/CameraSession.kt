@@ -19,4 +19,7 @@ public expect class CameraSession {
      * */
     public var isInitialized: Boolean
         private set
+
+    internal fun onCamSelectorWillChange()
+    internal fun onCamSelectorDidChange()
 }

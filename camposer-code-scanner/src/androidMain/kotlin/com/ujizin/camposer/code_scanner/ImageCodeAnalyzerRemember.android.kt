@@ -13,7 +13,7 @@ public actual fun CameraSession.rememberCodeImageAnalyzer(
     codeAnalyzerListener: CodeAnalyzerListener,
 ): ImageAnalyzer = remember(codeTypes, codeAnalyzerListener) {
     ImageAnalyzer(
-        controller = controller,
+        controller = cameraXController,
         analyzer = ImageCodeAnalyzer(codeTypes, codeAnalyzerListener, onError),
     )
 }

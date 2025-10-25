@@ -6,7 +6,6 @@ import com.ujizin.camposer.session.CameraSession
 
 internal class PinchToZoomController(
     private val cameraSession: CameraSession,
-    private val onZoomRatioChanged: (Float) -> Unit,
 ) {
 
     internal fun onPinchToZoom(scaleFactor: Float): Boolean {
@@ -17,7 +16,7 @@ internal class PinchToZoomController(
             maximumValue = cameraSession.info.maxZoom,
         )
 
-        onZoomRatioChanged(zoomRatio)
+        cameraSession.controller.setZoomRatio(zoomRatio)
 
         return true
     }

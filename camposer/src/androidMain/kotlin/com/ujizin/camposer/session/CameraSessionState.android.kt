@@ -30,12 +30,12 @@ public actual fun rememberCameraSession(controller: CameraController): CameraSes
 @Composable
 public fun CameraSession.rememberImageAnalyzer(
     imageAnalysisBackpressureStrategy: ImageAnalysisBackpressureStrategy = ImageAnalysisBackpressureStrategy.KeepOnlyLatest,
-    imageAnalysisResolutionSelector: ResolutionSelector? = controller.imageAnalysisResolutionSelector,
-    imageAnalysisImageQueueDepth: Int = controller.imageAnalysisImageQueueDepth,
+    imageAnalysisResolutionSelector: ResolutionSelector? = cameraXController.imageAnalysisResolutionSelector,
+    imageAnalysisImageQueueDepth: Int = cameraXController.imageAnalysisImageQueueDepth,
     analyze: ImageAnalysis.Analyzer,
 ): ImageAnalyzer = remember(this) {
     ImageAnalyzer(
-        controller,
+        cameraXController,
         imageAnalysisBackpressureStrategy,
         imageAnalysisResolutionSelector,
         imageAnalysisImageQueueDepth,

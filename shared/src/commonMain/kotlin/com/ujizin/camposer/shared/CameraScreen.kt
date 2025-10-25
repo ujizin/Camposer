@@ -29,12 +29,10 @@ import com.ujizin.camposer.code_scanner.model.CodeType
 import com.ujizin.camposer.code_scanner.rememberCodeImageAnalyzer
 import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.result.CaptureResult
+import com.ujizin.camposer.session.rememberCameraSession
 import com.ujizin.camposer.state.properties.CamSelector
 import com.ujizin.camposer.state.properties.CaptureMode
-import com.ujizin.camposer.state.properties.FlashMode
 import com.ujizin.camposer.state.properties.inverse
-import com.ujizin.camposer.session.rememberCameraSession
-import com.ujizin.camposer.session.rememberTorch
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemTemporaryDirectory
 import kotlin.math.roundToInt
@@ -46,17 +44,22 @@ import kotlin.uuid.Uuid
 fun CameraScreen() {
     val cameraController = remember { CameraController() }
     val cameraSession = rememberCameraSession(cameraController)
-    var flashMode: FlashMode by remember { mutableStateOf(FlashMode.Off) }
-    var enableTorch by cameraSession.rememberTorch(false)
+
+    // Camera state
+    val flashMode by rememberUpdatedState(cameraSession.state.flashMode)
+    val isTorchEnabled by rememberUpdatedState(cameraSession.state.isTorchEnabled)
+    val exposureCompensation by rememberUpdatedState(cameraSession.state.exposureCompensation)
+
+    // Maybe passing to state?
+    val isPreviewing by rememberUpdatedState(cameraSession.isStreaming)
+
     var camSelector by remember { mutableStateOf(CamSelector.Back) }
-    var zoomRatio by remember { mutableStateOf(cameraSession.info.minZoom) }
-    var bitmap by remember { mutableStateOf<ImageBitmap?>(null) }
+    val zoomRatio by rememberUpdatedState(cameraSession.state.zoomRatio)
     var captureMode by remember { mutableStateOf(CaptureMode.Image) }
     val isRecording by rememberUpdatedState(cameraController.isRecording)
-    var exposureCompensation by remember { mutableStateOf(0F) }
     var videoPath by remember { mutableStateOf("") }
     var text by remember { mutableStateOf("") }
-    val isPreviewing by rememberUpdatedState(cameraSession.isStreaming)
+    var bitmap by remember { mutableStateOf<ImageBitmap?>(null) }
     val codeImageAnalyzer = cameraSession.rememberCodeImageAnalyzer(
         codeTypes = listOf(CodeType.Barcode39),
         onError = {}
@@ -67,14 +70,9 @@ fun CameraScreen() {
     CameraPreview(
         modifier = Modifier.fillMaxSize(),
         cameraSession = cameraSession,
-        flashMode = flashMode,
-        isTorchEnabled = enableTorch,
         camSelector = camSelector,
-        zoomRatio = zoomRatio,
-        exposureCompensation = exposureCompensation,
         captureMode = captureMode,
         imageAnalyzer = codeImageAnalyzer,
-        onZoomRatioChanged = { zoomRatio = it }
     ) {
         FlowRow {
             Button(onClick = {}) {
@@ -83,10 +81,10 @@ fun CameraScreen() {
             if (isRecording) {
                 Box(Modifier.size(24.dp).background(Color.Red, CircleShape))
             }
-            Button(onClick = { enableTorch = !enableTorch }) {
-                Text("Torch: $enableTorch")
+            Button(onClick = { cameraController.setTorchEnabled(!isTorchEnabled) }) {
+                Text("Torch: $isTorchEnabled")
             }
-            Button(onClick = { flashMode = flashMode.inverse }) {
+            Button(onClick = { cameraController.setFlashMode(flashMode.inverse) }) {
                 Text("Flash mode: $flashMode")
             }
             Button(onClick = {
@@ -97,7 +95,7 @@ fun CameraScreen() {
             }) {
                 Text("Cam selector: $camSelector")
             }
-            Button(onClick = { zoomRatio += 1F }) {
+            Button(onClick = { cameraController.setZoomRatio(zoomRatio + 1) }) {
                 Text("zoom Ratio: ${zoomRatio.roundDecimals(1)}")
             }
             Button(onClick = {
@@ -134,9 +132,7 @@ fun CameraScreen() {
             }
             Button(
                 onClick = {
-                    exposureCompensation = (exposureCompensation + 1).coerceAtMost(
-                        cameraSession.info.maxExposure
-                    )
+                    cameraController.setExposureCompensation(exposureCompensation + 1F)
                 },
             ) {
                 Text("exposureCompensation: $exposureCompensation")

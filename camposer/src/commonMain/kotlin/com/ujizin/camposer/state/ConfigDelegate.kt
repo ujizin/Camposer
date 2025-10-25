@@ -10,6 +10,7 @@ internal fun <T> config(
     value: T,
     predicate: (old: T, new: T) -> Boolean = { old, new -> old != new },
     onDispose: (old: T) -> Unit = {},
+    onSet: (field: T) -> T = { it },
     block: (new: T) -> Unit = {},
 ): ReadWriteProperty<Any?, T> = object : ReadWriteProperty<Any?, T> {
     private var currentValue by mutableStateOf(value)
@@ -19,7 +20,7 @@ internal fun <T> config(
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
         if (!predicate(currentValue, value)) return
         onDispose(currentValue)
-        currentValue = value
-        block(value)
+        currentValue = onSet(value)
+        block(currentValue)
     }
 }

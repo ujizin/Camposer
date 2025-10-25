@@ -1,17 +1,22 @@
 package com.ujizin.camposer.controller.camera
 
-import com.ujizin.camposer.command.TakePictureCommand
-import com.ujizin.camposer.controller.record.RecordController
+import CameraControllerContract
+import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.result.CaptureResult
+import com.ujizin.camposer.state.CameraState
+import com.ujizin.camposer.state.properties.FlashMode
 import kotlinx.io.files.Path
 
-public expect class CameraController : RecordController, TakePictureCommand {
+public expect class CameraController : CameraControllerContract {
 
     public constructor()
 
-    override val isMuted: Boolean
+    override val state: CameraState?
+    override val info: CameraInfo?
 
+    override val isMuted: Boolean
     override val isRecording: Boolean
+
     override fun startRecording(
         path: Path,
         onVideoCaptured: (CaptureResult<Path>) -> Unit,
@@ -26,4 +31,9 @@ public expect class CameraController : RecordController, TakePictureCommand {
         path: Path,
         onImageCaptured: (CaptureResult<Path>) -> Unit,
     )
+
+    override fun setZoomRatio(zoomRatio: Float)
+    override fun setExposureCompensation(exposureCompensation: Float)
+    override fun setFlashMode(flashMode: FlashMode)
+    override fun setTorchEnabled(isTorchEnabled: Boolean)
 }
