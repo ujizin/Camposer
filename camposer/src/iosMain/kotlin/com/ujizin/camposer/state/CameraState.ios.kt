@@ -83,7 +83,7 @@ public actual class CameraState(
         onSet = { it.fastCoerceIn(cameraInfo.minExposure, cameraInfo.maxExposure) },
         block = {
             iosCameraSession.device.withConfigurationLock {
-                setExposureTargetBias(bias = exposureCompensation, completionHandler = {})
+                setExposureTargetBias(bias = it, completionHandler = {})
             }
         },
     )

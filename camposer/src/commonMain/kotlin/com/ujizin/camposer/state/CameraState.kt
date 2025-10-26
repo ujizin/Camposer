@@ -63,7 +63,11 @@ internal fun CameraSession.update(
     val isCamSelectorChanged = state.camSelector != camSelector
     val isCaptureModeChanged = state.captureMode != captureMode
 
+    val isToUpdateCamera = isToUpdateCameraInfo(isCamSelectorChanged, isCaptureModeChanged)
     with(state) {
+        if (isToUpdateCamera) {
+            resetConfig()
+        }
         this.camSelector = camSelector
         this.captureMode = captureMode
         this.scaleType = scaleType
@@ -75,9 +79,8 @@ internal fun CameraSession.update(
         this.resolutionPreset = resolutionPreset
         this.isPinchToZoomEnabled = isPinchToZoomEnabled
 
-        if (isToUpdateCameraInfo(isCamSelectorChanged, isCaptureModeChanged)) {
+        if (isToUpdateCamera) {
             updateCameraInfo()
-            resetConfig()
         }
     }
 }
