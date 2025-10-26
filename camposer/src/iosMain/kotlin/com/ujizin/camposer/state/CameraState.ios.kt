@@ -3,6 +3,7 @@ package com.ujizin.camposer.state
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.util.fastCoerceIn
 import com.ujizin.camposer.extensions.withConfigurationLock
 import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.session.CameraSession
@@ -79,22 +80,14 @@ public actual class CameraState(
 
     public actual var exposureCompensation: Float by config(
         0F,
-        block = ::setExposureCompensation,
+        onSet = { it.fastCoerceIn(cameraInfo.minExposure, cameraInfo.maxExposure) },
+        block = {
+            iosCameraSession.device.withConfigurationLock {
+                setExposureTargetBias(bias = exposureCompensation, completionHandler = {})
+            }
+        },
     )
         internal set
-
-    private fun setExposureCompensation(exposureCompensation: Float?) {
-        if (exposureCompensation == null) return
-        iosCameraSession.device.withConfigurationLock {
-            setExposureTargetBias(
-                bias = exposureCompensation.coerceIn(
-                    cameraInfo.minExposure,
-                    cameraInfo.maxExposure
-                ),
-                completionHandler = {},
-            )
-        }
-    }
 
     public actual var imageCaptureStrategy: ImageCaptureStrategy by config(ImageCaptureStrategy.Balanced) { value ->
         iosCameraSession.setCameraOutputQuality(
@@ -104,10 +97,11 @@ public actual class CameraState(
     }
         internal set
 
-    public actual var zoomRatio: Float by config(cameraInfo.minZoom) {
-        iosCameraSession.device.withConfigurationLock {
-            videoZoomFactor = it.coerceIn(cameraInfo.minZoom, cameraInfo.maxZoom).toDouble()
-        }
+    public actual var zoomRatio: Float by config(
+        value = cameraInfo.minZoom,
+        onSet = { it.fastCoerceIn(cameraInfo.minZoom, cameraInfo.maxZoom) }
+    ) {
+        iosCameraSession.device.withConfigurationLock { videoZoomFactor = it.toDouble() }
     }
         internal set
 
