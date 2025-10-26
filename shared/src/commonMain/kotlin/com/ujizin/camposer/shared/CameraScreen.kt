@@ -113,9 +113,9 @@ fun CameraScreen() {
                         }
                     }
 
-                    CaptureMode.Video -> cameraController.startRecording(path) {
+                    CaptureMode.Video -> cameraController.startRecording(path.toString()) {
                         if (it is CaptureResult.Success) {
-                            videoPath = it.data.toString()
+                            videoPath = it.data
                         }
                     }
 

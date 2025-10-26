@@ -1,6 +1,5 @@
 package com.ujizin.camposer.error
 
-import kotlinx.io.files.Path
 import platform.Foundation.NSError
 
 internal open class NSErrorException(nsError: NSError) : Exception(nsError.localizedDescription)
@@ -22,8 +21,8 @@ internal class ErrorTakePhotoException(nsError: NSError) : CameraNSErrorExceptio
     nsError = nsError
 )
 
-internal class ErrorWritePhotoPathException(path: Path) : CameraException(
-    message = "Error writing picture to path: $path",
+internal class ErrorWritePhotoPathException(filename: String) : CameraException(
+    message = "Error writing picture to file: $filename",
 )
 
 internal class NSDataNotFoundException() : CameraException("NSData not found")

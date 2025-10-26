@@ -16,9 +16,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.util.Consumer
-import com.ujizin.camposer.extensions.toFile
 import com.ujizin.camposer.result.CaptureResult
-import kotlinx.io.files.Path
+import java.io.File
 import java.util.concurrent.Executor
 
 
@@ -34,17 +33,20 @@ internal actual class DefaultRecordController(
 
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
     actual override fun startRecording(
-        path: Path,
-        onVideoCaptured: (CaptureResult<Path>) -> Unit,
-    ) = startRecording(
-        fileOutputOptions = FileOutputOptions.Builder(path.toFile()).build(),
-        onResult = { result ->
-            when (result) {
-                is CaptureResult.Error -> CaptureResult.Error(result.throwable)
-                is CaptureResult.Success<Uri?> -> CaptureResult.Success(path)
+        filename: String,
+        onVideoCaptured: (CaptureResult<String>) -> Unit,
+    ) {
+        val file = File(filename)
+        startRecording(
+            fileOutputOptions = FileOutputOptions.Builder(file).build(),
+            onResult = { result ->
+                when (result) {
+                    is CaptureResult.Error -> CaptureResult.Error(result.throwable)
+                    is CaptureResult.Success<Uri?> -> CaptureResult.Success(file)
+                }
             }
-        }
-    )
+        )
+    }
 
 
     @RequiresApi(Build.VERSION_CODES.O)

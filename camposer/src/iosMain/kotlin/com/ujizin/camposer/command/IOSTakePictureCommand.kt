@@ -8,8 +8,6 @@ import com.ujizin.camposer.error.PhotoOutputNotFoundException
 import com.ujizin.camposer.extensions.firstIsInstanceOrNull
 import com.ujizin.camposer.extensions.setMirrorEnabled
 import com.ujizin.camposer.extensions.toByteArray
-import com.ujizin.camposer.extensions.writeData
-import kotlinx.io.files.Path
 import platform.AVFoundation.AVCaptureFlashMode
 import platform.AVFoundation.AVCapturePhoto
 import platform.AVFoundation.AVCapturePhotoCaptureDelegateProtocol
@@ -27,6 +25,8 @@ import platform.AVFoundation.AVVideoCodecKey
 import platform.AVFoundation.fileDataRepresentation
 import platform.Foundation.NSData
 import platform.Foundation.NSError
+import platform.Foundation.NSURL
+import platform.Foundation.writeToURL
 import platform.UIKit.UIInterfaceOrientation
 import platform.UIKit.UIInterfaceOrientationLandscapeLeft
 import platform.UIKit.UIInterfaceOrientationLandscapeRight
@@ -56,11 +56,11 @@ internal class IOSTakePictureCommand(
     )
 
     operator fun invoke(
-        path: Path,
+        filename: String,
         isMirrorEnabled: Boolean,
         flashMode: AVCaptureFlashMode,
         videoOrientation: AVCaptureVideoOrientation,
-        onPictureCaptured: (Result<Path>) -> Unit,
+        onPictureCaptured: (Result<String>) -> Unit,
     ) = takePicture(
         isMirrorEnabled = isMirrorEnabled,
         flashMode = flashMode,
@@ -70,8 +70,8 @@ internal class IOSTakePictureCommand(
                 result = result,
                 transform = { nsData ->
                     when {
-                        path.writeData(nsData) -> Result.success(path)
-                        else -> Result.failure(ErrorWritePhotoPathException(path))
+                        filename.writeData(nsData) -> Result.success(filename)
+                        else -> Result.failure(ErrorWritePhotoPathException(filename))
                     }
                 },
                 onPictureCaptured = onPictureCaptured,
@@ -140,6 +140,11 @@ internal class IOSTakePictureCommand(
         }
 
         onPictureCaptured(transform(result.getOrThrow()))
+    }
+
+    private fun String.writeData(data: NSData): Boolean {
+        val url = NSURL.fileURLWithPath(this)
+        return data.writeToURL(url, atomically = true)
     }
 }
 

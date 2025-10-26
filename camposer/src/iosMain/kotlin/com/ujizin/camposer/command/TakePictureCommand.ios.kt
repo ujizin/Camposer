@@ -6,7 +6,6 @@ import com.ujizin.camposer.session.IOSCameraSession
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.FlashMode
-import kotlinx.io.files.Path
 import platform.AVFoundation.AVCaptureDeviceInput
 import platform.AVFoundation.AVCaptureDevicePositionFront
 import platform.AVFoundation.flashMode
@@ -36,13 +35,13 @@ internal actual class DefaultTakePictureCommand(
         )
     }
 
-    actual override fun takePicture(path: Path, onImageCaptured: (CaptureResult<Path>) -> Unit) {
+    actual override fun takePicture(filename: String, onImageCaptured: (CaptureResult<String>) -> Unit) {
         require(cameraState.captureMode == CaptureMode.Image) {
             "Capture mode must be CaptureMode.Image"
         }
 
         takePictureCommand(
-            path = path,
+            filename = filename,
             isMirrorEnabled = captureDeviceInput.device.position == AVCaptureDevicePositionFront,
             flashMode = captureDeviceInput.device.flashMode,
             videoOrientation = iosCameraSession.orientationListener.currentOrientation.toVideoOrientation(),

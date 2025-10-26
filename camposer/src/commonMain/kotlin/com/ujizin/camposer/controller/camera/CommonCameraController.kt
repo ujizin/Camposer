@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.io.files.Path
 
 public abstract class CommonCameraController<RC : RecordController, TPC : TakePictureCommand> :
     CameraControllerContract {
@@ -43,9 +42,9 @@ public abstract class CommonCameraController<RC : RecordController, TPC : TakePi
         get() = recordController?.isRecording ?: false
 
     override fun startRecording(
-        path: Path,
-        onVideoCaptured: (CaptureResult<Path>) -> Unit,
-    ): Unit = recordController.bindRun { startRecording(path, onVideoCaptured) }
+        filename: String,
+        onVideoCaptured: (CaptureResult<String>) -> Unit,
+    ): Unit = recordController.bindRun { startRecording(filename, onVideoCaptured) }
 
     override fun resumeRecording(): Unit = recordController.bindRun { resumeRecording() }
 
@@ -62,9 +61,9 @@ public abstract class CommonCameraController<RC : RecordController, TPC : TakePi
     ): Unit = takePictureCommand.bindRun { takePicture(onImageCaptured) }
 
     override fun takePicture(
-        path: Path,
-        onImageCaptured: (CaptureResult<Path>) -> Unit,
-    ): Unit = takePictureCommand.bindRun { takePicture(path, onImageCaptured) }
+        filename: String,
+        onImageCaptured: (CaptureResult<String>) -> Unit,
+    ): Unit = takePictureCommand.bindRun { takePicture(filename, onImageCaptured) }
 
     override fun setZoomRatio(zoomRatio: Float): Unit = state.bindRun {
         if (!isRunning.value) {

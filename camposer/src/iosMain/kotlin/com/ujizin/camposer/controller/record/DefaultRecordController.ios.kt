@@ -14,7 +14,6 @@ import com.ujizin.camposer.extensions.setMirrorEnabled
 import com.ujizin.camposer.extensions.toCaptureResult
 import com.ujizin.camposer.result.CaptureResult
 import com.ujizin.camposer.session.IOSCameraSession
-import kotlinx.io.files.Path
 import platform.AVFoundation.AVCaptureDevicePositionFront
 import platform.AVFoundation.AVCaptureFileOutput
 import platform.AVFoundation.AVCaptureFileOutputRecordingDelegateProtocol
@@ -44,12 +43,12 @@ internal actual class DefaultRecordController(
     actual override var isRecording: Boolean by mutableStateOf(false)
 
     actual override fun startRecording(
-        path: Path,
-        onVideoCaptured: (CaptureResult<Path>) -> Unit,
+        filename: String,
+        onVideoCaptured: (CaptureResult<String>) -> Unit,
     ) = start(
         isMirrorEnabled = iosCameraSession.captureDeviceInput.device.position == AVCaptureDevicePositionFront,
         videoOrientation = iosCameraSession.orientationListener.currentOrientation.toVideoOrientation(),
-        path = path,
+        filename = filename,
         onVideoCapture = { result -> onVideoCaptured(result.toCaptureResult()) },
     ).apply { isRecording = true }
 
@@ -78,10 +77,10 @@ internal actual class DefaultRecordController(
     }
 
     fun start(
-        path: Path,
+        filename: String,
         videoOrientation: AVCaptureVideoOrientation,
         isMirrorEnabled: Boolean,
-        onVideoCapture: (Result<Path>) -> Unit,
+        onVideoCapture: (Result<String>) -> Unit,
     ) {
         if (!captureSession.isRunning()) return onVideoCapture(
             Result.failure(CameraNotRunningException())
@@ -107,7 +106,7 @@ internal actual class DefaultRecordController(
             ) {
                 val result = when {
                     error != null -> Result.failure(ErrorRecordVideoException(error))
-                    else -> Result.success(path)
+                    else -> Result.success(filename)
                 }
                 onVideoCapture(result)
                 videoDelegate = null
@@ -115,7 +114,7 @@ internal actual class DefaultRecordController(
         }.apply { videoDelegate = this }
 
         videoRecordOutput.startRecordingToOutputFileURL(
-            outputFileURL = NSURL.Companion.fileURLWithPath(path.toString()),
+            outputFileURL = NSURL.Companion.fileURLWithPath(filename),
             recordingDelegate = videoDelegate,
         )
     }

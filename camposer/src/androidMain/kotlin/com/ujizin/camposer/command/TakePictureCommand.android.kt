@@ -8,10 +8,7 @@ import androidx.camera.core.ImageCapture.OutputFileOptions
 import androidx.camera.core.ImageCapture.OutputFileResults
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.view.CameraController
-import com.ujizin.camposer.extensions.toFile
-import com.ujizin.camposer.extensions.toPath
 import com.ujizin.camposer.result.CaptureResult
-import kotlinx.io.files.Path
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.concurrent.Executor
@@ -37,12 +34,14 @@ internal actual class DefaultTakePictureCommand(
     }
 
     actual override fun takePicture(
-        path: Path,
-        onImageCaptured: (CaptureResult<Path>) -> Unit,
-    ): Unit = takePicture(OutputFileOptions.Builder(path.toFile()).build()) { androidResult ->
+        filename: String,
+        onImageCaptured: (CaptureResult<String>) -> Unit,
+    ): Unit = takePicture(OutputFileOptions.Builder(File(filename)).build()) { androidResult ->
         val result = when (androidResult) {
             is CaptureResult.Error -> CaptureResult.Error(androidResult.throwable)
-            is CaptureResult.Success -> CaptureResult.Success(androidResult.data!!.toPath())
+            is CaptureResult.Success -> CaptureResult.Success(
+                data = androidResult.data?.toString() ?: filename
+            )
         }
         onImageCaptured(result)
     }
