@@ -1,6 +1,7 @@
 package com.ujizin.camposer.command
 
 import com.ujizin.camposer.extensions.toCaptureResult
+import com.ujizin.camposer.extensions.toVideoOrientation
 import com.ujizin.camposer.result.CaptureResult
 import com.ujizin.camposer.session.IOSCameraSession
 import com.ujizin.camposer.state.CameraState

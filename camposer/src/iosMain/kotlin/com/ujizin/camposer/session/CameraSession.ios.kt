@@ -75,7 +75,9 @@ public actual class CameraSession private constructor(
         presets = state.resolutionPreset.presets.toList(),
     )
 
-    internal fun renderCamera(view: UIView) = iosCameraSession.renderPreviewLayer(view = view)
+    internal fun renderCamera(view: UIView) {
+        iosCameraSession.renderPreviewLayer(view = view)
+    }
 
     internal fun setFocusPoint(
         focusPoint: CValue<CGPoint>,

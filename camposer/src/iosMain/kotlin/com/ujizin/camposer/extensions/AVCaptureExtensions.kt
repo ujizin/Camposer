@@ -21,7 +21,10 @@ import platform.AVFoundation.AVCaptureVideoOrientationPortrait
 import platform.AVFoundation.AVCaptureVideoOrientationPortraitUpsideDown
 import platform.AVFoundation.AVMediaTypeVideo
 import platform.AVFoundation.position
-import platform.UIKit.UIDeviceOrientation
+import platform.UIKit.UIInterfaceOrientation
+import platform.UIKit.UIInterfaceOrientationLandscapeLeft
+import platform.UIKit.UIInterfaceOrientationLandscapeRight
+import platform.UIKit.UIInterfaceOrientationPortraitUpsideDown
 
 internal val AVCaptureDevicePosition.captureDevice: AVCaptureDevice
     get() = AVCaptureDeviceDiscoverySession.discoverySessionWithDeviceTypes(
@@ -38,7 +41,7 @@ internal val AVCaptureDevicePosition.captureDevice: AVCaptureDevice
     } as AVCaptureDevice
 
 internal fun AVCaptureSession.tryAddInput(
-    input: AVCaptureDeviceInput
+    input: AVCaptureDeviceInput,
 ): Boolean {
     if (inputs.contains(input)) return true
 
@@ -88,10 +91,9 @@ internal fun AVCaptureDevice.withConfigurationLock(
     }
 }
 
-internal fun UIDeviceOrientation.toVideoOrientation(): AVCaptureVideoOrientation = when (this) {
-    UIDeviceOrientation.UIDeviceOrientationPortrait -> AVCaptureVideoOrientationPortrait
-    UIDeviceOrientation.UIDeviceOrientationPortraitUpsideDown -> AVCaptureVideoOrientationPortraitUpsideDown
-    UIDeviceOrientation.UIDeviceOrientationLandscapeLeft -> AVCaptureVideoOrientationLandscapeRight
-    UIDeviceOrientation.UIDeviceOrientationLandscapeRight -> AVCaptureVideoOrientationLandscapeLeft
+internal fun UIInterfaceOrientation.toVideoOrientation(): AVCaptureVideoOrientation = when (this) {
+    UIInterfaceOrientationLandscapeLeft -> AVCaptureVideoOrientationLandscapeLeft
+    UIInterfaceOrientationLandscapeRight -> AVCaptureVideoOrientationLandscapeRight
+    UIInterfaceOrientationPortraitUpsideDown -> AVCaptureVideoOrientationPortraitUpsideDown
     else -> AVCaptureVideoOrientationPortrait
 }

@@ -42,8 +42,8 @@ internal class OrientationManager {
         y: Double,
     ): UIInterfaceOrientation = when {
         abs(x) > abs(y) -> when {
-            x > 0 -> UIInterfaceOrientationLandscapeRight
-            else -> UIInterfaceOrientationLandscapeLeft
+            x > 0 -> UIInterfaceOrientationLandscapeLeft
+            else -> UIInterfaceOrientationLandscapeRight
         }
 
         else -> when {

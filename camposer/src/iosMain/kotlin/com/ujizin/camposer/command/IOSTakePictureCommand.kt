@@ -15,10 +15,6 @@ import platform.AVFoundation.AVCapturePhotoOutput
 import platform.AVFoundation.AVCapturePhotoSettings
 import platform.AVFoundation.AVCaptureSession
 import platform.AVFoundation.AVCaptureVideoOrientation
-import platform.AVFoundation.AVCaptureVideoOrientationLandscapeLeft
-import platform.AVFoundation.AVCaptureVideoOrientationLandscapeRight
-import platform.AVFoundation.AVCaptureVideoOrientationPortrait
-import platform.AVFoundation.AVCaptureVideoOrientationPortraitUpsideDown
 import platform.AVFoundation.AVMediaTypeVideo
 import platform.AVFoundation.AVVideoCodecJPEG
 import platform.AVFoundation.AVVideoCodecKey
@@ -27,10 +23,6 @@ import platform.Foundation.NSData
 import platform.Foundation.NSError
 import platform.Foundation.NSURL
 import platform.Foundation.writeToURL
-import platform.UIKit.UIInterfaceOrientation
-import platform.UIKit.UIInterfaceOrientationLandscapeLeft
-import platform.UIKit.UIInterfaceOrientationLandscapeRight
-import platform.UIKit.UIInterfaceOrientationPortraitUpsideDown
 import platform.darwin.NSObject
 
 internal class IOSTakePictureCommand(
@@ -147,11 +139,3 @@ internal class IOSTakePictureCommand(
         return data.writeToURL(url, atomically = true)
     }
 }
-
-internal fun UIInterfaceOrientation.toVideoOrientation(): AVCaptureVideoOrientation =
-    when (this) {
-        UIInterfaceOrientationLandscapeLeft -> AVCaptureVideoOrientationLandscapeRight
-        UIInterfaceOrientationLandscapeRight -> AVCaptureVideoOrientationLandscapeLeft
-        UIInterfaceOrientationPortraitUpsideDown -> AVCaptureVideoOrientationPortraitUpsideDown
-        else -> AVCaptureVideoOrientationPortrait
-    }
