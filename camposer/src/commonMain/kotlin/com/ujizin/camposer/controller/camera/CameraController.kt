@@ -5,6 +5,7 @@ import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.result.CaptureResult
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.properties.FlashMode
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.io.files.Path
 
 public expect class CameraController : CameraControllerContract {
@@ -13,6 +14,7 @@ public expect class CameraController : CameraControllerContract {
 
     override val state: CameraState?
     override val info: CameraInfo?
+    override val isRunning: StateFlow<Boolean>
 
     override val isMuted: Boolean
     override val isRecording: Boolean

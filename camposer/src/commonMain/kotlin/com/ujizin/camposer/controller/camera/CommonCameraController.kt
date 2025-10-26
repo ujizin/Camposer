@@ -8,6 +8,10 @@ import com.ujizin.camposer.result.CaptureResult
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.properties.FlashMode
 import com.ujizin.camposer.utils.Bundle
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.io.files.Path
 
 public abstract class CommonCameraController<RC : RecordController, TPC : TakePictureCommand> :
@@ -27,8 +31,8 @@ public abstract class CommonCameraController<RC : RecordController, TPC : TakePi
     override val info: CameraInfo?
         get() = cameraInfo
 
-    protected var isRunning: Boolean = false
-        private set
+    private val _isRunning = MutableStateFlow(false)
+    public override val isRunning: StateFlow<Boolean> = _isRunning.asStateFlow()
 
     private val pendingBundle = Bundle()
 
@@ -63,7 +67,7 @@ public abstract class CommonCameraController<RC : RecordController, TPC : TakePi
     ): Unit = takePictureCommand.bindRun { takePicture(path, onImageCaptured) }
 
     override fun setZoomRatio(zoomRatio: Float): Unit = state.bindRun {
-        if (!isRunning) {
+        if (!isRunning.value) {
             pendingBundle[ZOOM_KEY] = zoomRatio
             return@bindRun
         }
@@ -72,7 +76,7 @@ public abstract class CommonCameraController<RC : RecordController, TPC : TakePi
     }
 
     override fun setExposureCompensation(exposureCompensation: Float): Unit = state.bindRun {
-        if (!isRunning) {
+        if (!isRunning.value) {
             pendingBundle[EXPOSURE_COMPENSATION_KEY] = exposureCompensation
             return@bindRun
         }
@@ -80,7 +84,7 @@ public abstract class CommonCameraController<RC : RecordController, TPC : TakePi
     }
 
     override fun setFlashMode(flashMode: FlashMode): Unit = state.bindRun {
-        if (!isRunning) {
+        if (!isRunning.value) {
             pendingBundle[FLASH_MODE_KEY] = flashMode
             return@bindRun
         }
@@ -88,7 +92,7 @@ public abstract class CommonCameraController<RC : RecordController, TPC : TakePi
     }
 
     override fun setTorchEnabled(isTorchEnabled: Boolean): Unit = state.bindRun {
-        if (!isRunning) {
+        if (!isRunning.value) {
             pendingBundle[TORCH_KEY] = isTorchEnabled
             return@bindRun
         }
@@ -108,7 +112,7 @@ public abstract class CommonCameraController<RC : RecordController, TPC : TakePi
     }
 
     internal fun onSessionStarted() {
-        isRunning = true
+        _isRunning.update { true }
 
         pendingBundle.get<Float>(ZOOM_KEY)?.let(::setZoomRatio)
         pendingBundle.get<Float>(EXPOSURE_COMPENSATION_KEY)?.let(::setExposureCompensation)
