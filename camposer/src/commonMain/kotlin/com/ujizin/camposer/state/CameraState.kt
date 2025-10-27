@@ -7,6 +7,7 @@ import com.ujizin.camposer.state.properties.FlashMode
 import com.ujizin.camposer.state.properties.ImageAnalyzer
 import com.ujizin.camposer.state.properties.ImageCaptureStrategy
 import com.ujizin.camposer.state.properties.ImplementationMode
+import com.ujizin.camposer.state.properties.OrientationStrategy
 import com.ujizin.camposer.state.properties.ResolutionPreset
 import com.ujizin.camposer.state.properties.ScaleType
 
@@ -39,7 +40,8 @@ public expect class CameraState {
         internal set
     public var isTorchEnabled: Boolean
         internal set
-
+    public var orientationStrategy: OrientationStrategy
+        internal set
     internal fun resetConfig()
 }
 

@@ -3,17 +3,16 @@ package com.ujizin.camposer.controller.record
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.ujizin.camposer.state.CameraState
-import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.error.CameraNotRunningException
 import com.ujizin.camposer.error.ErrorRecordVideoException
 import com.ujizin.camposer.error.VideoOutputNotFoundException
 import com.ujizin.camposer.extensions.firstIsInstanceOrNull
 import com.ujizin.camposer.extensions.setMirrorEnabled
 import com.ujizin.camposer.extensions.toCaptureResult
-import com.ujizin.camposer.extensions.toVideoOrientation
 import com.ujizin.camposer.result.CaptureResult
 import com.ujizin.camposer.session.IOSCameraSession
+import com.ujizin.camposer.state.CameraState
+import com.ujizin.camposer.state.properties.CaptureMode
 import platform.AVFoundation.AVCaptureDevicePositionFront
 import platform.AVFoundation.AVCaptureFileOutput
 import platform.AVFoundation.AVCaptureFileOutputRecordingDelegateProtocol
@@ -28,7 +27,7 @@ import platform.darwin.NSObject
 
 internal actual class DefaultRecordController(
     private val iosCameraSession: IOSCameraSession,
-    private val cameraConfig: CameraState,
+    private val cameraState: CameraState,
 ) : RecordController {
 
     private val captureSession: AVCaptureSession
@@ -47,25 +46,25 @@ internal actual class DefaultRecordController(
         onVideoCaptured: (CaptureResult<String>) -> Unit,
     ) = start(
         isMirrorEnabled = iosCameraSession.captureDeviceInput.device.position == AVCaptureDevicePositionFront,
-        videoOrientation = iosCameraSession.orientationListener.currentOrientation.toVideoOrientation(),
+        videoOrientation = cameraState.getCurrentVideoOrientation(),
         filename = filename,
         onVideoCapture = { result -> onVideoCaptured(result.toCaptureResult()) },
     ).apply { isRecording = true }
 
     actual override fun resumeRecording() {
-        require(cameraConfig.captureMode == CaptureMode.Video) { "Capture mode must be CaptureMode.Video" }
+        require(cameraState.captureMode == CaptureMode.Video) { "Capture mode must be CaptureMode.Video" }
 
         videoRecordOutput?.resumeRecording() ?: throw VideoOutputNotFoundException()
     }
 
     actual override fun pauseRecording() {
-        require(cameraConfig.captureMode == CaptureMode.Video) { "Capture mode must be CaptureMode.Video" }
+        require(cameraState.captureMode == CaptureMode.Video) { "Capture mode must be CaptureMode.Video" }
 
         videoRecordOutput?.pauseRecording() ?: throw VideoOutputNotFoundException()
     }
 
     actual override fun stopRecording() {
-        require(cameraConfig.captureMode == CaptureMode.Video) { "Capture mode must be CaptureMode.Video" }
+        require(cameraState.captureMode == CaptureMode.Video) { "Capture mode must be CaptureMode.Video" }
         videoRecordOutput?.stopRecording() ?: throw VideoOutputNotFoundException()
         isRecording = false
         isMuted = false

@@ -1,12 +1,12 @@
 package com.ujizin.camposer.controller.camera
 
-import CameraControllerContract
 import com.ujizin.camposer.command.TakePictureCommand
 import com.ujizin.camposer.controller.record.RecordController
 import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.result.CaptureResult
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.properties.FlashMode
+import com.ujizin.camposer.state.properties.OrientationStrategy
 import com.ujizin.camposer.utils.Bundle
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -44,58 +44,62 @@ public abstract class CommonCameraController<RC : RecordController, TPC : TakePi
     override fun startRecording(
         filename: String,
         onVideoCaptured: (CaptureResult<String>) -> Unit,
-    ): Unit = recordController.bindRun { startRecording(filename, onVideoCaptured) }
+    ): Unit = recordController.runBind { startRecording(filename, onVideoCaptured) }
 
-    override fun resumeRecording(): Unit = recordController.bindRun { resumeRecording() }
+    override fun resumeRecording(): Unit = recordController.runBind { resumeRecording() }
 
-    override fun pauseRecording(): Unit = recordController.bindRun { pauseRecording() }
+    override fun pauseRecording(): Unit = recordController.runBind { pauseRecording() }
 
-    override fun stopRecording(): Unit = recordController.bindRun { stopRecording() }
+    override fun stopRecording(): Unit = recordController.runBind { stopRecording() }
 
-    override fun muteRecording(isMuted: Boolean): Unit = recordController.bindRun {
+    override fun muteRecording(isMuted: Boolean): Unit = recordController.runBind {
         muteRecording(isMuted)
     }
 
     override fun takePicture(
         onImageCaptured: (CaptureResult<ByteArray>) -> Unit,
-    ): Unit = takePictureCommand.bindRun { takePicture(onImageCaptured) }
+    ): Unit = takePictureCommand.runBind { takePicture(onImageCaptured) }
 
     override fun takePicture(
         filename: String,
         onImageCaptured: (CaptureResult<String>) -> Unit,
-    ): Unit = takePictureCommand.bindRun { takePicture(filename, onImageCaptured) }
+    ): Unit = takePictureCommand.runBind { takePicture(filename, onImageCaptured) }
 
-    override fun setZoomRatio(zoomRatio: Float): Unit = state.bindRun {
+    override fun setZoomRatio(zoomRatio: Float): Unit = state.runBind {
         if (!isRunning.value) {
             pendingBundle[ZOOM_KEY] = zoomRatio
-            return@bindRun
+            return@runBind
         }
 
         this.zoomRatio = zoomRatio
     }
 
-    override fun setExposureCompensation(exposureCompensation: Float): Unit = state.bindRun {
+    override fun setExposureCompensation(exposureCompensation: Float): Unit = state.runBind {
         if (!isRunning.value) {
             pendingBundle[EXPOSURE_COMPENSATION_KEY] = exposureCompensation
-            return@bindRun
+            return@runBind
         }
         this.exposureCompensation = exposureCompensation
     }
 
-    override fun setFlashMode(flashMode: FlashMode): Unit = state.bindRun {
+    override fun setFlashMode(flashMode: FlashMode): Unit = state.runBind {
         if (!isRunning.value) {
             pendingBundle[FLASH_MODE_KEY] = flashMode
-            return@bindRun
+            return@runBind
         }
         this.flashMode = flashMode
     }
 
-    override fun setTorchEnabled(isTorchEnabled: Boolean): Unit = state.bindRun {
+    override fun setTorchEnabled(isTorchEnabled: Boolean): Unit = state.runBind {
         if (!isRunning.value) {
             pendingBundle[TORCH_KEY] = isTorchEnabled
-            return@bindRun
+            return@runBind
         }
         this.isTorchEnabled = isTorchEnabled
+    }
+
+    override fun setOrientationStrategy(strategy: OrientationStrategy) {
+        state.runBind { orientationStrategy = strategy }
     }
 
     internal fun initialize(
@@ -120,7 +124,7 @@ public abstract class CommonCameraController<RC : RecordController, TPC : TakePi
         pendingBundle.clear()
     }
 
-    protected fun <T, R> T?.bindRun(block: T.() -> R): R {
+    protected fun <T, R> T?.runBind(block: T.() -> R): R {
         require(this != null) {
             "CameraController must be bind to cameraSession first to be used!"
         }

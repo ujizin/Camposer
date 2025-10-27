@@ -1,10 +1,10 @@
 package com.ujizin.camposer.controller.camera
 
-import CameraControllerContract
 import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.result.CaptureResult
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.properties.FlashMode
+import com.ujizin.camposer.state.properties.OrientationStrategy
 import kotlinx.coroutines.flow.StateFlow
 
 public expect class CameraController : CameraControllerContract {
@@ -37,4 +37,5 @@ public expect class CameraController : CameraControllerContract {
     override fun setExposureCompensation(exposureCompensation: Float)
     override fun setFlashMode(flashMode: FlashMode)
     override fun setTorchEnabled(isTorchEnabled: Boolean)
+    override fun setOrientationStrategy(strategy: OrientationStrategy)
 }

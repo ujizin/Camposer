@@ -1,7 +1,6 @@
 package com.ujizin.camposer.command
 
 import com.ujizin.camposer.extensions.toCaptureResult
-import com.ujizin.camposer.extensions.toVideoOrientation
 import com.ujizin.camposer.result.CaptureResult
 import com.ujizin.camposer.session.IOSCameraSession
 import com.ujizin.camposer.state.CameraState
@@ -31,12 +30,15 @@ internal actual class DefaultTakePictureCommand(
         takePictureCommand(
             isMirrorEnabled = captureDeviceInput.device.position == AVCaptureDevicePositionFront,
             flashMode = cameraState.flashMode.mode,
-            videoOrientation = iosCameraSession.orientationListener.currentOrientation.toVideoOrientation(),
+            videoOrientation = cameraState.getCurrentVideoOrientation(),
             onPictureCaptured = onPictureCaptured(onImageCaptured),
         )
     }
 
-    actual override fun takePicture(filename: String, onImageCaptured: (CaptureResult<String>) -> Unit) {
+    actual override fun takePicture(
+        filename: String,
+        onImageCaptured: (CaptureResult<String>) -> Unit,
+    ) {
         require(cameraState.captureMode == CaptureMode.Image) {
             "Capture mode must be CaptureMode.Image"
         }
@@ -45,16 +47,17 @@ internal actual class DefaultTakePictureCommand(
             filename = filename,
             isMirrorEnabled = captureDeviceInput.device.position == AVCaptureDevicePositionFront,
             flashMode = captureDeviceInput.device.flashMode,
-            videoOrientation = iosCameraSession.orientationListener.currentOrientation.toVideoOrientation(),
+            videoOrientation = cameraState.getCurrentVideoOrientation(),
             onPictureCaptured = onPictureCaptured(onImageCaptured),
         )
     }
+
     private fun <T> onPictureCaptured(
-        onImageCaptured: (CaptureResult<T>) -> Unit
+        onImageCaptured: (CaptureResult<T>) -> Unit,
     ): (Result<T>) -> Unit = { result ->
         onImageCaptured(result.toCaptureResult())
 
-        // iOS disable torch when flash mode and torch is enabled altogether
+        // iOS disables the torch when flash mode is on, so the torch must be re-enabled.
         if (cameraState.isTorchEnabled && cameraState.flashMode == FlashMode.On) {
             iosCameraSession.setTorchEnabled(true)
         }

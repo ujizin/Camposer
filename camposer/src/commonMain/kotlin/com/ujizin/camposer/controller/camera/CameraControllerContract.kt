@@ -1,8 +1,11 @@
+package com.ujizin.camposer.controller.camera
+
 import com.ujizin.camposer.command.TakePictureCommand
 import com.ujizin.camposer.controller.record.RecordController
 import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.properties.FlashMode
+import com.ujizin.camposer.state.properties.OrientationStrategy
 import kotlinx.coroutines.flow.StateFlow
 
 public expect interface CameraControllerContract : RecordController, TakePictureCommand {
@@ -13,4 +16,5 @@ public expect interface CameraControllerContract : RecordController, TakePicture
     public fun setExposureCompensation(exposureCompensation: Float)
     public fun setFlashMode(flashMode: FlashMode)
     public fun setTorchEnabled(isTorchEnabled: Boolean)
+    public fun setOrientationStrategy(strategy: OrientationStrategy)
 }

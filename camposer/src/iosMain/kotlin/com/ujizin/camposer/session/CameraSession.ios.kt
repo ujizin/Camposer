@@ -55,7 +55,7 @@ public actual class CameraSession private constructor(
         controller.initialize(
             recordController = DefaultRecordController(
                 iosCameraSession = iosCameraSession,
-                cameraConfig = state,
+                cameraState = state,
             ),
             takePictureCommand = DefaultTakePictureCommand(
                 iosCameraSession = iosCameraSession,

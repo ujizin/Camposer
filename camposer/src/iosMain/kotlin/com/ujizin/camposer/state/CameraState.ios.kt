@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.util.fastCoerceIn
+import com.ujizin.camposer.extensions.toVideoOrientation
 import com.ujizin.camposer.extensions.withConfigurationLock
 import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.session.CameraSession
@@ -14,11 +15,13 @@ import com.ujizin.camposer.state.properties.FlashMode
 import com.ujizin.camposer.state.properties.ImageAnalyzer
 import com.ujizin.camposer.state.properties.ImageCaptureStrategy
 import com.ujizin.camposer.state.properties.ImplementationMode
+import com.ujizin.camposer.state.properties.OrientationStrategy
 import com.ujizin.camposer.state.properties.ResolutionPreset
 import com.ujizin.camposer.state.properties.ScaleType
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.AVFoundation.setExposureTargetBias
 import platform.AVFoundation.videoZoomFactor
+import platform.UIKit.UIApplication
 
 @OptIn(ExperimentalForeignApi::class)
 public actual class CameraState(
@@ -116,6 +119,9 @@ public actual class CameraState(
     }
         internal set
 
+    public actual var orientationStrategy: OrientationStrategy by config(OrientationStrategy.Device)
+        internal set
+
     init {
         iosCameraSession.setPreviewGravity(scaleType.gravity)
     }
@@ -129,6 +135,11 @@ public actual class CameraState(
             quality = imageCaptureStrategy.strategy,
             highResolutionEnabled = imageCaptureStrategy.highResolutionEnabled,
         )
+    }
+
+    internal fun getCurrentVideoOrientation() = when (orientationStrategy) {
+        OrientationStrategy.Device -> iosCameraSession.orientationListener.currentOrientation.toVideoOrientation()
+        OrientationStrategy.Preview -> UIApplication.sharedApplication.statusBarOrientation.toVideoOrientation()
     }
 
     private fun FlashMode.isFlashAvailable() = this == FlashMode.Off || cameraInfo.isFlashAvailable
