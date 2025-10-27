@@ -22,7 +22,7 @@ public actual class CameraController : AndroidCameraController() {
         fileOutputOptions: FileOutputOptions,
         audioConfig: AudioConfig,
         onResult: (CaptureResult<Uri?>) -> Unit,
-    ): Unit = recordController.bindRun {
+    ): Unit = recordController.runBind {
         startRecording(
             fileOutputOptions = fileOutputOptions,
             audioConfig = audioConfig,
@@ -36,7 +36,7 @@ public actual class CameraController : AndroidCameraController() {
         fileDescriptorOutputOptions: FileDescriptorOutputOptions,
         audioConfig: AudioConfig,
         onResult: (CaptureResult<Uri?>) -> Unit,
-    ): Unit = recordController.bindRun {
+    ): Unit = recordController.runBind {
         startRecording(
             fileDescriptorOutputOptions = fileDescriptorOutputOptions,
             audioConfig = audioConfig,
@@ -49,7 +49,7 @@ public actual class CameraController : AndroidCameraController() {
         mediaStoreOutputOptions: MediaStoreOutputOptions,
         audioConfig: AudioConfig,
         onResult: (CaptureResult<Uri?>) -> Unit,
-    ): Unit = recordController.bindRun {
+    ): Unit = recordController.runBind {
         startRecording(
             mediaStoreOutputOptions = mediaStoreOutputOptions,
             audioConfig = audioConfig,
@@ -61,7 +61,7 @@ public actual class CameraController : AndroidCameraController() {
         contentValues: ContentValues,
         saveCollection: Uri,
         onResult: (CaptureResult<Uri?>) -> Unit,
-    ): Unit = takePictureCommand.bindRun {
+    ): Unit = takePictureCommand.runBind {
         takePicture(
             contentValues = contentValues,
             saveCollection = saveCollection,
@@ -72,7 +72,7 @@ public actual class CameraController : AndroidCameraController() {
     override fun takePicture(
         file: File,
         onResult: (CaptureResult<Uri?>) -> Unit,
-    ): Unit = takePictureCommand.bindRun {
+    ): Unit = takePictureCommand.runBind {
         takePicture(
             file = file,
             onResult = onResult,
@@ -82,7 +82,7 @@ public actual class CameraController : AndroidCameraController() {
     override fun takePicture(
         outputFileOptions: ImageCapture.OutputFileOptions,
         onResult: (CaptureResult<Uri?>) -> Unit,
-    ): Unit = takePictureCommand.bindRun {
+    ): Unit = takePictureCommand.runBind {
         takePicture(
             outputFileOptions = outputFileOptions,
             onResult = onResult,

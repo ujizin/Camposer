@@ -9,11 +9,18 @@ import com.ujizin.camposer.controller.record.DefaultRecordController
 import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.manager.PreviewManager
 import com.ujizin.camposer.state.CameraState
+import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.AVFoundation.AVCaptureSession
 import platform.CoreGraphics.CGPoint
+import platform.Foundation.NSKeyValueChangeNewKey
+import platform.Foundation.NSKeyValueObservingOptionNew
+import platform.Foundation.addObserver
+import platform.Foundation.removeObserver
 import platform.UIKit.UIView
+import platform.darwin.NSObject
+import platform.foundation.NSKeyValueObservingProtocol
 
 @OptIn(ExperimentalForeignApi::class)
 public actual class CameraSession private constructor(
@@ -38,20 +45,27 @@ public actual class CameraSession private constructor(
         info = CameraInfo(iosCameraSession),
     )
 
-    public actual var isInitialized: Boolean = false
-        get() = iosCameraSession.isRunning
+    public actual var isInitialized: Boolean by mutableStateOf(false)
         private set
-
     public actual var isStreaming: Boolean by mutableStateOf(false)
         internal set
+
+    private var runningObserver = object : NSObject(), NSKeyValueObservingProtocol {
+        override fun observeValueForKeyPath(
+            keyPath: String?,
+            ofObject: Any?,
+            change: Map<Any?, *>?,
+            context: COpaquePointer?,
+        ) {
+            isStreaming = change?.get(NSKeyValueChangeNewKey) as? Boolean == true
+        }
+    }
 
     init {
         setupCamera()
     }
 
     private fun setupCamera() = with(iosCameraSession) {
-        setCameraPosition(position = state.camSelector.position)
-        updateCameraInfo()
         controller.initialize(
             recordController = DefaultRecordController(
                 iosCameraSession = iosCameraSession,
@@ -64,7 +78,18 @@ public actual class CameraSession private constructor(
             cameraState = state,
             cameraInfo = info,
         )
+
+        setCameraPosition(position = state.camSelector.position)
+        updateCameraInfo()
+
+        captureSession.addObserver(
+            observer = runningObserver,
+            forKeyPath = RUNNING_KEY_PATH,
+            options = NSKeyValueObservingOptionNew,
+            context = null,
+        )
         controller.onSessionStarted()
+        isInitialized = true
     }
 
     @OptIn(ExperimentalForeignApi::class)
@@ -92,7 +117,11 @@ public actual class CameraSession private constructor(
     }
 
     internal fun dispose() {
+        iosCameraSession.captureSession.removeObserver(runningObserver, RUNNING_KEY_PATH)
         iosCameraSession.release()
     }
 
+    internal companion object {
+        private const val RUNNING_KEY_PATH = "running"
+    }
 }

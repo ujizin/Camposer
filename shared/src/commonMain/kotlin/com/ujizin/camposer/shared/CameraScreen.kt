@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +33,7 @@ import com.ujizin.camposer.result.CaptureResult
 import com.ujizin.camposer.session.rememberCameraSession
 import com.ujizin.camposer.state.properties.CamSelector
 import com.ujizin.camposer.state.properties.CaptureMode
+import com.ujizin.camposer.state.properties.OrientationStrategy
 import com.ujizin.camposer.state.properties.inverse
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemTemporaryDirectory
@@ -65,6 +67,10 @@ fun CameraScreen() {
         onError = {}
     ) {
         text = "${it.type}: ${it.text}"
+    }
+
+    LaunchedEffect(Unit) {
+        cameraController.setOrientationStrategy(OrientationStrategy.Preview)
     }
 
     CameraPreview(

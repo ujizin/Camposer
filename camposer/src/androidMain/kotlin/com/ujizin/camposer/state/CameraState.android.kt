@@ -20,6 +20,7 @@ import com.ujizin.camposer.state.properties.FlashMode
 import com.ujizin.camposer.state.properties.ImageAnalyzer
 import com.ujizin.camposer.state.properties.ImageCaptureStrategy
 import com.ujizin.camposer.state.properties.ImplementationMode
+import com.ujizin.camposer.state.properties.OrientationStrategy
 import com.ujizin.camposer.state.properties.ResolutionPreset
 import com.ujizin.camposer.state.properties.ScaleType
 import java.util.concurrent.Executor
@@ -61,7 +62,7 @@ public actual class CameraState internal constructor(
 
     public actual var flashMode: FlashMode by config(
         value = FlashMode.find(controller.imageCaptureFlashMode),
-        predicate = { old, new -> old != new && new.isFlashSupported()}
+        predicate = { old, new -> old != new && new.isFlashSupported() }
     ) {
         mainExecutor.execute { controller.imageCaptureFlashMode = it.mode }
     }
@@ -113,6 +114,12 @@ public actual class CameraState internal constructor(
         value = cameraInfo.minZoom,
         onSet = { it.fastCoerceIn(cameraInfo.minZoom, cameraInfo.maxZoom) },
         block = ::setZoomRatio,
+    )
+        internal set
+
+    public actual var orientationStrategy: OrientationStrategy by config(
+        value = OrientationStrategy.Device,
+        block = { /** Disable https://issuetracker.google.com/issues/449573627*/ }
     )
         internal set
 
