@@ -23,8 +23,12 @@ extra.apply {
 apply(from = "${rootDir}/scripts/publish-module.gradle")
 
 kotlin {
-    compilerOptions {
-        freeCompilerArgs.add("-Xexpect-actual-classes")
+    targets.configureEach {
+        compilations.configureEach {
+            compilerOptions.configure {
+                freeCompilerArgs.add("-Xexpect-actual-classes")
+            }
+        }
     }
 
     explicitApi()
