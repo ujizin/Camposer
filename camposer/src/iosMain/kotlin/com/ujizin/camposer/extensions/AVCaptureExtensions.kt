@@ -1,5 +1,6 @@
 package com.ujizin.camposer.extensions
 
+import com.ujizin.camposer.utils.DispatchQueue.configurationQueue
 import com.ujizin.camposer.utils.executeWithErrorHandling
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.AVFoundation.AVCaptureDevice
@@ -25,6 +26,7 @@ import platform.UIKit.UIInterfaceOrientation
 import platform.UIKit.UIInterfaceOrientationLandscapeLeft
 import platform.UIKit.UIInterfaceOrientationLandscapeRight
 import platform.UIKit.UIInterfaceOrientationPortraitUpsideDown
+import platform.darwin.dispatch_async
 
 internal val AVCaptureDevicePosition.captureDevice: AVCaptureDevice
     get() = AVCaptureDeviceDiscoverySession.discoverySessionWithDeviceTypes(
@@ -83,11 +85,13 @@ internal fun AVCaptureDevice.toDeviceInput(): AVCaptureDeviceInput =
 internal fun AVCaptureDevice.withConfigurationLock(
     block: AVCaptureDevice.() -> Unit,
 ) = executeWithErrorHandling { nsErrorPtr ->
-    try {
-        lockForConfiguration(nsErrorPtr)
-        block()
-    } finally {
-        unlockForConfiguration()
+    dispatch_async(configurationQueue) {
+        try {
+            lockForConfiguration(nsErrorPtr)
+            block()
+        } finally {
+            unlockForConfiguration()
+        }
     }
 }
 

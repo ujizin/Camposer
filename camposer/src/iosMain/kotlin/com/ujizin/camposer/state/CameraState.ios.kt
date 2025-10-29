@@ -28,14 +28,14 @@ public actual class CameraState(
     private val iosCameraSession: IOSCameraSession,
     private val cameraInfo: CameraInfo,
 ) {
-    public actual var captureMode: CaptureMode by config(
+    public actual var captureMode: CaptureMode by asyncConfig(
         value = CaptureMode.Image,
         onDispose = { iosCameraSession.removeOutput(it.output) },
         block = { iosCameraSession.addOutput(it.output) },
     )
         internal set
 
-    public actual var camSelector: CamSelector by config(CamSelector.Back) {
+    public actual var camSelector: CamSelector by asyncConfig(CamSelector.Back) {
         iosCameraSession.setCameraPosition(it.position)
     }
         internal set
@@ -59,7 +59,7 @@ public actual class CameraState(
         internal set
 
     // No-op in iOS
-    public actual var implementationMode: ImplementationMode = ImplementationMode.Performance
+    public actual var implementationMode: ImplementationMode by mutableStateOf(ImplementationMode.Performance)
         internal set
 
     public actual var imageAnalyzer: ImageAnalyzer? by config(

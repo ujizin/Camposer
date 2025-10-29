@@ -10,6 +10,8 @@ import com.ujizin.camposer.extensions.tryAddInput
 import com.ujizin.camposer.extensions.tryAddOutput
 import com.ujizin.camposer.extensions.withConfigurationLock
 import com.ujizin.camposer.manager.PreviewManager
+import com.ujizin.camposer.utils.DispatchQueue.cameraQueue
+import com.ujizin.camposer.utils.DispatchQueue.configurationQueue
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.AVFoundation.AVCaptureDevice
@@ -43,6 +45,8 @@ import platform.AVFoundation.position
 import platform.AVFoundation.torchMode
 import platform.CoreGraphics.CGPoint
 import platform.UIKit.UIView
+import platform.darwin.dispatch_async
+
 @OptIn(ExperimentalForeignApi::class)
 public class IOSCameraSession internal constructor(
     internal val captureSession: AVCaptureSession,
@@ -73,7 +77,7 @@ public class IOSCameraSession internal constructor(
         position: AVCaptureDevicePosition,
         isMuted: Boolean,
         presets: List<AVCaptureSessionPreset>,
-    ) {
+    ) = dispatch_async(cameraQueue) {
         captureSession.beginConfiguration()
 
         setCameraPreset(presets)
@@ -119,9 +123,11 @@ public class IOSCameraSession internal constructor(
         captureSession.tryAddInput(captureDeviceInput)
     }
 
-    internal fun setAudioEnabled(isEnabled: Boolean) = when {
-        isEnabled -> captureSession.tryAddInput(audioInput)
-        else -> captureSession.removeInput(audioInput)
+    internal fun setAudioEnabled(isEnabled: Boolean) = dispatch_async(configurationQueue) {
+        when {
+            isEnabled -> captureSession.tryAddInput(audioInput)
+            else -> captureSession.removeInput(audioInput)
+        }
     }
 
     internal fun setFocusPoint(focusPoint: CValue<CGPoint>) = device.withConfigurationLock {
