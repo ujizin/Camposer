@@ -7,11 +7,16 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-internal fun <T> asyncConfig(
+internal fun <T> asyncCameraConfig(
+    mutex: Mutex,
     value: T,
     predicate: (old: T, new: T) -> Boolean = { old, new -> old != new },
     onDispose: (old: T) -> Unit = {},
@@ -26,11 +31,16 @@ internal fun <T> asyncConfig(
 
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
         if (!predicate(currentValue, value)) return
+        val tmpValue = currentValue
+        currentValue = onSet(value)
         job?.cancel()
         job = CoroutineScope(Dispatchers.IO).launch {
-            onDispose(currentValue)
-            currentValue = onSet(value)
-            block(currentValue)
+            mutex.withLock {
+                withContext(NonCancellable) {
+                    onDispose(tmpValue)
+                    block(currentValue)
+                }
+            }
         }
     }
 }

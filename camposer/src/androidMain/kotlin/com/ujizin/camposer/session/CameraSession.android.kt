@@ -1,6 +1,5 @@
 package com.ujizin.camposer.session
 
-import android.annotation.SuppressLint
 import android.content.Context
 import androidx.camera.view.LifecycleCameraController
 import androidx.compose.runtime.Stable
@@ -108,17 +107,11 @@ public actual class CameraSession private constructor(
             cameraInfo = info,
         )
         cameraXController.initializationFuture.addListener({
-            updateCameraInfo()
+            cameraXController.isPinchToZoomEnabled = false
+            info.rebind()
             isInitialized = true
             controller.onSessionStarted()
         }, mainExecutor)
-    }
-
-    @SuppressLint("RestrictedApi")
-    internal actual fun updateCameraInfo() {
-        // Disable from pinch to zoom from cameraX controller
-        cameraXController.isPinchToZoomEnabled = false
-        info.rebind()
     }
 
     internal fun dispose() {

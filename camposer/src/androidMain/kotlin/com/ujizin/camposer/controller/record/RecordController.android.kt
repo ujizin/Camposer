@@ -11,7 +11,6 @@ import androidx.camera.video.MediaStoreOutputOptions
 import androidx.camera.video.Recording
 import androidx.camera.video.VideoRecordEvent
 import androidx.camera.view.CameraController
-import androidx.camera.view.internal.ScreenFlashUiInfo
 import androidx.camera.view.video.AudioConfig
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -86,7 +85,6 @@ internal actual class DefaultRecordController(
         onResult: (CaptureResult<Uri?>) -> Unit,
     ) = prepareRecording(onError = onResult) {
         isMuted = !audioConfig.audioEnabled
-        cameraController.setScreenFlashUiInfo(ScreenFlashUiInfo.ProviderType.SCREEN_FLASH_VIEW())
         cameraController.startRecording(
             mediaStoreOutputOptions,
             audioConfig,

@@ -19,6 +19,7 @@ import com.ujizin.camposer.state.properties.OrientationStrategy
 import com.ujizin.camposer.state.properties.ResolutionPreset
 import com.ujizin.camposer.state.properties.ScaleType
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.coroutines.sync.Mutex
 import platform.AVFoundation.setExposureTargetBias
 import platform.AVFoundation.videoZoomFactor
 import platform.UIKit.UIApplication
@@ -28,15 +29,26 @@ public actual class CameraState(
     private val iosCameraSession: IOSCameraSession,
     private val cameraInfo: CameraInfo,
 ) {
-    public actual var captureMode: CaptureMode by asyncConfig(
+
+    private val cameraMutex = Mutex()
+
+    public actual var captureMode: CaptureMode by asyncCameraConfig(
+        mutex = cameraMutex,
         value = CaptureMode.Image,
         onDispose = { iosCameraSession.removeOutput(it.output) },
-        block = { iosCameraSession.addOutput(it.output) },
+        block = {
+            iosCameraSession.addOutput(it.output)
+            cameraInfo.rebind(it.output)
+        },
     )
         internal set
 
-    public actual var camSelector: CamSelector by asyncConfig(CamSelector.Back) {
+    public actual var camSelector: CamSelector by asyncCameraConfig(
+        mutex = cameraMutex,
+        value = CamSelector.Back
+    ) {
         iosCameraSession.setCameraPosition(it.position)
+        cameraInfo.rebind(captureMode.output)
     }
         internal set
 
@@ -145,7 +157,7 @@ public actual class CameraState(
     private fun FlashMode.isFlashAvailable() = this == FlashMode.Off || cameraInfo.isFlashAvailable
 }
 
-internal actual fun CameraSession.isToUpdateCameraInfo(
+internal actual fun CameraSession.isToResetConfig(
     isCamSelectorChanged: Boolean,
     isCaptureModeChanged: Boolean,
 ) = isCamSelectorChanged || isCaptureModeChanged

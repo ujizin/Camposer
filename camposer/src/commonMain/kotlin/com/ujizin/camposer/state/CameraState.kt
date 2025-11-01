@@ -45,7 +45,7 @@ public expect class CameraState {
     internal fun resetConfig()
 }
 
-internal expect fun CameraSession.isToUpdateCameraInfo(
+internal expect fun CameraSession.isToResetConfig(
     isCamSelectorChanged: Boolean,
     isCaptureModeChanged: Boolean,
 ): Boolean
@@ -65,7 +65,7 @@ internal fun CameraSession.update(
     val isCamSelectorChanged = state.camSelector != camSelector
     val isCaptureModeChanged = state.captureMode != captureMode
 
-    val isToUpdateCamera = isToUpdateCameraInfo(isCamSelectorChanged, isCaptureModeChanged)
+    val isToUpdateCamera = isToResetConfig(isCamSelectorChanged, isCaptureModeChanged)
     with(state) {
         if (isToUpdateCamera) {
             resetConfig()
@@ -80,9 +80,5 @@ internal fun CameraSession.update(
         this.imageCaptureStrategy = imageCaptureStrategy
         this.resolutionPreset = resolutionPreset
         this.isPinchToZoomEnabled = isPinchToZoomEnabled
-
-        if (isToUpdateCamera) {
-            updateCameraInfo()
-        }
     }
 }

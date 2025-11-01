@@ -80,7 +80,7 @@ public actual class CameraSession private constructor(
         )
 
         setCameraPosition(position = state.camSelector.position)
-        updateCameraInfo()
+        info.rebind(state.captureMode.output)
 
         captureSession.addObserver(
             observer = runningObserver,
@@ -107,10 +107,6 @@ public actual class CameraSession private constructor(
     internal fun setFocusPoint(
         focusPoint: CValue<CGPoint>,
     ) = iosCameraSession.setFocusPoint(focusPoint)
-
-    internal actual fun updateCameraInfo() = with(iosCameraSession.device) {
-        info.rebind(state.captureMode.output)
-    }
 
     internal fun recoveryState() {
         iosCameraSession.setTorchEnabled(state.isTorchEnabled)

@@ -53,7 +53,10 @@ public actual class CameraState internal constructor(
         predicate = { old, new ->
             old != new && controller.hasCamera(new.selector) && !controller.isRecording
         },
-        block = { controller.cameraSelector = it.selector }
+        block = {
+            controller.cameraSelector = it.selector
+            cameraInfo.rebind()
+        }
     )
         internal set
 
@@ -181,7 +184,7 @@ public actual class CameraState internal constructor(
     }
 }
 
-internal actual fun CameraSession.isToUpdateCameraInfo(
+internal actual fun CameraSession.isToResetConfig(
     isCamSelectorChanged: Boolean,
     isCaptureModeChanged: Boolean,
 ): Boolean = isCamSelectorChanged
