@@ -22,8 +22,8 @@ import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.ImageAnalyzer
 import com.ujizin.camposer.state.properties.ImageCaptureStrategy
 import com.ujizin.camposer.state.properties.ImplementationMode
-import com.ujizin.camposer.state.properties.ResolutionPreset
 import com.ujizin.camposer.state.properties.ScaleType
+import com.ujizin.camposer.state.properties.format.CamFormat
 import kotlinx.coroutines.delay
 
 /**
@@ -56,7 +56,7 @@ public fun CameraPreview(
     captureStrategy: ImageCaptureStrategy = cameraSession.state.imageCaptureStrategy,
     scaleType: ScaleType = cameraSession.state.scaleType,
     imageAnalyzer: ImageAnalyzer? = null,
-    resolutionPreset: ResolutionPreset = cameraSession.state.resolutionPreset,
+    camFormat: CamFormat = cameraSession.state.camFormat,
     implementationMode: ImplementationMode = cameraSession.state.implementationMode,
     isImageAnalysisEnabled: Boolean = imageAnalyzer != null,
     isFocusOnTapEnabled: Boolean = cameraSession.state.isFocusOnTapEnabled,
@@ -83,7 +83,7 @@ public fun CameraPreview(
             captureMode = captureMode,
             camSelector = camSelector,
             imageCaptureStrategy = captureStrategy,
-            resolutionPreset = resolutionPreset,
+            camFormat = camFormat,
             scaleType = scaleType,
             imageAnalyzer = imageAnalyzer,
             isImageAnalysisEnabled = isImageAnalysisEnabled,
@@ -140,7 +140,7 @@ internal expect fun CameraPreviewImpl(
     cameraSession: CameraSession,
     camSelector: CamSelector,
     captureMode: CaptureMode,
-    resolutionPreset: ResolutionPreset,
+    camFormat: CamFormat,
     imageCaptureStrategy: ImageCaptureStrategy,
     scaleType: ScaleType,
     imageAnalyzer: ImageAnalyzer?,

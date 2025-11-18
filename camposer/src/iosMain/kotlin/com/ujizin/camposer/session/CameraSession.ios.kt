@@ -79,7 +79,7 @@ public actual class CameraSession private constructor(
             cameraInfo = info,
         )
 
-        setCameraPosition(position = state.camSelector.position)
+        setCameraSelector(position = state.camSelector.position)
         info.rebind(state.captureMode.output)
 
         captureSession.addObserver(
@@ -97,7 +97,6 @@ public actual class CameraSession private constructor(
         captureOutput = state.captureMode.output,
         position = state.camSelector.position,
         isMuted = controller.isMuted,
-        presets = state.resolutionPreset.presets.toList(),
     )
 
     internal fun renderCamera(view: UIView) {

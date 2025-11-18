@@ -6,6 +6,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.LifecycleOwner
 import com.ujizin.camposer.command.AndroidTakePictureCommand
 import com.ujizin.camposer.command.DefaultTakePictureCommand
 import com.ujizin.camposer.controller.camera.CameraController
@@ -114,8 +115,15 @@ public actual class CameraSession private constructor(
         }, mainExecutor)
     }
 
+    /**
+     * This is unusual to make in camerax controller, however to update the preview view or implementation mode, this needs to be made
+     * */
+    internal fun rebind(lifecycle: LifecycleOwner) {
+        cameraXController.unbind()
+        cameraXController.bindToLifecycle(lifecycle)
+    }
+
     internal fun dispose() {
         cameraXController.unbind()
     }
-
 }

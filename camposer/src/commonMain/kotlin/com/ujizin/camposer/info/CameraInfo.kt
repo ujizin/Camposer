@@ -1,5 +1,7 @@
 package com.ujizin.camposer.info
 
+import com.ujizin.camposer.state.properties.CameraData
+
 public expect class CameraInfo {
     public val isZoomSupported: Boolean
 
@@ -22,5 +24,13 @@ public expect class CameraInfo {
     public var isTorchAvailable: Boolean
         private set
     public var isZeroShutterLagSupported: Boolean
+        private set
+
+    public var isFocusSupported: Boolean
+        private set
+
+    public var photoFormats: List<CameraData>
+        private set
+    public var videoFormats: List<CameraData>
         private set
 }

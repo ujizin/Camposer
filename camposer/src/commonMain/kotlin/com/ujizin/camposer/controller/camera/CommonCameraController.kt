@@ -102,6 +102,14 @@ public abstract class CommonCameraController<RC : RecordController, TPC : TakePi
         state.runBind { orientationStrategy = strategy }
     }
 
+    override fun setVideoFrameRate(frameRate: Int) {
+        // TODO("Not yet implemented")
+    }
+
+    override fun setVideoStabilizationEnabled(isVideoStabilizationEnabled: Boolean) {
+        // TODO("Not yet implemented")
+    }
+
     internal fun initialize(
         recordController: RC,
         takePictureCommand: TPC,

@@ -27,7 +27,13 @@ import com.ujizin.camposer.session.CameraSession
 import com.ujizin.camposer.session.rememberCameraSession
 import com.ujizin.camposer.session.rememberImageAnalyzer
 import com.ujizin.camposer.state.properties.CamSelector
-import com.ujizin.camposer.state.properties.ResolutionPreset
+import com.ujizin.camposer.state.properties.ScaleType
+import com.ujizin.camposer.state.properties.VideoStabilizationMode
+import com.ujizin.camposer.state.properties.format.CamFormat
+import com.ujizin.camposer.state.properties.format.config.AspectRatioConfig
+import com.ujizin.camposer.state.properties.format.config.FrameRateConfig
+import com.ujizin.camposer.state.properties.format.config.ResolutionConfig
+import com.ujizin.camposer.state.properties.format.config.VideoStabilizationConfig
 import com.ujizin.sample.extensions.noClickable
 import com.ujizin.sample.feature.camera.components.ActionBox
 import com.ujizin.sample.feature.camera.components.BlinkPictureBox
@@ -116,7 +122,15 @@ fun CameraSection(
         cameraSession = cameraSession,
         camSelector = camSelector,
         captureMode = cameraOption.toCaptureMode(),
-        resolutionPreset = ResolutionPreset.Low,
+        camFormat = remember {
+            CamFormat(
+                AspectRatioConfig(1F),
+                FrameRateConfig(240),
+                ResolutionConfig.UltraHigh,
+                VideoStabilizationConfig(VideoStabilizationMode.Standard),
+            )
+        },
+        scaleType = ScaleType.FitCenter,
         imageAnalyzer = imageAnalyzer,
         isPinchToZoomEnabled = usePinchToZoom,
         isFocusOnTapEnabled = useTapToFocus,

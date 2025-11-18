@@ -8,8 +8,8 @@ import com.ujizin.camposer.state.properties.ImageAnalyzer
 import com.ujizin.camposer.state.properties.ImageCaptureStrategy
 import com.ujizin.camposer.state.properties.ImplementationMode
 import com.ujizin.camposer.state.properties.OrientationStrategy
-import com.ujizin.camposer.state.properties.ResolutionPreset
 import com.ujizin.camposer.state.properties.ScaleType
+import com.ujizin.camposer.state.properties.format.CamFormat
 
 public expect class CameraState {
     public var isImageAnalyzerEnabled: Boolean
@@ -24,7 +24,7 @@ public expect class CameraState {
         internal set
     public var flashMode: FlashMode
         internal set
-    public var resolutionPreset: ResolutionPreset
+    public var camFormat: CamFormat
         internal set
     public var implementationMode: ImplementationMode
         internal set
@@ -59,7 +59,7 @@ internal fun CameraSession.update(
     implementationMode: ImplementationMode,
     isFocusOnTapEnabled: Boolean,
     imageCaptureStrategy: ImageCaptureStrategy,
-    resolutionPreset: ResolutionPreset,
+    camFormat: CamFormat,
     isPinchToZoomEnabled: Boolean,
 ) {
     val isCamSelectorChanged = state.camSelector != camSelector
@@ -70,6 +70,7 @@ internal fun CameraSession.update(
         if (isToUpdateCamera) {
             resetConfig()
         }
+        this.camFormat = camFormat
         this.camSelector = camSelector
         this.captureMode = captureMode
         this.scaleType = scaleType
@@ -78,7 +79,6 @@ internal fun CameraSession.update(
         this.implementationMode = implementationMode
         this.isFocusOnTapEnabled = isFocusOnTapEnabled
         this.imageCaptureStrategy = imageCaptureStrategy
-        this.resolutionPreset = resolutionPreset
         this.isPinchToZoomEnabled = isPinchToZoomEnabled
     }
 }

@@ -3,6 +3,8 @@ package com.ujizin.camposer.info
 import androidx.annotation.OptIn
 import androidx.camera.core.ExperimentalZeroShutterLag
 import androidx.camera.view.CameraController
+import com.ujizin.camposer.state.properties.CameraData
+import com.ujizin.camposer.utils.CameraUtils
 
 internal class AndroidCameraInfo(
     private val controller: CameraController,
@@ -32,6 +34,15 @@ internal class AndroidCameraInfo(
     internal val isZeroShutterLagSupported: Boolean
         @OptIn(ExperimentalZeroShutterLag::class)
         get() = controller.cameraInfo?.isZslSupported ?: false
+
+    internal val isFocusSupported: Boolean
+        get() = controller.cameraInfo?.isFocusMeteringSupported(CameraUtils.createFocusMetering()) ?: false
+
+    internal val photoFormats: List<CameraData>
+        get() = controller.cameraInfo?.let(CameraUtils::getPhotoResolutions).orEmpty()
+
+    internal val videoFormats: List<CameraData>
+        get() = controller.cameraInfo?.let(CameraUtils::getVideoResolutions).orEmpty()
 
     companion object {
         private const val INITIAL_ZOOM_VALUE = 1F

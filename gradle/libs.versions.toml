@@ -19,7 +19,6 @@ mlkit-barcode = "17.3.0"
 
 # Sample app libraries
 
-androidx-core = "1.17.0"
 exoplayer = "2.19.1"
 zxing = "3.5.3"
 cloudy = "0.2.7"
@@ -35,8 +34,6 @@ datastore = "1.1.7"
 media-kmp = "2.0.6"
 
 [libraries]
-
-androidx-core = { module = "androidx.core:core", version.ref = "androidx-core" }
 
 lifecycle = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
 lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-savedstate", version.ref = "lifecycle" }
@@ -97,7 +94,7 @@ compose = [
     "compose-foundation"
 ]
 
-internal-camerax = [
+camerax = [
     "camerax-camera2",
     "camerax-lifecycle",
     "camerax-view"

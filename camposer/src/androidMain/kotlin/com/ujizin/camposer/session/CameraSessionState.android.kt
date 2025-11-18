@@ -6,13 +6,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import com.ujizin.camposer.CameraPreviewImpl
+import com.ujizin.camposer.CameraPreview
 import com.ujizin.camposer.state.properties.ImageAnalysisBackpressureStrategy
 import com.ujizin.camposer.state.properties.ImageAnalyzer
 import com.ujizin.camposer.controller.camera.CameraController
 
 /**
- * Camera State from [CameraPreviewImpl] Composable.
+ * Camera State from [CameraPreview] Composable.
  * */
 @Composable
 public actual fun rememberCameraSession(controller: CameraController): CameraSession {

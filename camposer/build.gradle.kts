@@ -50,6 +50,7 @@ kotlin {
             isStatic = true
         }
         iosTarget.compilations.getByName("main") {
+            val CMFormat by cinterops.creating
             val NSKeyValueObserving by cinterops.creating
         }
     }
@@ -69,7 +70,7 @@ kotlin {
 
         androidMain.dependencies {
             implementation(compose.preview)
-            api(libs.bundles.internal.camerax)
+            api(libs.bundles.camerax)
         }
 
         iosMain.dependencies {

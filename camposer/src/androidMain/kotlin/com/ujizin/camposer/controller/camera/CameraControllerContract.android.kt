@@ -18,4 +18,6 @@ public actual interface CameraControllerContract : AndroidRecordController,
     public actual fun setFlashMode(flashMode: FlashMode)
     public actual fun setTorchEnabled(isTorchEnabled: Boolean)
     public actual fun setOrientationStrategy(strategy: OrientationStrategy)
+    public actual fun setVideoFrameRate(frameRate: Int)
+    public actual fun setVideoStabilizationEnabled(isVideoStabilizationEnabled: Boolean)
 }

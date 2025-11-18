@@ -27,8 +27,8 @@ import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.ImageAnalyzer
 import com.ujizin.camposer.state.properties.ImageCaptureStrategy
 import com.ujizin.camposer.state.properties.ImplementationMode
-import com.ujizin.camposer.state.properties.ResolutionPreset
 import com.ujizin.camposer.state.properties.ScaleType
+import com.ujizin.camposer.state.properties.format.CamFormat
 import com.ujizin.camposer.state.update
 
 /**
@@ -54,7 +54,7 @@ internal actual fun CameraPreviewImpl(
     cameraSession: CameraSession,
     camSelector: CamSelector,
     captureMode: CaptureMode,
-    resolutionPreset: ResolutionPreset,
+    camFormat: CamFormat,
     imageCaptureStrategy: ImageCaptureStrategy,
     scaleType: ScaleType,
     imageAnalyzer: ImageAnalyzer?,
@@ -78,11 +78,13 @@ internal actual fun CameraPreviewImpl(
 
     LaunchedEffect(cameraSession, previewViewRef) {
         val previewView = previewViewRef ?: return@LaunchedEffect
+        if (previewView.controller == cameraSession.cameraXController) return@LaunchedEffect
+
         previewView.onViewBind(
             cameraSession = cameraSession,
             lifecycleOwner = lifecycleOwner,
             onTapFocus = {
-                if (cameraSession.state.isFocusOnTapEnabled) {
+                if (cameraSession.info.isFocusSupported && cameraSession.state.isFocusOnTapEnabled) {
                     onTapFocus(it + cameraOffset)
                 }
             },
@@ -91,16 +93,22 @@ internal actual fun CameraPreviewImpl(
 
     AndroidView(
         modifier = modifier.onGloballyPositioned { cameraOffset = it.positionInParent() },
-        factory = { context -> PreviewView(context).apply { previewViewRef = this } },
+        factory = { context ->
+            PreviewView(context).apply {
+                this.scaleType = scaleType.type
+                this.implementationMode = implementationMode.value
+                previewViewRef = this
+            }
+        },
         update = { previewView ->
             if (!cameraIsInitialized) return@AndroidView
             with(previewView) {
-                if (this.scaleType != scaleType.type) {
+                if (this.scaleType != scaleType.type || this.implementationMode != implementationMode.value) {
                     this.scaleType = scaleType.type
-                }
-                if (this.implementationMode != implementationMode.value) {
                     this.implementationMode = implementationMode.value
+                    cameraSession.rebind(lifecycleOwner)
                 }
+
                 latestBitmap = when {
                     lifecycleEvent == Lifecycle.Event.ON_STOP -> null
                     !isCameraIdle && camSelector != cameraSession.state.camSelector -> bitmap?.asImageBitmap()
@@ -116,7 +124,7 @@ internal actual fun CameraPreviewImpl(
                     implementationMode = implementationMode,
                     isFocusOnTapEnabled = isFocusOnTapEnabled,
                     imageCaptureStrategy = imageCaptureStrategy,
-                    resolutionPreset = resolutionPreset,
+                    camFormat = camFormat,
                     isPinchToZoomEnabled = isPinchToZoomEnabled,
                 )
             }

@@ -45,7 +45,6 @@ public actual class ImageAnalyzer(
     internal var imageAnalysisResolutionSelector: ResolutionSelector?
         get() = controller.imageAnalysisResolutionSelector
         set(value) {
-            // TODO check if this works as expected
             if (value != null && imageAnalysisResolutionSelector != value) {
                 controller.imageAnalysisResolutionSelector = value
             }
@@ -95,5 +94,27 @@ public actual class ImageAnalyzer(
             imageAnalysisImageQueueDepth
         )
         this.analyzer = analyzer
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is ImageAnalyzer) return false
+
+        if (controller != other.controller) return false
+        if (imageAnalysisBackpressureStrategy != other.imageAnalysisBackpressureStrategy) return false
+        if (imageAnalysisResolutionSelector != other.imageAnalysisResolutionSelector) return false
+        if (imageAnalysisImageQueueDepth != other.imageAnalysisImageQueueDepth) return false
+        if (analyzer != other.analyzer) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = controller.hashCode()
+        result = 31 * result + imageAnalysisBackpressureStrategy
+        result = 31 * result + (imageAnalysisResolutionSelector?.hashCode() ?: 0)
+        result = 31 * result + imageAnalysisImageQueueDepth
+        result = 31 * result + analyzer.hashCode()
+        return result
     }
 }

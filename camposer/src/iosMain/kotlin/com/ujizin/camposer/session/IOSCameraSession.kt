@@ -15,20 +15,23 @@ import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.AVFoundation.AVCaptureDevice
 import platform.AVFoundation.AVCaptureDevice.Companion.defaultDeviceWithMediaType
+import platform.AVFoundation.AVCaptureDeviceFormat
 import platform.AVFoundation.AVCaptureDeviceInput
 import platform.AVFoundation.AVCaptureDevicePosition
 import platform.AVFoundation.AVCaptureExposureModeAutoExpose
 import platform.AVFoundation.AVCaptureFlashMode
 import platform.AVFoundation.AVCaptureFocusModeAutoFocus
+import platform.AVFoundation.AVCaptureMovieFileOutput
 import platform.AVFoundation.AVCaptureOutput
 import platform.AVFoundation.AVCapturePhotoOutput
 import platform.AVFoundation.AVCapturePhotoQualityPrioritization
 import platform.AVFoundation.AVCaptureSession
-import platform.AVFoundation.AVCaptureSessionPreset
 import platform.AVFoundation.AVCaptureTorchModeOff
 import platform.AVFoundation.AVCaptureTorchModeOn
+import platform.AVFoundation.AVCaptureVideoStabilizationMode
 import platform.AVFoundation.AVLayerVideoGravity
 import platform.AVFoundation.AVMediaTypeAudio
+import platform.AVFoundation.AVMediaTypeVideo
 import platform.AVFoundation.exposureMode
 import platform.AVFoundation.exposurePointOfInterest
 import platform.AVFoundation.flashMode
@@ -56,6 +59,7 @@ public class IOSCameraSession internal constructor(
 
     public val captureDeviceInput: AVCaptureDeviceInput
         get() = _captureDeviceInput!!
+
     public val device: AVCaptureDevice
         get() = captureDeviceInput.device
 
@@ -63,6 +67,9 @@ public class IOSCameraSession internal constructor(
         get() = captureSession.isRunning()
 
     internal val orientationListener: OrientationManager = OrientationManager()
+
+    internal val isFocusSupported: Boolean
+        get() = device.isFocusPointOfInterestSupported() || device.isExposurePointOfInterestSupported()
 
     private val audioInput = defaultDeviceWithMediaType(AVMediaTypeAudio)?.toDeviceInput()
         ?: throw AudioInputNotFoundException()
@@ -75,12 +82,10 @@ public class IOSCameraSession internal constructor(
         captureOutput: AVCaptureOutput,
         position: AVCaptureDevicePosition,
         isMuted: Boolean,
-        presets: List<AVCaptureSessionPreset>,
     ) = dispatch_async(cameraQueue) {
         captureSession.beginConfiguration()
 
-        setCameraPreset(presets)
-        setCameraPosition(position)
+        setCameraSelector(position)
         setAudioEnabled(!isMuted)
         captureSession.tryAddOutput(captureOutput)
         captureSession.commitConfiguration()
@@ -91,13 +96,25 @@ public class IOSCameraSession internal constructor(
         captureSession.startRunning()
     }
 
-    internal fun setCameraPreset(presets: List<AVCaptureSessionPreset>) {
-        for (preset in presets) {
-            if (captureSession.canSetSessionPreset(preset)) {
-                captureSession.sessionPreset = preset
-                break
-            }
+    internal fun setVideoStabilization(mode: AVCaptureVideoStabilizationMode) {
+        val output = captureSession.outputs.firstIsInstanceOrNull<AVCaptureMovieFileOutput>()
+        val videoConnection = output?.connectionWithMediaType(AVMediaTypeVideo)
+
+        if (videoConnection?.isVideoStabilizationSupported() == false) {
+            return
         }
+
+        device.withConfigurationLock {
+            videoConnection?.preferredVideoStabilizationMode = mode
+        }
+    }
+
+    internal fun setFormat(format: AVCaptureDeviceFormat) {
+        if (!device.formats().contains(format)) {
+            return
+        }
+
+        device.withConfigurationLock { device.setActiveFormat(format) }
     }
 
     internal fun setPreviewGravity(gravity: AVLayerVideoGravity) {
@@ -108,7 +125,7 @@ public class IOSCameraSession internal constructor(
         previewManager.attachView(view)
     }
 
-    internal fun setCameraPosition(position: AVCaptureDevicePosition) {
+    internal fun setCameraSelector(position: AVCaptureDevicePosition) {
         if (_captureDeviceInput?.device?.position == position) {
             return
         }

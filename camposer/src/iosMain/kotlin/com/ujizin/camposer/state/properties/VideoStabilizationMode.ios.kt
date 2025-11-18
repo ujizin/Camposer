@@ -1,0 +1,16 @@
+package com.ujizin.camposer.state.properties
+
+import platform.AVFoundation.AVCaptureVideoStabilizationMode
+import platform.AVFoundation.AVCaptureVideoStabilizationModeCinematic
+import platform.AVFoundation.AVCaptureVideoStabilizationModeCinematicExtended
+import platform.AVFoundation.AVCaptureVideoStabilizationModeCinematicExtendedEnhanced
+import platform.AVFoundation.AVCaptureVideoStabilizationModeOff
+import platform.AVFoundation.AVCaptureVideoStabilizationModeStandard
+
+public actual enum class VideoStabilizationMode(internal val value: AVCaptureVideoStabilizationMode) {
+    Off(AVCaptureVideoStabilizationModeOff),
+    Standard(AVCaptureVideoStabilizationModeStandard),
+    Cinematic(AVCaptureVideoStabilizationModeCinematic),
+    CinematicExtended(AVCaptureVideoStabilizationModeCinematicExtended),
+    CinematicExtendedEnhanced(AVCaptureVideoStabilizationModeCinematicExtendedEnhanced),
+}

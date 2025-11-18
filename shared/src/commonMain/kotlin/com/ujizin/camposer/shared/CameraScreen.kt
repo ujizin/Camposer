@@ -34,6 +34,13 @@ import com.ujizin.camposer.session.rememberCameraSession
 import com.ujizin.camposer.state.properties.CamSelector
 import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.OrientationStrategy
+import com.ujizin.camposer.state.properties.ScaleType
+import com.ujizin.camposer.state.properties.VideoStabilizationMode
+import com.ujizin.camposer.state.properties.format.CamFormat
+import com.ujizin.camposer.state.properties.format.config.AspectRatioConfig
+import com.ujizin.camposer.state.properties.format.config.FrameRateConfig
+import com.ujizin.camposer.state.properties.format.config.ResolutionConfig
+import com.ujizin.camposer.state.properties.format.config.VideoStabilizationConfig
 import com.ujizin.camposer.state.properties.inverse
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemTemporaryDirectory
@@ -76,6 +83,15 @@ fun CameraScreen() {
     CameraPreview(
         modifier = Modifier.fillMaxSize(),
         cameraSession = cameraSession,
+        camFormat = remember {
+            CamFormat(
+                AspectRatioConfig(1F),
+                FrameRateConfig(240),
+                ResolutionConfig.UltraHigh,
+                VideoStabilizationConfig(VideoStabilizationMode.Standard),
+            )
+        },
+        scaleType = ScaleType.FitCenter,
         camSelector = camSelector,
         captureMode = captureMode,
         imageAnalyzer = codeImageAnalyzer,

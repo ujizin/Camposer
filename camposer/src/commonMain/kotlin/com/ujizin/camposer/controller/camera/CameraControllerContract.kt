@@ -17,4 +17,6 @@ public expect interface CameraControllerContract : RecordController, TakePicture
     public fun setFlashMode(flashMode: FlashMode)
     public fun setTorchEnabled(isTorchEnabled: Boolean)
     public fun setOrientationStrategy(strategy: OrientationStrategy)
+    public fun setVideoFrameRate(frameRate: Int)
+    public fun setVideoStabilizationEnabled(isVideoStabilizationEnabled: Boolean)
 }

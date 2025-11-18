@@ -16,8 +16,9 @@ import com.ujizin.camposer.state.properties.ImageAnalyzer
 import com.ujizin.camposer.state.properties.ImageCaptureStrategy
 import com.ujizin.camposer.state.properties.ImplementationMode
 import com.ujizin.camposer.state.properties.OrientationStrategy
-import com.ujizin.camposer.state.properties.ResolutionPreset
 import com.ujizin.camposer.state.properties.ScaleType
+import com.ujizin.camposer.state.properties.format.CamFormat
+import com.ujizin.camposer.state.properties.format.Default
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.sync.Mutex
 import platform.AVFoundation.setExposureTargetBias
@@ -38,7 +39,8 @@ public actual class CameraState(
         onDispose = { iosCameraSession.removeOutput(it.output) },
         block = {
             iosCameraSession.addOutput(it.output)
-            cameraInfo.rebind(it.output)
+            rebind()
+            setDeviceFormat(camFormat)
         },
     )
         internal set
@@ -47,8 +49,8 @@ public actual class CameraState(
         mutex = cameraMutex,
         value = CamSelector.Back
     ) {
-        iosCameraSession.setCameraPosition(it.position)
-        cameraInfo.rebind(captureMode.output)
+        iosCameraSession.setCameraSelector(it.position)
+        rebind()
     }
         internal set
 
@@ -65,8 +67,8 @@ public actual class CameraState(
     }
         internal set
 
-    public actual var resolutionPreset: ResolutionPreset by config(ResolutionPreset.Default) {
-        iosCameraSession.setCameraPreset(it.presets.toList())
+    public actual var camFormat: CamFormat by config(CamFormat.Default) {
+        setDeviceFormat(camFormat)
     }
         internal set
 
@@ -120,7 +122,7 @@ public actual class CameraState(
     }
         internal set
 
-    public actual var isFocusOnTapEnabled: Boolean by mutableStateOf(true)
+    public actual var isFocusOnTapEnabled: Boolean by config(value = true)
         internal set
 
     public actual var isTorchEnabled: Boolean by config(
@@ -138,6 +140,11 @@ public actual class CameraState(
         iosCameraSession.setPreviewGravity(scaleType.gravity)
     }
 
+    private fun rebind() {
+        cameraInfo.rebind(output = captureMode.output)
+        resetConfig()
+    }
+
     internal actual fun resetConfig() {
         zoomRatio = cameraInfo.minZoom
         exposureCompensation = 0F
@@ -152,6 +159,11 @@ public actual class CameraState(
     internal fun getCurrentVideoOrientation() = when (orientationStrategy) {
         OrientationStrategy.Device -> iosCameraSession.orientationListener.currentOrientation.toVideoOrientation()
         OrientationStrategy.Preview -> UIApplication.sharedApplication.statusBarOrientation.toVideoOrientation()
+    }
+
+    private fun setDeviceFormat(camFormat: CamFormat) {
+        val deviceFormat = camFormat.getDeviceFormat(cameraInfo) ?: return
+        iosCameraSession.setFormat(deviceFormat)
     }
 
     private fun FlashMode.isFlashAvailable() = this == FlashMode.Off || cameraInfo.isFlashAvailable

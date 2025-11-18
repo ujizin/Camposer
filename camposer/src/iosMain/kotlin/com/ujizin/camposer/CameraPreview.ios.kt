@@ -13,8 +13,8 @@ import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.ImageAnalyzer
 import com.ujizin.camposer.state.properties.ImageCaptureStrategy
 import com.ujizin.camposer.state.properties.ImplementationMode
-import com.ujizin.camposer.state.properties.ResolutionPreset
 import com.ujizin.camposer.state.properties.ScaleType
+import com.ujizin.camposer.state.properties.format.CamFormat
 import com.ujizin.camposer.state.update
 import com.ujizin.camposer.view.CameraViewController
 import com.ujizin.camposer.view.CameraViewDelegate
@@ -27,7 +27,7 @@ internal actual fun CameraPreviewImpl(
     cameraSession: CameraSession,
     camSelector: CamSelector,
     captureMode: CaptureMode,
-    resolutionPreset: ResolutionPreset,
+    camFormat: CamFormat,
     imageCaptureStrategy: ImageCaptureStrategy,
     scaleType: ScaleType,
     imageAnalyzer: ImageAnalyzer?,
@@ -57,6 +57,7 @@ internal actual fun CameraPreviewImpl(
             cameraViewController.cameraSession.update(
                 camSelector = camSelector,
                 captureMode = captureMode,
+                camFormat = camFormat,
                 scaleType = scaleType,
                 isImageAnalysisEnabled = isImageAnalysisEnabled,
                 imageAnalyzer = imageAnalyzer,
@@ -64,7 +65,6 @@ internal actual fun CameraPreviewImpl(
                 isFocusOnTapEnabled = isFocusOnTapEnabled,
                 imageCaptureStrategy = imageCaptureStrategy,
                 isPinchToZoomEnabled = isPinchToZoomEnabled,
-                resolutionPreset = resolutionPreset,
             )
         },
     )

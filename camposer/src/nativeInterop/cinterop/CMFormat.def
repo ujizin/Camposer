@@ -1,0 +1,9 @@
+package = platform.coremedia
+language = C
+compilerOpts = -framework CoreMedia
+linkerOpts = -framework CoreMedia
+---
+
+struct opaqueCMFormatDescription;
+
+typedef const struct opaqueCMFormatDescription *CMFormatDescriptionRef;

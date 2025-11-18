@@ -21,8 +21,9 @@ import com.ujizin.camposer.state.properties.ImageAnalyzer
 import com.ujizin.camposer.state.properties.ImageCaptureStrategy
 import com.ujizin.camposer.state.properties.ImplementationMode
 import com.ujizin.camposer.state.properties.OrientationStrategy
-import com.ujizin.camposer.state.properties.ResolutionPreset
 import com.ujizin.camposer.state.properties.ScaleType
+import com.ujizin.camposer.state.properties.format.CamFormat
+import com.ujizin.camposer.state.properties.format.Default
 import java.util.concurrent.Executor
 import kotlin.math.roundToInt
 
@@ -36,6 +37,7 @@ public actual class CameraState internal constructor(
 
     public actual var captureMode: CaptureMode by config(CaptureMode.Image) { mode ->
         controller.setEnabledUseCases(getUseCases(mode))
+        camFormat.applyConfigs(cameraInfo, controller)
     }
         internal set
 
@@ -71,10 +73,8 @@ public actual class CameraState internal constructor(
     }
         internal set
 
-    public actual var resolutionPreset: ResolutionPreset by config(ResolutionPreset.Default) { value ->
-        value.getQualitySelector()?.let { controller.videoCaptureQualitySelector = it }
-        controller.imageCaptureResolutionSelector = value.getResolutionSelector()
-        controller.previewResolutionSelector = value.getResolutionSelector()
+    public actual var camFormat: CamFormat by config(CamFormat.Default) { format ->
+        format.applyConfigs(cameraInfo, controller)
     }
         internal set
 
@@ -94,7 +94,7 @@ public actual class CameraState internal constructor(
     public actual var isPinchToZoomEnabled: Boolean by mutableStateOf(true)
         internal set
 
-    public actual var isFocusOnTapEnabled: Boolean by config(true) {
+    public actual var isFocusOnTapEnabled: Boolean by config(cameraInfo.isFocusSupported) {
         controller.isTapToFocusEnabled = it
     }
         internal set
