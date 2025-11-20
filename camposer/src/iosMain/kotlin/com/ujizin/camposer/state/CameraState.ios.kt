@@ -17,6 +17,7 @@ import com.ujizin.camposer.state.properties.ImageCaptureStrategy
 import com.ujizin.camposer.state.properties.ImplementationMode
 import com.ujizin.camposer.state.properties.OrientationStrategy
 import com.ujizin.camposer.state.properties.ScaleType
+import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import com.ujizin.camposer.state.properties.format.CamFormat
 import com.ujizin.camposer.state.properties.format.Default
 import kotlinx.cinterop.ExperimentalForeignApi
@@ -39,8 +40,7 @@ public actual class CameraState(
         onDispose = { iosCameraSession.removeOutput(it.output) },
         block = {
             iosCameraSession.addOutput(it.output)
-            rebind()
-            setDeviceFormat(camFormat)
+            updateConfig(captureModeChanged = true)
         },
     )
         internal set
@@ -50,7 +50,7 @@ public actual class CameraState(
         value = CamSelector.Back
     ) {
         iosCameraSession.setCameraSelector(it.position)
-        rebind()
+        updateConfig(camSelectorChanged = true)
     }
         internal set
 
@@ -61,15 +61,16 @@ public actual class CameraState(
 
     public actual var flashMode: FlashMode by config(
         value = FlashMode.Off,
+        check = { check(it.isFlashAvailable()) { "Flash must be supported to be enabled" } },
         predicate = { old, new -> old != new && new.isFlashAvailable() }
     ) {
         iosCameraSession.setFlashMode(it.mode)
     }
         internal set
 
-    public actual var camFormat: CamFormat by config(CamFormat.Default) {
-        setDeviceFormat(camFormat)
-    }
+    public actual var camFormat: CamFormat by config(
+        value = CamFormat.Default
+    ) { setDeviceFormat(camFormat) }
         internal set
 
     // No-op in iOS
@@ -85,7 +86,6 @@ public actual class CameraState(
         internal set
 
     public actual var isImageAnalyzerEnabled: Boolean by config(
-
         value = imageAnalyzer != null
     ) { isEnabled ->
         imageAnalyzer?.isEnabled = isEnabled
@@ -126,7 +126,8 @@ public actual class CameraState(
         internal set
 
     public actual var isTorchEnabled: Boolean by config(
-        false,
+        value = false,
+        check = { check((!it || cameraInfo.isTorchAvailable)) { "Torch must be supported to enable" } },
         predicate = { old, new -> old != new && (!new || cameraInfo.isTorchAvailable) }
     ) {
         iosCameraSession.setTorchEnabled(it)
@@ -136,16 +137,46 @@ public actual class CameraState(
     public actual var orientationStrategy: OrientationStrategy by config(OrientationStrategy.Device)
         internal set
 
+    public actual var frameRate: Int by config(
+        value = -1,
+        check = {
+            check(it in cameraInfo.minFPS..cameraInfo.maxFPS) {
+                "FPS $it must be in range ${cameraInfo.minFPS..cameraInfo.maxFPS}"
+            }
+        },
+        block = ::setFrameRate,
+    )
+        internal set
+
+    public actual var videoStabilizationMode: VideoStabilizationMode by config(
+        value = VideoStabilizationMode.Off,
+        check = {
+            check(iosCameraSession.isVideoStabilizationSupported(it.value)) {
+                "Video stabilization mode must be supported to enable"
+            }
+        },
+        block = ::setStabilizationMode,
+    )
+        internal set
+
     init {
         iosCameraSession.setPreviewGravity(scaleType.gravity)
     }
 
-    private fun rebind() {
-        cameraInfo.rebind(output = captureMode.output)
+    private fun updateConfig(
+        captureModeChanged: Boolean = false,
+        camSelectorChanged: Boolean = false,
+    ) {
         resetConfig()
+
+        if (captureModeChanged || camSelectorChanged) {
+            setDeviceFormat(camFormat)
+        }
     }
 
     internal actual fun resetConfig() {
+        cameraInfo.rebind(output = captureMode.output)
+
         zoomRatio = cameraInfo.minZoom
         exposureCompensation = 0F
         flashMode = FlashMode.Off
@@ -162,8 +193,23 @@ public actual class CameraState(
     }
 
     private fun setDeviceFormat(camFormat: CamFormat) {
-        val deviceFormat = camFormat.getDeviceFormat(cameraInfo) ?: return
-        iosCameraSession.setFormat(deviceFormat)
+        camFormat.applyConfigs(
+            cameraInfo = cameraInfo,
+            iosCameraSession = iosCameraSession,
+            onDeviceFormatUpdated = { cameraInfo.rebind(output = captureMode.output) },
+            onStabilizationModeChanged = ::setStabilizationMode,
+            onFrameRateChanged = ::setFrameRate,
+        )
+    }
+
+    private fun setFrameRate(fps: Int) = when {
+        frameRate != fps -> frameRate = fps
+        else -> iosCameraSession.setFrameRate(frameRate)
+    }
+
+    private fun setStabilizationMode(mode: VideoStabilizationMode) = when {
+        mode != videoStabilizationMode -> videoStabilizationMode = mode
+        else -> iosCameraSession.setVideoStabilization(mode.value)
     }
 
     private fun FlashMode.isFlashAvailable() = this == FlashMode.Off || cameraInfo.isFlashAvailable

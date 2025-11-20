@@ -5,6 +5,7 @@ import com.ujizin.camposer.result.CaptureResult
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.properties.FlashMode
 import com.ujizin.camposer.state.properties.OrientationStrategy
+import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import kotlinx.coroutines.flow.StateFlow
 
 public expect class CameraController : CameraControllerContract {
@@ -35,7 +36,9 @@ public expect class CameraController : CameraControllerContract {
 
     override fun setZoomRatio(zoomRatio: Float)
     override fun setExposureCompensation(exposureCompensation: Float)
-    override fun setFlashMode(flashMode: FlashMode)
-    override fun setTorchEnabled(isTorchEnabled: Boolean)
     override fun setOrientationStrategy(strategy: OrientationStrategy)
+    override fun setFlashMode(flashMode: FlashMode): Result<Unit>
+    override fun setTorchEnabled(isTorchEnabled: Boolean): Result<Unit>
+    override fun setVideoFrameRate(frameRate: Int): Result<Unit>
+    override fun setVideoStabilizationEnabled(mode: VideoStabilizationMode): Result<Unit>
 }

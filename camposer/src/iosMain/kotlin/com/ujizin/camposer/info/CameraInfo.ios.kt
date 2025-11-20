@@ -2,6 +2,7 @@ package com.ujizin.camposer.info
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.ujizin.camposer.session.IOSCameraSession
@@ -11,6 +12,7 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import platform.AVFoundation.AVCaptureDeviceFormat
 import platform.AVFoundation.AVCaptureOutput
 import platform.AVFoundation.AVCapturePhotoOutput
+import platform.AVFoundation.AVFrameRateRange
 import platform.AVFoundation.hasFlash
 import platform.AVFoundation.hasTorch
 import platform.AVFoundation.isFlashAvailable
@@ -58,11 +60,22 @@ public actual class CameraInfo(
     public actual var isFocusSupported: Boolean by mutableStateOf(false)
         private set
 
+    private val formats: List<AVCaptureDeviceFormat>
+        get() = cameraSession.device.formats.filterIsInstance<AVCaptureDeviceFormat>()
+
     public actual var photoFormats: List<CameraData> = listOf()
+        get() = CameraFormatUtils.getPhotoFormats(formats)
         private set
 
     public actual var videoFormats: List<CameraData> = listOf()
+        get() = CameraFormatUtils.getVideoFormats(formats)
         private set
+
+    public actual var minFPS: Int by mutableIntStateOf(-1)
+        internal set
+
+    public actual var maxFPS: Int by mutableIntStateOf(-1)
+        internal set
 
     internal val allFormats: List<CameraData>
         get() = (photoFormats + videoFormats).distinct()
@@ -70,21 +83,22 @@ public actual class CameraInfo(
     @OptIn(ExperimentalForeignApi::class)
     internal fun rebind(
         output: AVCaptureOutput,
-    ) {
-        minZoom = cameraSession.device.minAvailableVideoZoomFactor.toFloat()
-        maxZoom = cameraSession.device.maxAvailableVideoZoomFactor.toFloat()
-        minExposure = cameraSession.device.minExposureTargetBias
-        maxExposure = cameraSession.device.maxExposureTargetBias
-        isFocusSupported = cameraSession.isFocusSupported
-        isFlashSupported = cameraSession.device.hasFlash
-        isFlashAvailable = cameraSession.device.isFlashAvailable()
-        isTorchSupported = cameraSession.device.hasTorch
-        isTorchAvailable = cameraSession.device.isTorchAvailable()
+    ): Unit = with(cameraSession) {
+        val fpsRange = device.activeFormat.videoSupportedFrameRateRanges
+            .filterIsInstance<AVFrameRateRange>()
+
+        minZoom = device.minAvailableVideoZoomFactor.toFloat()
+        maxZoom = device.maxAvailableVideoZoomFactor.toFloat()
+        minExposure = device.minExposureTargetBias
+        maxExposure = device.maxExposureTargetBias
+        minFPS = fpsRange.minOf { it.minFrameRate }.toInt()
+        maxFPS = fpsRange.maxOf { it.maxFrameRate }.toInt()
+        this@CameraInfo.isFocusSupported = isFocusSupported
+        isFlashSupported = device.hasFlash
+        isFlashAvailable = device.isFlashAvailable()
+        isTorchSupported = device.hasTorch
+        isTorchAvailable = device.isTorchAvailable()
         isZeroShutterLagSupported = (output as? AVCapturePhotoOutput)?.isZeroShutterLagSupported()
             ?: false
-
-        val formats = cameraSession.device.formats.filterIsInstance<AVCaptureDeviceFormat>()
-        photoFormats = CameraFormatUtils.getPhotoFormats(formats)
-        videoFormats = CameraFormatUtils.getVideoFormats(formats)
     }
 }

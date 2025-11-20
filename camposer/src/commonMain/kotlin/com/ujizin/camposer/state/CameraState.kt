@@ -9,6 +9,7 @@ import com.ujizin.camposer.state.properties.ImageCaptureStrategy
 import com.ujizin.camposer.state.properties.ImplementationMode
 import com.ujizin.camposer.state.properties.OrientationStrategy
 import com.ujizin.camposer.state.properties.ScaleType
+import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import com.ujizin.camposer.state.properties.format.CamFormat
 
 public expect class CameraState {
@@ -42,6 +43,11 @@ public expect class CameraState {
         internal set
     public var orientationStrategy: OrientationStrategy
         internal set
+    public var frameRate: Int
+        internal set
+    public var videoStabilizationMode: VideoStabilizationMode
+        internal set
+
     internal fun resetConfig()
 }
 
@@ -70,8 +76,9 @@ internal fun CameraSession.update(
         if (isToUpdateCamera) {
             resetConfig()
         }
-        this.camFormat = camFormat
+
         this.camSelector = camSelector
+        this.camFormat = camFormat
         this.captureMode = captureMode
         this.scaleType = scaleType
         this.isImageAnalyzerEnabled = isImageAnalysisEnabled

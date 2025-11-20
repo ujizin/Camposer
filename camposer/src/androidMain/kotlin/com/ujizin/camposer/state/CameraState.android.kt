@@ -2,7 +2,9 @@ package com.ujizin.camposer.state
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Range
 import androidx.camera.core.CameraEffect
+import androidx.camera.core.ExperimentalSessionConfig
 import androidx.camera.core.TorchState
 import androidx.camera.view.CameraController
 import androidx.camera.view.CameraController.IMAGE_ANALYSIS
@@ -22,6 +24,7 @@ import com.ujizin.camposer.state.properties.ImageCaptureStrategy
 import com.ujizin.camposer.state.properties.ImplementationMode
 import com.ujizin.camposer.state.properties.OrientationStrategy
 import com.ujizin.camposer.state.properties.ScaleType
+import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import com.ujizin.camposer.state.properties.format.CamFormat
 import com.ujizin.camposer.state.properties.format.Default
 import java.util.concurrent.Executor
@@ -37,7 +40,7 @@ public actual class CameraState internal constructor(
 
     public actual var captureMode: CaptureMode by config(CaptureMode.Image) { mode ->
         controller.setEnabledUseCases(getUseCases(mode))
-        camFormat.applyConfigs(cameraInfo, controller)
+        setCamFormat(camFormat)
     }
         internal set
 
@@ -67,6 +70,7 @@ public actual class CameraState internal constructor(
 
     public actual var flashMode: FlashMode by config(
         value = FlashMode.find(controller.imageCaptureFlashMode),
+        check = { check(it.isFlashSupported()) { "Flash must be supported to be enabled" } },
         predicate = { old, new -> old != new && new.isFlashSupported() }
     ) {
         mainExecutor.execute { controller.imageCaptureFlashMode = it.mode }
@@ -74,7 +78,7 @@ public actual class CameraState internal constructor(
         internal set
 
     public actual var camFormat: CamFormat by config(CamFormat.Default) { format ->
-        format.applyConfigs(cameraInfo, controller)
+        setCamFormat(format)
     }
         internal set
 
@@ -108,6 +112,7 @@ public actual class CameraState internal constructor(
 
     public actual var isTorchEnabled: Boolean by config(
         value = controller.torchState.value == TorchState.ON,
+        check = { check(!it || cameraInfo.isTorchAvailable) { "Torch must be supported to enable" } },
         predicate = { old, new -> old != new && (!new || cameraInfo.isTorchAvailable) },
         block = { mainExecutor.execute { controller.enableTorch(it) } }
     )
@@ -122,8 +127,28 @@ public actual class CameraState internal constructor(
 
     public actual var orientationStrategy: OrientationStrategy by config(
         value = OrientationStrategy.Device,
-        block = { /** Disable https://issuetracker.google.com/issues/449573627*/ }
+        block = { /** TODO Not supported yet - https://issuetracker.google.com/issues/449573627*/ }
     )
+        internal set
+
+    public actual var frameRate: Int by config(
+        value = cameraInfo.maxFPS,
+        check = {
+            check(it in cameraInfo.minFPS..cameraInfo.maxFPS) {
+                "FPS must be in range ${cameraInfo.minFPS..cameraInfo.maxFPS}"
+            }
+        },
+        block = ::setFrameRate
+    )
+        internal set
+
+    @OptIn(ExperimentalSessionConfig::class)
+    public actual var videoStabilizationMode: VideoStabilizationMode by config(
+        check = { throw NotImplementedError("Video stabilization mode is not implemented in Android yet") },
+        value = VideoStabilizationMode.Off,
+    ) {
+        // FIXME Not supported yet - https://issuetracker.google.com/issues/457465859
+    }
         internal set
 
     init {
@@ -137,6 +162,33 @@ public actual class CameraState internal constructor(
 
     public fun clearEffects() {
         controller.clearEffects()
+    }
+
+    private fun setCamFormat(format: CamFormat) {
+        format.applyConfigs(
+            cameraInfo = cameraInfo,
+            controller = controller,
+            onFrameRateChanged = ::setFrameRate,
+            onStabilizationModeChanged = ::setStabilizationMode,
+        )
+    }
+
+    private fun setStabilizationMode(mode: VideoStabilizationMode) {
+        if (videoStabilizationMode != mode) {
+            videoStabilizationMode = mode
+            return
+        }
+
+        // TODO CameraX controller does not support yet :(
+    }
+
+    private fun setFrameRate(fps: Int) {
+        if (frameRate != fps) {
+            frameRate = fps
+            return
+        }
+
+        controller.videoCaptureTargetFrameRate = Range(fps, fps)
     }
 
     private fun setExposureCompensation(exposureCompensation: Float) {
@@ -159,6 +211,13 @@ public actual class CameraState internal constructor(
     private fun FlashMode.isFlashSupported(): Boolean =
         this == FlashMode.Off || cameraInfo.isFlashSupported
 
+    internal actual fun resetConfig() {
+        zoomRatio = cameraInfo.minZoom
+        exposureCompensation = 0F
+        flashMode = FlashMode.Off
+        isTorchEnabled = false
+    }
+
     internal inner class CameraConfigSaver : DefaultLifecycleObserver {
 
         private var hasPaused: Boolean = false
@@ -174,13 +233,6 @@ public actual class CameraState internal constructor(
             hasPaused = true
             super.onPause(owner)
         }
-    }
-
-    internal actual fun resetConfig() {
-        zoomRatio = cameraInfo.minZoom
-        exposureCompensation = 0F
-        flashMode = FlashMode.Off
-        isTorchEnabled = false
     }
 }
 

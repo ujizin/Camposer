@@ -21,7 +21,7 @@ public class CameraData(
             this += ResolutionConfig(width = width, height = height)
             this += AspectRatioConfig(aspectRatio = width.toFloat() / height.toFloat())
             if (minFps != null && maxFps != null) {
-                this += FrameRateConfig(minFps = minFps, maxFps = maxFps)
+                this += FrameRateConfig(fps = maxFps)
             }
 
             if (videoStabilizationModes != null && videoStabilizationModes.isNotEmpty()) {

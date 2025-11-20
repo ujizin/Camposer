@@ -88,8 +88,12 @@ public actual class CameraSession private constructor(
             options = NSKeyValueObservingOptionNew,
             context = null,
         )
-        controller.onSessionStarted()
         isInitialized = true
+    }
+
+    internal fun onSessionStarted() {
+        if (controller.isRunning.value) return
+        controller.onSessionStarted()
     }
 
     @OptIn(ExperimentalForeignApi::class)

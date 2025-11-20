@@ -3,11 +3,12 @@ package com.ujizin.camposer.info
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.ujizin.camposer.state.properties.CameraData
 
-public actual class CameraInfo internal constructor(internal val cameraInfo: AndroidCameraInfo) {
+public actual class CameraInfo internal constructor(private val cameraInfo: AndroidCameraInfo) {
 
     public actual val isZoomSupported: Boolean by derivedStateOf { maxZoom != cameraInfo.initialZoom }
 
@@ -31,14 +32,19 @@ public actual class CameraInfo internal constructor(internal val cameraInfo: And
         private set
     public actual var isZeroShutterLagSupported: Boolean by mutableStateOf(cameraInfo.isZeroShutterLagSupported)
         private set
-
     public actual var isFocusSupported: Boolean by mutableStateOf(cameraInfo.isFocusSupported)
         private set
+    public actual var minFPS: Int by mutableIntStateOf(cameraInfo.minFPS)
+        internal set
+    public actual var maxFPS: Int by mutableIntStateOf(cameraInfo.maxFPS)
+        internal set
 
     public actual var photoFormats: List<CameraData> = emptyList()
+        get() = cameraInfo.photoFormats
         private set
 
     public actual var videoFormats: List<CameraData> = emptyList()
+        get() = cameraInfo.videoFormats
         private set
 
     internal fun rebind() {
@@ -52,7 +58,7 @@ public actual class CameraInfo internal constructor(internal val cameraInfo: And
         isTorchAvailable = cameraInfo.isFlashSupported
         isFocusSupported = cameraInfo.isFocusSupported
         isZeroShutterLagSupported = cameraInfo.isZeroShutterLagSupported
-        photoFormats = cameraInfo.photoFormats
-        videoFormats = cameraInfo.videoFormats
+        minFPS = cameraInfo.minFPS
+        maxFPS = cameraInfo.maxFPS
     }
 }

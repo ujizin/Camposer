@@ -28,7 +28,10 @@ public expect class CameraInfo {
 
     public var isFocusSupported: Boolean
         private set
-
+    public var minFPS: Int
+        private set
+    public var maxFPS: Int
+        private set
     public var photoFormats: List<CameraData>
         private set
     public var videoFormats: List<CameraData>

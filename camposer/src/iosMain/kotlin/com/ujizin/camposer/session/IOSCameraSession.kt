@@ -29,6 +29,7 @@ import platform.AVFoundation.AVCaptureSession
 import platform.AVFoundation.AVCaptureTorchModeOff
 import platform.AVFoundation.AVCaptureTorchModeOn
 import platform.AVFoundation.AVCaptureVideoStabilizationMode
+import platform.AVFoundation.AVFrameRateRange
 import platform.AVFoundation.AVLayerVideoGravity
 import platform.AVFoundation.AVMediaTypeAudio
 import platform.AVFoundation.AVMediaTypeVideo
@@ -46,6 +47,7 @@ import platform.AVFoundation.isTorchAvailable
 import platform.AVFoundation.position
 import platform.AVFoundation.torchMode
 import platform.CoreGraphics.CGPoint
+import platform.CoreMedia.CMTimeMake
 import platform.UIKit.UIView
 import platform.darwin.dispatch_async
 
@@ -74,6 +76,17 @@ public class IOSCameraSession internal constructor(
     private val audioInput = defaultDeviceWithMediaType(AVMediaTypeAudio)?.toDeviceInput()
         ?: throw AudioInputNotFoundException()
 
+    internal val frameRateRanges: List<AVFrameRateRange>
+        get() = device.activeFormat.videoSupportedFrameRateRanges
+            .filterIsInstance<AVFrameRateRange>()
+
+    internal val minFrameRate: Int
+        get() = frameRateRanges.minOf { it.minFrameRate }.toInt()
+
+    internal val maxFrameRate: Int
+        get() = frameRateRanges.maxOf { it.maxFrameRate }.toInt()
+
+
     public fun addOutput(output: AVCaptureOutput): Boolean = captureSession.tryAddOutput(output)
 
     public fun removeOutput(output: AVCaptureOutput): Unit = captureSession.removeOutput(output)
@@ -96,11 +109,29 @@ public class IOSCameraSession internal constructor(
         captureSession.startRunning()
     }
 
+    internal fun setFrameRate(frameRate: Int) {
+        if (frameRate !in minFrameRate..maxFrameRate) {
+            return
+        }
+
+        val minFps = CMTimeMake(1, frameRate)
+        val maxFps = CMTimeMake(1, frameRate)
+
+        device.withConfigurationLock {
+            device.activeVideoMinFrameDuration = minFps
+            device.activeVideoMaxFrameDuration = maxFps
+        }
+    }
+
+    internal fun isVideoStabilizationSupported(mode: AVCaptureVideoStabilizationMode): Boolean {
+        return device.activeFormat.isVideoStabilizationModeSupported(mode)
+    }
+
     internal fun setVideoStabilization(mode: AVCaptureVideoStabilizationMode) {
         val output = captureSession.outputs.firstIsInstanceOrNull<AVCaptureMovieFileOutput>()
         val videoConnection = output?.connectionWithMediaType(AVMediaTypeVideo)
 
-        if (videoConnection?.isVideoStabilizationSupported() == false) {
+        if (isVideoStabilizationSupported(mode)) {
             return
         }
 
@@ -109,7 +140,7 @@ public class IOSCameraSession internal constructor(
         }
     }
 
-    internal fun setFormat(format: AVCaptureDeviceFormat) {
+    internal fun setDeviceFormat(format: AVCaptureDeviceFormat) {
         if (!device.formats().contains(format)) {
             return
         }
@@ -156,10 +187,13 @@ public class IOSCameraSession internal constructor(
             exposurePointOfInterest = focusPoint
             exposureMode = AVCaptureExposureModeAutoExpose
         }
+
+        // TODO cancel focus after 5s
     }
 
     internal fun setTorchEnabled(isEnabled: Boolean) {
         if (!device.hasTorch || !device.isTorchAvailable()) return
+
         device.withConfigurationLock {
             torchMode = if (isEnabled) AVCaptureTorchModeOn else AVCaptureTorchModeOff
         }

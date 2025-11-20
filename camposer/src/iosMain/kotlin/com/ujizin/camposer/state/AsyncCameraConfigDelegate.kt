@@ -18,6 +18,7 @@ import kotlin.reflect.KProperty
 internal fun <T> asyncCameraConfig(
     mutex: Mutex,
     value: T,
+    check: (T) -> Unit = {},
     predicate: (old: T, new: T) -> Boolean = { old, new -> old != new },
     onDispose: (old: T) -> Unit = {},
     onSet: (field: T) -> T = { it },
@@ -31,6 +32,7 @@ internal fun <T> asyncCameraConfig(
 
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
         if (!predicate(currentValue, value)) return
+        check(value)
         val tmpValue = currentValue
         currentValue = onSet(value)
         job?.cancel()

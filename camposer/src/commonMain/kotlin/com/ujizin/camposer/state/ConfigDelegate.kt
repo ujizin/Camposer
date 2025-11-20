@@ -8,6 +8,7 @@ import kotlin.reflect.KProperty
 
 internal fun <T> config(
     value: T,
+    check: (new: T) -> Unit = {},
     predicate: (old: T, new: T) -> Boolean = { old, new -> old != new },
     onDispose: (old: T) -> Unit = {},
     onSet: (field: T) -> T = { it },
@@ -19,6 +20,7 @@ internal fun <T> config(
 
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
         if (!predicate(currentValue, value)) return
+        check(value)
         onDispose(currentValue)
         currentValue = onSet(value)
         block(currentValue)

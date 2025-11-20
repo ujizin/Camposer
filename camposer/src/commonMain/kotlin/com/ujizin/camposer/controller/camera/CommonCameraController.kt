@@ -7,6 +7,7 @@ import com.ujizin.camposer.result.CaptureResult
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.properties.FlashMode
 import com.ujizin.camposer.state.properties.OrientationStrategy
+import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import com.ujizin.camposer.utils.Bundle
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -82,32 +83,52 @@ public abstract class CommonCameraController<RC : RecordController, TPC : TakePi
         this.exposureCompensation = exposureCompensation
     }
 
-    override fun setFlashMode(flashMode: FlashMode): Unit = state.runBind {
-        if (!isRunning.value) {
-            pendingBundle[FLASH_MODE_KEY] = flashMode
-            return@runBind
-        }
-        this.flashMode = flashMode
-    }
-
-    override fun setTorchEnabled(isTorchEnabled: Boolean): Unit = state.runBind {
-        if (!isRunning.value) {
-            pendingBundle[TORCH_KEY] = isTorchEnabled
-            return@runBind
-        }
-        this.isTorchEnabled = isTorchEnabled
-    }
-
     override fun setOrientationStrategy(strategy: OrientationStrategy) {
         state.runBind { orientationStrategy = strategy }
     }
 
-    override fun setVideoFrameRate(frameRate: Int) {
-        // TODO("Not yet implemented")
+    override fun setFlashMode(flashMode: FlashMode): Result<Unit> = runCatching {
+        state.runBind {
+            if (!isRunning.value) {
+                pendingBundle[FLASH_MODE_KEY] = flashMode
+                return@runBind
+            }
+            this.flashMode = flashMode
+        }
     }
 
-    override fun setVideoStabilizationEnabled(isVideoStabilizationEnabled: Boolean) {
-        // TODO("Not yet implemented")
+    override fun setTorchEnabled(isTorchEnabled: Boolean): Result<Unit> = runCatching {
+        state.runBind {
+            if (!isRunning.value) {
+                pendingBundle[TORCH_KEY] = isTorchEnabled
+                return@runBind
+            }
+            this.isTorchEnabled = isTorchEnabled
+        }
+    }
+
+    override fun setVideoFrameRate(frameRate: Int): Result<Unit> = runCatching {
+        state.runBind {
+            if (!isRunning.value) {
+                pendingBundle[FRAME_RATE_KEY] = frameRate
+                return@runBind
+            }
+
+            this.frameRate = frameRate
+        }
+    }
+
+    override fun setVideoStabilizationEnabled(
+        mode: VideoStabilizationMode,
+    ): Result<Unit> = runCatching {
+        state.runBind {
+            if (!isRunning.value) {
+                pendingBundle[VIDEO_STABILIZATION_KEY] = mode
+                return@runBind
+            }
+
+            this.videoStabilizationMode = mode
+        }
     }
 
     internal fun initialize(
@@ -123,12 +144,18 @@ public abstract class CommonCameraController<RC : RecordController, TPC : TakePi
     }
 
     internal fun onSessionStarted() {
+        if (_isRunning.value) return
+
         _isRunning.update { true }
 
         pendingBundle.get<Float>(ZOOM_KEY)?.let(::setZoomRatio)
         pendingBundle.get<Float>(EXPOSURE_COMPENSATION_KEY)?.let(::setExposureCompensation)
         pendingBundle.get<Boolean>(TORCH_KEY)?.let(::setTorchEnabled)
         pendingBundle.get<FlashMode>(FLASH_MODE_KEY)?.let(::setFlashMode)
+        pendingBundle.get<Int>(FRAME_RATE_KEY)?.let(::setVideoFrameRate)
+        pendingBundle.get<VideoStabilizationMode>(VIDEO_STABILIZATION_KEY)
+            ?.let(::setVideoStabilizationEnabled)
+
         pendingBundle.clear()
     }
 
@@ -145,5 +172,7 @@ public abstract class CommonCameraController<RC : RecordController, TPC : TakePi
         private const val EXPOSURE_COMPENSATION_KEY = "exposure_compensation_key"
         private const val TORCH_KEY = "torch_key"
         private const val FLASH_MODE_KEY = "flash_mode_key"
+        private const val FRAME_RATE_KEY = "frame_rate_key"
+        private const val VIDEO_STABILIZATION_KEY = "video_stabilization_key"
     }
 }

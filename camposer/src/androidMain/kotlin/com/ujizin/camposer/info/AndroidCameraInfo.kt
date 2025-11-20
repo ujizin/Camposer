@@ -36,13 +36,20 @@ internal class AndroidCameraInfo(
         get() = controller.cameraInfo?.isZslSupported ?: false
 
     internal val isFocusSupported: Boolean
-        get() = controller.cameraInfo?.isFocusMeteringSupported(CameraUtils.createFocusMetering()) ?: false
+        get() = controller.cameraInfo?.isFocusMeteringSupported(CameraUtils.createFocusMetering())
+            ?: false
 
     internal val photoFormats: List<CameraData>
         get() = controller.cameraInfo?.let(CameraUtils::getPhotoResolutions).orEmpty()
 
     internal val videoFormats: List<CameraData>
         get() = controller.cameraInfo?.let(CameraUtils::getVideoResolutions).orEmpty()
+
+    internal val minFPS: Int
+        get() = controller.cameraInfo?.supportedFrameRateRanges?.minOf { it.lower } ?: 1
+
+    internal val maxFPS: Int
+        get() = controller.cameraInfo?.supportedFrameRateRanges?.maxOf { it.upper } ?: 30
 
     companion object {
         private const val INITIAL_ZOOM_VALUE = 1F

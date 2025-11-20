@@ -132,6 +132,7 @@ fun CameraSection(
         },
         scaleType = ScaleType.FitCenter,
         imageAnalyzer = imageAnalyzer,
+        isImageAnalysisEnabled = cameraOption == CameraOption.QRCode,
         isPinchToZoomEnabled = usePinchToZoom,
         isFocusOnTapEnabled = useTapToFocus,
         switchCameraContent = { bitmap ->

@@ -97,6 +97,23 @@ fun CameraScreen() {
         imageAnalyzer = codeImageAnalyzer,
     ) {
         FlowRow {
+            val stabilization by rememberUpdatedState(cameraSession.state.videoStabilizationMode)
+            Button(onClick = {}) {
+                val fps by rememberUpdatedState(cameraSession.state.frameRate)
+                Text("FPS: $fps")
+            }
+            Button(onClick = {
+                val mode = when (stabilization) {
+                    VideoStabilizationMode.Off -> VideoStabilizationMode.Standard
+                    else -> VideoStabilizationMode.Off
+                }
+                val result = cameraController.setVideoStabilizationEnabled(
+                    mode = mode
+                )
+                println("Mode to be set: $mode, result: ${result.isSuccess}, ${result.exceptionOrNull()}")
+            }) {
+                Text("Stabilization: $stabilization")
+            }
             Button(onClick = {}) {
                 Text("Is previewing: $isPreviewing")
             }

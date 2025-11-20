@@ -1,5 +1,6 @@
 package com.ujizin.camposer.state.properties.format
 
+import com.ujizin.camposer.extensions.firstIsInstanceOrNull
 import com.ujizin.camposer.state.properties.CameraData
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import com.ujizin.camposer.state.properties.format.config.AspectRatioConfig
@@ -12,13 +13,42 @@ import kotlin.math.pow
 
 internal object CameraFormatPicker {
 
-    internal fun selectBestFormatByOrder(
+    internal fun getBestFormatByOrder(
         configs: List<CameraFormatConfig>,
         formats: List<CameraData>,
     ): CameraData? {
         if (formats.isEmpty()) return null
-        val format = formats.minBy { getFinalScoreByOrder(it, configs) }
-        return format
+        val cameraData = formats.minBy { getFinalScoreByOrder(it, configs) }
+        return cameraData
+    }
+
+    internal fun selectBestFormatByOrder(
+        configs: List<CameraFormatConfig>,
+        formats: List<CameraData>,
+        onFormatChanged: (CameraData) -> Unit,
+        onFrameRateChanged: (Int) -> Unit,
+        onStabilizationModeChanged: (VideoStabilizationMode) -> Unit,
+    ) {
+        val cameraData = getBestFormatByOrder(configs, formats) ?: return
+
+        onFormatChanged(cameraData)
+
+        // Video stabilization
+        val videoStabilizationConfig = configs.firstIsInstanceOrNull<VideoStabilizationConfig>()
+        val stabilizationMode = videoStabilizationConfig?.mode?.takeIf {
+            cameraData.videoStabilizationModes?.contains(it) == true
+        } ?: VideoStabilizationMode.Off
+
+        runCatching { onStabilizationModeChanged(stabilizationMode) }
+
+        // FPS
+        val minFrameRate = cameraData.minFps
+        val maxFrameRate = cameraData.maxFps
+        if (minFrameRate != null && maxFrameRate != null) {
+            val fpsConfig = configs.firstIsInstanceOrNull<FrameRateConfig>()
+            val fps = fpsConfig?.fps?.coerceIn(minFrameRate, maxFrameRate) ?: maxFrameRate
+            runCatching { onFrameRateChanged(fps) }
+        }
     }
 
     private fun getFinalScoreByOrder(
@@ -33,7 +63,7 @@ internal object CameraFormatPicker {
             score += when (config) {
                 is AspectRatioConfig -> getAspectRatioDistance(format, config)
                 is ResolutionConfig -> getResolutionDistance(format, config)
-                is FrameRateConfig -> getFpsDistance(format, config.maxFps)
+                is FrameRateConfig -> getFpsDistance(format, config.fps)
                 is VideoStabilizationConfig -> getStabilizationDistance(format, config.mode)
                 else -> 0F
             } * weight
@@ -68,7 +98,7 @@ internal object CameraFormatPicker {
         format: CameraData,
         desiredMode: VideoStabilizationMode?,
     ): Float {
-        val modes = format.videoStabilizationModes ?: return 0F
+        val modes = format.videoStabilizationModes ?: return 1F
         return when {
             desiredMode == null -> if (modes.any { it != VideoStabilizationMode.Off }) 0F else 1F
             modes.contains(desiredMode) -> 0F

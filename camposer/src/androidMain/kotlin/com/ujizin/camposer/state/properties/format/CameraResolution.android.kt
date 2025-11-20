@@ -1,6 +1,5 @@
 package com.ujizin.camposer.state.properties.format
 
-import android.util.Range
 import android.util.Size
 import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.video.FallbackStrategy
@@ -9,10 +8,18 @@ import androidx.camera.video.QualitySelector
 import androidx.camera.view.CameraController
 import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.state.properties.CameraData
+import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import com.ujizin.camposer.state.properties.format.config.AspectRatioConfig
 import com.ujizin.camposer.state.properties.format.config.CameraFormatConfig
 import com.ujizin.camposer.state.properties.format.config.ResolutionConfig
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.abs
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 public actual class CamFormat actual constructor(
     vararg configs: CameraFormatConfig,
@@ -22,6 +29,8 @@ public actual class CamFormat actual constructor(
 
     public actual val configs: List<CameraFormatConfig> = configs.toList()
 
+    private val debouncer = Debouncer(CONFIGS_DEBOUNCE_MILLIS.milliseconds, MainScope())
+
     private val qualitySizes = mapOf(
         Quality.UHD to 3840 * 2160,
         Quality.FHD to 1920 * 1080,
@@ -29,27 +38,43 @@ public actual class CamFormat actual constructor(
         Quality.SD to 720 * 480,
     )
 
-    internal fun applyConfigs(cameraInfo: CameraInfo, controller: CameraController) {
-        controller.applyBestImageCamFormat()
-        if (controller.isVideoCaptureEnabled) {
-            controller.applyBestVideoCamFormat(cameraInfo.videoFormats)
+    internal fun applyConfigs(
+        cameraInfo: CameraInfo,
+        controller: CameraController,
+        onFrameRateChanged: (Int) -> Unit,
+        onStabilizationModeChanged: (VideoStabilizationMode) -> Unit,
+    ) = debouncer.submit {
+        val resolutionSelector = getResolutionSelector()
+        with(controller) {
+            applyBestVideoCamFormat(
+                videoFormats = cameraInfo.videoFormats,
+                onFrameRateChanged = onFrameRateChanged,
+                onStabilizationModeChanged = onStabilizationModeChanged,
+            )
+
+            imageCaptureResolutionSelector = resolutionSelector
+            previewResolutionSelector = resolutionSelector
         }
     }
 
-    private fun CameraController.applyBestVideoCamFormat(videoFormats: List<CameraData>) {
-        val videoCameraData = CameraFormatPicker.selectBestFormatByOrder(
+    private fun CameraController.applyBestVideoCamFormat(
+        videoFormats: List<CameraData>,
+        onFrameRateChanged: (Int) -> Unit,
+        onStabilizationModeChanged: (VideoStabilizationMode) -> Unit,
+    ) {
+        CameraFormatPicker.selectBestFormatByOrder(
             formats = videoFormats,
             configs = configs,
-        ) ?: return
-
-        videoCaptureTargetFrameRate = videoCameraData.getRangeFps() ?: videoCaptureTargetFrameRate
-        videoCaptureQualitySelector = videoCameraData.toSize().getQualitySelector()
+            onFormatChanged = { videoCaptureQualitySelector = it.toSize().getQualitySelector() },
+            onFrameRateChanged = onFrameRateChanged,
+            onStabilizationModeChanged = onStabilizationModeChanged,
+        )
     }
 
-    private fun CameraController.applyBestImageCamFormat() {
-        val resolutionSelector = ResolutionSelector.Builder().setResolutionFilter { sizes, _ ->
+    private fun getResolutionSelector() = ResolutionSelector.Builder()
+        .setResolutionFilter { sizes, _ ->
             val formats = sizes.map { CameraData(it.width, it.height) }
-            val selectSize = CameraFormatPicker.selectBestFormatByOrder(
+            val selectSize = CameraFormatPicker.getBestFormatByOrder(
                 formats = formats,
                 configs = configs.filter { it is ResolutionConfig || it is AspectRatioConfig },
             )?.toSize()
@@ -58,21 +83,12 @@ public actual class CamFormat actual constructor(
             selectedSizes + (sizes - selectedSizes)
         }.build()
 
-        imageCaptureResolutionSelector = resolutionSelector
-        previewResolutionSelector = resolutionSelector
-    }
-
     private fun Size.getQualitySelector(): QualitySelector {
         val (quality, _) = qualitySizes.minBy { abs((width * height) - it.value) }
         return QualitySelector.from(quality, FallbackStrategy.lowerQualityOrHigherThan(quality))
     }
 
     private fun CameraData.toSize() = Size(width, height)
-
-    private fun CameraData.getRangeFps(): Range<Int>? {
-        if (minFps == null || maxFps == null) return null
-        return Range(minFps, maxFps)
-    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -88,6 +104,24 @@ public actual class CamFormat actual constructor(
         return "CamFormat(configs=$configs)"
     }
 
-    public actual companion object
+    private class Debouncer(
+        private val duration: Duration,
+        private val scope: CoroutineScope,
+    ) {
+
+        private var job: Job? = null
+
+        fun submit(block: suspend () -> Unit) {
+            job?.cancel()
+            job = scope.launch {
+                delay(duration)
+                block()
+            }
+        }
+    }
+
+    public actual companion object {
+        private const val CONFIGS_DEBOUNCE_MILLIS = 125L
+    }
 }
 

@@ -66,6 +66,7 @@ internal actual fun CameraPreviewImpl(
                 imageCaptureStrategy = imageCaptureStrategy,
                 isPinchToZoomEnabled = isPinchToZoomEnabled,
             )
+            cameraViewController.cameraSession.onSessionStarted()
         },
     )
 
