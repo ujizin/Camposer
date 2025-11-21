@@ -4,7 +4,7 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.view.CameraController
 import androidx.compose.runtime.Stable
-import com.ujizin.camposer.state.config
+import com.ujizin.camposer.state.distinctConfig
 
 /**
  * Intermediate Image analyzer from cameraX
@@ -54,7 +54,7 @@ public actual class ImageAnalyzer(
      * Image analysis image queue depth, use [com.ujizin.camposer.session.rememberImageAnalyzer] to set value.
      * @see com.ujizin.camposer.session.rememberImageAnalyzer
      * */
-    public var imageAnalysisImageQueueDepth: Int by config(controller.imageAnalysisImageQueueDepth) {
+    public var imageAnalysisImageQueueDepth: Int by distinctConfig(controller.imageAnalysisImageQueueDepth) {
         controller.imageAnalysisImageQueueDepth = it
     }
         internal set

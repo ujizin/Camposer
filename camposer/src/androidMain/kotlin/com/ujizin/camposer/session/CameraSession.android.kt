@@ -111,7 +111,6 @@ public actual class CameraSession private constructor(
             cameraXController.isPinchToZoomEnabled = false
             info.rebind()
             isInitialized = true
-            controller.onSessionStarted()
         }, mainExecutor)
     }
 

@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.ujizin.camposer.state.properties.CamSelector
+import com.ujizin.camposer.state.properties.selector.CamSelector
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -67,8 +67,8 @@ internal class CamSelectorTest : CameraTest() {
             camSelector = camSelectorState.value,
             switchCameraContent = {
                 LaunchedEffect(Unit) {
-                    isCamSwitchedToBack.value = camSelectorState.value == CamSelector.Back
-                    isCamSwitchedToFront.value = camSelectorState.value == CamSelector.Front
+                    isCamSwitchedToBack.value = !camSelectorState.value.isFront
+                    isCamSwitchedToFront.value = camSelectorState.value.isFront
                 }
             },
             onPreviewStreamChanged = { isPreviewStreamChanged.value = true }

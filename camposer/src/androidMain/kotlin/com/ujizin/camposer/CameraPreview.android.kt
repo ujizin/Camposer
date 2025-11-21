@@ -22,7 +22,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.ujizin.camposer.controller.zoom.PinchToZoomController
 import com.ujizin.camposer.extensions.setCameraTouchEvent
 import com.ujizin.camposer.session.CameraSession
-import com.ujizin.camposer.state.properties.CamSelector
+import com.ujizin.camposer.state.properties.selector.CamSelector
 import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.ImageAnalyzer
 import com.ujizin.camposer.state.properties.ImageCaptureStrategy
@@ -127,6 +127,8 @@ internal actual fun CameraPreviewImpl(
                     camFormat = camFormat,
                     isPinchToZoomEnabled = isPinchToZoomEnabled,
                 )
+
+                cameraSession.controller.onSessionStarted()
             }
         },
     )

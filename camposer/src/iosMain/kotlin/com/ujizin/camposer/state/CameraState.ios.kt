@@ -9,7 +9,6 @@ import com.ujizin.camposer.extensions.withConfigurationLock
 import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.session.CameraSession
 import com.ujizin.camposer.session.IOSCameraSession
-import com.ujizin.camposer.state.properties.CamSelector
 import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.FlashMode
 import com.ujizin.camposer.state.properties.ImageAnalyzer
@@ -20,6 +19,7 @@ import com.ujizin.camposer.state.properties.ScaleType
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import com.ujizin.camposer.state.properties.format.CamFormat
 import com.ujizin.camposer.state.properties.format.Default
+import com.ujizin.camposer.state.properties.selector.CamSelector
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.sync.Mutex
 import platform.AVFoundation.setExposureTargetBias
@@ -54,12 +54,12 @@ public actual class CameraState(
     }
         internal set
 
-    public actual var scaleType: ScaleType by config(ScaleType.FillCenter) {
+    public actual var scaleType: ScaleType by distinctConfig(ScaleType.FillCenter) {
         iosCameraSession.setPreviewGravity(it.gravity)
     }
         internal set
 
-    public actual var flashMode: FlashMode by config(
+    public actual var flashMode: FlashMode by distinctConfig(
         value = FlashMode.Off,
         check = { check(it.isFlashAvailable()) { "Flash must be supported to be enabled" } },
         predicate = { old, new -> old != new && new.isFlashAvailable() }
@@ -68,7 +68,7 @@ public actual class CameraState(
     }
         internal set
 
-    public actual var camFormat: CamFormat by config(
+    public actual var camFormat: CamFormat by distinctConfig(
         value = CamFormat.Default
     ) { setDeviceFormat(camFormat) }
         internal set
@@ -77,7 +77,7 @@ public actual class CameraState(
     public actual var implementationMode: ImplementationMode by mutableStateOf(ImplementationMode.Performance)
         internal set
 
-    public actual var imageAnalyzer: ImageAnalyzer? by config(
+    public actual var imageAnalyzer: ImageAnalyzer? by distinctConfig(
         value = null,
         onDispose = { it?.onDispose() }
     ) {
@@ -85,7 +85,7 @@ public actual class CameraState(
     }
         internal set
 
-    public actual var isImageAnalyzerEnabled: Boolean by config(
+    public actual var isImageAnalyzerEnabled: Boolean by distinctConfig(
         value = imageAnalyzer != null
     ) { isEnabled ->
         imageAnalyzer?.isEnabled = isEnabled
@@ -95,7 +95,7 @@ public actual class CameraState(
     public actual var isPinchToZoomEnabled: Boolean by mutableStateOf(true)
         internal set
 
-    public actual var exposureCompensation: Float by config(
+    public actual var exposureCompensation: Float by distinctConfig(
         0F,
         onSet = { it.fastCoerceIn(cameraInfo.minExposure, cameraInfo.maxExposure) },
         block = {
@@ -106,7 +106,7 @@ public actual class CameraState(
     )
         internal set
 
-    public actual var imageCaptureStrategy: ImageCaptureStrategy by config(ImageCaptureStrategy.Balanced) { value ->
+    public actual var imageCaptureStrategy: ImageCaptureStrategy by distinctConfig(ImageCaptureStrategy.Balanced) { value ->
         iosCameraSession.setCameraOutputQuality(
             quality = value.strategy,
             highResolutionEnabled = value.highResolutionEnabled
@@ -114,7 +114,7 @@ public actual class CameraState(
     }
         internal set
 
-    public actual var zoomRatio: Float by config(
+    public actual var zoomRatio: Float by distinctConfig(
         value = cameraInfo.minZoom,
         onSet = { it.fastCoerceIn(cameraInfo.minZoom, cameraInfo.maxZoom) }
     ) {
@@ -122,10 +122,10 @@ public actual class CameraState(
     }
         internal set
 
-    public actual var isFocusOnTapEnabled: Boolean by config(value = true)
+    public actual var isFocusOnTapEnabled: Boolean by distinctConfig(value = true)
         internal set
 
-    public actual var isTorchEnabled: Boolean by config(
+    public actual var isTorchEnabled: Boolean by distinctConfig(
         value = false,
         check = { check((!it || cameraInfo.isTorchAvailable)) { "Torch must be supported to enable" } },
         predicate = { old, new -> old != new && (!new || cameraInfo.isTorchAvailable) }
@@ -134,10 +134,10 @@ public actual class CameraState(
     }
         internal set
 
-    public actual var orientationStrategy: OrientationStrategy by config(OrientationStrategy.Device)
+    public actual var orientationStrategy: OrientationStrategy by distinctConfig(OrientationStrategy.Device)
         internal set
 
-    public actual var frameRate: Int by config(
+    public actual var frameRate: Int by distinctConfig(
         value = -1,
         check = {
             check(it in cameraInfo.minFPS..cameraInfo.maxFPS) {
@@ -148,7 +148,7 @@ public actual class CameraState(
     )
         internal set
 
-    public actual var videoStabilizationMode: VideoStabilizationMode by config(
+    public actual var videoStabilizationMode: VideoStabilizationMode by distinctConfig(
         value = VideoStabilizationMode.Off,
         check = {
             check(iosCameraSession.isVideoStabilizationSupported(it.value)) {

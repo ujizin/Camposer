@@ -26,7 +26,7 @@ import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.session.CameraSession
 import com.ujizin.camposer.session.rememberCameraSession
 import com.ujizin.camposer.session.rememberImageAnalyzer
-import com.ujizin.camposer.state.properties.CamSelector
+import com.ujizin.camposer.state.properties.selector.CamSelector
 import com.ujizin.camposer.state.properties.ScaleType
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import com.ujizin.camposer.state.properties.format.CamFormat

@@ -17,13 +17,13 @@ import androidx.compose.ui.graphics.ImageBitmap
 import com.ujizin.camposer.focus.FocusTap
 import com.ujizin.camposer.focus.SquareCornerFocus
 import com.ujizin.camposer.session.CameraSession
-import com.ujizin.camposer.state.properties.CamSelector
 import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.ImageAnalyzer
 import com.ujizin.camposer.state.properties.ImageCaptureStrategy
 import com.ujizin.camposer.state.properties.ImplementationMode
 import com.ujizin.camposer.state.properties.ScaleType
 import com.ujizin.camposer.state.properties.format.CamFormat
+import com.ujizin.camposer.state.properties.selector.CamSelector
 import kotlinx.coroutines.delay
 
 /**

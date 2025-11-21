@@ -16,7 +16,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.session.CameraSession
-import com.ujizin.camposer.state.properties.CamSelector
+import com.ujizin.camposer.state.properties.selector.CamSelector
 import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.FlashMode
 import com.ujizin.camposer.state.properties.ImageAnalyzer
@@ -38,13 +38,13 @@ public actual class CameraState internal constructor(
     private val cameraInfo: CameraInfo,
 ) {
 
-    public actual var captureMode: CaptureMode by config(CaptureMode.Image) { mode ->
+    public actual var captureMode: CaptureMode by distinctConfig(CaptureMode.Image) { mode ->
         controller.setEnabledUseCases(getUseCases(mode))
         setCamFormat(camFormat)
     }
         internal set
 
-    public actual var imageCaptureStrategy: ImageCaptureStrategy by config(ImageCaptureStrategy.Balanced) { value ->
+    public actual var imageCaptureStrategy: ImageCaptureStrategy by distinctConfig(ImageCaptureStrategy.Balanced) { value ->
         val mode = when {
             value == ImageCaptureStrategy.MinLatency && !cameraInfo.isZeroShutterLagSupported -> value.fallback
             else -> value.mode
@@ -53,7 +53,7 @@ public actual class CameraState internal constructor(
     }
         internal set
 
-    public actual var camSelector: CamSelector by config(
+    public actual var camSelector: CamSelector by distinctConfig(
         value = CamSelector.Back,
         predicate = { old, new ->
             old != new && controller.hasCamera(new.selector) && !controller.isRecording
@@ -68,7 +68,7 @@ public actual class CameraState internal constructor(
     public actual var scaleType: ScaleType = ScaleType.FillCenter
         internal set
 
-    public actual var flashMode: FlashMode by config(
+    public actual var flashMode: FlashMode by distinctConfig(
         value = FlashMode.find(controller.imageCaptureFlashMode),
         check = { check(it.isFlashSupported()) { "Flash must be supported to be enabled" } },
         predicate = { old, new -> old != new && new.isFlashSupported() }
@@ -77,7 +77,7 @@ public actual class CameraState internal constructor(
     }
         internal set
 
-    public actual var camFormat: CamFormat by config(CamFormat.Default) { format ->
+    public actual var camFormat: CamFormat by distinctConfig(CamFormat.Default) { format ->
         setCamFormat(format)
     }
         internal set
@@ -85,12 +85,12 @@ public actual class CameraState internal constructor(
     public actual var implementationMode: ImplementationMode = ImplementationMode.Performance
         internal set
 
-    public actual var imageAnalyzer: ImageAnalyzer? by config(null) { analyzer ->
-        controller.setImageAnalysisAnalyzer(mainExecutor, analyzer?.analyzer ?: return@config)
+    public actual var imageAnalyzer: ImageAnalyzer? by distinctConfig(null) { analyzer ->
+        controller.setImageAnalysisAnalyzer(mainExecutor, analyzer?.analyzer ?: return@distinctConfig)
     }
         internal set
 
-    public actual var isImageAnalyzerEnabled: Boolean by config(value = imageAnalyzer != null) {
+    public actual var isImageAnalyzerEnabled: Boolean by distinctConfig(value = imageAnalyzer != null) {
         controller.setEnabledUseCases(getUseCases())
     }
         internal set
@@ -98,19 +98,21 @@ public actual class CameraState internal constructor(
     public actual var isPinchToZoomEnabled: Boolean by mutableStateOf(true)
         internal set
 
-    public actual var isFocusOnTapEnabled: Boolean by config(cameraInfo.isFocusSupported) {
+    public actual var isFocusOnTapEnabled: Boolean by distinctConfig(
+        value = cameraInfo.isFocusSupported,
+    ) {
         controller.isTapToFocusEnabled = it
     }
         internal set
 
-    public actual var exposureCompensation: Float by config(
+    public actual var exposureCompensation: Float by distinctConfig(
         value = 0F,
         onSet = { it.fastCoerceIn(cameraInfo.minExposure, cameraInfo.maxExposure) },
         block = ::setExposureCompensation,
     )
         internal set
 
-    public actual var isTorchEnabled: Boolean by config(
+    public actual var isTorchEnabled: Boolean by distinctConfig(
         value = controller.torchState.value == TorchState.ON,
         check = { check(!it || cameraInfo.isTorchAvailable) { "Torch must be supported to enable" } },
         predicate = { old, new -> old != new && (!new || cameraInfo.isTorchAvailable) },
@@ -118,20 +120,20 @@ public actual class CameraState internal constructor(
     )
         internal set
 
-    public actual var zoomRatio: Float by config(
+    public actual var zoomRatio: Float by distinctConfig(
         value = cameraInfo.minZoom,
         onSet = { it.fastCoerceIn(cameraInfo.minZoom, cameraInfo.maxZoom) },
         block = ::setZoomRatio,
     )
         internal set
 
-    public actual var orientationStrategy: OrientationStrategy by config(
+    public actual var orientationStrategy: OrientationStrategy by distinctConfig(
         value = OrientationStrategy.Device,
         block = { /** TODO Not supported yet - https://issuetracker.google.com/issues/449573627*/ }
     )
         internal set
 
-    public actual var frameRate: Int by config(
+    public actual var frameRate: Int by distinctConfig(
         value = cameraInfo.maxFPS,
         check = {
             check(it in cameraInfo.minFPS..cameraInfo.maxFPS) {
@@ -143,7 +145,7 @@ public actual class CameraState internal constructor(
         internal set
 
     @OptIn(ExperimentalSessionConfig::class)
-    public actual var videoStabilizationMode: VideoStabilizationMode by config(
+    public actual var videoStabilizationMode: VideoStabilizationMode by distinctConfig(
         check = { throw NotImplementedError("Video stabilization mode is not implemented in Android yet") },
         value = VideoStabilizationMode.Off,
     ) {
@@ -154,6 +156,7 @@ public actual class CameraState internal constructor(
     init {
         (context as LifecycleOwner).lifecycle.addObserver(CameraConfigSaver())
         controller.setEnabledUseCases(getUseCases())
+        controller.isTapToFocusEnabled = isFocusOnTapEnabled
     }
 
     public fun setEffects(effects: Set<CameraEffect>) {

@@ -31,7 +31,7 @@ internal class FocusOnTapTest : CameraTest() {
     private lateinit var isFocusTappedState: MutableState<Boolean>
 
     private val isCameraXFocused: Boolean
-        get() = when (cameraSession.cameraXController.tapToFocusState.value) {
+        get() = when (cameraSession.cameraXController.tapToFocusInfoState.value?.focusState) {
             CameraController.TAP_TO_FOCUS_STARTED, CameraController.TAP_TO_FOCUS_FOCUSED -> true
             else -> false
         }

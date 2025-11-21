@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-internal fun <T> config(
+internal fun <T> distinctConfig(
     value: T,
     check: (new: T) -> Unit = {},
     predicate: (old: T, new: T) -> Boolean = { old, new -> old != new },

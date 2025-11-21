@@ -1,7 +1,6 @@
 package com.ujizin.camposer.state
 
 import com.ujizin.camposer.session.CameraSession
-import com.ujizin.camposer.state.properties.CamSelector
 import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.FlashMode
 import com.ujizin.camposer.state.properties.ImageAnalyzer
@@ -11,6 +10,7 @@ import com.ujizin.camposer.state.properties.OrientationStrategy
 import com.ujizin.camposer.state.properties.ScaleType
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import com.ujizin.camposer.state.properties.format.CamFormat
+import com.ujizin.camposer.state.properties.selector.CamSelector
 
 public expect class CameraState {
     public var isImageAnalyzerEnabled: Boolean
