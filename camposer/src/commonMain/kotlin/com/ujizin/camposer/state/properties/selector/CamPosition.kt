@@ -1,6 +1,6 @@
 package com.ujizin.camposer.state.properties.selector
 
-public enum class CamPosition {
+public expect enum class CamPosition {
     Back,
     Front
 }

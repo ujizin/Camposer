@@ -1,29 +1,73 @@
 package com.ujizin.camposer.state.properties.selector
 
-import platform.AVFoundation.AVCaptureDevicePosition
-import platform.AVFoundation.AVCaptureDevicePositionBack
-import platform.AVFoundation.AVCaptureDevicePositionFront
+import com.ujizin.camposer.state.properties.selector.CamLensType.Telephoto
+import com.ujizin.camposer.state.properties.selector.CamLensType.UltraWide
+import com.ujizin.camposer.state.properties.selector.CamLensType.Wide
+import platform.AVFoundation.AVCaptureDevice
+import platform.AVFoundation.AVCaptureDeviceDiscoverySession
+import platform.AVFoundation.AVCaptureDeviceType
+import platform.AVFoundation.AVCaptureDeviceTypeBuiltInDualCamera
+import platform.AVFoundation.AVCaptureDeviceTypeBuiltInDualWideCamera
+import platform.AVFoundation.AVCaptureDeviceTypeBuiltInTripleCamera
+import platform.AVFoundation.AVCaptureDeviceTypeBuiltInWideAngleCamera
+import platform.AVFoundation.AVMediaTypeVideo
+import platform.AVFoundation.position
 
 public actual class CamSelector {
 
-    internal val position: AVCaptureDevicePosition
+    public actual val camPosition: CamPosition
+    public actual val camLensTypes: List<CamLensType>
 
-    public actual val isFront: Boolean
-        get() = position == AVCaptureDevicePositionFront
+    internal val captureDevice: AVCaptureDevice
+        get() = AVCaptureDeviceDiscoverySession.discoverySessionWithDeviceTypes(
+            getDeviceTypes(),
+            AVMediaTypeVideo,
+            camPosition.value,
+        ).devices.firstOrNull {
+            val device = it as? AVCaptureDevice
+            device?.position == camPosition.value
+        } as? AVCaptureDevice ?: error("No camera found to position $camPosition with $camLensTypes")
 
-    public constructor(camPosition: CamPosition) : this(
-        camPosition = camPosition,
-        position = when (camPosition) {
-            CamPosition.Back -> AVCaptureDevicePositionBack
-            CamPosition.Front -> AVCaptureDevicePositionFront
+    public actual constructor(camPosition: CamPosition, camLensTypes: List<CamLensType>) {
+        this.camPosition = camPosition
+        this.camLensTypes = camLensTypes.ifEmpty { listOf(Wide) }
+    }
+
+    internal fun getDeviceTypes(
+    ): List<AVCaptureDeviceType> = buildList {
+        if (camLensTypes.containsAll(listOf(Wide, UltraWide, Telephoto))) {
+            add(AVCaptureDeviceTypeBuiltInTripleCamera)
         }
-    )
 
-    internal constructor(
-        camPosition: CamPosition,
-        position: AVCaptureDevicePosition,
-    ) {
-        this.position = position
+        if (camLensTypes.containsAll(listOf(Wide, UltraWide))) {
+            add(AVCaptureDeviceTypeBuiltInDualWideCamera)
+        }
+
+        if (camLensTypes.containsAll(listOf(Wide, Telephoto))) {
+            add(AVCaptureDeviceTypeBuiltInDualCamera)
+        }
+
+        addAll(camLensTypes.map { it.type })
+
+        add(AVCaptureDeviceTypeBuiltInWideAngleCamera)
+    }.distinct()
+
+    actual override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is CamSelector) return false
+
+        if (camPosition != other.camPosition) return false
+        return camLensTypes == other.camLensTypes
+    }
+
+    actual override fun hashCode(): Int {
+        var result = camPosition.hashCode()
+        result = 31 * result + camLensTypes.hashCode()
+        return result
+    }
+
+    actual override fun toString(): String {
+        return "CamSelector(camPosition=$camPosition, camLensType=$camLensTypes)"
     }
 
     public actual companion object {

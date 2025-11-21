@@ -26,7 +26,6 @@ import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.session.CameraSession
 import com.ujizin.camposer.session.rememberCameraSession
 import com.ujizin.camposer.session.rememberImageAnalyzer
-import com.ujizin.camposer.state.properties.selector.CamSelector
 import com.ujizin.camposer.state.properties.ScaleType
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import com.ujizin.camposer.state.properties.format.CamFormat
@@ -34,6 +33,10 @@ import com.ujizin.camposer.state.properties.format.config.AspectRatioConfig
 import com.ujizin.camposer.state.properties.format.config.FrameRateConfig
 import com.ujizin.camposer.state.properties.format.config.ResolutionConfig
 import com.ujizin.camposer.state.properties.format.config.VideoStabilizationConfig
+import com.ujizin.camposer.state.properties.selector.CamLensType
+import com.ujizin.camposer.state.properties.selector.CamSelector
+import com.ujizin.camposer.state.properties.selector.Saver
+import com.ujizin.camposer.state.properties.selector.inverse
 import com.ujizin.sample.extensions.noClickable
 import com.ujizin.sample.feature.camera.components.ActionBox
 import com.ujizin.sample.feature.camera.components.BlinkPictureBox
@@ -104,7 +107,14 @@ fun CameraSection(
     onAnalyzeImage: (ImageProxy) -> Unit,
     onConfigurationClick: () -> Unit,
 ) {
-    var camSelector by remember { mutableStateOf(if (useFrontCamera) CamSelector.Front else CamSelector.Back) }
+    var camSelector by rememberSaveable(stateSaver = CamSelector.Saver) {
+        mutableStateOf(
+            CamSelector(
+                camPosition = if (useFrontCamera) CamSelector.Front.camPosition else CamSelector.Back.camPosition,
+                camLensTypes = listOf(CamLensType.UltraWide),
+            )
+        )
+    }
     val zoomRatio by rememberUpdatedState(cameraSession.state.zoomRatio)
     var zoomHasChanged by remember { mutableStateOf(false) }
 

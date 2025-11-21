@@ -49,7 +49,7 @@ public actual class CameraState(
         mutex = cameraMutex,
         value = CamSelector.Back
     ) {
-        iosCameraSession.setCameraSelector(it.position)
+        iosCameraSession.setCaptureDevice(it.captureDevice)
         updateConfig(camSelectorChanged = true)
     }
         internal set

@@ -58,10 +58,7 @@ public actual class CameraState internal constructor(
         predicate = { old, new ->
             old != new && controller.hasCamera(new.selector) && !controller.isRecording
         },
-        block = {
-            controller.cameraSelector = it.selector
-            cameraInfo.rebind()
-        }
+        block = ::setCamSelector
     )
         internal set
 
@@ -157,6 +154,7 @@ public actual class CameraState internal constructor(
         (context as LifecycleOwner).lifecycle.addObserver(CameraConfigSaver())
         controller.setEnabledUseCases(getUseCases())
         controller.isTapToFocusEnabled = isFocusOnTapEnabled
+        setCamSelector(camSelector)
     }
 
     public fun setEffects(effects: Set<CameraEffect>) {
@@ -165,6 +163,11 @@ public actual class CameraState internal constructor(
 
     public fun clearEffects() {
         controller.clearEffects()
+    }
+
+    private fun setCamSelector(selector: CamSelector) {
+        controller.cameraSelector = selector.selector
+        cameraInfo.rebind()
     }
 
     private fun setCamFormat(format: CamFormat) {

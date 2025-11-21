@@ -41,7 +41,10 @@ import com.ujizin.camposer.state.properties.format.config.FrameRateConfig
 import com.ujizin.camposer.state.properties.format.config.ResolutionConfig
 import com.ujizin.camposer.state.properties.format.config.VideoStabilizationConfig
 import com.ujizin.camposer.state.properties.inverse
+import com.ujizin.camposer.state.properties.selector.CamLensType
+import com.ujizin.camposer.state.properties.selector.CamPosition
 import com.ujizin.camposer.state.properties.selector.CamSelector
+import com.ujizin.camposer.state.properties.selector.inverse
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemTemporaryDirectory
 import kotlin.math.roundToInt
@@ -62,7 +65,14 @@ fun CameraScreen() {
     // Maybe passing to state?
     val isPreviewing by rememberUpdatedState(cameraSession.isStreaming)
 
-    var camSelector by remember { mutableStateOf(CamSelector.Back) }
+    var camSelector by remember {
+        mutableStateOf(
+            CamSelector(
+                camPosition = CamPosition.Back,
+                camLensTypes = listOf(CamLensType.UltraWide),
+            )
+        )
+    }
     val zoomRatio by rememberUpdatedState(cameraSession.state.zoomRatio)
     var captureMode by remember { mutableStateOf(CaptureMode.Image) }
     val isRecording by rememberUpdatedState(cameraController.isRecording)
@@ -85,8 +95,8 @@ fun CameraScreen() {
         cameraSession = cameraSession,
         camFormat = remember {
             CamFormat(
-                AspectRatioConfig(1F),
-                FrameRateConfig(240),
+                AspectRatioConfig(4F / 3f),
+                FrameRateConfig(60),
                 ResolutionConfig.UltraHigh,
                 VideoStabilizationConfig(VideoStabilizationMode.Standard),
             )
@@ -127,10 +137,7 @@ fun CameraScreen() {
                 Text("Flash mode: $flashMode")
             }
             Button(onClick = {
-                camSelector = when (camSelector) {
-                    CamSelector.Back -> CamSelector.Front
-                    else -> CamSelector.Back
-                }
+                camSelector = camSelector.inverse
             }) {
                 Text("Cam selector: $camSelector")
             }

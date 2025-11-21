@@ -2,7 +2,6 @@ package com.ujizin.camposer.session
 
 import com.ujizin.camposer.OrientationManager
 import com.ujizin.camposer.error.AudioInputNotFoundException
-import com.ujizin.camposer.extensions.captureDevice
 import com.ujizin.camposer.extensions.firstIsInstanceOrNull
 import com.ujizin.camposer.extensions.isFlashModeSupported
 import com.ujizin.camposer.extensions.toDeviceInput
@@ -17,7 +16,6 @@ import platform.AVFoundation.AVCaptureDevice
 import platform.AVFoundation.AVCaptureDevice.Companion.defaultDeviceWithMediaType
 import platform.AVFoundation.AVCaptureDeviceFormat
 import platform.AVFoundation.AVCaptureDeviceInput
-import platform.AVFoundation.AVCaptureDevicePosition
 import platform.AVFoundation.AVCaptureExposureModeAutoExpose
 import platform.AVFoundation.AVCaptureFlashMode
 import platform.AVFoundation.AVCaptureFocusModeAutoFocus
@@ -44,7 +42,6 @@ import platform.AVFoundation.isExposurePointOfInterestSupported
 import platform.AVFoundation.isFlashAvailable
 import platform.AVFoundation.isFocusPointOfInterestSupported
 import platform.AVFoundation.isTorchAvailable
-import platform.AVFoundation.position
 import platform.AVFoundation.torchMode
 import platform.CoreGraphics.CGPoint
 import platform.CoreMedia.CMTimeMake
@@ -93,12 +90,12 @@ public class IOSCameraSession internal constructor(
 
     internal fun start(
         captureOutput: AVCaptureOutput,
-        position: AVCaptureDevicePosition,
+        device: AVCaptureDevice,
         isMuted: Boolean,
     ) = dispatch_async(cameraQueue) {
         captureSession.beginConfiguration()
 
-        setCameraSelector(position)
+        setCaptureDevice(device)
         setAudioEnabled(!isMuted)
         captureSession.tryAddOutput(captureOutput)
         captureSession.commitConfiguration()
@@ -110,6 +107,7 @@ public class IOSCameraSession internal constructor(
     }
 
     internal fun setFrameRate(frameRate: Int) {
+        val captureDevice = device
         if (frameRate !in minFrameRate..maxFrameRate) {
             return
         }
@@ -117,9 +115,9 @@ public class IOSCameraSession internal constructor(
         val minFps = CMTimeMake(1, frameRate)
         val maxFps = CMTimeMake(1, frameRate)
 
-        device.withConfigurationLock {
-            device.activeVideoMinFrameDuration = minFps
-            device.activeVideoMaxFrameDuration = maxFps
+        captureDevice.withConfigurationLock {
+            captureDevice.activeVideoMinFrameDuration = minFps
+            captureDevice.activeVideoMaxFrameDuration = maxFps
         }
     }
 
@@ -156,8 +154,8 @@ public class IOSCameraSession internal constructor(
         previewManager.attachView(view)
     }
 
-    internal fun setCameraSelector(position: AVCaptureDevicePosition) {
-        if (_captureDeviceInput?.device?.position == position) {
+    internal fun setCaptureDevice(device: AVCaptureDevice) {
+        if (_captureDeviceInput?.device == device) {
             return
         }
 
@@ -166,7 +164,7 @@ public class IOSCameraSession internal constructor(
             captureSession.removeInput(captureDeviceInput)
         }
 
-        _captureDeviceInput = position.captureDevice.toDeviceInput()
+        _captureDeviceInput = device.toDeviceInput()
         captureSession.tryAddInput(captureDeviceInput)
     }
 

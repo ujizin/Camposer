@@ -79,7 +79,7 @@ public actual class CameraSession private constructor(
             cameraInfo = info,
         )
 
-        setCameraSelector(position = state.camSelector.position)
+        setCaptureDevice(device = state.camSelector.captureDevice)
         info.rebind(state.captureMode.output)
 
         captureSession.addObserver(
@@ -99,7 +99,7 @@ public actual class CameraSession private constructor(
     @OptIn(ExperimentalForeignApi::class)
     internal fun startCamera() = iosCameraSession.start(
         captureOutput = state.captureMode.output,
-        position = state.camSelector.position,
+        device = state.camSelector.captureDevice,
         isMuted = controller.isMuted,
     )
 
