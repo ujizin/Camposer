@@ -10,15 +10,20 @@ import com.ujizin.camposer.extensions.tryAddOutput
 import com.ujizin.camposer.extensions.withConfigurationLock
 import com.ujizin.camposer.manager.PreviewManager
 import com.ujizin.camposer.utils.DispatchQueue.cameraQueue
+import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.ObjCAction
 import platform.AVFoundation.AVCaptureDevice
 import platform.AVFoundation.AVCaptureDevice.Companion.defaultDeviceWithMediaType
 import platform.AVFoundation.AVCaptureDeviceFormat
 import platform.AVFoundation.AVCaptureDeviceInput
+import platform.AVFoundation.AVCaptureDeviceSubjectAreaDidChangeNotification
 import platform.AVFoundation.AVCaptureExposureModeAutoExpose
+import platform.AVFoundation.AVCaptureExposureModeContinuousAutoExposure
 import platform.AVFoundation.AVCaptureFlashMode
 import platform.AVFoundation.AVCaptureFocusModeAutoFocus
+import platform.AVFoundation.AVCaptureFocusModeContinuousAutoFocus
 import platform.AVFoundation.AVCaptureMovieFileOutput
 import platform.AVFoundation.AVCaptureOutput
 import platform.AVFoundation.AVCapturePhotoOutput
@@ -42,17 +47,23 @@ import platform.AVFoundation.isExposurePointOfInterestSupported
 import platform.AVFoundation.isFlashAvailable
 import platform.AVFoundation.isFocusPointOfInterestSupported
 import platform.AVFoundation.isTorchAvailable
+import platform.AVFoundation.setSubjectAreaChangeMonitoringEnabled
 import platform.AVFoundation.torchMode
 import platform.CoreGraphics.CGPoint
+import platform.CoreGraphics.CGPointMake
 import platform.CoreMedia.CMTimeMake
+import platform.Foundation.NSNotification
+import platform.Foundation.NSNotificationCenter
+import platform.Foundation.NSSelectorFromString
 import platform.UIKit.UIView
+import platform.darwin.NSObject
 import platform.darwin.dispatch_async
 
 @OptIn(ExperimentalForeignApi::class)
 public class IOSCameraSession internal constructor(
     internal val captureSession: AVCaptureSession,
     public val previewManager: PreviewManager,
-) {
+) : NSObject() {
 
     private var _captureDeviceInput: AVCaptureDeviceInput? = null
 
@@ -176,17 +187,56 @@ public class IOSCameraSession internal constructor(
     }
 
     internal fun setFocusPoint(focusPoint: CValue<CGPoint>) = device.withConfigurationLock {
-        if (isFocusPointOfInterestSupported()) {
-            focusPointOfInterest = focusPoint
-            focusMode = AVCaptureFocusModeAutoFocus
-        }
-
         if (isExposurePointOfInterestSupported()) {
             exposurePointOfInterest = focusPoint
             exposureMode = AVCaptureExposureModeAutoExpose
         }
 
-        // TODO cancel focus after 5s
+        if (isFocusPointOfInterestSupported()) {
+            focusPointOfInterest = focusPoint
+            focusMode = AVCaptureFocusModeAutoFocus
+        }
+
+        val notificationCenter = NSNotificationCenter.defaultCenter
+        notificationCenter.removeObserver(
+            observer = this@IOSCameraSession,
+            name = AVCaptureDeviceSubjectAreaDidChangeNotification,
+            `object` = null,
+        )
+
+        device.setSubjectAreaChangeMonitoringEnabled(true)
+
+        notificationCenter.addObserver(
+            observer = this@IOSCameraSession,
+            selector = NSSelectorFromString("${::onFocusCompleted.name}:"),
+            name = AVCaptureDeviceSubjectAreaDidChangeNotification,
+            `object` = null,
+        )
+    }
+
+    @OptIn(BetaInteropApi::class)
+    @ObjCAction
+    private fun onFocusCompleted(
+        notification: NSNotification?,
+    ): Unit = device.withConfigurationLock {
+        val centerFocusPoint = CGPointMake(0.5, 0.5)
+        if (isFocusPointOfInterestSupported()) {
+            focusPointOfInterest = centerFocusPoint
+            focusMode = AVCaptureFocusModeContinuousAutoFocus
+        }
+
+        if (isExposurePointOfInterestSupported()) {
+            exposurePointOfInterest = centerFocusPoint
+            exposureMode = AVCaptureExposureModeContinuousAutoExposure
+        }
+
+        device.setSubjectAreaChangeMonitoringEnabled(false)
+
+        NSNotificationCenter.defaultCenter.removeObserver(
+            observer = this@IOSCameraSession,
+            name = AVCaptureDeviceSubjectAreaDidChangeNotification,
+            `object` = null,
+        )
     }
 
     internal fun setTorchEnabled(isEnabled: Boolean) {

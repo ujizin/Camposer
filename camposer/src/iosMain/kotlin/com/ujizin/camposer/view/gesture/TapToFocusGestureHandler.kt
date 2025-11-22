@@ -31,8 +31,8 @@ internal class TapToFocusGestureHandler(
             val view = sender.view ?: return
             val size = view.bounds.placeTo(this).pointed.size
             val cgPoint = sender.locationInView(view).placeTo(this).pointed
-            val x = cgPoint.y / size.height
-            val y = 1 - cgPoint.x / size.width
+            val x = cgPoint.x / size.width
+            val y = cgPoint.y / size.height
             val focusPoint = CGPointMake(x = x, y = y)
 
             cameraViewDelegate.onFocusTap(cgPoint.x.toFloat(), cgPoint.y.toFloat())
