@@ -2,24 +2,31 @@ package com.ujizin.camposer.utils
 
 import android.annotation.SuppressLint
 import android.graphics.ImageFormat
-import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS
+import android.hardware.camera2.CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE
 import android.media.CamcorderProfile
 import android.os.Build
 import android.util.Log
-import android.util.Range
 import android.util.Size
+import android.util.SizeF
+import androidx.camera.camera2.internal.Camera2CameraInfoImpl
 import androidx.camera.core.CameraInfo
 import androidx.camera.core.ExperimentalSessionConfig
 import androidx.camera.core.FocusMeteringAction
 import androidx.camera.core.SurfaceOrientedMeteringPointFactory
-import androidx.camera.core.impl.AdapterCameraInfo
 import androidx.camera.core.impl.CameraInfoInternal
 import androidx.camera.video.Quality
 import androidx.camera.video.Recorder
 import androidx.camera.video.VideoCapabilities
 import com.ujizin.camposer.state.properties.CameraData
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
+import com.ujizin.camposer.state.properties.selector.CamLensType
+import com.ujizin.camposer.state.properties.selector.CamLensType.Telephoto
+import com.ujizin.camposer.state.properties.selector.CamLensType.UltraWide
+import com.ujizin.camposer.state.properties.selector.CamLensType.Wide
 import kotlin.math.abs
+import kotlin.math.atan2
+import kotlin.math.hypot
 import kotlin.math.min
 
 @SuppressLint("RestrictedApi")
@@ -28,7 +35,7 @@ internal object CameraUtils {
     private const val TAG = "CamUtils"
 
     fun getPhotoResolutions(cameraInfo: CameraInfo?): List<CameraData> {
-        if (cameraInfo !is AdapterCameraInfo) {
+        if (cameraInfo !is CameraInfoInternal) {
             Log.w(TAG, "Camera info is not a CameraInfoInternal")
             return emptyList()
         }
@@ -45,10 +52,11 @@ internal object CameraUtils {
 
     @OptIn(ExperimentalSessionConfig::class)
     fun getVideoResolutions(cameraInfo: CameraInfo?): List<CameraData> {
-        if (cameraInfo !is AdapterCameraInfo) {
+        if (cameraInfo !is CameraInfoInternal) {
             Log.w(TAG, "Camera info is not a CameraInfoInternal")
             return emptyList()
         }
+
         val videoCapabilities = Recorder.getVideoCapabilities(
             cameraInfo,
             Recorder.VIDEO_CAPABILITIES_SOURCE_CAMCORDER_PROFILE
@@ -67,7 +75,33 @@ internal object CameraUtils {
         )
     }
 
-    private fun AdapterCameraInfo.getAllCameraData(
+    internal fun getCamLensTypes(info: CameraInfo): List<CamLensType> {
+        return (info as Camera2CameraInfoImpl).cameraCharacteristicsMap.map { (_, characteristics) ->
+            val sensorSize = characteristics.get(SENSOR_INFO_PHYSICAL_SIZE) ?: return@map Wide
+            val focalLengths = characteristics.get(LENS_INFO_AVAILABLE_FOCAL_LENGTHS)
+                ?: return@map Wide
+
+            val fov = getFOV(focalLengths, sensorSize)
+            when {
+                fov > UltraWide.minFov -> UltraWide
+                fov > Wide.minFov -> Wide
+                else -> Telephoto
+            }
+        }.distinct()
+    }
+
+    private fun getFOV(focalLengths: FloatArray, sensorSize: SizeF): Double {
+        val focalLength = focalLengths.minOrNull() ?: return 0.0
+
+        if ((sensorSize.width == 0f) || (sensorSize.height == 0f)) {
+            return 0.0
+        }
+
+        val sensorDiagonal = hypot(sensorSize.width.toDouble(), sensorSize.height.toDouble())
+        return Math.toDegrees(2.0 * atan2(sensorDiagonal, 2.0 * focalLength))
+    }
+
+    private fun CameraInfoInternal.getAllCameraData(
         cameraSizes: List<Size>,
         isFocusSupported: Boolean,
         isVideoStabilizationSupported: Boolean? = null,
@@ -114,8 +148,14 @@ internal object CameraUtils {
         minFps: Int,
         maxFps: Int,
     ): Pair<Int, Int> {
-        val quality = findClosestCamcorderProfileQuality(cameraId, videoSize)
-        val maxFps = getMaximumFps(cameraId, quality) ?: maxFps
+        var maxFps = maxFps
+        try {
+            val quality = findClosestCamcorderProfileQuality(cameraId, videoSize)
+            maxFps = getMaximumFps(cameraId, quality) ?: maxFps
+        } catch (e: Exception) {
+            Log.e(TAG, "Error in get FPS, ${e.stackTraceToString()}")
+        }
+
         return min(minFps, maxFps) to maxFps
     }
 

@@ -3,38 +3,60 @@ package com.ujizin.camposer.state.properties.selector
 import android.annotation.SuppressLint
 import androidx.camera.camera2.internal.Camera2CameraInfoImpl
 import androidx.camera.core.CameraSelector
+import com.ujizin.camposer.manager.CameraDevice
+import com.ujizin.camposer.utils.CameraUtils
 
 /**
  * Camera Selector.
  *
- * @param selector internal camera selector from CameraX
+ * Defines criteria for selecting a specific camera based on its position (Front/Back)
+ * and lens type (e.g., Wide, UltraWide, Telephoto).
+ *
+ * This class wraps the internal [CameraSelector] from CameraX to provide a unified
+ * selector.
+ *
  * @see CameraSelector
- * */
+ */
 public actual class CamSelector {
 
     public actual val camPosition: CamPosition
 
     public actual val camLensTypes: List<CamLensType>
 
-    public val camLensType: CamLensType by lazy { camLensTypes.firstOrNull() ?: CamLensType.Wide }
-
     internal val selector: CameraSelector by lazy { createCameraSelector() }
+
+    internal var cameraId: CameraId? = null
 
     public actual constructor(camPosition: CamPosition, camLensTypes: List<CamLensType>) {
         this.camPosition = camPosition
         this.camLensTypes = camLensTypes.ifEmpty { listOf(CamLensType.Wide) }
     }
 
+    public actual constructor(cameraDevice: CameraDevice) : this(
+        camPosition = cameraDevice.position,
+        camLensTypes = cameraDevice.lensType,
+    ) {
+        this.cameraId = cameraDevice.cameraId
+    }
+
     @SuppressLint("RestrictedApi")
     private fun createCameraSelector(): CameraSelector = CameraSelector.Builder()
         .addCameraFilter { cameraInfos ->
-            val camera2Infos = cameraInfos.filterIsInstance<Camera2CameraInfoImpl>()
-            val cameras = camera2Infos.filter {
-                val isCamLensSupported = CamLensType.findType(it).contains(camLensType)
-
-                camPosition.value == it.lensFacing && isCamLensSupported
+            if (cameraId != null) {
+                return@addCameraFilter cameraInfos.filter { info ->
+                    info.cameraIdentifier == cameraId?.identifier
+                }
             }
-            cameras.ifEmpty { cameraInfos }
+
+            val lensFilter = cameraInfos.filterIsInstance<Camera2CameraInfoImpl>().filter { info ->
+                camPosition.value == info.lensFacing
+            }
+
+            val logicalSenseFilter = lensFilter.filter { info ->
+                CameraUtils.getCamLensTypes(info).containsAll(camLensTypes)
+            }
+
+            logicalSenseFilter.ifEmpty { lensFilter }.ifEmpty { cameraInfos }
         }
         .requireLensFacing(camPosition.value)
         .build()

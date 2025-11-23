@@ -29,6 +29,8 @@ import com.ujizin.camposer.CameraPreview
 import com.ujizin.camposer.code_scanner.model.CodeType
 import com.ujizin.camposer.code_scanner.rememberCodeImageAnalyzer
 import com.ujizin.camposer.controller.camera.CameraController
+import com.ujizin.camposer.manager.CameraDeviceState
+import com.ujizin.camposer.manager.rememberCameraDeviceState
 import com.ujizin.camposer.result.CaptureResult
 import com.ujizin.camposer.session.rememberCameraSession
 import com.ujizin.camposer.state.properties.CaptureMode
@@ -88,6 +90,25 @@ fun CameraScreen() {
 
     LaunchedEffect(Unit) {
         cameraController.setOrientationStrategy(OrientationStrategy.Preview)
+    }
+
+    val camDeviceState by rememberCameraDeviceState()
+
+    LaunchedEffect(camDeviceState) {
+        val camDeviceState = camDeviceState
+        if (camDeviceState is CameraDeviceState.Devices) {
+            println("Camera screen: ${camDeviceState.devices}")
+            val cameraDevice = camDeviceState.devices.find {
+                it.lensType.containsAll(
+                    listOf(
+                        CamLensType.UltraWide,
+                        CamLensType.Wide,
+                        CamLensType.Telephoto
+                    )
+                )
+            } ?: camDeviceState.devices.first()
+            camSelector = CamSelector(cameraDevice)
+        }
     }
 
     CameraPreview(

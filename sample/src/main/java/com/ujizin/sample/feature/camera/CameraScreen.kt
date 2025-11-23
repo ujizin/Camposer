@@ -23,6 +23,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.skydoves.cloudy.cloudy
 import com.ujizin.camposer.CameraPreview
 import com.ujizin.camposer.controller.camera.CameraController
+import com.ujizin.camposer.manager.CameraDeviceState
+import com.ujizin.camposer.manager.rememberCameraDeviceState
 import com.ujizin.camposer.session.CameraSession
 import com.ujizin.camposer.session.rememberCameraSession
 import com.ujizin.camposer.session.rememberImageAnalyzer
@@ -126,6 +128,14 @@ fun CameraSection(
 
     LaunchedEffect(zoomRatio) {
         zoomHasChanged = true
+    }
+    val camDeviceState by rememberCameraDeviceState()
+
+    LaunchedEffect(camDeviceState) {
+        val camDeviceState = camDeviceState
+        if (camDeviceState is CameraDeviceState.Devices) {
+            camSelector = CamSelector(camDeviceState.devices.first())
+        }
     }
 
     CameraPreview(

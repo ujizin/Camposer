@@ -44,7 +44,9 @@ public actual class CameraState internal constructor(
     }
         internal set
 
-    public actual var imageCaptureStrategy: ImageCaptureStrategy by distinctConfig(ImageCaptureStrategy.Balanced) { value ->
+    public actual var imageCaptureStrategy: ImageCaptureStrategy by distinctConfig(
+        ImageCaptureStrategy.Balanced
+    ) { value ->
         val mode = when {
             value == ImageCaptureStrategy.MinLatency && !cameraInfo.isZeroShutterLagSupported -> value.fallback
             else -> value.mode
@@ -54,10 +56,13 @@ public actual class CameraState internal constructor(
         internal set
 
     public actual var camSelector: CamSelector by distinctConfig(
-        value = CamSelector.Back,
-        predicate = { old, new ->
-            old != new && controller.hasCamera(new.selector) && !controller.isRecording
+        check = { new ->
+            check(controller.hasCamera(new.selector)) {
+                "Camera with position ${new.camPosition} not found. Please ensure the device has this camera available."
+            }
         },
+        value = CamSelector.Back,
+        predicate = { old, new -> old != new && !controller.isRecording },
         block = ::setCamSelector
     )
         internal set
@@ -83,7 +88,10 @@ public actual class CameraState internal constructor(
         internal set
 
     public actual var imageAnalyzer: ImageAnalyzer? by distinctConfig(null) { analyzer ->
-        controller.setImageAnalysisAnalyzer(mainExecutor, analyzer?.analyzer ?: return@distinctConfig)
+        controller.setImageAnalysisAnalyzer(
+            mainExecutor,
+            analyzer?.analyzer ?: return@distinctConfig
+        )
     }
         internal set
 

@@ -2,6 +2,7 @@ package com.ujizin.camposer.state.properties.selector
 
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.mapSaver
+import com.ujizin.camposer.manager.CameraDevice
 
 public expect class CamSelector {
 
@@ -12,6 +13,8 @@ public expect class CamSelector {
         camPosition: CamPosition,
         camLensTypes: List<CamLensType> = listOf(CamLensType.Wide),
     )
+
+    public constructor(cameraDevice: CameraDevice)
 
     override fun equals(other: Any?): Boolean
     override fun hashCode(): Int

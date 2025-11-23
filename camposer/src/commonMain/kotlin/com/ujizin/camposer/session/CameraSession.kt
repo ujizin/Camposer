@@ -1,7 +1,7 @@
 package com.ujizin.camposer.session
 
-import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.info.CameraInfo
+import com.ujizin.camposer.state.CameraState
 
 public expect class CameraSession {
 

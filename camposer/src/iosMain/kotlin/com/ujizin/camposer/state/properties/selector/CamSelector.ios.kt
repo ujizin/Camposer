@@ -1,5 +1,6 @@
 package com.ujizin.camposer.state.properties.selector
 
+import com.ujizin.camposer.manager.CameraDevice
 import com.ujizin.camposer.state.properties.selector.CamLensType.Telephoto
 import com.ujizin.camposer.state.properties.selector.CamLensType.UltraWide
 import com.ujizin.camposer.state.properties.selector.CamLensType.Wide
@@ -18,6 +19,8 @@ public actual class CamSelector {
     public actual val camPosition: CamPosition
     public actual val camLensTypes: List<CamLensType>
 
+    internal var cameraDevice: CameraDevice? = null
+
     internal val captureDevice: AVCaptureDevice
         get() = AVCaptureDeviceDiscoverySession.discoverySessionWithDeviceTypes(
             getDeviceTypes(),
@@ -25,12 +28,23 @@ public actual class CamSelector {
             camPosition.value,
         ).devices.firstOrNull {
             val device = it as? AVCaptureDevice
-            device?.position == camPosition.value
-        } as? AVCaptureDevice ?: error("No camera found to position $camPosition with $camLensTypes")
+            when {
+                cameraDevice != null -> cameraDevice?.cameraId?.uniqueId == device?.uniqueID
+                else -> device?.position == camPosition.value
+            }
+        } as? AVCaptureDevice
+            ?: error("No camera found to position $camPosition with $camLensTypes")
 
     public actual constructor(camPosition: CamPosition, camLensTypes: List<CamLensType>) {
         this.camPosition = camPosition
         this.camLensTypes = camLensTypes.ifEmpty { listOf(Wide) }
+    }
+
+    public actual constructor(cameraDevice: CameraDevice) : this(
+        camPosition = cameraDevice.position,
+        camLensTypes = cameraDevice.lensType,
+    ) {
+        this.cameraDevice = cameraDevice
     }
 
     internal fun getDeviceTypes(
