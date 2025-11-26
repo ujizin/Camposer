@@ -4,8 +4,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.util.fastCoerceIn
-import com.ujizin.camposer.extensions.toVideoOrientation
-import com.ujizin.camposer.extensions.withConfigurationLock
+import com.ujizin.camposer.internal.extensions.toVideoOrientation
+import com.ujizin.camposer.internal.extensions.withConfigurationLock
 import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.session.CameraSession
 import com.ujizin.camposer.session.IOSCameraSession

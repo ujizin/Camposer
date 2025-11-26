@@ -1,6 +1,6 @@
 package com.ujizin.camposer.manager
 
-import com.ujizin.camposer.extensions.toVideoOrientation
+import com.ujizin.camposer.internal.extensions.toVideoOrientation
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.AVFoundation.AVCaptureSession
 import platform.AVFoundation.AVCaptureVideoPreviewLayer

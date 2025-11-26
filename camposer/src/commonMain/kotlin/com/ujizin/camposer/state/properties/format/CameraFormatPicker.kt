@@ -1,6 +1,6 @@
 package com.ujizin.camposer.state.properties.format
 
-import com.ujizin.camposer.extensions.firstIsInstanceOrNull
+import com.ujizin.camposer.internal.extensions.firstIsInstanceOrNull
 import com.ujizin.camposer.state.properties.CameraData
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import com.ujizin.camposer.state.properties.format.config.AspectRatioConfig

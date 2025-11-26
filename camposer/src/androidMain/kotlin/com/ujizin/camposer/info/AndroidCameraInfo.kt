@@ -4,7 +4,7 @@ import androidx.annotation.OptIn
 import androidx.camera.core.ExperimentalZeroShutterLag
 import androidx.camera.view.CameraController
 import com.ujizin.camposer.state.properties.CameraData
-import com.ujizin.camposer.utils.CameraUtils
+import com.ujizin.camposer.internal.utils.CameraUtils
 
 internal class AndroidCameraInfo(
     private val controller: CameraController,

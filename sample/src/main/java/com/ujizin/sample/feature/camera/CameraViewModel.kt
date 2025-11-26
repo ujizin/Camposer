@@ -17,8 +17,8 @@ import androidx.lifecycle.viewModelScope
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.DecodeHintType
 import com.google.zxing.MultiFormatReader
+import com.ujizin.camposer.CaptureResult
 import com.ujizin.camposer.controller.camera.CameraController
-import com.ujizin.camposer.result.CaptureResult
 import com.ujizin.sample.data.local.datasource.FileDataSource
 import com.ujizin.sample.data.local.datasource.UserDataSource
 import com.ujizin.sample.domain.User

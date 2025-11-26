@@ -12,7 +12,7 @@ import androidx.camera.video.FileDescriptorOutputOptions
 import androidx.camera.video.FileOutputOptions
 import androidx.camera.video.MediaStoreOutputOptions
 import androidx.camera.view.video.AudioConfig
-import com.ujizin.camposer.result.CaptureResult
+import com.ujizin.camposer.CaptureResult
 import java.io.File
 
 public actual class CameraController : AndroidCameraController() {

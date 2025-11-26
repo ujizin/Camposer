@@ -16,8 +16,8 @@ import com.ujizin.camposer.state.properties.ScaleType
 import com.ujizin.camposer.state.properties.format.CamFormat
 import com.ujizin.camposer.state.properties.selector.CamSelector
 import com.ujizin.camposer.state.update
-import com.ujizin.camposer.view.CameraViewController
-import com.ujizin.camposer.view.CameraViewDelegate
+import com.ujizin.camposer.internal.view.CameraViewController
+import com.ujizin.camposer.internal.view.CameraViewDelegate
 import kotlinx.cinterop.ExperimentalForeignApi
 
 @OptIn(ExperimentalForeignApi::class)

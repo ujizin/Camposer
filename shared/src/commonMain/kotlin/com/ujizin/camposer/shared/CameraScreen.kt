@@ -26,12 +26,12 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.decodeToImageBitmap
 import androidx.compose.ui.unit.dp
 import com.ujizin.camposer.CameraPreview
+import com.ujizin.camposer.CaptureResult
 import com.ujizin.camposer.code_scanner.model.CodeType
 import com.ujizin.camposer.code_scanner.rememberCodeImageAnalyzer
 import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.manager.CameraDeviceState
 import com.ujizin.camposer.manager.rememberCameraDeviceState
-import com.ujizin.camposer.result.CaptureResult
 import com.ujizin.camposer.session.rememberCameraSession
 import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.OrientationStrategy

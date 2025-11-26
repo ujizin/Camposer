@@ -1,15 +1,15 @@
 package com.ujizin.camposer.session
 
-import com.ujizin.camposer.OrientationManager
-import com.ujizin.camposer.error.AudioInputNotFoundException
-import com.ujizin.camposer.extensions.firstIsInstanceOrNull
-import com.ujizin.camposer.extensions.isFlashModeSupported
-import com.ujizin.camposer.extensions.toDeviceInput
-import com.ujizin.camposer.extensions.tryAddInput
-import com.ujizin.camposer.extensions.tryAddOutput
-import com.ujizin.camposer.extensions.withConfigurationLock
+import com.ujizin.camposer.internal.OrientationManager
+import com.ujizin.camposer.internal.error.AudioInputNotFoundException
+import com.ujizin.camposer.internal.extensions.firstIsInstanceOrNull
+import com.ujizin.camposer.internal.extensions.isFlashModeSupported
+import com.ujizin.camposer.internal.extensions.toDeviceInput
+import com.ujizin.camposer.internal.extensions.tryAddInput
+import com.ujizin.camposer.internal.extensions.tryAddOutput
+import com.ujizin.camposer.internal.extensions.withConfigurationLock
+import com.ujizin.camposer.internal.utils.DispatchQueue.cameraQueue
 import com.ujizin.camposer.manager.PreviewManager
-import com.ujizin.camposer.utils.DispatchQueue.cameraQueue
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi

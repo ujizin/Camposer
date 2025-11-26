@@ -7,8 +7,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.LifecycleOwner
-import com.ujizin.camposer.command.AndroidTakePictureCommand
-import com.ujizin.camposer.command.DefaultTakePictureCommand
+import com.ujizin.camposer.controller.takepicture.AndroidTakePictureCommand
+import com.ujizin.camposer.controller.takepicture.DefaultTakePictureCommand
 import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.controller.record.AndroidRecordController
 import com.ujizin.camposer.controller.record.DefaultRecordController

@@ -3,7 +3,7 @@ package com.ujizin.camposer.session
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.ujizin.camposer.command.DefaultTakePictureCommand
+import com.ujizin.camposer.controller.takepicture.DefaultTakePictureCommand
 import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.controller.record.DefaultRecordController
 import com.ujizin.camposer.info.CameraInfo

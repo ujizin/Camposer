@@ -16,7 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.util.Consumer
-import com.ujizin.camposer.result.CaptureResult
+import com.ujizin.camposer.CaptureResult
 import java.io.File
 import java.util.concurrent.Executor
 

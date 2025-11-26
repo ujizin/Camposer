@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import androidx.camera.camera2.internal.Camera2CameraInfoImpl
 import androidx.camera.core.CameraSelector
 import com.ujizin.camposer.manager.CameraDevice
-import com.ujizin.camposer.utils.CameraUtils
+import com.ujizin.camposer.internal.utils.CameraUtils
 
 /**
  * Camera Selector.

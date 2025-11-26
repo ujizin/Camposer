@@ -1,14 +1,14 @@
 package com.ujizin.camposer.controller.camera
 
-import com.ujizin.camposer.command.TakePictureCommand
+import com.ujizin.camposer.CaptureResult
+import com.ujizin.camposer.controller.takepicture.TakePictureCommand
 import com.ujizin.camposer.controller.record.RecordController
 import com.ujizin.camposer.info.CameraInfo
-import com.ujizin.camposer.result.CaptureResult
+import com.ujizin.camposer.internal.utils.Bundle
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.properties.FlashMode
 import com.ujizin.camposer.state.properties.OrientationStrategy
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
-import com.ujizin.camposer.utils.Bundle
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

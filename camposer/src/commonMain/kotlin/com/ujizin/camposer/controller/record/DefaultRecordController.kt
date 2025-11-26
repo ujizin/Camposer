@@ -1,6 +1,6 @@
 package com.ujizin.camposer.controller.record
 
-import com.ujizin.camposer.result.CaptureResult
+import com.ujizin.camposer.CaptureResult
 
 public interface RecordController {
 

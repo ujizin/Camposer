@@ -17,7 +17,7 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.ujizin.camposer.extensions.compatMainExecutor
 import com.ujizin.camposer.state.properties.selector.CamPosition
 import com.ujizin.camposer.state.properties.selector.CameraId
-import com.ujizin.camposer.utils.CameraUtils
+import com.ujizin.camposer.internal.utils.CameraUtils
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope

@@ -7,7 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.ujizin.camposer.session.IOSCameraSession
 import com.ujizin.camposer.state.properties.CameraData
-import com.ujizin.camposer.utils.CameraFormatUtils
+import com.ujizin.camposer.internal.utils.CameraFormatUtils
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.AVFoundation.AVCaptureDeviceFormat
 import platform.AVFoundation.AVCaptureOutput

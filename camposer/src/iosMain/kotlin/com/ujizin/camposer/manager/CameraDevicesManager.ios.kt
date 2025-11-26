@@ -8,8 +8,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ujizin.camposer.state.properties.selector.CamLensType
 import com.ujizin.camposer.state.properties.selector.CamPosition
 import com.ujizin.camposer.state.properties.selector.CameraId
-import com.ujizin.camposer.utils.CameraFormatUtils
-import com.ujizin.camposer.utils.DispatchQueue.cameraQueue
+import com.ujizin.camposer.internal.utils.CameraFormatUtils
+import com.ujizin.camposer.internal.utils.DispatchQueue.cameraQueue
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

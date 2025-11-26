@@ -9,9 +9,8 @@ import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
-import com.ujizin.camposer.result.CaptureResult
-import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.session.rememberImageAnalyzer
+import com.ujizin.camposer.state.properties.CaptureMode
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals

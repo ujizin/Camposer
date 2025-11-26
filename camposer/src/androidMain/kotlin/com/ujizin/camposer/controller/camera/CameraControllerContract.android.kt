@@ -1,6 +1,6 @@
 package com.ujizin.camposer.controller.camera
 
-import com.ujizin.camposer.command.AndroidTakePictureCommand
+import com.ujizin.camposer.controller.takepicture.AndroidTakePictureCommand
 import com.ujizin.camposer.controller.record.AndroidRecordController
 import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.state.CameraState
@@ -9,8 +9,10 @@ import com.ujizin.camposer.state.properties.OrientationStrategy
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import kotlinx.coroutines.flow.StateFlow
 
-public actual interface CameraControllerContract : AndroidRecordController,
+public actual interface CameraControllerContract :
+    AndroidRecordController,
     AndroidTakePictureCommand {
+
     public actual val state: CameraState?
     public actual val info: CameraInfo?
     public actual val isRunning: StateFlow<Boolean>
