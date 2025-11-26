@@ -5,7 +5,7 @@ import androidx.camera.core.CameraIdentifier
 import androidx.camera.core.CameraInfo
 
 @SuppressLint("RestrictedApi")
-public actual class CameraId(
+public actual class CameraId internal constructor(
     internal val identifier: CameraIdentifier?,
     internal val physicalCameraInfos: Set<CameraInfo?>,
     public val ids: List<String> = identifier?.cameraIds.orEmpty(),

@@ -6,7 +6,7 @@ import com.ujizin.camposer.state.properties.format.config.FrameRateConfig
 import com.ujizin.camposer.state.properties.format.config.ResolutionConfig
 import com.ujizin.camposer.state.properties.format.config.VideoStabilizationConfig
 
-public class CameraData(
+public class CameraData internal constructor(
     public val width: Int,
     public val height: Int,
     public val isFocusSupported: Boolean = false,

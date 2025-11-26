@@ -65,7 +65,6 @@ internal object CameraFormatPicker {
                 is ResolutionConfig -> getResolutionDistance(format, config)
                 is FrameRateConfig -> getFpsDistance(format, config.fps)
                 is VideoStabilizationConfig -> getStabilizationDistance(format, config.mode)
-                else -> 0F
             } * weight
         }
 

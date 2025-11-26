@@ -3,7 +3,7 @@ package com.ujizin.camposer.code_scanner.model
 /**
  * Code Result from scanner.
  * */
-public data class CodeResult(
+public class CodeResult internal constructor(
     public val type: CodeType,
     public val text: String,
 ) {

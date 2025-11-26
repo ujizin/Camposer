@@ -9,18 +9,18 @@ import com.ujizin.camposer.state.properties.OrientationStrategy
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import kotlinx.coroutines.flow.StateFlow
 
-public actual interface CameraControllerContract :
+internal actual interface CameraControllerContract :
     AndroidRecordController,
     AndroidTakePictureCommand {
 
-    public actual val state: CameraState?
-    public actual val info: CameraInfo?
-    public actual val isRunning: StateFlow<Boolean>
-    public actual fun setZoomRatio(zoomRatio: Float)
-    public actual fun setExposureCompensation(exposureCompensation: Float)
-    public actual fun setOrientationStrategy(strategy: OrientationStrategy)
-    public actual fun setFlashMode(flashMode: FlashMode): Result<Unit>
-    public actual fun setTorchEnabled(isTorchEnabled: Boolean): Result<Unit>
-    public actual fun setVideoFrameRate(frameRate: Int): Result<Unit>
-    public actual fun setVideoStabilizationEnabled(mode: VideoStabilizationMode): Result<Unit>
+    actual val state: CameraState?
+    actual val info: CameraInfo?
+    actual val isRunning: StateFlow<Boolean>
+    actual fun setZoomRatio(zoomRatio: Float)
+    actual fun setExposureCompensation(exposureCompensation: Float)
+    actual fun setOrientationStrategy(strategy: OrientationStrategy)
+    actual fun setFlashMode(flashMode: FlashMode): Result<Unit>
+    actual fun setTorchEnabled(isTorchEnabled: Boolean): Result<Unit>
+    actual fun setVideoFrameRate(frameRate: Int): Result<Unit>
+    actual fun setVideoStabilizationEnabled(mode: VideoStabilizationMode): Result<Unit>
 }
