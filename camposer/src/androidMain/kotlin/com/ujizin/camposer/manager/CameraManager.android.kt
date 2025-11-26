@@ -18,6 +18,8 @@ import com.ujizin.camposer.extensions.compatMainExecutor
 import com.ujizin.camposer.state.properties.selector.CamPosition
 import com.ujizin.camposer.state.properties.selector.CameraId
 import com.ujizin.camposer.utils.CameraUtils
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,12 +27,16 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import java.util.concurrent.Executor
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 @SuppressLint("RestrictedApi")
-public actual class CameraDevicesManager(context: Context) {
+public actual class CameraDevicesManager(
+    context: Context,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
+) {
 
     private val mainExecutor = context.compatMainExecutor
     private val mainScope = MainScope()
@@ -42,7 +48,6 @@ public actual class CameraDevicesManager(context: Context) {
     private lateinit var cameraProvider: ProcessCameraProvider
 
     private val cameraPresenceListener = object : CameraPresenceListener {
-        // TODO update to not fetch all camera devices
         override fun onCamerasAdded(cameraIdentifiers: Set<CameraIdentifier?>) {
             updateCameraDevices()
         }
@@ -63,8 +68,8 @@ public actual class CameraDevicesManager(context: Context) {
         }
     }
 
-    private fun getAvailableCameraDevices(): List<CameraDevice> {
-        return cameraProvider.availableCameraInfos.map { info ->
+    private suspend fun getAvailableCameraDevices(): List<CameraDevice> = withContext(dispatcher) {
+        cameraProvider.availableCameraInfos.map { info ->
             CameraDevice(
                 cameraId = CameraId(
                     identifier = info.cameraIdentifier,
@@ -79,7 +84,9 @@ public actual class CameraDevicesManager(context: Context) {
     }
 
     private fun updateCameraDevices() {
-        _cameraDevicesState.update { CameraDeviceState.Devices(getAvailableCameraDevices()) }
+        mainScope.launch {
+            _cameraDevicesState.update { CameraDeviceState.Devices(getAvailableCameraDevices()) }
+        }
     }
 
     public actual fun release() {
