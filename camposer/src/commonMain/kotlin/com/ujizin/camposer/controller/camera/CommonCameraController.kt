@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-public abstract class CommonCameraController<RC : RecordController, TPC : TakePictureCommand> :
+public abstract class CommonCameraController<RC : RecordController, TPC : TakePictureCommand> internal constructor() :
     CameraControllerContract {
 
     protected var recordController: RC? = null
