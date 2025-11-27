@@ -8,13 +8,11 @@ import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
-import com.ujizin.camposer.code_scanner.model.CodeResult
-import com.ujizin.camposer.code_scanner.model.CodeType
 
 public actual class ImageCodeAnalyzer actual constructor(
     private val types: List<CodeType>,
     private val codeAnalyzerListener: CodeAnalyzerListener,
-) : ImageAnalysis.Analyzer {
+) {
 
     private var onFailure: (Throwable) -> Unit = {}
 
@@ -34,15 +32,17 @@ public actual class ImageCodeAnalyzer actual constructor(
         }.build()
     )
 
-    @OptIn(ExperimentalGetImage::class)
-    override fun analyze(imageProxy: ImageProxy) {
-        val mediaImage = imageProxy.image ?: return
-        val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
+    internal val analyzer = object : ImageAnalysis.Analyzer {
+        @OptIn(ExperimentalGetImage::class)
+        override fun analyze(imageProxy: ImageProxy) {
+            val mediaImage = imageProxy.image ?: return
+            val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
 
-        barcodeScanner.process(image)
-            .addOnSuccessListener { barcodes -> barcodes.forEach(::onCodeScanned) }
-            .addOnFailureListener(onFailure)
-            .addOnCompleteListener { imageProxy.close() }
+            barcodeScanner.process(image)
+                .addOnSuccessListener { barcodes -> barcodes.forEach(::onCodeScanned) }
+                .addOnFailureListener(onFailure)
+                .addOnCompleteListener { imageProxy.close() }
+        }
     }
 
     private fun onCodeScanned(barcodeResult: Barcode) {

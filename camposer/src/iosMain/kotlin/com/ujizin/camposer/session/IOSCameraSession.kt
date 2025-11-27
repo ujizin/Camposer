@@ -62,8 +62,8 @@ import platform.darwin.dispatch_async
 @OptIn(ExperimentalForeignApi::class)
 public class IOSCameraSession internal constructor(
     internal val captureSession: AVCaptureSession,
-    public val previewManager: PreviewManager,
-) : NSObject() {
+    internal val previewManager: PreviewManager,
+) {
 
     private var _captureDeviceInput: AVCaptureDeviceInput? = null
 
@@ -94,6 +94,13 @@ public class IOSCameraSession internal constructor(
     internal val maxFrameRate: Int
         get() = frameRateRanges.maxOf { it.maxFrameRate }.toInt()
 
+    private val completeFocusObserver = object: NSObject() {
+        @OptIn(BetaInteropApi::class)
+        @ObjCAction
+        private fun onFocusCompleted(
+            notification: NSNotification?,
+        ) = onFocusCompleted()
+    }
 
     public fun addOutput(output: AVCaptureOutput): Boolean = captureSession.tryAddOutput(output)
 
@@ -199,7 +206,7 @@ public class IOSCameraSession internal constructor(
 
         val notificationCenter = NSNotificationCenter.defaultCenter
         notificationCenter.removeObserver(
-            observer = this@IOSCameraSession,
+            observer = completeFocusObserver,
             name = AVCaptureDeviceSubjectAreaDidChangeNotification,
             `object` = null,
         )
@@ -207,7 +214,7 @@ public class IOSCameraSession internal constructor(
         device.setSubjectAreaChangeMonitoringEnabled(true)
 
         notificationCenter.addObserver(
-            observer = this@IOSCameraSession,
+            observer = completeFocusObserver,
             selector = NSSelectorFromString("${::onFocusCompleted.name}:"),
             name = AVCaptureDeviceSubjectAreaDidChangeNotification,
             `object` = null,
@@ -216,9 +223,7 @@ public class IOSCameraSession internal constructor(
 
     @OptIn(BetaInteropApi::class)
     @ObjCAction
-    private fun onFocusCompleted(
-        notification: NSNotification?,
-    ): Unit = device.withConfigurationLock {
+    private fun onFocusCompleted(): Unit = device.withConfigurationLock {
         val centerFocusPoint = CGPointMake(0.5, 0.5)
         if (isFocusPointOfInterestSupported()) {
             focusPointOfInterest = centerFocusPoint
@@ -233,7 +238,7 @@ public class IOSCameraSession internal constructor(
         device.setSubjectAreaChangeMonitoringEnabled(false)
 
         NSNotificationCenter.defaultCenter.removeObserver(
-            observer = this@IOSCameraSession,
+            observer = completeFocusObserver,
             name = AVCaptureDeviceSubjectAreaDidChangeNotification,
             `object` = null,
         )

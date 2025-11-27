@@ -3,9 +3,9 @@ package com.ujizin.camposer.session
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.ujizin.camposer.controller.takepicture.DefaultTakePictureCommand
 import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.controller.record.DefaultRecordController
+import com.ujizin.camposer.controller.takepicture.DefaultTakePictureCommand
 import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.manager.PreviewManager
 import com.ujizin.camposer.state.CameraState
@@ -24,15 +24,24 @@ import platform.foundation.NSKeyValueObservingProtocol
 
 @OptIn(ExperimentalForeignApi::class)
 public actual class CameraSession private constructor(
-    internal val controller: CameraController,
-    public val previewManager: PreviewManager,
-    public val iosCameraSession: IOSCameraSession,
     public val captureSession: AVCaptureSession = AVCaptureSession(),
+    public val iosCameraSession: IOSCameraSession,
+    internal val controller: CameraController,
+    internal val previewManager: PreviewManager,
     public actual val info: CameraInfo = CameraInfo(iosCameraSession),
     public actual val state: CameraState = CameraState(iosCameraSession, info),
 ) {
 
     public constructor(
+        controller: CameraController,
+        captureSession: AVCaptureSession = AVCaptureSession(),
+    ) : this(
+        controller = controller,
+        captureSession = captureSession,
+        previewManager = PreviewManager(),
+    )
+
+    internal constructor(
         controller: CameraController,
         previewManager: PreviewManager = PreviewManager(),
         captureSession: AVCaptureSession = AVCaptureSession(),

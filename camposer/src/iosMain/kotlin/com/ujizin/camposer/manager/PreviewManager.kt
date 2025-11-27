@@ -12,8 +12,8 @@ import platform.UIKit.UIView
 import platform.darwin.NSObjectProtocol
 
 @OptIn(ExperimentalForeignApi::class)
-public class PreviewManager internal constructor(
-    public val videoPreviewLayer: AVCaptureVideoPreviewLayer = AVCaptureVideoPreviewLayer(),
+internal class PreviewManager(
+    val videoPreviewLayer: AVCaptureVideoPreviewLayer = AVCaptureVideoPreviewLayer(),
 ) {
 
     private val notificationCenter: NSNotificationCenter by lazy {

@@ -1,4 +1,4 @@
-package com.ujizin.camposer.code_scanner.model
+package com.ujizin.camposer.code_scanner
 
 import com.google.mlkit.vision.barcode.common.Barcode
 

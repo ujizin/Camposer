@@ -1,4 +1,4 @@
-package com.ujizin.camposer.code_scanner.model
+package com.ujizin.camposer.code_scanner
 
 /**
  * Code Result from scanner.

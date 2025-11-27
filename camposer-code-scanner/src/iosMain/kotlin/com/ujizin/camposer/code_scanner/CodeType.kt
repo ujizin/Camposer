@@ -1,4 +1,4 @@
-package com.ujizin.camposer.code_scanner.model
+package com.ujizin.camposer.code_scanner
 
 import platform.AVFoundation.AVMetadataObjectTypeAztecCode
 import platform.AVFoundation.AVMetadataObjectTypeCodabarCode
@@ -8,10 +8,6 @@ import platform.AVFoundation.AVMetadataObjectTypeCode93Code
 import platform.AVFoundation.AVMetadataObjectTypeDataMatrixCode
 import platform.AVFoundation.AVMetadataObjectTypeEAN13Code
 import platform.AVFoundation.AVMetadataObjectTypeEAN8Code
-import platform.AVFoundation.AVMetadataObjectTypeGS1DataBarCode
-import platform.AVFoundation.AVMetadataObjectTypeGS1DataBarExpandedCode
-import platform.AVFoundation.AVMetadataObjectTypeGS1DataBarLimitedCode
-import platform.AVFoundation.AVMetadataObjectTypeITF14Code
 import platform.AVFoundation.AVMetadataObjectTypeInterleaved2of5Code
 import platform.AVFoundation.AVMetadataObjectTypePDF417Code
 import platform.AVFoundation.AVMetadataObjectTypeQRCode
