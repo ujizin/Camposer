@@ -16,7 +16,6 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.session.CameraSession
-import com.ujizin.camposer.state.properties.selector.CamSelector
 import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.FlashMode
 import com.ujizin.camposer.state.properties.ImageAnalyzer
@@ -27,6 +26,7 @@ import com.ujizin.camposer.state.properties.ScaleType
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import com.ujizin.camposer.state.properties.format.CamFormat
 import com.ujizin.camposer.state.properties.format.Default
+import com.ujizin.camposer.state.properties.selector.CamSelector
 import java.util.concurrent.Executor
 import kotlin.math.roundToInt
 
@@ -159,10 +159,12 @@ public actual class CameraState internal constructor(
         internal set
 
     init {
-        (context as LifecycleOwner).lifecycle.addObserver(CameraConfigSaver())
-        controller.setEnabledUseCases(getUseCases())
-        controller.isTapToFocusEnabled = isFocusOnTapEnabled
-        setCamSelector(camSelector)
+        controller.initializationFuture.addListener( {
+            (context as LifecycleOwner).lifecycle.addObserver(CameraConfigSaver())
+            controller.setEnabledUseCases(getUseCases())
+            controller.isTapToFocusEnabled = isFocusOnTapEnabled
+            setCamSelector(camSelector)
+        }, mainExecutor)
     }
 
     public fun setEffects(effects: Set<CameraEffect>) {
