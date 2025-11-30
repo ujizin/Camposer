@@ -31,6 +31,7 @@ import platform.AVFoundation.AVCapturePhotoQualityPrioritization
 import platform.AVFoundation.AVCaptureSession
 import platform.AVFoundation.AVCaptureTorchModeOff
 import platform.AVFoundation.AVCaptureTorchModeOn
+import platform.AVFoundation.AVCaptureVideoPreviewLayer
 import platform.AVFoundation.AVCaptureVideoStabilizationMode
 import platform.AVFoundation.AVFrameRateRange
 import platform.AVFoundation.AVLayerVideoGravity
@@ -94,12 +95,12 @@ public class IOSCameraSession internal constructor(
     internal val maxFrameRate: Int
         get() = frameRateRanges.maxOf { it.maxFrameRate }.toInt()
 
-    private val completeFocusObserver = object: NSObject() {
+    public val previewLayer: AVCaptureVideoPreviewLayer = previewManager.videoPreviewLayer
+
+    private val completeFocusObserver = object : NSObject() {
         @OptIn(BetaInteropApi::class)
         @ObjCAction
-        private fun onFocusCompleted(
-            notification: NSNotification?,
-        ) = onFocusCompleted()
+        private fun onFocusCompleted(notification: NSNotification?) = onFocusCompleted()
     }
 
     public fun addOutput(output: AVCaptureOutput): Boolean = captureSession.tryAddOutput(output)

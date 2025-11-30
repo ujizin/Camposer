@@ -16,6 +16,7 @@ binary-compatibility-validator = "0.18.1"
 # Camposer scanner
 
 mlkit-barcode = "17.3.0"
+camera-mlkit-vision = "1.5.1"
 
 # Sample app libraries
 
@@ -84,6 +85,7 @@ androidx-test-core = { module = "androidx.test:core-ktx", version.ref = "android
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-test" }
 
 mlkit-barcode-scanning = { module = "com.google.mlkit:barcode-scanning", version.ref = "mlkit-barcode" }
+androidx-camera-mlkit-vision = { group = "androidx.camera", name = "camera-mlkit-vision", version.ref = "camera-mlkit-vision" }
 
 [bundles]
 

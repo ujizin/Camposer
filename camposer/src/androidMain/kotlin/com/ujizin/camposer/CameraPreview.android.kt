@@ -72,12 +72,11 @@ internal actual fun CameraPreviewImpl(
     val isCameraIdle by rememberUpdatedState(!cameraSession.isStreaming)
     var latestBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
     var cameraOffset by remember { mutableStateOf(Offset.Zero) }
-    var previewViewRef by remember { mutableStateOf<PreviewView?>(null) }
 
     LaunchedEffect(latestBitmap) { latestBitmap?.let(onSwitchCamera) }
 
-    LaunchedEffect(cameraSession, previewViewRef) {
-        val previewView = previewViewRef ?: return@LaunchedEffect
+    LaunchedEffect(cameraSession) {
+        val previewView = cameraSession.previewView
         if (previewView.controller == cameraSession.cameraXController) return@LaunchedEffect
 
         previewView.onViewBind(
@@ -93,11 +92,10 @@ internal actual fun CameraPreviewImpl(
 
     AndroidView(
         modifier = modifier.onGloballyPositioned { cameraOffset = it.positionInParent() },
-        factory = { context ->
-            PreviewView(context).apply {
+        factory = {
+            cameraSession.previewView.apply {
                 this.scaleType = scaleType.type
                 this.implementationMode = implementationMode.value
-                previewViewRef = this
             }
         },
         update = { previewView ->

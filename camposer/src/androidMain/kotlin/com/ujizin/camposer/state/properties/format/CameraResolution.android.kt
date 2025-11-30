@@ -53,6 +53,7 @@ public actual class CamFormat actual constructor(
             )
 
             imageCaptureResolutionSelector = resolutionSelector
+            imageAnalysisResolutionSelector = resolutionSelector
             previewResolutionSelector = resolutionSelector
         }
     }
@@ -80,7 +81,7 @@ public actual class CamFormat actual constructor(
             )?.toSize()
 
             val selectedSizes = listOfNotNull(selectSize)
-            selectedSizes + (sizes - selectedSizes)
+            selectedSizes + (sizes - selectedSizes.toSet())
         }.build()
 
     private fun Size.getQualitySelector(): QualitySelector {

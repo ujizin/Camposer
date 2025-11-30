@@ -1,6 +1,7 @@
 package com.ujizin.camposer.shared
 
 import VideoPlayer
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,6 +29,8 @@ import androidx.compose.ui.unit.dp
 import com.ujizin.camposer.CameraPreview
 import com.ujizin.camposer.CaptureResult
 import com.ujizin.camposer.code_scanner.CodeType
+import com.ujizin.camposer.code_scanner.CornerPointer
+import com.ujizin.camposer.code_scanner.FrameRect
 import com.ujizin.camposer.code_scanner.rememberCodeImageAnalyzer
 import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.manager.CameraDeviceState
@@ -38,7 +41,6 @@ import com.ujizin.camposer.state.properties.OrientationStrategy
 import com.ujizin.camposer.state.properties.ScaleType
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import com.ujizin.camposer.state.properties.format.CamFormat
-import com.ujizin.camposer.state.properties.format.config.AspectRatioConfig
 import com.ujizin.camposer.state.properties.format.config.FrameRateConfig
 import com.ujizin.camposer.state.properties.format.config.ResolutionConfig
 import com.ujizin.camposer.state.properties.format.config.VideoStabilizationConfig
@@ -67,6 +69,9 @@ fun CameraScreen() {
     // Maybe passing to state?
     val isPreviewing by rememberUpdatedState(cameraSession.isStreaming)
 
+    var frameRect by remember { mutableStateOf<FrameRect?>(null) }
+    var corners by remember { mutableStateOf<List<CornerPointer>>(emptyList()) }
+
     var camSelector by remember {
         mutableStateOf(
             CamSelector(
@@ -82,10 +87,12 @@ fun CameraScreen() {
     var text by remember { mutableStateOf("") }
     var bitmap by remember { mutableStateOf<ImageBitmap?>(null) }
     val codeImageAnalyzer = cameraSession.rememberCodeImageAnalyzer(
-        codeTypes = listOf(CodeType.Barcode39),
+        codeTypes = listOf(CodeType.QRCode),
         onError = {}
     ) {
         text = "${it.type}: ${it.text}"
+        frameRect = it.frameRect
+        corners = it.corners
     }
 
     LaunchedEffect(Unit) {
@@ -116,8 +123,8 @@ fun CameraScreen() {
         cameraSession = cameraSession,
         camFormat = remember {
             CamFormat(
-                AspectRatioConfig(4F / 3f),
-                FrameRateConfig(60),
+//                AspectRatioConfig(4F / 3f),
+                FrameRateConfig(30),
                 ResolutionConfig.UltraHigh,
                 VideoStabilizationConfig(VideoStabilizationMode.Standard),
             )
@@ -126,6 +133,7 @@ fun CameraScreen() {
         camSelector = camSelector,
         captureMode = captureMode,
         imageAnalyzer = codeImageAnalyzer,
+        isImageAnalysisEnabled = true
     ) {
         FlowRow {
             val stabilization by rememberUpdatedState(cameraSession.state.videoStabilizationMode)
@@ -185,8 +193,6 @@ fun CameraScreen() {
                             videoPath = it.data
                         }
                     }
-
-                    else -> {}
                 }
             }) {
                 Text("Take picture")
@@ -231,6 +237,31 @@ fun CameraScreen() {
             autoPlay = true,
             showControls = true,
         )
+    }
+
+    frameRect?.let { rect ->
+        Canvas(Modifier.fillMaxSize()) {
+            val path = androidx.compose.ui.graphics.Path()
+
+            corners.forEachIndexed { index, it ->
+                if (index == 0) {
+                    path.moveTo(it.x.dp.toPx(), it.y.dp.toPx())
+                }
+                path.lineTo(it.x.dp.toPx(), it.y.dp.toPx())
+            }
+
+            drawPath(
+                color = Color.Red,
+                path = path,
+            )
+        }
+//        Box(
+//            modifier = Modifier
+//                .offset(x = rect.left.dp, y = rect.top.dp)
+//                .width(rect.width.dp)
+//                .height(rect.height.dp)
+//                .border(1.dp, Color.Red)
+//        )
     }
 }
 

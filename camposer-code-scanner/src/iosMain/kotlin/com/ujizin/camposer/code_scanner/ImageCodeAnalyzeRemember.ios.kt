@@ -14,8 +14,13 @@ public actual fun CameraSession.rememberCodeImageAnalyzer(
     onError: (Throwable) -> Unit,
     codeAnalyzerListener: CodeAnalyzerListener,
 ): ImageAnalyzer {
-    val codeAnalyzer = remember(codeTypes, codeAnalyzerListener) {
-        val codeAnalyzerDelegate = ImageCodeAnalyzer(codeTypes, codeAnalyzerListener)
+    val codeAnalyzer = remember(iosCameraSession.previewLayer, codeTypes, codeAnalyzerListener) {
+        val codeAnalyzerDelegate = ImageCodeAnalyzer(
+            iosCameraSession.previewLayer,
+            codeTypes,
+            codeAnalyzerListener,
+        )
+
         ImageAnalyzer(
             iosCameraSession = iosCameraSession,
             analyzer = ImageAnalyzer.Analyzer(

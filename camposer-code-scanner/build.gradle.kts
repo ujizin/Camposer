@@ -47,6 +47,7 @@ kotlin {
         androidMain {
             dependencies {
                 implementation(libs.mlkit.barcode.scanning)
+                implementation(libs.androidx.camera.mlkit.vision)
             }
         }
 

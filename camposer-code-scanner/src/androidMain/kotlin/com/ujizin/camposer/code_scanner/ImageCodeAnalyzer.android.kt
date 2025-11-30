@@ -1,28 +1,23 @@
 package com.ujizin.camposer.code_scanner
 
-import androidx.annotation.OptIn
-import androidx.camera.core.ExperimentalGetImage
+import android.content.res.Resources
+import android.graphics.Rect
 import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.ImageProxy
+import androidx.camera.mlkit.vision.MlKitAnalyzer
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
-import com.google.mlkit.vision.common.InputImage
+import java.util.concurrent.Executor
 
-public actual class ImageCodeAnalyzer actual constructor(
+internal actual class ImageCodeAnalyzer(
+    executor: Executor,
     private val types: List<CodeType>,
     private val codeAnalyzerListener: CodeAnalyzerListener,
+    private val onFailure: (Throwable) -> Unit,
 ) {
 
-    private var onFailure: (Throwable) -> Unit = {}
-
-    internal constructor(
-        types: List<CodeType>,
-        codeAnalyzerListener: CodeAnalyzerListener,
-        onError: (Throwable) -> Unit,
-    ) : this(types, codeAnalyzerListener) {
-        onFailure = onError
-    }
+    private val Int.dp: Int
+        get() = (this / Resources.getSystem().displayMetrics.density).toInt()
 
     private val barcodeScanner = BarcodeScanning.getClient(
         /* options = */ BarcodeScannerOptions.Builder().run {
@@ -32,24 +27,40 @@ public actual class ImageCodeAnalyzer actual constructor(
         }.build()
     )
 
-    internal val analyzer = object : ImageAnalysis.Analyzer {
-        @OptIn(ExperimentalGetImage::class)
-        override fun analyze(imageProxy: ImageProxy) {
-            val mediaImage = imageProxy.image ?: return
-            val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
-
-            barcodeScanner.process(image)
-                .addOnSuccessListener { barcodes -> barcodes.forEach(::onCodeScanned) }
-                .addOnFailureListener(onFailure)
-                .addOnCompleteListener { imageProxy.close() }
+    internal val analyzer: ImageAnalysis.Analyzer = MlKitAnalyzer(
+        listOf(barcodeScanner),
+        ImageAnalysis.COORDINATE_SYSTEM_VIEW_REFERENCED,
+        executor,
+    ) { result ->
+        val barcodeResult = result.getValue(barcodeScanner) ?: return@MlKitAnalyzer
+        barcodeResult.forEach { barcode ->
+            val codeResult = getCodeResult(barcode)
+            codeResult?.let(codeAnalyzerListener::onCodeScanned)
         }
     }
 
-    private fun onCodeScanned(barcodeResult: Barcode) {
-        val text = barcodeResult.rawValue ?: return
-        val format = CodeType.fromBarcode(barcodeResult.format) ?: return
-        codeAnalyzerListener.onCodeScanned(
-            result = CodeResult(type = format, text = text)
+    private fun getCodeResult(barcodeResult: Barcode): CodeResult? {
+        val text = barcodeResult.rawValue ?: return null
+        val format = CodeType.fromBarcode(barcodeResult.format) ?: return null
+        val boundingBox = barcodeResult.boundingBox ?: Rect(0, 0, 0, 0)
+        val corners = barcodeResult.cornerPoints?.map {
+            CornerPointer(it.x.dp, it.y.dp)
+        }.orEmpty()
+
+        return CodeResult(
+            type = format,
+            text = text,
+            frameRect = FrameRect(
+                left = boundingBox.left.dp,
+                top = boundingBox.top.dp,
+                right = boundingBox.right.dp,
+                bottom = boundingBox.bottom.dp,
+            ),
+            corners = corners
         )
+    }
+
+    internal fun release() {
+        barcodeScanner.close()
     }
 }

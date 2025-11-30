@@ -2,6 +2,7 @@ package com.ujizin.camposer.session
 
 import android.content.Context
 import androidx.camera.view.LifecycleCameraController
+import androidx.camera.view.PreviewView
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,7 +29,7 @@ public actual class CameraSession private constructor(
     context: Context,
     public val cameraXController: LifecycleCameraController,
     public val controller: CameraController,
-    private val mainExecutor: Executor = context.compatMainExecutor,
+    public val mainExecutor: Executor = context.compatMainExecutor,
     private val androidRecordController: AndroidRecordController,
     private val androidTakePictureCommand: AndroidTakePictureCommand,
     public actual val info: CameraInfo,
@@ -87,6 +88,8 @@ public actual class CameraSession private constructor(
             cameraInfo = info,
         )
     )
+
+    public val previewView: PreviewView = PreviewView(context)
 
     /**
      * Check if camera is streaming or not.
