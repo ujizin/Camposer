@@ -40,10 +40,11 @@ internal actual class DefaultRecordController(
         startRecording(
             fileOutputOptions = FileOutputOptions.Builder(file).build(),
             onResult = { result ->
-                when (result) {
+                val result = when (result) {
                     is CaptureResult.Error -> CaptureResult.Error(result.throwable)
-                    is CaptureResult.Success<Uri?> -> CaptureResult.Success(file)
+                    is CaptureResult.Success<Uri?> -> CaptureResult.Success(file.absolutePath)
                 }
+                onVideoCaptured(result)
             }
         )
     }
