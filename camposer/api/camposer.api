@@ -149,18 +149,6 @@ public final class com/ujizin/camposer/extensions/CameraStateExtensionsKt {
 	public static synthetic fun toggleRecording$default (Lcom/ujizin/camposer/controller/camera/CameraController;Landroidx/camera/video/MediaStoreOutputOptions;Landroidx/camera/view/video/AudioConfig;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
-public final class com/ujizin/camposer/focus/ComposableSingletons$FocusTapKt {
-	public static final field INSTANCE Lcom/ujizin/camposer/focus/ComposableSingletons$FocusTapKt;
-	public fun <init> ()V
-	public final fun getLambda$-1750419720$camposer_release ()Lkotlin/jvm/functions/Function2;
-}
-
-public final class com/ujizin/camposer/focus/FocusTapKt {
-	public static final fun CircleFocus-uFdPcIQ (Landroidx/compose/ui/Modifier;FLandroidx/compose/foundation/BorderStroke;Landroidx/compose/runtime/Composer;II)V
-	public static final fun SquareCornerFocus-djqs-MU (Landroidx/compose/ui/Modifier;FFLandroidx/compose/foundation/BorderStroke;Landroidx/compose/runtime/Composer;II)V
-	public static final fun SquareFocus-uFdPcIQ (Landroidx/compose/ui/Modifier;FLandroidx/compose/foundation/BorderStroke;Landroidx/compose/runtime/Composer;II)V
-}
-
 public final class com/ujizin/camposer/info/CameraInfo {
 	public static final field $stable I
 	public final fun getMaxExposure ()F
@@ -224,7 +212,7 @@ public final class com/ujizin/camposer/manager/CameraDevicesManager {
 	public final fun release ()V
 }
 
-public final class com/ujizin/camposer/manager/CameraManager_androidKt {
+public final class com/ujizin/camposer/manager/CameraDevicesManager_androidKt {
 	public static final fun rememberCameraDeviceState (Landroidx/compose/runtime/Composer;I)Landroidx/compose/runtime/State;
 }
 
@@ -239,11 +227,6 @@ public final class com/ujizin/camposer/session/CameraSession {
 	public final fun getState ()Lcom/ujizin/camposer/state/CameraState;
 	public final fun isInitialized ()Z
 	public final fun isStreaming ()Z
-}
-
-public final class com/ujizin/camposer/session/CameraSessionStateKt {
-	public static final fun rememberFlashMode (Lcom/ujizin/camposer/session/CameraSession;Lcom/ujizin/camposer/state/properties/FlashMode;ZLandroidx/compose/runtime/Composer;II)Landroidx/compose/runtime/MutableState;
-	public static final fun rememberTorch (Lcom/ujizin/camposer/session/CameraSession;ZZLandroidx/compose/runtime/Composer;II)Landroidx/compose/runtime/MutableState;
 }
 
 public final class com/ujizin/camposer/session/CameraSessionState_androidKt {
@@ -306,10 +289,6 @@ public final class com/ujizin/camposer/state/properties/FlashMode : java/lang/En
 	public static fun values ()[Lcom/ujizin/camposer/state/properties/FlashMode;
 }
 
-public final class com/ujizin/camposer/state/properties/FlashModeKt {
-	public static final fun getInverse (Lcom/ujizin/camposer/state/properties/FlashMode;)Lcom/ujizin/camposer/state/properties/FlashMode;
-}
-
 public final class com/ujizin/camposer/state/properties/ImageAnalysisBackpressureStrategy : java/lang/Enum {
 	public static final field BlockProducer Lcom/ujizin/camposer/state/properties/ImageAnalysisBackpressureStrategy;
 	public static final field KeepOnlyLatest Lcom/ujizin/camposer/state/properties/ImageAnalysisBackpressureStrategy;
@@ -345,10 +324,6 @@ public final class com/ujizin/camposer/state/properties/ImplementationMode : jav
 	public final fun getInverse ()Lcom/ujizin/camposer/state/properties/ImplementationMode;
 	public static fun valueOf (Ljava/lang/String;)Lcom/ujizin/camposer/state/properties/ImplementationMode;
 	public static fun values ()[Lcom/ujizin/camposer/state/properties/ImplementationMode;
-}
-
-public final class com/ujizin/camposer/state/properties/ImplementationModeKt {
-	public static final fun getInverse (Lcom/ujizin/camposer/state/properties/ImplementationMode;)Lcom/ujizin/camposer/state/properties/ImplementationMode;
 }
 
 public final class com/ujizin/camposer/state/properties/OrientationStrategy : java/lang/Enum {
@@ -503,5 +478,17 @@ public final class com/ujizin/camposer/state/properties/selector/CameraId {
 	public final fun getIds ()Ljava/util/List;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/ujizin/camposer/ui/focus/ComposableSingletons$FocusTapKt {
+	public static final field INSTANCE Lcom/ujizin/camposer/ui/focus/ComposableSingletons$FocusTapKt;
+	public fun <init> ()V
+	public final fun getLambda$-1519716410$camposer_release ()Lkotlin/jvm/functions/Function2;
+}
+
+public final class com/ujizin/camposer/ui/focus/FocusTapKt {
+	public static final fun CircleFocus-uFdPcIQ (Landroidx/compose/ui/Modifier;FLandroidx/compose/foundation/BorderStroke;Landroidx/compose/runtime/Composer;II)V
+	public static final fun SquareCornerFocus-djqs-MU (Landroidx/compose/ui/Modifier;FFLandroidx/compose/foundation/BorderStroke;Landroidx/compose/runtime/Composer;II)V
+	public static final fun SquareFocus-uFdPcIQ (Landroidx/compose/ui/Modifier;FLandroidx/compose/foundation/BorderStroke;Landroidx/compose/runtime/Composer;II)V
 }
 
