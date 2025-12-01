@@ -40,7 +40,6 @@ public actual class CameraState internal constructor(
 ) {
   public actual var captureMode: CaptureMode by distinctConfig(CaptureMode.Image) { mode ->
     controller.setEnabledUseCases(getUseCases(mode))
-    setCamFormat(camFormat)
   }
     internal set
 

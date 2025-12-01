@@ -124,6 +124,6 @@ public actual class CamFormat
     }
 
     public actual companion object {
-      private const val CONFIGS_DEBOUNCE_MILLIS = 125L
+      private const val CONFIGS_DEBOUNCE_MILLIS = 250L
     }
   }
