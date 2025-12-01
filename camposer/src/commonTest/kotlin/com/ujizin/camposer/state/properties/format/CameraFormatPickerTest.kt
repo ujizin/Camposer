@@ -19,11 +19,11 @@ import com.ujizin.camposer.utils.CameraDataUtils.cameraDataStabilizationList
 import com.ujizin.camposer.utils.CameraDataUtils.cameraDataStandardList
 import com.ujizin.camposer.utils.CameraDataUtils.cameraDataVideoStabilizationHigh
 import com.ujizin.camposer.utils.CameraDataUtils.cameraDataVideoStabilizationHighCinematic
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 class CameraFormatPickerTest {
 
