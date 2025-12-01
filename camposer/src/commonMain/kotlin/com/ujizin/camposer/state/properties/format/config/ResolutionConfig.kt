@@ -1,5 +1,17 @@
 package com.ujizin.camposer.state.properties.format.config
 
+/**
+ * Configuration for camera resolution settings.
+ *
+ * This class defines the desired dimensions (width and height) for the camera output.
+ * It provides predefined standard resolutions like [UltraHigh], [High], [Medium], and [Low],
+ * but can also be instantiated with custom dimensions.
+ *
+ * @param width The width of the resolution in pixels.
+ * @param height The height of the resolution in pixels.
+ *
+ * @see CameraFormatConfig
+ */
 public class ResolutionConfig(
   public val width: Int,
   public val height: Int,

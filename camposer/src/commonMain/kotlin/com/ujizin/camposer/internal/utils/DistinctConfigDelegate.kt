@@ -1,4 +1,4 @@
-package com.ujizin.camposer.state
+package com.ujizin.camposer.internal.utils
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

@@ -12,6 +12,14 @@ import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import com.ujizin.camposer.state.properties.format.CamFormat
 import com.ujizin.camposer.state.properties.selector.CamSelector
 
+/**
+ * A state holder for the Camera composition.
+ *
+ * This class contains all the mutable properties that define the current configuration
+ * of the camera, such as the camera selector (front/back), capture mode (image/video),
+ * flash settings, zoom levels, exposure compensation, and feature toggles like pinch-to-zoom
+ * or focus-on-tap.
+ */
 public expect class CameraState {
   public var isImageAnalyzerEnabled: Boolean
     internal set

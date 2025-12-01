@@ -5,7 +5,6 @@ import androidx.camera.view.PreviewView
 /**
  * Camera implementation mode.
  *
- * @param value internal implementation mode from cameraX
  * @see PreviewView.ImplementationMode
  * */
 public actual enum class ImplementationMode(

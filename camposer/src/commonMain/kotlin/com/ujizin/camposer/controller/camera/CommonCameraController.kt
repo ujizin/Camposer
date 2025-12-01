@@ -14,6 +14,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
+/**
+ * Common Camera Controller that abstracts the implementation of Common API.
+ *
+ * This class manages the coordination between recording video, taking pictures, and managing camera state.
+ * It handles the lifecycle of camera operations, ensuring that commands are queued or executed based on
+ * whether the camera session is currently running in common module.
+ *
+ * This class is intended to be used internally. Please use [CameraController] instead.
+ */
 public abstract class CommonCameraController<
   RC : RecordController,
   TPC : TakePictureCommand,

@@ -14,8 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ImageBitmap
-import com.ujizin.camposer.focus.FocusTap
-import com.ujizin.camposer.focus.SquareCornerFocus
 import com.ujizin.camposer.session.CameraSession
 import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.ImageAnalyzer
@@ -23,28 +21,32 @@ import com.ujizin.camposer.state.properties.ImageCaptureStrategy
 import com.ujizin.camposer.state.properties.ImplementationMode
 import com.ujizin.camposer.state.properties.ScaleType
 import com.ujizin.camposer.state.properties.format.CamFormat
+import com.ujizin.camposer.state.properties.format.Default
 import com.ujizin.camposer.state.properties.selector.CamSelector
+import com.ujizin.camposer.ui.focus.FocusTap
+import com.ujizin.camposer.ui.focus.SquareCornerFocus
 import kotlinx.coroutines.delay
 
 /**
  * Creates a Camera Preview's composable.
  *
- * @param cameraSession camera state hold some states and camera's controller
- * @param camSelector camera selector to be added, default is back
- * @param captureMode camera capture mode, default is image
- * @param captureStrategy camera image capture mode, default is minimum latency for better performance
- * @param scaleType scale type to be added, default is fill center
+ * @param cameraSession camera session, hold state, info and camera's controller
+ * @param camSelector camera selector to be added, default is [CamSelector.Back]
+ * @param captureMode camera capture mode, default is [CaptureMode.Image]
+ * @param captureStrategy camera image capture mode, default is [ImageCaptureStrategy.MinLatency] for better performance
+ * @param scaleType scale type to be added, default is [ScaleType.FillCenter]
  * @param imageAnalyzer image analyzer from camera, see [com.ujizin.camposer.state.properties.ImageAnalyzer]
- * @param implementationMode implementation mode to be added, default is performance
+ * @param camFormat camera format, default is [CamFormat.Companion.Default]
+ * @param implementationMode implementation mode to be added, default is [ImplementationMode.Performance] (Android Only)
  * @param isImageAnalysisEnabled enable or disable image analysis
- * @param isFocusOnTapEnabled turn on feature focus on tap if true
- * @param isPinchToZoomEnabled turn on feature pinch to zoom if true
- * @param onPreviewStreamChanged dispatch when preview is switching to front or back
- * @param switchCameraContent composable preview when change camera and it's not been streaming yet
+ * @param isFocusOnTapEnabled turn on feature focus on tap if true and supported
+ * @param isPinchToZoomEnabled turn on feature pinch to zoom if true and supported
+ * @param onPreviewStreamChanged dispatch when preview is switching to front or back (Android only)
+ * @param switchCameraContent composable preview when change camera and it's not been streaming yet (Android only)
  * @param focusTapContent content of focus tap, default is [SquareCornerFocus]
  * @param onFocus callback to use when on focus tap is triggered, call onComplete to [focusTapContent] gone.
  * @param content content composable within of camera preview.
- * @see com.ujizin.camposer.state.properties.ImageAnalyzer
+ *
  * @see CameraSession
  * */
 @Composable

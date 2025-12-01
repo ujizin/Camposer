@@ -15,6 +15,7 @@ import androidx.compose.ui.util.fastCoerceIn
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.ujizin.camposer.info.CameraInfo
+import com.ujizin.camposer.internal.utils.distinctConfig
 import com.ujizin.camposer.session.CameraSession
 import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.FlashMode

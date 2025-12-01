@@ -4,7 +4,7 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.view.CameraController
 import androidx.compose.runtime.Stable
-import com.ujizin.camposer.state.distinctConfig
+import com.ujizin.camposer.internal.utils.distinctConfig
 import com.ujizin.camposer.state.properties.ImageAnalysisBackpressureStrategy.Companion.find
 
 /**

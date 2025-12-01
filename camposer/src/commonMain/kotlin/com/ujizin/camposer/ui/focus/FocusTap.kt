@@ -1,4 +1,4 @@
-package com.ujizin.camposer.focus
+package com.ujizin.camposer.ui.focus
 
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.LinearOutSlowInEasing
@@ -26,7 +26,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.ujizin.camposer.ui.border.drawCornerBorder
 import kotlin.math.roundToInt
+
+private val DefaultFocusSize = 64.dp
+private val DefaultBorderStroke = BorderStroke(2.dp, Color.White)
 
 @Composable
 internal fun FocusTap(
@@ -138,6 +142,3 @@ internal fun scaleAsState(
     animationSpec = animationSpec ?: tween(easing = LinearOutSlowInEasing),
   )
 }
-
-private val DefaultFocusSize = 64.dp
-private val DefaultBorderStroke = BorderStroke(2.dp, Color.White)

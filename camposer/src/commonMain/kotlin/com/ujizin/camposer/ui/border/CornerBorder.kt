@@ -1,4 +1,4 @@
-package com.ujizin.camposer.focus
+package com.ujizin.camposer.ui.border
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush

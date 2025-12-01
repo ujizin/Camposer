@@ -8,6 +8,15 @@ import com.ujizin.camposer.state.properties.OrientationStrategy
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import kotlinx.coroutines.flow.StateFlow
 
+/**
+ * A controller that manages the state and interactions of the camera.
+ *
+ * This class serves as the primary interface for interacting with the underlying camera when bound
+ * to a [com.ujizin.camposer.session.CameraSession].
+ *
+ * It offers methods to capture images, record videos, and manipulate camera parameters such as
+ * zoom, exposure, focus, flash modes, and torch settings.
+ */
 public expect class CameraController : CameraControllerContract {
   public constructor()
 

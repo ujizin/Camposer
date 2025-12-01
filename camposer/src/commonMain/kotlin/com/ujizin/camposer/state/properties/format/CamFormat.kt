@@ -3,6 +3,25 @@ package com.ujizin.camposer.state.properties.format
 import com.ujizin.camposer.state.properties.format.config.CameraFormatConfig
 import com.ujizin.camposer.state.properties.format.config.ResolutionConfig
 
+/**
+ * A class representing the camera format configuration.
+ *
+ * This class encapsulates a list of [CameraFormatConfig] that determines the
+ * resolution and quality settings for the camera stream. The configurations are applied
+ * based on priority order: the first configuration is attempted, followed by subsequent ones as fallbacks.
+ *
+ * You can use predefined formats via the companion object extensions:
+ * - [CamFormat.Companion.UltraHigh]
+ * - [CamFormat.Companion.High]
+ * - [CamFormat.Companion.Medium]
+ * - [CamFormat.Companion.Low]
+ * - [CamFormat.Companion.Default]
+ *
+ * Or create a custom format by providing specific [CameraFormatConfig]s to the constructor.
+ *
+ * @see CameraFormatConfig
+ * @see ResolutionConfig
+ */
 public expect class CamFormat {
   public val configs: List<CameraFormatConfig>
 

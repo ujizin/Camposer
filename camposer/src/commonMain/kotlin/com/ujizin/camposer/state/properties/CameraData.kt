@@ -6,6 +6,20 @@ import com.ujizin.camposer.state.properties.format.config.FrameRateConfig
 import com.ujizin.camposer.state.properties.format.config.ResolutionConfig
 import com.ujizin.camposer.state.properties.format.config.VideoStabilizationConfig
 
+/**
+ * Represents the data and capabilities of a specific camera configuration.
+ *
+ * This class encapsulates properties such as resolution (width, height), frame rate ranges,
+ * focus support, and video stabilization capabilities. It is used to describe the specific
+ * formats supported by a camera device.
+ *
+ * @param width The width of the camera resolution in pixels.
+ * @param height The height of the camera resolution in pixels.
+ * @param isFocusSupported Indicates if auto-focus is supported for this camera configuration.
+ * @param minFps The minimum frames per second supported, or null if not applicable.
+ * @param maxFps The maximum frames per second supported, or null if not applicable.
+ * @param videoStabilizationModes A list of supported video stabilization modes, or null if none.
+ */
 public class CameraData internal constructor(
   public val width: Int,
   public val height: Int,
