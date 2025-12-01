@@ -7,7 +7,11 @@ package com.ujizin.camposer
  * @see com.ujizin.camposer.controller.camera.CameraController.startRecording
  * */
 public sealed interface CaptureResult<out T> {
-    public data class Success<T>(val data: T) : CaptureResult<T>
+  public data class Success<T>(
+    val data: T,
+  ) : CaptureResult<T>
 
-    public data class Error(val throwable: Throwable) : CaptureResult<Nothing>
+  public data class Error(
+    val throwable: Throwable,
+  ) : CaptureResult<Nothing>
 }

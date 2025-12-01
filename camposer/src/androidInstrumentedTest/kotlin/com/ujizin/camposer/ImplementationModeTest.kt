@@ -12,28 +12,28 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 internal class ImplementationModeTest : CameraTest() {
+  private lateinit var implementationMode: MutableState<ImplementationMode>
 
-    private lateinit var implementationMode: MutableState<ImplementationMode>
+  @Test
+  fun test_implementationMode() =
+    with(composeTestRule) {
+      initImplementationModeCamera(ImplementationMode.Performance)
 
-    @Test
-    fun test_implementationMode() = with(composeTestRule) {
-        initImplementationModeCamera(ImplementationMode.Performance)
+      assertEquals(cameraSession.state.implementationMode, ImplementationMode.Performance)
+      implementationMode.value = ImplementationMode.Compatible
 
-        assertEquals(cameraSession.state.implementationMode, ImplementationMode.Performance)
-        implementationMode.value = ImplementationMode.Compatible
-
-        runOnIdle {
-            assertEquals(cameraSession.state.implementationMode, ImplementationMode.Compatible)
-        }
+      runOnIdle {
+        assertEquals(cameraSession.state.implementationMode, ImplementationMode.Compatible)
+      }
     }
 
-    private fun ComposeContentTestRule.initImplementationModeCamera(
-        initialValue: ImplementationMode
-    ) = initCameraSession { state ->
-        implementationMode = remember { mutableStateOf(initialValue) }
-        CameraPreview(
-            cameraSession = state,
-            implementationMode = implementationMode.value,
-        )
-    }
+  private fun ComposeContentTestRule.initImplementationModeCamera(
+    initialValue: ImplementationMode,
+  ) = initCameraSession { state ->
+    implementationMode = remember { mutableStateOf(initialValue) }
+    CameraPreview(
+      cameraSession = state,
+      implementationMode = implementationMode.value,
+    )
+  }
 }

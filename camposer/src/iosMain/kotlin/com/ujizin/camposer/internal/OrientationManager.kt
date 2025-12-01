@@ -14,41 +14,41 @@ import platform.UIKit.UIInterfaceOrientationPortraitUpsideDown
 import kotlin.math.abs
 
 internal class OrientationManager {
+  private val motionManager = CMMotionManager()
 
-    private val motionManager = CMMotionManager()
+  private var _currentOrientation: UIInterfaceOrientation = UIInterfaceOrientationPortrait
+  val currentOrientation: UIInterfaceOrientation get() = _currentOrientation
 
-    private var _currentOrientation: UIInterfaceOrientation = UIInterfaceOrientationPortrait
-    val currentOrientation: UIInterfaceOrientation get() = _currentOrientation
-
-    @OptIn(ExperimentalForeignApi::class)
-    fun start() {
-        if (!motionManager.isDeviceMotionAvailable()) return
-        motionManager.deviceMotionUpdateInterval = 0.2
-        motionManager.startDeviceMotionUpdatesToQueue(NSOperationQueue.mainQueue()) { motion, _ ->
-            memScoped {
-                motion?.gravity?.placeTo(this)?.pointed?.let { g ->
-                    _currentOrientation = mapGravityToInterfaceOrientation(g.x, g.y)
-                }
-            }
+  @OptIn(ExperimentalForeignApi::class)
+  fun start() {
+    if (!motionManager.isDeviceMotionAvailable()) return
+    motionManager.deviceMotionUpdateInterval = 0.2
+    motionManager.startDeviceMotionUpdatesToQueue(NSOperationQueue.mainQueue()) { motion, _ ->
+      memScoped {
+        motion?.gravity?.placeTo(this)?.pointed?.let { g ->
+          _currentOrientation = mapGravityToInterfaceOrientation(g.x, g.y)
         }
+      }
     }
+  }
 
-    fun stop() {
-        motionManager.stopDeviceMotionUpdates()
-    }
+  fun stop() {
+    motionManager.stopDeviceMotionUpdates()
+  }
 
-    private fun mapGravityToInterfaceOrientation(
-        x: Double,
-        y: Double,
-    ): UIInterfaceOrientation = when {
-        abs(x) > abs(y) -> when {
-            x > 0 -> UIInterfaceOrientationLandscapeLeft
-            else -> UIInterfaceOrientationLandscapeRight
-        }
+  private fun mapGravityToInterfaceOrientation(
+    x: Double,
+    y: Double,
+  ): UIInterfaceOrientation =
+    when {
+      abs(x) > abs(y) -> when {
+        x > 0 -> UIInterfaceOrientationLandscapeLeft
+        else -> UIInterfaceOrientationLandscapeRight
+      }
 
-        else -> when {
-            y > 0 -> UIInterfaceOrientationPortraitUpsideDown
-            else -> UIInterfaceOrientationPortrait
-        }
+      else -> when {
+        y > 0 -> UIInterfaceOrientationPortraitUpsideDown
+        else -> UIInterfaceOrientationPortrait
+      }
     }
 }

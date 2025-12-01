@@ -13,79 +13,79 @@ import com.ujizin.camposer.state.properties.format.CamFormat
 import com.ujizin.camposer.state.properties.selector.CamSelector
 
 public expect class CameraState {
-    public var isImageAnalyzerEnabled: Boolean
-        internal set
-    public var captureMode: CaptureMode
-        internal set
-    public var imageCaptureStrategy: ImageCaptureStrategy
-        internal set
-    public var camSelector: CamSelector
-        internal set
-    public var scaleType: ScaleType
-        internal set
-    public var flashMode: FlashMode
-        internal set
-    public var camFormat: CamFormat
-        internal set
-    public var implementationMode: ImplementationMode
-        internal set
-    public var imageAnalyzer: ImageAnalyzer?
-        internal set
-    public var zoomRatio: Float
-        internal set
-    public var exposureCompensation: Float
-        internal set
-    public var isPinchToZoomEnabled: Boolean
-        internal set
-    public var isFocusOnTapEnabled: Boolean
-        internal set
-    public var isTorchEnabled: Boolean
-        internal set
-    public var orientationStrategy: OrientationStrategy
-        internal set
-    public var frameRate: Int
-        internal set
-    public var videoStabilizationMode: VideoStabilizationMode
-        internal set
+  public var isImageAnalyzerEnabled: Boolean
+    internal set
+  public var captureMode: CaptureMode
+    internal set
+  public var imageCaptureStrategy: ImageCaptureStrategy
+    internal set
+  public var camSelector: CamSelector
+    internal set
+  public var scaleType: ScaleType
+    internal set
+  public var flashMode: FlashMode
+    internal set
+  public var camFormat: CamFormat
+    internal set
+  public var implementationMode: ImplementationMode
+    internal set
+  public var imageAnalyzer: ImageAnalyzer?
+    internal set
+  public var zoomRatio: Float
+    internal set
+  public var exposureCompensation: Float
+    internal set
+  public var isPinchToZoomEnabled: Boolean
+    internal set
+  public var isFocusOnTapEnabled: Boolean
+    internal set
+  public var isTorchEnabled: Boolean
+    internal set
+  public var orientationStrategy: OrientationStrategy
+    internal set
+  public var frameRate: Int
+    internal set
+  public var videoStabilizationMode: VideoStabilizationMode
+    internal set
 
-    internal fun resetConfig()
+  internal fun resetConfig()
 }
 
 internal expect fun CameraSession.isToResetConfig(
-    isCamSelectorChanged: Boolean,
-    isCaptureModeChanged: Boolean,
+  isCamSelectorChanged: Boolean,
+  isCaptureModeChanged: Boolean,
 ): Boolean
 
 internal fun CameraSession.update(
-    camSelector: CamSelector,
-    captureMode: CaptureMode,
-    scaleType: ScaleType,
-    isImageAnalysisEnabled: Boolean,
-    imageAnalyzer: ImageAnalyzer?,
-    implementationMode: ImplementationMode,
-    isFocusOnTapEnabled: Boolean,
-    imageCaptureStrategy: ImageCaptureStrategy,
-    camFormat: CamFormat,
-    isPinchToZoomEnabled: Boolean,
+  camSelector: CamSelector,
+  captureMode: CaptureMode,
+  scaleType: ScaleType,
+  isImageAnalysisEnabled: Boolean,
+  imageAnalyzer: ImageAnalyzer?,
+  implementationMode: ImplementationMode,
+  isFocusOnTapEnabled: Boolean,
+  imageCaptureStrategy: ImageCaptureStrategy,
+  camFormat: CamFormat,
+  isPinchToZoomEnabled: Boolean,
 ) {
-    val isCamSelectorChanged = state.camSelector != camSelector
-    val isCaptureModeChanged = state.captureMode != captureMode
+  val isCamSelectorChanged = state.camSelector != camSelector
+  val isCaptureModeChanged = state.captureMode != captureMode
 
-    val isToUpdateCamera = isToResetConfig(isCamSelectorChanged, isCaptureModeChanged)
-    with(state) {
-        if (isToUpdateCamera) {
-            resetConfig()
-        }
-
-        this.camSelector = camSelector
-        this.camFormat = camFormat
-        this.captureMode = captureMode
-        this.scaleType = scaleType
-        this.isImageAnalyzerEnabled = isImageAnalysisEnabled
-        this.imageAnalyzer = imageAnalyzer
-        this.implementationMode = implementationMode
-        this.isFocusOnTapEnabled = isFocusOnTapEnabled
-        this.imageCaptureStrategy = imageCaptureStrategy
-        this.isPinchToZoomEnabled = isPinchToZoomEnabled
+  val isToUpdateCamera = isToResetConfig(isCamSelectorChanged, isCaptureModeChanged)
+  with(state) {
+    if (isToUpdateCamera) {
+      resetConfig()
     }
+
+    this.camSelector = camSelector
+    this.camFormat = camFormat
+    this.captureMode = captureMode
+    this.scaleType = scaleType
+    this.isImageAnalyzerEnabled = isImageAnalysisEnabled
+    this.imageAnalyzer = imageAnalyzer
+    this.implementationMode = implementationMode
+    this.isFocusOnTapEnabled = isFocusOnTapEnabled
+    this.imageCaptureStrategy = imageCaptureStrategy
+    this.isPinchToZoomEnabled = isPinchToZoomEnabled
+  }
 }

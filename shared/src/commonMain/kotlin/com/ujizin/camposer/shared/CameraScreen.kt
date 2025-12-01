@@ -28,10 +28,10 @@ import androidx.compose.ui.graphics.decodeToImageBitmap
 import androidx.compose.ui.unit.dp
 import com.ujizin.camposer.CameraPreview
 import com.ujizin.camposer.CaptureResult
-import com.ujizin.camposer.code_scanner.CodeType
-import com.ujizin.camposer.code_scanner.CornerPointer
-import com.ujizin.camposer.code_scanner.FrameRect
-import com.ujizin.camposer.code_scanner.rememberCodeImageAnalyzer
+import com.ujizin.camposer.codescanner.CodeType
+import com.ujizin.camposer.codescanner.CornerPointer
+import com.ujizin.camposer.codescanner.FrameRect
+import com.ujizin.camposer.codescanner.rememberCodeImageAnalyzer
 import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.manager.CameraDeviceState
 import com.ujizin.camposer.manager.rememberCameraDeviceState
@@ -58,203 +58,218 @@ import kotlin.uuid.Uuid
 @OptIn(ExperimentalUuidApi::class)
 @Composable
 fun CameraScreen() {
-    val cameraController = remember { CameraController() }
-    val cameraSession = rememberCameraSession(cameraController)
+  val cameraController = remember { CameraController() }
+  val cameraSession = rememberCameraSession(cameraController)
 
-    // Camera state
-    val flashMode by rememberUpdatedState(cameraSession.state.flashMode)
-    val isTorchEnabled by rememberUpdatedState(cameraSession.state.isTorchEnabled)
-    val exposureCompensation by rememberUpdatedState(cameraSession.state.exposureCompensation)
+  // Camera state
+  val flashMode by rememberUpdatedState(cameraSession.state.flashMode)
+  val isTorchEnabled by rememberUpdatedState(cameraSession.state.isTorchEnabled)
+  val exposureCompensation by rememberUpdatedState(cameraSession.state.exposureCompensation)
 
-    // Maybe passing to state?
-    val isPreviewing by rememberUpdatedState(cameraSession.isStreaming)
+  // Maybe passing to state?
+  val isPreviewing by rememberUpdatedState(cameraSession.isStreaming)
 
-    var frameRect by remember { mutableStateOf<FrameRect?>(null) }
-    var corners by remember { mutableStateOf<List<CornerPointer>>(emptyList()) }
+  var frameRect by remember { mutableStateOf<FrameRect?>(null) }
+  var corners by remember { mutableStateOf<List<CornerPointer>>(emptyList()) }
 
-    var camSelector by remember {
-        mutableStateOf(
-            CamSelector(
-                camPosition = CamPosition.Back,
-                camLensTypes = listOf(CamLensType.UltraWide),
-            )
-        )
-    }
-    val zoomRatio by rememberUpdatedState(cameraSession.state.zoomRatio)
-    var captureMode by remember { mutableStateOf(CaptureMode.Image) }
-    val isRecording by rememberUpdatedState(cameraController.isRecording)
-    var videoPath by remember { mutableStateOf("") }
-    var text by remember { mutableStateOf("") }
-    var bitmap by remember { mutableStateOf<ImageBitmap?>(null) }
-    val codeImageAnalyzer = cameraSession.rememberCodeImageAnalyzer(
-        codeTypes = listOf(CodeType.QRCode),
-        onError = {}
+  var camSelector by remember {
+    mutableStateOf(
+      CamSelector(
+        camPosition = CamPosition.Back,
+        camLensTypes = listOf(CamLensType.UltraWide),
+      ),
+    )
+  }
+  val zoomRatio by rememberUpdatedState(cameraSession.state.zoomRatio)
+  var captureMode by remember { mutableStateOf(CaptureMode.Image) }
+  val isRecording by rememberUpdatedState(cameraController.isRecording)
+  var videoPath by remember { mutableStateOf("") }
+  var text by remember { mutableStateOf("") }
+  var bitmap by remember { mutableStateOf<ImageBitmap?>(null) }
+  val codeImageAnalyzer =
+    cameraSession.rememberCodeImageAnalyzer(
+      codeTypes = listOf(CodeType.QRCode),
+      onError = {},
     ) {
-        text = "${it.type}: ${it.text}"
-        frameRect = it.frameRect
-        corners = it.corners
+      text = "${it.type}: ${it.text}"
+      frameRect = it.frameRect
+      corners = it.corners
     }
 
-    LaunchedEffect(Unit) {
-        cameraController.setOrientationStrategy(OrientationStrategy.Preview)
+  LaunchedEffect(Unit) {
+    cameraController.setOrientationStrategy(OrientationStrategy.Preview)
+  }
+
+  val camDeviceState by rememberCameraDeviceState()
+
+  LaunchedEffect(camDeviceState) {
+    val camDeviceState = camDeviceState
+    if (camDeviceState is CameraDeviceState.Devices) {
+      println("Camera screen: ${camDeviceState.devices}")
+      val cameraDevice =
+        camDeviceState.devices.find {
+          it.lensType.containsAll(
+            listOf(
+              CamLensType.UltraWide,
+              CamLensType.Wide,
+              CamLensType.Telephoto,
+            ),
+          )
+        } ?: camDeviceState.devices.first()
+      camSelector = CamSelector(cameraDevice)
     }
+  }
 
-    val camDeviceState by rememberCameraDeviceState()
-
-    LaunchedEffect(camDeviceState) {
-        val camDeviceState = camDeviceState
-        if (camDeviceState is CameraDeviceState.Devices) {
-            println("Camera screen: ${camDeviceState.devices}")
-            val cameraDevice = camDeviceState.devices.find {
-                it.lensType.containsAll(
-                    listOf(
-                        CamLensType.UltraWide,
-                        CamLensType.Wide,
-                        CamLensType.Telephoto
-                    )
-                )
-            } ?: camDeviceState.devices.first()
-            camSelector = CamSelector(cameraDevice)
-        }
-    }
-
-    CameraPreview(
-        modifier = Modifier.fillMaxSize(),
-        cameraSession = cameraSession,
-        camFormat = remember {
-            CamFormat(
+  CameraPreview(
+    modifier = Modifier.fillMaxSize(),
+    cameraSession = cameraSession,
+    camFormat =
+      remember {
+        CamFormat(
 //                AspectRatioConfig(4F / 3f),
-                FrameRateConfig(30),
-                ResolutionConfig.UltraHigh,
-                VideoStabilizationConfig(VideoStabilizationMode.Standard),
-            )
+          FrameRateConfig(30),
+          ResolutionConfig.UltraHigh,
+          VideoStabilizationConfig(VideoStabilizationMode.Standard),
+        )
+      },
+    scaleType = ScaleType.FitCenter,
+    camSelector = camSelector,
+    captureMode = captureMode,
+    imageAnalyzer = codeImageAnalyzer,
+    isImageAnalysisEnabled = true,
+  ) {
+    FlowRow {
+      val stabilization by rememberUpdatedState(cameraSession.state.videoStabilizationMode)
+      Button(onClick = {}) {
+        val fps by rememberUpdatedState(cameraSession.state.frameRate)
+        Text("FPS: $fps")
+      }
+      Button(onClick = {
+        val mode =
+          when (stabilization) {
+            VideoStabilizationMode.Off -> VideoStabilizationMode.Standard
+            else -> VideoStabilizationMode.Off
+          }
+        val result =
+          cameraController.setVideoStabilizationEnabled(
+            mode = mode,
+          )
+        println(
+          "Mode to be set: $mode, result: ${result.isSuccess}, ${result.exceptionOrNull()}",
+        )
+      }) {
+        Text("Stabilization: $stabilization")
+      }
+      Button(onClick = {}) {
+        Text("Is previewing: $isPreviewing")
+      }
+      if (isRecording) {
+        Box(Modifier.size(24.dp).background(Color.Red, CircleShape))
+      }
+      Button(onClick = { cameraController.setTorchEnabled(!isTorchEnabled) }) {
+        Text("Torch: $isTorchEnabled")
+      }
+      Button(onClick = { cameraController.setFlashMode(flashMode.inverse) }) {
+        Text("Flash mode: $flashMode")
+      }
+      Button(onClick = {
+        camSelector = camSelector.inverse
+      }) {
+        Text("Cam selector: $camSelector")
+      }
+      Button(onClick = { cameraController.setZoomRatio(zoomRatio + 1) }) {
+        Text("zoom Ratio: ${zoomRatio.roundDecimals(1)}")
+      }
+      Button(onClick = {
+        val path = Path("$SystemTemporaryDirectory/video-${Uuid.random()}.mov")
+
+        if (isRecording) {
+          cameraController.stopRecording()
+          return@Button
+        }
+
+        when (captureMode) {
+          CaptureMode.Image -> {
+            cameraController.takePicture {
+              if (it is CaptureResult.Success) {
+                bitmap = it.data.decodeToImageBitmap()
+              }
+            }
+          }
+
+          CaptureMode.Video -> {
+            cameraController.startRecording(path.toString()) {
+              if (it is CaptureResult.Success) {
+                videoPath = it.data
+              }
+            }
+          }
+        }
+      }) {
+        Text("Take picture")
+      }
+      Button(onClick = {
+        captureMode =
+          if (captureMode == CaptureMode.Image) CaptureMode.Video else CaptureMode.Image
+      }) {
+        Text("Capture mode: $captureMode")
+      }
+      Button(
+        onClick = {
+          cameraController.setExposureCompensation(exposureCompensation + 1F)
         },
-        scaleType = ScaleType.FitCenter,
-        camSelector = camSelector,
-        captureMode = captureMode,
-        imageAnalyzer = codeImageAnalyzer,
-        isImageAnalysisEnabled = true
-    ) {
-        FlowRow {
-            val stabilization by rememberUpdatedState(cameraSession.state.videoStabilizationMode)
-            Button(onClick = {}) {
-                val fps by rememberUpdatedState(cameraSession.state.frameRate)
-                Text("FPS: $fps")
-            }
-            Button(onClick = {
-                val mode = when (stabilization) {
-                    VideoStabilizationMode.Off -> VideoStabilizationMode.Standard
-                    else -> VideoStabilizationMode.Off
-                }
-                val result = cameraController.setVideoStabilizationEnabled(
-                    mode = mode
-                )
-                println("Mode to be set: $mode, result: ${result.isSuccess}, ${result.exceptionOrNull()}")
-            }) {
-                Text("Stabilization: $stabilization")
-            }
-            Button(onClick = {}) {
-                Text("Is previewing: $isPreviewing")
-            }
-            if (isRecording) {
-                Box(Modifier.size(24.dp).background(Color.Red, CircleShape))
-            }
-            Button(onClick = { cameraController.setTorchEnabled(!isTorchEnabled) }) {
-                Text("Torch: $isTorchEnabled")
-            }
-            Button(onClick = { cameraController.setFlashMode(flashMode.inverse) }) {
-                Text("Flash mode: $flashMode")
-            }
-            Button(onClick = {
-                camSelector = camSelector.inverse
-            }) {
-                Text("Cam selector: $camSelector")
-            }
-            Button(onClick = { cameraController.setZoomRatio(zoomRatio + 1) }) {
-                Text("zoom Ratio: ${zoomRatio.roundDecimals(1)}")
-            }
-            Button(onClick = {
-                val path = Path("$SystemTemporaryDirectory/video-${Uuid.random()}.mov")
+      ) {
+        Text("exposureCompensation: $exposureCompensation")
+      }
 
-                if (isRecording) {
-                    cameraController.stopRecording()
-                    return@Button
-                }
+      Text(
+        modifier =
+          Modifier
+            .align(Alignment.Bottom)
+            .padding(16.dp),
+        text = text,
+      )
+    }
+  }
 
-                when (captureMode) {
-                    CaptureMode.Image -> cameraController.takePicture {
-                        if (it is CaptureResult.Success) {
-                            bitmap = it.data.decodeToImageBitmap()
-                        }
-                    }
+  bitmap?.let {
+    Image(
+      modifier =
+        Modifier.fillMaxSize().clickable {
+          bitmap = null
+        },
+      bitmap = it,
+      contentDescription = null,
+    )
+  }
 
-                    CaptureMode.Video -> cameraController.startRecording(path.toString()) {
-                        if (it is CaptureResult.Success) {
-                            videoPath = it.data
-                        }
-                    }
-                }
-            }) {
-                Text("Take picture")
-            }
-            Button(onClick = {
-                captureMode =
-                    if (captureMode == CaptureMode.Image) CaptureMode.Video else CaptureMode.Image
-            }) {
-                Text("Capture mode: $captureMode")
-            }
-            Button(
-                onClick = {
-                    cameraController.setExposureCompensation(exposureCompensation + 1F)
-                },
-            ) {
-                Text("exposureCompensation: $exposureCompensation")
-            }
+  if (videoPath.isNotEmpty()) {
+    VideoPlayer(
+      modifier = Modifier.fillMaxSize(),
+      url = "file://$videoPath",
+      autoPlay = true,
+      showControls = true,
+    )
+  }
 
-            Text(
-                modifier = Modifier
-                    .align(Alignment.Bottom)
-                    .padding(16.dp),
-                text = text
-            )
+  frameRect?.let { rect ->
+    Canvas(Modifier.fillMaxSize()) {
+      val path =
+        androidx.compose.ui.graphics
+          .Path()
+
+      corners.forEachIndexed { index, it ->
+        if (index == 0) {
+          path.moveTo(it.x.dp.toPx(), it.y.dp.toPx())
         }
+        path.lineTo(it.x.dp.toPx(), it.y.dp.toPx())
+      }
+
+      drawPath(
+        color = Color.Red,
+        path = path,
+      )
     }
-
-    bitmap?.let {
-        Image(
-            modifier = Modifier.fillMaxSize().clickable {
-                bitmap = null
-            },
-            bitmap = it,
-            contentDescription = null
-        )
-    }
-
-    if (videoPath.isNotEmpty()) {
-        VideoPlayer(
-            modifier = Modifier.fillMaxSize(),
-            url = "file://$videoPath",
-            autoPlay = true,
-            showControls = true,
-        )
-    }
-
-    frameRect?.let { rect ->
-        Canvas(Modifier.fillMaxSize()) {
-            val path = androidx.compose.ui.graphics.Path()
-
-            corners.forEachIndexed { index, it ->
-                if (index == 0) {
-                    path.moveTo(it.x.dp.toPx(), it.y.dp.toPx())
-                }
-                path.lineTo(it.x.dp.toPx(), it.y.dp.toPx())
-            }
-
-            drawPath(
-                color = Color.Red,
-                path = path,
-            )
-        }
 //        Box(
 //            modifier = Modifier
 //                .offset(x = rect.left.dp, y = rect.top.dp)
@@ -262,10 +277,10 @@ fun CameraScreen() {
 //                .height(rect.height.dp)
 //                .border(1.dp, Color.Red)
 //        )
-    }
+  }
 }
 
 fun Float.roundDecimals(n: Int = 1): Float {
-    val factor = (10F * n).coerceAtLeast(1F)
-    return (this * factor).roundToInt() / factor
+  val factor = (10F * n).coerceAtLeast(1F)
+  return (this * factor).roundToInt() / factor
 }

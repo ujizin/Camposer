@@ -55,173 +55,182 @@ import java.io.File
 
 @Composable
 fun GalleryScreen(
-    viewModel: GalleryViewModel = koinViewModel(),
-    onBackPressed: () -> Unit,
-    onPreviewClick: (String) -> Unit,
+  viewModel: GalleryViewModel = koinViewModel(),
+  onBackPressed: () -> Unit,
+  onPreviewClick: (String) -> Unit,
 ) {
-    Section(
-        title = {
-            Text(stringResource(id = R.string.gallery).replaceFirstChar { it.uppercase() })
-        },
-        onBackPressed = onBackPressed
-    ) {
-        Box(Modifier.padding(it)) {
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-            when (val result: GalleryUiState = uiState) {
-                GalleryUiState.Initial -> GalleryLoading()
-                GalleryUiState.Empty -> GalleryEmpty()
-                is GalleryUiState.Success -> GallerySection(
-                    imageFiles = result.images,
-                    onPreviewClick = onPreviewClick,
-                )
-            }
-        }
+  Section(
+    title = {
+      Text(stringResource(id = R.string.gallery).replaceFirstChar { it.uppercase() })
+    },
+    onBackPressed = onBackPressed,
+  ) {
+    Box(Modifier.padding(it)) {
+      val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+      when (val result: GalleryUiState = uiState) {
+        GalleryUiState.Initial -> GalleryLoading()
+
+        GalleryUiState.Empty -> GalleryEmpty()
+
+        is GalleryUiState.Success -> GallerySection(
+          imageFiles = result.images,
+          onPreviewClick = onPreviewClick,
+        )
+      }
     }
+  }
 }
 
 @Composable
 private fun GalleryEmpty() {
-    Box(
-        Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            modifier = Modifier.padding(24.dp),
-            textAlign = TextAlign.Center,
-            text = stringResource(id = R.string.gallery_empty_description).replaceFirstChar { it.uppercase() },
-            fontSize = 18.sp,
-            color = Color.Gray,
-        )
-    }
+  Box(
+    Modifier.fillMaxSize(),
+    contentAlignment = Alignment.Center,
+  ) {
+    Text(
+      modifier = Modifier.padding(24.dp),
+      textAlign = TextAlign.Center,
+      text = stringResource(id = R.string.gallery_empty_description).replaceFirstChar {
+        it.uppercase()
+      },
+      fontSize = 18.sp,
+      color = Color.Gray,
+    )
+  }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun GallerySection(imageFiles: List<File>, onPreviewClick: (String) -> Unit) {
-    LazyVerticalGrid(
-        modifier = Modifier.fillMaxSize(),
-        columns = GridCells.Fixed(3),
-        horizontalArrangement = Arrangement.spacedBy(1.dp),
-        verticalArrangement = Arrangement.spacedBy(1.dp)
-    ) {
-        items(imageFiles, { it.name }) { image ->
-            val context = LocalContext.current
-            var duration by rememberSaveable { mutableStateOf<Int?>(null) }
-            LaunchedEffect(Unit) { duration = image.getDuration(context) }
-            PlaceholderImage(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .animateItem(fadeInSpec = null, fadeOutSpec = null)
-                    .aspectRatio(1F)
-                    .clickable(onClick = { onPreviewClick(image.path) }),
-                data = image,
-                contentDescription = image.name,
-                placeholder = {
-                    Box(
-                        Modifier
-                            .fillMaxSize()
-                            .background(Color.LightGray)
-                    )
-                },
+private fun GallerySection(
+  imageFiles: List<File>,
+  onPreviewClick: (String) -> Unit,
+) {
+  LazyVerticalGrid(
+    modifier = Modifier.fillMaxSize(),
+    columns = GridCells.Fixed(3),
+    horizontalArrangement = Arrangement.spacedBy(1.dp),
+    verticalArrangement = Arrangement.spacedBy(1.dp),
+  ) {
+    items(imageFiles, { it.name }) { image ->
+      val context = LocalContext.current
+      var duration by rememberSaveable { mutableStateOf<Int?>(null) }
+      LaunchedEffect(Unit) { duration = image.getDuration(context) }
+      PlaceholderImage(
+        modifier = Modifier
+          .fillMaxSize()
+          .animateItem(fadeInSpec = null, fadeOutSpec = null)
+          .aspectRatio(1F)
+          .clickable(onClick = { onPreviewClick(image.path) }),
+        data = image,
+        contentDescription = image.name,
+        placeholder = {
+          Box(
+            Modifier
+              .fillMaxSize()
+              .background(Color.LightGray),
+          )
+        },
+      ) {
+        duration?.let { duration ->
+          Box(
+            modifier = Modifier.background(Color.Black.copy(0.25F)),
+            contentAlignment = Alignment.TopEnd,
+          ) {
+            Row(
+              modifier = Modifier.padding(4.dp),
+              horizontalArrangement = Arrangement.spacedBy(2.dp),
+              verticalAlignment = Alignment.CenterVertically,
             ) {
-                duration?.let { duration ->
-                    Box(
-                        modifier = Modifier.background(Color.Black.copy(0.25F)),
-                        contentAlignment = Alignment.TopEnd
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(4.dp),
-                            horizontalArrangement = Arrangement.spacedBy(2.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Text(
-                                "${duration.minutes}:${duration.seconds}",
-                                color = Color.White,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 12.sp,
-                            )
-                            Icon(
-                                modifier = Modifier
-                                    .size(12.dp)
-                                    .background(Color.White, CircleShape),
-                                imageVector = Icons.Rounded.PlayArrow,
-                                tint = Color.Black,
-                                contentDescription = stringResource(id = R.string.play),
-                            )
-                        }
-                    }
-                }
+              Text(
+                "${duration.minutes}:${duration.seconds}",
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                fontSize = 12.sp,
+              )
+              Icon(
+                modifier = Modifier
+                  .size(12.dp)
+                  .background(Color.White, CircleShape),
+                imageVector = Icons.Rounded.PlayArrow,
+                tint = Color.Black,
+                contentDescription = stringResource(id = R.string.play),
+              )
             }
+          }
         }
+      }
     }
+  }
 }
 
 @Composable
 private fun PlaceholderImage(
-    modifier: Modifier = Modifier,
-    data: Any,
-    placeholder: @Composable () -> Unit,
-    contentDescription: String?,
-    innerContent: @Composable () -> Unit,
+  modifier: Modifier = Modifier,
+  data: Any,
+  placeholder: @Composable () -> Unit,
+  contentDescription: String?,
+  innerContent: @Composable () -> Unit,
 ) {
-    var imageState: AsyncImagePainter.State by remember { mutableStateOf(AsyncImagePainter.State.Empty) }
-    Box(modifier) {
-        AsyncImage(
-            modifier = Modifier.fillMaxSize(),
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(data)
-                .decoderFactory(VideoFrameDecoder.Factory())
-                .videoFramePercent(0.5)
-                .build(),
-            onState = { imageState = it },
-            contentScale = ContentScale.Crop,
-            contentDescription = contentDescription,
-        )
-        GalleryAnimationVisibility(
-            modifier = Modifier.fillMaxSize(),
-            visible = when (imageState) {
-                is AsyncImagePainter.State.Empty,
-                is AsyncImagePainter.State.Success,
-                    -> false
+  var imageState: AsyncImagePainter.State by remember {
+    mutableStateOf(AsyncImagePainter.State.Empty)
+  }
+  Box(modifier) {
+    AsyncImage(
+      modifier = Modifier.fillMaxSize(),
+      model = ImageRequest
+        .Builder(LocalContext.current)
+        .data(data)
+        .decoderFactory(VideoFrameDecoder.Factory())
+        .videoFramePercent(0.5)
+        .build(),
+      onState = { imageState = it },
+      contentScale = ContentScale.Crop,
+      contentDescription = contentDescription,
+    )
+    GalleryAnimationVisibility(
+      modifier = Modifier.fillMaxSize(),
+      visible = when (imageState) {
+        is AsyncImagePainter.State.Empty,
+        is AsyncImagePainter.State.Success,
+        -> false
 
-                is AsyncImagePainter.State.Loading,
-                is AsyncImagePainter.State.Error,
-                    -> true
-            }
-        ) { placeholder() }
+        is AsyncImagePainter.State.Loading,
+        is AsyncImagePainter.State.Error,
+        -> true
+      },
+    ) { placeholder() }
 
-        GalleryAnimationVisibility(
-            modifier = Modifier.fillMaxSize(),
-            visible = when (imageState) {
-                is AsyncImagePainter.State.Empty,
-                is AsyncImagePainter.State.Loading,
-                is AsyncImagePainter.State.Error,
-                    -> false
+    GalleryAnimationVisibility(
+      modifier = Modifier.fillMaxSize(),
+      visible = when (imageState) {
+        is AsyncImagePainter.State.Empty,
+        is AsyncImagePainter.State.Loading,
+        is AsyncImagePainter.State.Error,
+        -> false
 
-                is AsyncImagePainter.State.Success -> true
-            }
-        ) { innerContent() }
-    }
-
+        is AsyncImagePainter.State.Success -> true
+      },
+    ) { innerContent() }
+  }
 }
 
 @Composable
 private fun GalleryAnimationVisibility(
-    modifier: Modifier = Modifier,
-    visible: Boolean,
-    content: @Composable () -> Unit,
+  modifier: Modifier = Modifier,
+  visible: Boolean,
+  content: @Composable () -> Unit,
 ) {
-    AnimatedVisibility(
-        modifier = modifier,
-        enter = fadeIn(),
-        exit = fadeOut(),
-        visible = visible
-    ) { content() }
+  AnimatedVisibility(
+    modifier = modifier,
+    enter = fadeIn(),
+    exit = fadeOut(),
+    visible = visible,
+  ) { content() }
 }
 
 @Composable
 private fun GalleryLoading() {
-    Box(Modifier.fillMaxSize()) {
-        CircularProgressIndicator()
-    }
+  Box(Modifier.fillMaxSize()) {
+    CircularProgressIndicator()
+  }
 }

@@ -16,35 +16,36 @@ import kotlinx.serialization.json.Json
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 interface UserStore {
-    fun getUser(): Flow<User>
-    suspend fun updateUser(user: User)
+  fun getUser(): Flow<User>
+
+  suspend fun updateUser(user: User)
 }
 
 internal class UserStoreImpl(
-    context: Context,
-    private val serializer: Json,
+  context: Context,
+  private val serializer: Json,
 ) : UserStore {
+  private val dataStore: DataStore<Preferences>
 
-    private val dataStore: DataStore<Preferences>
+  private val userKey = stringPreferencesKey(USER_KEY)
 
-    private val userKey = stringPreferencesKey(USER_KEY)
+  init {
+    dataStore = context.dataStore
+  }
 
-    init {
-        dataStore = context.dataStore
+  @WorkerThread
+  override fun getUser(): Flow<User> =
+    dataStore.data.map { preferences ->
+      val user = preferences[userKey] ?: return@map User.Default
+      serializer.decodeFromString(user)
     }
 
-    @WorkerThread
-    override fun getUser(): Flow<User> = dataStore.data.map { preferences ->
-        val user = preferences[userKey] ?: return@map User.Default
-        serializer.decodeFromString(user)
-    }
+  @WorkerThread
+  override suspend fun updateUser(user: User) {
+    dataStore.edit { preferences -> preferences[userKey] = serializer.encodeToString(user) }
+  }
 
-    @WorkerThread
-    override suspend fun updateUser(user: User) {
-        dataStore.edit { preferences -> preferences[userKey] = serializer.encodeToString(user) }
-    }
-
-    companion object {
-        private const val USER_KEY = "user"
-    }
+  companion object {
+    private const val USER_KEY = "user"
+  }
 }

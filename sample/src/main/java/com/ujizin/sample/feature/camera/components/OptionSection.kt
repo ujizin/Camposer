@@ -20,34 +20,33 @@ import com.ujizin.sample.feature.camera.model.CameraOption
 
 @Composable
 fun OptionSection(
-    modifier: Modifier = Modifier,
-    currentCameraOption: CameraOption,
-    isVideoSupported: Boolean,
-    onCameraOptionChanged: (CameraOption) -> Unit,
+  modifier: Modifier = Modifier,
+  currentCameraOption: CameraOption,
+  isVideoSupported: Boolean,
+  onCameraOptionChanged: (CameraOption) -> Unit,
 ) {
-    Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.Center,
-    ) {
-        CameraOption.values().forEach { option ->
-            if (!isVideoSupported && option == CameraOption.Video) return@forEach
+  Row(
+    modifier = modifier,
+    horizontalArrangement = Arrangement.Center,
+  ) {
+    CameraOption.values().forEach { option ->
+      if (!isVideoSupported && option == CameraOption.Video) return@forEach
 
-            Text(
-                modifier = Modifier
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = { onCameraOptionChanged(option) },
-                    )
-                    .padding(vertical = 4.dp)
-                    .width(80.dp),
-                text = stringResource(id = option.titleRes).replaceFirstChar { it.uppercase() },
-                fontSize = 16.sp,
-                maxLines = 1,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                color = if (currentCameraOption == option) Color.Yellow else Color.White
-            )
-        }
+      Text(
+        modifier = Modifier
+          .clickable(
+            interactionSource = remember { MutableInteractionSource() },
+            indication = null,
+            onClick = { onCameraOptionChanged(option) },
+          ).padding(vertical = 4.dp)
+          .width(80.dp),
+        text = stringResource(id = option.titleRes).replaceFirstChar { it.uppercase() },
+        fontSize = 16.sp,
+        maxLines = 1,
+        fontWeight = FontWeight.Bold,
+        textAlign = TextAlign.Center,
+        color = if (currentCameraOption == option) Color.Yellow else Color.White,
+      )
     }
+  }
 }

@@ -8,22 +8,24 @@ import platform.AVFoundation.AVCaptureDeviceTypeBuiltInTripleCamera
 import platform.AVFoundation.AVCaptureDeviceTypeBuiltInUltraWideCamera
 import platform.AVFoundation.AVCaptureDeviceTypeBuiltInWideAngleCamera
 
-public actual enum class CamLensType(internal val type: AVCaptureDeviceType) {
-    Wide(AVCaptureDeviceTypeBuiltInWideAngleCamera),
-    UltraWide(AVCaptureDeviceTypeBuiltInUltraWideCamera),
-    Telephoto(AVCaptureDeviceTypeBuiltInTelephotoCamera);
+public actual enum class CamLensType(
+  internal val type: AVCaptureDeviceType,
+) {
+  Wide(AVCaptureDeviceTypeBuiltInWideAngleCamera),
+  UltraWide(AVCaptureDeviceTypeBuiltInUltraWideCamera),
+  Telephoto(AVCaptureDeviceTypeBuiltInTelephotoCamera),
+  ;
 
-    internal companion object {
-        fun getPhysicalLensByVirtual(
-            position: AVCaptureDeviceType,
-        ): List<CamLensType> = when (position) {
-            AVCaptureDeviceTypeBuiltInWideAngleCamera -> listOf(Wide)
-            AVCaptureDeviceTypeBuiltInUltraWideCamera -> listOf(UltraWide)
-            AVCaptureDeviceTypeBuiltInTelephotoCamera -> listOf(Telephoto)
-            AVCaptureDeviceTypeBuiltInDualWideCamera -> listOf(Wide, UltraWide)
-            AVCaptureDeviceTypeBuiltInDualCamera -> listOf(Wide, Telephoto)
-            AVCaptureDeviceTypeBuiltInTripleCamera -> listOf(Wide, UltraWide, Telephoto)
-            else -> emptyList()
-        }
-    }
+  internal companion object {
+    fun getPhysicalLensByVirtual(position: AVCaptureDeviceType): List<CamLensType> =
+      when (position) {
+        AVCaptureDeviceTypeBuiltInWideAngleCamera -> listOf(Wide)
+        AVCaptureDeviceTypeBuiltInUltraWideCamera -> listOf(UltraWide)
+        AVCaptureDeviceTypeBuiltInTelephotoCamera -> listOf(Telephoto)
+        AVCaptureDeviceTypeBuiltInDualWideCamera -> listOf(Wide, UltraWide)
+        AVCaptureDeviceTypeBuiltInDualCamera -> listOf(Wide, Telephoto)
+        AVCaptureDeviceTypeBuiltInTripleCamera -> listOf(Wide, UltraWide, Telephoto)
+        else -> emptyList()
+      }
+  }
 }

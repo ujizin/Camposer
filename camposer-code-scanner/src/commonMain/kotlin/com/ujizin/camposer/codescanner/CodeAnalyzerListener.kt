@@ -1,4 +1,4 @@
-package com.ujizin.camposer.code_scanner
+package com.ujizin.camposer.codescanner
 
 /**
  * Listener interface for handling results from the code analysis process.
@@ -9,5 +9,5 @@ package com.ujizin.camposer.code_scanner
  * @see CodeResult
  */
 public fun interface CodeAnalyzerListener {
-    public fun onCodeScanned(result: CodeResult)
+  public fun onCodeScanned(result: CodeResult)
 }

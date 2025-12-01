@@ -3,8 +3,8 @@ package com.ujizin.camposer.state.properties.selector
 import android.annotation.SuppressLint
 import androidx.camera.camera2.internal.Camera2CameraInfoImpl
 import androidx.camera.core.CameraSelector
-import com.ujizin.camposer.manager.CameraDevice
 import com.ujizin.camposer.internal.utils.CameraUtils
+import com.ujizin.camposer.manager.CameraDevice
 
 /**
  * Camera Selector.
@@ -18,69 +18,68 @@ import com.ujizin.camposer.internal.utils.CameraUtils
  * @see CameraSelector
  */
 public actual class CamSelector {
+  public actual val camPosition: CamPosition
 
-    public actual val camPosition: CamPosition
+  public actual val camLensTypes: List<CamLensType>
 
-    public actual val camLensTypes: List<CamLensType>
+  internal val selector: CameraSelector by lazy { createCameraSelector() }
 
-    internal val selector: CameraSelector by lazy { createCameraSelector() }
+  internal var cameraId: CameraId? = null
 
-    internal var cameraId: CameraId? = null
+  public actual constructor(camPosition: CamPosition, camLensTypes: List<CamLensType>) {
+    this.camPosition = camPosition
+    this.camLensTypes = camLensTypes.ifEmpty { listOf(CamLensType.Wide) }
+  }
 
-    public actual constructor(camPosition: CamPosition, camLensTypes: List<CamLensType>) {
-        this.camPosition = camPosition
-        this.camLensTypes = camLensTypes.ifEmpty { listOf(CamLensType.Wide) }
-    }
+  public actual constructor(cameraDevice: CameraDevice) : this(
+    camPosition = cameraDevice.position,
+    camLensTypes = cameraDevice.lensType,
+  ) {
+    this.cameraId = cameraDevice.cameraId
+  }
 
-    public actual constructor(cameraDevice: CameraDevice) : this(
-        camPosition = cameraDevice.position,
-        camLensTypes = cameraDevice.lensType,
-    ) {
-        this.cameraId = cameraDevice.cameraId
-    }
-
-    @SuppressLint("RestrictedApi")
-    private fun createCameraSelector(): CameraSelector = CameraSelector.Builder()
-        .addCameraFilter { cameraInfos ->
-            if (cameraId != null) {
-                return@addCameraFilter cameraInfos.filter { info ->
-                    info.cameraIdentifier == cameraId?.identifier
-                }
-            }
-
-            val lensFilter = cameraInfos.filterIsInstance<Camera2CameraInfoImpl>().filter { info ->
-                camPosition.value == info.lensFacing
-            }
-
-            val logicalSenseFilter = lensFilter.filter { info ->
-                CameraUtils.getCamLensTypes(info).containsAll(camLensTypes)
-            }
-
-            logicalSenseFilter.ifEmpty { lensFilter }.ifEmpty { cameraInfos }
+  @SuppressLint("RestrictedApi")
+  private fun createCameraSelector(): CameraSelector =
+    CameraSelector
+      .Builder()
+      .addCameraFilter { cameraInfos ->
+        if (cameraId != null) {
+          return@addCameraFilter cameraInfos.filter { info ->
+            info.cameraIdentifier == cameraId?.identifier
+          }
         }
-        .requireLensFacing(camPosition.value)
-        .build()
 
-    actual override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is CamSelector) return false
+        val lensFilter = cameraInfos.filterIsInstance<Camera2CameraInfoImpl>().filter { info ->
+          camPosition.value == info.lensFacing
+        }
 
-        if (camPosition != other.camPosition) return false
-        return camLensTypes == other.camLensTypes
-    }
+        val logicalSenseFilter = lensFilter.filter { info ->
+          CameraUtils.getCamLensTypes(info).containsAll(camLensTypes)
+        }
 
-    actual override fun hashCode(): Int {
-        var result = camPosition.hashCode()
-        result = 31 * result + camLensTypes.hashCode()
-        return result
-    }
+        logicalSenseFilter.ifEmpty { lensFilter }.ifEmpty { cameraInfos }
+      }.requireLensFacing(camPosition.value)
+      .build()
 
-    actual override fun toString(): String {
-        return "CamSelector(camPosition=$camPosition, camLensType=$camLensTypes)"
-    }
+  actual override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is CamSelector) return false
 
-    public actual companion object {
-        public actual val Front: CamSelector = CamSelector(CamPosition.Front)
-        public actual val Back: CamSelector = CamSelector(CamPosition.Back)
-    }
+    if (camPosition != other.camPosition) return false
+    return camLensTypes == other.camLensTypes
+  }
+
+  actual override fun hashCode(): Int {
+    var result = camPosition.hashCode()
+    result = 31 * result + camLensTypes.hashCode()
+    return result
+  }
+
+  actual override fun toString(): String =
+    "CamSelector(camPosition=$camPosition, camLensType=$camLensTypes)"
+
+  public actual companion object {
+    public actual val Front: CamSelector = CamSelector(CamPosition.Front)
+    public actual val Back: CamSelector = CamSelector(CamPosition.Back)
+  }
 }

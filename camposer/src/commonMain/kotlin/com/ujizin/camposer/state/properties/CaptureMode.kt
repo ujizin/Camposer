@@ -5,6 +5,6 @@ package com.ujizin.camposer.state.properties
  *
  * */
 public expect enum class CaptureMode {
-    Image,
-    Video,
+  Image,
+  Video,
 }

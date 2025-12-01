@@ -1,5 +1,6 @@
 package com.ujizin.camposer
 
+import androidx.camera.core.CameraInfo
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.rememberUpdatedState
@@ -13,52 +14,55 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 @LargeTest
 internal class ExposureCompensationTest : CameraTest() {
+  private lateinit var exposureCompensation: State<Float>
 
-    private lateinit var exposureCompensation: State<Float>
+  private val cameraInfo: CameraInfo?
+    get() = cameraSession.cameraXController.cameraInfo
 
-    private val currentExposure: Float?
-        get() = cameraSession.cameraXController.cameraInfo?.exposureState?.exposureCompensationIndex?.toFloat()
+  private val currentExposure: Float?
+    get() = cameraInfo?.exposureState?.exposureCompensationIndex?.toFloat()
 
-    @Test
-    fun test_minExposureCompensation() = with(composeTestRule) {
-        initCameraWithExposure(0F)
+  @Test
+  fun test_minExposureCompensation() =
+    with(composeTestRule) {
+      initCameraWithExposure(0F)
 
-        runOnUiThread {
-            cameraController.setExposureCompensation(cameraSession.info.minExposure)
-        }
+      runOnUiThread {
+        cameraController.setExposureCompensation(cameraSession.info.minExposure)
+      }
 
-        runOnIdle {
-            if (!cameraSession.info.isExposureSupported) return@runOnIdle
+      runOnIdle {
+        if (!cameraSession.info.isExposureSupported) return@runOnIdle
 
-            assertEquals(cameraSession.info.minExposure, currentExposure)
-            assertEquals(exposureCompensation.value, currentExposure)
-        }
+        assertEquals(cameraSession.info.minExposure, currentExposure)
+        assertEquals(exposureCompensation.value, currentExposure)
+      }
     }
 
-    @Test
-    fun test_maxExposureCompensation() = with(composeTestRule) {
-        initCameraWithExposure(0F)
+  @Test
+  fun test_maxExposureCompensation() =
+    with(composeTestRule) {
+      initCameraWithExposure(0F)
 
-        runOnUiThread {
-            cameraController.setExposureCompensation(cameraSession.info.maxExposure)
-        }
-        runOnIdle {
-            if (!cameraSession.info.isExposureSupported) return@runOnIdle
+      runOnUiThread {
+        cameraController.setExposureCompensation(cameraSession.info.maxExposure)
+      }
+      runOnIdle {
+        if (!cameraSession.info.isExposureSupported) return@runOnIdle
 
-            assertEquals(cameraSession.info.maxExposure, currentExposure)
-            assertEquals(exposureCompensation.value, currentExposure)
-        }
+        assertEquals(cameraSession.info.maxExposure, currentExposure)
+        assertEquals(exposureCompensation.value, currentExposure)
+      }
     }
 
-    private fun ComposeContentTestRule.initCameraWithExposure(
-        exposure: Float,
-    ) = initCameraSession { state ->
-        exposureCompensation = rememberUpdatedState(cameraSession.state.exposureCompensation)
+  private fun ComposeContentTestRule.initCameraWithExposure(exposure: Float) =
+    initCameraSession { state ->
+      exposureCompensation = rememberUpdatedState(cameraSession.state.exposureCompensation)
 
-        LaunchedEffect(exposure) {
-            state.controller.setExposureCompensation(exposure)
-        }
+      LaunchedEffect(exposure) {
+        state.controller.setExposureCompensation(exposure)
+      }
 
-        CameraPreview(cameraSession = state)
+      CameraPreview(cameraSession = state)
     }
 }

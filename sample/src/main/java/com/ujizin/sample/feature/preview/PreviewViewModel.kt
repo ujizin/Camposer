@@ -17,43 +17,48 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import java.io.File
 
+class PreviewViewModel(
+  savedStateHandle: SavedStateHandle,
+) : ViewModel() {
+  private val _uiState = MutableStateFlow<PreviewUiState>(PreviewUiState.Initial)
+  val uiState: StateFlow<PreviewUiState> = _uiState
 
-class PreviewViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
+  private val route = savedStateHandle.toRoute<Router.Preview>()
 
-    private val _uiState = MutableStateFlow<PreviewUiState>(PreviewUiState.Initial)
-    val uiState: StateFlow<PreviewUiState> = _uiState
-
-    private val route = savedStateHandle.toRoute<Router.Preview>()
-
-    init {
-        viewModelScope.launch {
-            flow {
-                val file = File(Uri.decode(route.path))
-                emit(PreviewUiState.Ready(file, file.isVideo))
-            }.collect { state ->
-                _uiState.value = state
-            }
-        }
+  init {
+    viewModelScope.launch {
+      flow {
+        val file = File(Uri.decode(route.path))
+        emit(PreviewUiState.Ready(file, file.isVideo))
+      }.collect { state ->
+        _uiState.value = state
+      }
     }
+  }
 
-    fun deleteFile(
-        context: Context,
-        intentSenderLauncher: ActivityResultLauncher<IntentSenderRequest>,
-        file: File
-    ) {
-        viewModelScope.launch {
-            file.delete(context.contentResolver, intentSenderLauncher)
-            if (!file.exists()) {
-                _uiState.value = PreviewUiState.Deleted
-            }
-        }
+  fun deleteFile(
+    context: Context,
+    intentSenderLauncher: ActivityResultLauncher<IntentSenderRequest>,
+    file: File,
+  ) {
+    viewModelScope.launch {
+      file.delete(context.contentResolver, intentSenderLauncher)
+      if (!file.exists()) {
+        _uiState.value = PreviewUiState.Deleted
+      }
     }
+  }
 }
 
 sealed interface PreviewUiState {
-    data object Initial : PreviewUiState
-    data object Empty : PreviewUiState
-    data object Deleted : PreviewUiState
+  data object Initial : PreviewUiState
 
-    data class Ready(val file: File, val isVideo: Boolean) : PreviewUiState
+  data object Empty : PreviewUiState
+
+  data object Deleted : PreviewUiState
+
+  data class Ready(
+    val file: File,
+    val isVideo: Boolean,
+  ) : PreviewUiState
 }

@@ -7,7 +7,9 @@ import platform.AVFoundation.AVCapturePhotoOutput
 /**
  * Camera Capture mode.
  * */
-public actual enum class CaptureMode(internal val output: AVCaptureOutput) {
-    Image(AVCapturePhotoOutput()),
-    Video(AVCaptureMovieFileOutput()),
+public actual enum class CaptureMode(
+  internal val output: AVCaptureOutput,
+) {
+  Image(AVCapturePhotoOutput()),
+  Video(AVCaptureMovieFileOutput()),
 }

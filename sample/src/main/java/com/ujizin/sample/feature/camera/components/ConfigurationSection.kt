@@ -14,19 +14,19 @@ import com.ujizin.sample.R
 
 @Composable
 fun ConfigurationBox(
-    modifier: Modifier = Modifier,
-    onConfigurationClick: () -> Unit,
+  modifier: Modifier = Modifier,
+  onConfigurationClick: () -> Unit,
 ) {
-    Box(modifier) {
-        Button(
-            modifier = Modifier.clip(CircleShape),
-            contentPaddingValues = PaddingValues(16.dp),
-            onClick = onConfigurationClick,
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.configuration),
-                contentDescription = stringResource(id = R.string.configuration)
-            )
-        }
+  Box(modifier) {
+    Button(
+      modifier = Modifier.clip(CircleShape),
+      contentPaddingValues = PaddingValues(16.dp),
+      onClick = onConfigurationClick,
+    ) {
+      Image(
+        painter = painterResource(id = R.drawable.configuration),
+        contentDescription = stringResource(id = R.string.configuration),
+      )
     }
+  }
 }

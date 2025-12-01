@@ -26,95 +26,103 @@ import platform.Foundation.NSURL
 import platform.darwin.NSObject
 
 internal actual class DefaultRecordController(
-    private val iosCameraSession: IOSCameraSession,
-    private val cameraState: CameraState,
+  private val iosCameraSession: IOSCameraSession,
+  private val cameraState: CameraState,
 ) : RecordController {
+  private val captureSession: AVCaptureSession
+    get() = iosCameraSession.captureSession
 
-    private val captureSession: AVCaptureSession
-        get() = iosCameraSession.captureSession
+  private val videoRecordOutput: AVCaptureMovieFileOutput?
+    get() = captureSession.outputs.firstIsInstanceOrNull<AVCaptureMovieFileOutput>()
 
-    private val videoRecordOutput: AVCaptureMovieFileOutput?
-        get() = captureSession.outputs.firstIsInstanceOrNull<AVCaptureMovieFileOutput>()
+  private var videoDelegate: AVCaptureFileOutputRecordingDelegateProtocol? = null
 
-    private var videoDelegate: AVCaptureFileOutputRecordingDelegateProtocol? = null
+  actual override var isMuted: Boolean by mutableStateOf(false)
+  actual override var isRecording: Boolean by mutableStateOf(false)
 
-    actual override var isMuted: Boolean by mutableStateOf(false)
-    actual override var isRecording: Boolean by mutableStateOf(false)
+  actual override fun startRecording(
+    filename: String,
+    onVideoCaptured: (CaptureResult<String>) -> Unit,
+  ) = start(
+    isMirrorEnabled =
+      iosCameraSession.captureDeviceInput.device.position == AVCaptureDevicePositionFront,
+    videoOrientation = cameraState.getCurrentVideoOrientation(),
+    filename = filename,
+    onVideoCapture = { result -> onVideoCaptured(result.toCaptureResult()) },
+  ).apply { isRecording = true }
 
-    actual override fun startRecording(
-        filename: String,
-        onVideoCaptured: (CaptureResult<String>) -> Unit,
-    ) = start(
-        isMirrorEnabled = iosCameraSession.captureDeviceInput.device.position == AVCaptureDevicePositionFront,
-        videoOrientation = cameraState.getCurrentVideoOrientation(),
-        filename = filename,
-        onVideoCapture = { result -> onVideoCaptured(result.toCaptureResult()) },
-    ).apply { isRecording = true }
-
-    actual override fun resumeRecording() {
-        require(cameraState.captureMode == CaptureMode.Video) { "Capture mode must be CaptureMode.Video" }
-
-        videoRecordOutput?.resumeRecording() ?: throw VideoOutputNotFoundException()
+  actual override fun resumeRecording() {
+    require(cameraState.captureMode == CaptureMode.Video) {
+      "Capture mode must be CaptureMode.Video"
     }
 
-    actual override fun pauseRecording() {
-        require(cameraState.captureMode == CaptureMode.Video) { "Capture mode must be CaptureMode.Video" }
+    videoRecordOutput?.resumeRecording() ?: throw VideoOutputNotFoundException()
+  }
 
-        videoRecordOutput?.pauseRecording() ?: throw VideoOutputNotFoundException()
+  actual override fun pauseRecording() {
+    require(cameraState.captureMode == CaptureMode.Video) {
+      "Capture mode must be CaptureMode.Video"
     }
 
-    actual override fun stopRecording() {
-        require(cameraState.captureMode == CaptureMode.Video) { "Capture mode must be CaptureMode.Video" }
-        videoRecordOutput?.stopRecording() ?: throw VideoOutputNotFoundException()
-        isRecording = false
-        isMuted = false
+    videoRecordOutput?.pauseRecording() ?: throw VideoOutputNotFoundException()
+  }
+
+  actual override fun stopRecording() {
+    require(cameraState.captureMode == CaptureMode.Video) {
+      "Capture mode must be CaptureMode.Video"
+    }
+    videoRecordOutput?.stopRecording() ?: throw VideoOutputNotFoundException()
+    isRecording = false
+    isMuted = false
+  }
+
+  actual override fun muteRecording(isMuted: Boolean) {
+    this.isMuted = isMuted
+    iosCameraSession.setAudioEnabled(!isMuted)
+  }
+
+  fun start(
+    filename: String,
+    videoOrientation: AVCaptureVideoOrientation,
+    isMirrorEnabled: Boolean,
+    onVideoCapture: (Result<String>) -> Unit,
+  ) {
+    if (!captureSession.isRunning()) {
+      return onVideoCapture(
+        Result.failure(CameraNotRunningException()),
+      )
     }
 
-    actual override fun muteRecording(isMuted: Boolean) {
-        this.isMuted = isMuted
-        iosCameraSession.setAudioEnabled(!isMuted)
+    val videoRecordOutput = videoRecordOutput
+    if (videoRecordOutput == null) {
+      onVideoCapture(Result.failure(VideoOutputNotFoundException()))
+      return
     }
 
-    fun start(
-        filename: String,
-        videoOrientation: AVCaptureVideoOrientation,
-        isMirrorEnabled: Boolean,
-        onVideoCapture: (Result<String>) -> Unit,
-    ) {
-        if (!captureSession.isRunning()) return onVideoCapture(
-            Result.failure(CameraNotRunningException())
-        )
+    videoRecordOutput.setMirrorEnabled(isMirrorEnabled)
 
-        val videoRecordOutput = videoRecordOutput
-        if (videoRecordOutput == null) {
-            onVideoCapture(Result.failure(VideoOutputNotFoundException()))
-            return
+    val videoMediaType = videoRecordOutput.connectionWithMediaType(AVMediaTypeVideo)
+    videoMediaType?.videoOrientation = videoOrientation
+
+    val videoDelegate = object : NSObject(), AVCaptureFileOutputRecordingDelegateProtocol {
+      override fun captureOutput(
+        output: AVCaptureFileOutput,
+        didFinishRecordingToOutputFileAtURL: NSURL,
+        fromConnections: List<*>,
+        error: NSError?,
+      ) {
+        val result = when {
+          error != null -> Result.failure(ErrorRecordVideoException(error))
+          else -> Result.success(filename)
         }
+        onVideoCapture(result)
+        videoDelegate = null
+      }
+    }.apply { videoDelegate = this }
 
-        videoRecordOutput.setMirrorEnabled(isMirrorEnabled)
-
-        val videoMediaType = videoRecordOutput.connectionWithMediaType(AVMediaTypeVideo)
-        videoMediaType?.videoOrientation = videoOrientation
-
-        val videoDelegate = object : NSObject(), AVCaptureFileOutputRecordingDelegateProtocol {
-            override fun captureOutput(
-                output: AVCaptureFileOutput,
-                didFinishRecordingToOutputFileAtURL: NSURL,
-                fromConnections: List<*>,
-                error: NSError?,
-            ) {
-                val result = when {
-                    error != null -> Result.failure(ErrorRecordVideoException(error))
-                    else -> Result.success(filename)
-                }
-                onVideoCapture(result)
-                videoDelegate = null
-            }
-        }.apply { videoDelegate = this }
-
-        videoRecordOutput.startRecordingToOutputFileURL(
-            outputFileURL = NSURL.Companion.fileURLWithPath(filename),
-            recordingDelegate = videoDelegate,
-        )
-    }
+    videoRecordOutput.startRecordingToOutputFileURL(
+      outputFileURL = NSURL.Companion.fileURLWithPath(filename),
+      recordingDelegate = videoDelegate,
+    )
+  }
 }

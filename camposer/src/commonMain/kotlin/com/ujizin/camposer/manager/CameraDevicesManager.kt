@@ -5,10 +5,9 @@ import androidx.compose.runtime.State
 import kotlinx.coroutines.flow.StateFlow
 
 public expect class CameraDevicesManager {
+  public val cameraDevicesState: StateFlow<CameraDeviceState>
 
-    public val cameraDevicesState: StateFlow<CameraDeviceState>
-
-    public fun release()
+  public fun release()
 }
 
 @Composable

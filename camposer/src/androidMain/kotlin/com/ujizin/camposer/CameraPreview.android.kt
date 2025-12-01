@@ -19,16 +19,16 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.ujizin.camposer.internal.zoom.PinchToZoomController
 import com.ujizin.camposer.extensions.setCameraTouchEvent
+import com.ujizin.camposer.internal.zoom.PinchToZoomController
 import com.ujizin.camposer.session.CameraSession
-import com.ujizin.camposer.state.properties.selector.CamSelector
 import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.ImageAnalyzer
 import com.ujizin.camposer.state.properties.ImageCaptureStrategy
 import com.ujizin.camposer.state.properties.ImplementationMode
 import com.ujizin.camposer.state.properties.ScaleType
 import com.ujizin.camposer.state.properties.format.CamFormat
+import com.ujizin.camposer.state.properties.selector.CamSelector
 import com.ujizin.camposer.state.update
 
 /**
@@ -50,109 +50,113 @@ import com.ujizin.camposer.state.update
  * */
 @Composable
 internal actual fun CameraPreviewImpl(
-    modifier: Modifier,
-    cameraSession: CameraSession,
-    camSelector: CamSelector,
-    captureMode: CaptureMode,
-    camFormat: CamFormat,
-    imageCaptureStrategy: ImageCaptureStrategy,
-    scaleType: ScaleType,
-    imageAnalyzer: ImageAnalyzer?,
-    implementationMode: ImplementationMode,
-    isImageAnalysisEnabled: Boolean,
-    isFocusOnTapEnabled: Boolean,
-    isPinchToZoomEnabled: Boolean,
-    onTapFocus: (Offset) -> Unit,
-    onSwitchCamera: (ImageBitmap) -> Unit,
-    content: @Composable (() -> Unit),
+  modifier: Modifier,
+  cameraSession: CameraSession,
+  camSelector: CamSelector,
+  captureMode: CaptureMode,
+  camFormat: CamFormat,
+  imageCaptureStrategy: ImageCaptureStrategy,
+  scaleType: ScaleType,
+  imageAnalyzer: ImageAnalyzer?,
+  implementationMode: ImplementationMode,
+  isImageAnalysisEnabled: Boolean,
+  isFocusOnTapEnabled: Boolean,
+  isPinchToZoomEnabled: Boolean,
+  onTapFocus: (Offset) -> Unit,
+  onSwitchCamera: (ImageBitmap) -> Unit,
+  content: @Composable (() -> Unit),
 ) {
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val lifecycleEvent by lifecycleOwner.lifecycle.observeAsState()
-    val cameraIsInitialized by rememberUpdatedState(cameraSession.isInitialized)
-    val isCameraIdle by rememberUpdatedState(!cameraSession.isStreaming)
-    var latestBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
-    var cameraOffset by remember { mutableStateOf(Offset.Zero) }
+  val lifecycleOwner = LocalLifecycleOwner.current
+  val lifecycleEvent by lifecycleOwner.lifecycle.observeAsState()
+  val cameraIsInitialized by rememberUpdatedState(cameraSession.isInitialized)
+  val isCameraIdle by rememberUpdatedState(!cameraSession.isStreaming)
+  var latestBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
+  var cameraOffset by remember { mutableStateOf(Offset.Zero) }
 
-    LaunchedEffect(latestBitmap) { latestBitmap?.let(onSwitchCamera) }
+  LaunchedEffect(latestBitmap) { latestBitmap?.let(onSwitchCamera) }
 
-    LaunchedEffect(cameraSession) {
-        val previewView = cameraSession.previewView
-        if (previewView.controller == cameraSession.cameraXController) return@LaunchedEffect
+  LaunchedEffect(cameraSession) {
+    val previewView = cameraSession.previewView
+    if (previewView.controller == cameraSession.cameraXController) return@LaunchedEffect
 
-        previewView.onViewBind(
-            cameraSession = cameraSession,
-            lifecycleOwner = lifecycleOwner,
-            onTapFocus = {
-                if (cameraSession.info.isFocusSupported && cameraSession.state.isFocusOnTapEnabled) {
-                    onTapFocus(it + cameraOffset)
-                }
-            },
-        )
-    }
-
-    AndroidView(
-        modifier = modifier.onGloballyPositioned { cameraOffset = it.positionInParent() },
-        factory = {
-            cameraSession.previewView.apply {
-                this.scaleType = scaleType.type
-                this.implementationMode = implementationMode.value
-            }
-        },
-        update = { previewView ->
-            if (!cameraIsInitialized) return@AndroidView
-            with(previewView) {
-                if (this.scaleType != scaleType.type || this.implementationMode != implementationMode.value) {
-                    this.scaleType = scaleType.type
-                    this.implementationMode = implementationMode.value
-                    cameraSession.rebind(lifecycleOwner)
-                }
-
-                latestBitmap = when {
-                    lifecycleEvent == Lifecycle.Event.ON_STOP -> null
-                    !isCameraIdle && camSelector != cameraSession.state.camSelector -> bitmap?.asImageBitmap()
-                    else -> latestBitmap
-                }
-
-                cameraSession.update(
-                    camSelector = camSelector,
-                    captureMode = captureMode,
-                    scaleType = scaleType,
-                    isImageAnalysisEnabled = isImageAnalysisEnabled,
-                    imageAnalyzer = imageAnalyzer,
-                    implementationMode = implementationMode,
-                    isFocusOnTapEnabled = isFocusOnTapEnabled,
-                    imageCaptureStrategy = imageCaptureStrategy,
-                    camFormat = camFormat,
-                    isPinchToZoomEnabled = isPinchToZoomEnabled,
-                )
-
-                cameraSession.controller.onSessionStarted()
-            }
-        },
+    previewView.onViewBind(
+      cameraSession = cameraSession,
+      lifecycleOwner = lifecycleOwner,
+      onTapFocus = {
+        if (cameraSession.info.isFocusSupported &&
+          cameraSession.state.isFocusOnTapEnabled
+        ) {
+          onTapFocus(it + cameraOffset)
+        }
+      },
     )
+  }
 
-    content()
+  AndroidView(
+    modifier = modifier.onGloballyPositioned { cameraOffset = it.positionInParent() },
+    factory = {
+      cameraSession.previewView.apply {
+        this.scaleType = scaleType.type
+        this.implementationMode = implementationMode.value
+      }
+    },
+    update = { previewView ->
+      if (!cameraIsInitialized) return@AndroidView
+      with(previewView) {
+        if (this.scaleType != scaleType.type ||
+          this.implementationMode != implementationMode.value
+        ) {
+          this.scaleType = scaleType.type
+          this.implementationMode = implementationMode.value
+          cameraSession.rebind(lifecycleOwner)
+        }
+
+        latestBitmap = when {
+          lifecycleEvent == Lifecycle.Event.ON_STOP -> null
+          !isCameraIdle && camSelector != cameraSession.state.camSelector -> bitmap?.asImageBitmap()
+          else -> latestBitmap
+        }
+
+        cameraSession.update(
+          camSelector = camSelector,
+          captureMode = captureMode,
+          scaleType = scaleType,
+          isImageAnalysisEnabled = isImageAnalysisEnabled,
+          imageAnalyzer = imageAnalyzer,
+          implementationMode = implementationMode,
+          isFocusOnTapEnabled = isFocusOnTapEnabled,
+          imageCaptureStrategy = imageCaptureStrategy,
+          camFormat = camFormat,
+          isPinchToZoomEnabled = isPinchToZoomEnabled,
+        )
+
+        cameraSession.controller.onSessionStarted()
+      }
+    },
+  )
+
+  content()
 }
 
 private fun PreviewView.onViewBind(
-    cameraSession: CameraSession,
-    lifecycleOwner: LifecycleOwner,
-    onTapFocus: (Offset) -> Unit,
+  cameraSession: CameraSession,
+  lifecycleOwner: LifecycleOwner,
+  onTapFocus: (Offset) -> Unit,
 ) {
-    layoutParams = ViewGroup.LayoutParams(
-        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
-    )
-    controller = cameraSession.cameraXController.apply {
-        bindToLifecycle(lifecycleOwner)
-    }
+  layoutParams = ViewGroup.LayoutParams(
+    ViewGroup.LayoutParams.MATCH_PARENT,
+    ViewGroup.LayoutParams.MATCH_PARENT,
+  )
+  controller = cameraSession.cameraXController.apply {
+    bindToLifecycle(lifecycleOwner)
+  }
 
-    previewStreamState.observe(lifecycleOwner) { state ->
-        cameraSession.isStreaming = state == PreviewView.StreamState.STREAMING
-    }
+  previewStreamState.observe(lifecycleOwner) { state ->
+    cameraSession.isStreaming = state == PreviewView.StreamState.STREAMING
+  }
 
-    setCameraTouchEvent(
-        pinchZoomController = PinchToZoomController(cameraSession = cameraSession),
-        onTap = onTapFocus,
-    )
-
+  setCameraTouchEvent(
+    pinchZoomController = PinchToZoomController(cameraSession = cameraSession),
+    onTap = onTapFocus,
+  )
 }

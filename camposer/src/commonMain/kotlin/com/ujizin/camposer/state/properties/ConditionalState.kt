@@ -13,42 +13,44 @@ import androidx.compose.runtime.setValue
 
 @Stable
 internal class ConditionalState<T : Any>(
-    startValue: T,
-    private val defaultValue: T,
+  startValue: T,
+  private val defaultValue: T,
 ) : MutableState<T> {
+  internal var predicate: Boolean = true
 
-    internal var predicate: Boolean = true
-
-    private fun getMode(value: T): T = when {
-        predicate -> value
-        else -> defaultValue
+  private fun getMode(value: T): T =
+    when {
+      predicate -> value
+      else -> defaultValue
     }
 
-    private var _value by mutableStateOf(getMode(startValue))
-    override var value: T
-        get() = getMode(_value)
-        set(value) {
-            _value = getMode(value)
-        }
-
-    override fun component1(): T = _value
-
-    override fun component2(): (T) -> Unit = { _value = it }
-
-    companion object {
-        internal fun <T : Any> getNoSaver(
-            startValue: T,
-            defaultValue: T
-        ): Saver<ConditionalState<T>, *> = listSaver(
-            save = { listOf(startValue, defaultValue) },
-            restore = { ConditionalState(it[0], it[1]) }
-        )
-
-        internal fun <T : Any> getSaver(): Saver<ConditionalState<T>, *> = listSaver(
-            save = { listOf(it._value, it.defaultValue) },
-            restore = { ConditionalState(it[0], it[1]) }
-        )
+  private var _value by mutableStateOf(getMode(startValue))
+  override var value: T
+    get() = getMode(_value)
+    set(value) {
+      _value = getMode(value)
     }
+
+  override fun component1(): T = _value
+
+  override fun component2(): (T) -> Unit = { _value = it }
+
+  companion object {
+    internal fun <T : Any> getNoSaver(
+      startValue: T,
+      defaultValue: T,
+    ): Saver<ConditionalState<T>, *> =
+      listSaver(
+        save = { listOf(startValue, defaultValue) },
+        restore = { ConditionalState(it[0], it[1]) },
+      )
+
+    internal fun <T : Any> getSaver(): Saver<ConditionalState<T>, *> =
+      listSaver(
+        save = { listOf(it._value, it.defaultValue) },
+        restore = { ConditionalState(it[0], it[1]) },
+      )
+  }
 }
 
 /**
@@ -61,21 +63,22 @@ internal class ConditionalState<T : Any>(
  * */
 @Composable
 internal fun <T : Any> rememberConditionalState(
-    initialValue: T,
-    defaultValue: T,
-    useSaver: Boolean,
-    predicate: Boolean
+  initialValue: T,
+  defaultValue: T,
+  useSaver: Boolean,
+  predicate: Boolean,
 ): MutableState<T> {
-    var current by remember { mutableStateOf(initialValue) }
-    return rememberSaveable(
-        predicate, saver = when (useSaver) {
-            true -> ConditionalState.getSaver()
-            else -> ConditionalState.getNoSaver(current, defaultValue)
-        }
-    ) {
-        ConditionalState(current, defaultValue).apply {
-            this.predicate = predicate
-            current = value
-        }
+  var current by remember { mutableStateOf(initialValue) }
+  return rememberSaveable(
+    predicate,
+    saver = when (useSaver) {
+      true -> ConditionalState.getSaver()
+      else -> ConditionalState.getNoSaver(current, defaultValue)
+    },
+  ) {
+    ConditionalState(current, defaultValue).apply {
+      this.predicate = predicate
+      current = value
     }
+  }
 }

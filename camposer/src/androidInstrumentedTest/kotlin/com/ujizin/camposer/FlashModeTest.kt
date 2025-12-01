@@ -19,66 +19,67 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 @LargeTest
 internal class FlashModeTest : CameraTest() {
+  private lateinit var flashMode: State<FlashMode>
 
-    private lateinit var flashMode: State<FlashMode>
+  @Test
+  fun test_flashModes() =
+    with(composeTestRule) {
+      initFlashCamera(camSelector = CamSelector.Back)
+      if (!cameraSession.info.isFlashSupported) return
 
-    @Test
-    fun test_flashModes() = with(composeTestRule) {
-        initFlashCamera(camSelector = CamSelector.Back)
-        if (!cameraSession.info.isFlashSupported) return
+      FlashMode.entries.forEach { mode ->
+        val oldMode = flashMode.value
 
-        FlashMode.entries.forEach { mode ->
-            val oldMode = flashMode.value
+        cameraController.setFlashMode(mode)
 
-            cameraController.setFlashMode(mode)
+        waitUntil { flashMode.value != oldMode }
 
-            waitUntil { flashMode.value != oldMode }
-
-            onNodeWithTag("${flashMode.value}").assertIsDisplayed()
-            runOnIdle { assertEquals(mode, cameraSession.state.flashMode) }
-        }
+        onNodeWithTag("${flashMode.value}").assertIsDisplayed()
+        runOnIdle { assertEquals(mode, cameraSession.state.flashMode) }
+      }
     }
 
-    @Test
-    fun test_startFlashModeAsOn() = with(composeTestRule) {
-        initFlashCamera(camSelector = CamSelector.Back, mode = FlashMode.On)
+  @Test
+  fun test_startFlashModeAsOn() =
+    with(composeTestRule) {
+      initFlashCamera(camSelector = CamSelector.Back, mode = FlashMode.On)
 
-        waitUntil(10000) { flashMode.value == FlashMode.On || !cameraSession.info.isFlashSupported }
+      waitUntil(10000) { flashMode.value == FlashMode.On || !cameraSession.info.isFlashSupported }
 
-        if (!cameraSession.info.isFlashSupported) {
-            return@with // Not supported, skipping test
-        }
+      if (!cameraSession.info.isFlashSupported) {
+        return@with // Not supported, skipping test
+      }
 
-        onNodeWithTag("${FlashMode.On}").assertExists()
-        runOnIdle { assertEquals(FlashMode.On, cameraSession.state.flashMode) }
+      onNodeWithTag("${FlashMode.On}").assertExists()
+      runOnIdle { assertEquals(FlashMode.On, cameraSession.state.flashMode) }
     }
 
+  @Test
+  fun test_flashModeWithNoUnit() =
+    with(composeTestRule) {
+      initFlashCamera(camSelector = CamSelector.Front)
+      // Ensure that there's no flash unit on device
+      cameraSession.info.isFlashSupported = false
 
-    @Test
-    fun test_flashModeWithNoUnit() = with(composeTestRule) {
-        initFlashCamera(camSelector = CamSelector.Front)
-        // Ensure that there's no flash unit on device
-        cameraSession.info.isFlashSupported = false
-
-        cameraController.setFlashMode(FlashMode.On)
-        onNodeWithTag("${FlashMode.On}").assertDoesNotExist()
-        runOnIdle { assertEquals(FlashMode.Off, cameraSession.state.flashMode) }
+      cameraController.setFlashMode(FlashMode.On)
+      onNodeWithTag("${FlashMode.On}").assertDoesNotExist()
+      runOnIdle { assertEquals(FlashMode.Off, cameraSession.state.flashMode) }
     }
 
-    private fun ComposeContentTestRule.initFlashCamera(
-        camSelector: CamSelector,
-        mode: FlashMode = FlashMode.Off,
-    ) = initCameraSession { state ->
-        flashMode = rememberUpdatedState(cameraSession.state.flashMode)
+  private fun ComposeContentTestRule.initFlashCamera(
+    camSelector: CamSelector,
+    mode: FlashMode = FlashMode.Off,
+  ) = initCameraSession { state ->
+    flashMode = rememberUpdatedState(cameraSession.state.flashMode)
 
-        LaunchedEffect(mode) {
-            cameraController.setFlashMode(mode)
-        }
-
-        CameraPreview(
-            Modifier.testTag("${flashMode.value}"),
-            cameraSession = state,
-            camSelector = camSelector,
-        )
+    LaunchedEffect(mode) {
+      cameraController.setFlashMode(mode)
     }
+
+    CameraPreview(
+      Modifier.testTag("${flashMode.value}"),
+      cameraSession = state,
+      camSelector = camSelector,
+    )
+  }
 }

@@ -1,4 +1,4 @@
-package com.ujizin.camposer.code_scanner
+package com.ujizin.camposer.codescanner
 
 import androidx.compose.runtime.Composable
 import com.ujizin.camposer.session.CameraSession
@@ -17,7 +17,7 @@ import com.ujizin.camposer.state.properties.ImageAnalyzer
  */
 @Composable
 public expect fun CameraSession.rememberCodeImageAnalyzer(
-    codeTypes: List<CodeType> = listOf(CodeType.QRCode),
-    onError: (Throwable) -> Unit = {},
-    codeAnalyzerListener: CodeAnalyzerListener,
+  codeTypes: List<CodeType> = listOf(CodeType.QRCode),
+  onError: (Throwable) -> Unit = {},
+  codeAnalyzerListener: CodeAnalyzerListener,
 ): ImageAnalyzer

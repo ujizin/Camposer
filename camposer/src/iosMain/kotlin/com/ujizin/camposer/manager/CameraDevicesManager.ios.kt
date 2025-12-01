@@ -5,11 +5,11 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ujizin.camposer.internal.utils.CameraFormatUtils
+import com.ujizin.camposer.internal.utils.DispatchQueue.cameraQueue
 import com.ujizin.camposer.state.properties.selector.CamLensType
 import com.ujizin.camposer.state.properties.selector.CamPosition
 import com.ujizin.camposer.state.properties.selector.CameraId
-import com.ujizin.camposer.internal.utils.CameraFormatUtils
-import com.ujizin.camposer.internal.utils.DispatchQueue.cameraQueue
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,104 +33,104 @@ import platform.AVFoundation.position
 import platform.darwin.dispatch_async
 
 public actual class CameraDevicesManager {
+  private val _cameraDevicesState = MutableStateFlow<CameraDeviceState>(CameraDeviceState.Initial)
+  public actual val cameraDevicesState: StateFlow<CameraDeviceState> = _cameraDevicesState
+    .asStateFlow()
 
-    private val _cameraDeviceState = MutableStateFlow<CameraDeviceState>(CameraDeviceState.Initial)
-    public actual val cameraDevicesState: StateFlow<CameraDeviceState> = _cameraDeviceState
-        .asStateFlow()
+  private val cameraPresenceMonitor = CameraPresenceMonitor()
 
-    private val cameraPresenceMonitor = CameraPresenceMonitor()
-
-    private val cameraPresenceListener = object : CameraPresenceMonitor.Listener {
-        override fun onCameraAdded(device: AVCaptureDevice) {
-            _cameraDeviceState.updateOnlyIfReady { state ->
-                state.copy(devices = state.devices + device.toCameraDevice())
-            }
-        }
-
-        override fun onCameraRemoved(device: AVCaptureDevice) {
-            _cameraDeviceState.updateOnlyIfReady { state ->
-                val cameraDeviceToBeDeleted = state.devices.find {
-                    it.cameraId.uniqueId == device.uniqueID
-                } ?: return@updateOnlyIfReady state
-
-                state.copy(devices = state.devices - cameraDeviceToBeDeleted)
-            }
-        }
+  private val cameraPresenceListener = object : CameraPresenceMonitor.Listener {
+    override fun onCameraAdded(device: AVCaptureDevice) {
+      _cameraDevicesState.updateOnlyIfReady { state ->
+        state.copy(devices = state.devices + device.toCameraDevice())
+      }
     }
 
-    init {
-        dispatch_async(cameraQueue) {
-            _cameraDeviceState.update { CameraDeviceState.Devices(getAvailableCameras()) }
-            cameraPresenceMonitor.addCameraPresenceListener(cameraPresenceListener)
-        }
+    override fun onCameraRemoved(device: AVCaptureDevice) {
+      _cameraDevicesState.updateOnlyIfReady { state ->
+        val cameraDeviceToBeDeleted = state.devices.find {
+          it.cameraId.uniqueId == device.uniqueID
+        } ?: return@updateOnlyIfReady state
+
+        state.copy(devices = state.devices - cameraDeviceToBeDeleted)
+      }
+    }
+  }
+
+  init {
+    dispatch_async(cameraQueue) {
+      _cameraDevicesState.update { CameraDeviceState.Devices(getAvailableCameras()) }
+      cameraPresenceMonitor.addCameraPresenceListener(cameraPresenceListener)
+    }
+  }
+
+  internal fun getAvailableCameras(): List<CameraDevice> {
+    val deviceTypes = listOf(
+      AVCaptureDeviceTypeBuiltInWideAngleCamera,
+      AVCaptureDeviceTypeBuiltInUltraWideCamera,
+      AVCaptureDeviceTypeBuiltInTelephotoCamera,
+      AVCaptureDeviceTypeBuiltInDualCamera,
+      AVCaptureDeviceTypeBuiltInDualWideCamera,
+      AVCaptureDeviceTypeBuiltInTripleCamera,
+    )
+
+    val discovery = AVCaptureDeviceDiscoverySession.discoverySessionWithDeviceTypes(
+      deviceTypes = deviceTypes,
+      mediaType = AVMediaTypeVideo,
+      position = AVCaptureDevicePositionUnspecified,
+    )
+
+    return discovery.devices
+      .filterIsInstance<AVCaptureDevice>()
+      .map { device -> device.toCameraDevice() }
+  }
+
+  private fun AVCaptureDevice.toCameraDevice(): CameraDevice {
+    val formats = formats.filterIsInstance<AVCaptureDeviceFormat>()
+    return CameraDevice(
+      cameraId = CameraId(uniqueID),
+      position = getCamPosition(),
+      lensType = CamLensType.getPhysicalLensByVirtual(deviceType),
+      photoData = CameraFormatUtils.getPhotoFormats(formats),
+      videoData = CameraFormatUtils.getVideoFormats(formats),
+    )
+  }
+
+  private fun AVCaptureDevice.getCamPosition(): CamPosition =
+    when (position) {
+      AVCaptureDevicePositionFront -> CamPosition.Front
+
+      AVCaptureDevicePositionBack -> CamPosition.Back
+
+      else -> when (deviceType) {
+        AVCaptureDeviceTypeExternal -> CamPosition.External
+        else -> CamPosition.Unknown
+      }
     }
 
-    internal fun getAvailableCameras(): List<CameraDevice> {
-        val deviceTypes = listOf(
-            AVCaptureDeviceTypeBuiltInWideAngleCamera,
-            AVCaptureDeviceTypeBuiltInUltraWideCamera,
-            AVCaptureDeviceTypeBuiltInTelephotoCamera,
-            AVCaptureDeviceTypeBuiltInDualCamera,
-            AVCaptureDeviceTypeBuiltInDualWideCamera,
-            AVCaptureDeviceTypeBuiltInTripleCamera,
-        )
-
-        val discovery = AVCaptureDeviceDiscoverySession.discoverySessionWithDeviceTypes(
-            deviceTypes = deviceTypes,
-            mediaType = AVMediaTypeVideo,
-            position = AVCaptureDevicePositionUnspecified
-        )
-
-        return discovery.devices
-            .filterIsInstance<AVCaptureDevice>()
-            .map { device -> device.toCameraDevice() }
+  private fun MutableStateFlow<CameraDeviceState>.updateOnlyIfReady(
+    block: (CameraDeviceState.Devices) -> CameraDeviceState,
+  ) {
+    if (value is CameraDeviceState.Devices) {
+      update { block(it as CameraDeviceState.Devices) }
     }
+  }
 
-
-    private fun AVCaptureDevice.toCameraDevice(): CameraDevice {
-        val formats = formats.filterIsInstance<AVCaptureDeviceFormat>()
-        return CameraDevice(
-            cameraId = CameraId(uniqueID),
-            position = getCamPosition(),
-            lensType = CamLensType.getPhysicalLensByVirtual(deviceType),
-            photoData = CameraFormatUtils.getPhotoFormats(formats),
-            videoData = CameraFormatUtils.getVideoFormats(formats),
-        )
-    }
-
-    private fun AVCaptureDevice.getCamPosition(): CamPosition = when (position) {
-        AVCaptureDevicePositionFront -> CamPosition.Front
-        AVCaptureDevicePositionBack -> CamPosition.Back
-        else -> when (deviceType) {
-            AVCaptureDeviceTypeExternal -> CamPosition.External
-            else -> CamPosition.Unknown
-        }
-    }
-
-    private fun MutableStateFlow<CameraDeviceState>.updateOnlyIfReady(
-        block: (CameraDeviceState.Devices) -> CameraDeviceState,
-    ) {
-        if (value is CameraDeviceState.Devices) {
-            update { block(it as CameraDeviceState.Devices) }
-        }
-    }
-
-    public actual fun release() {
-        cameraPresenceMonitor.removeCameraPresenceListener(cameraPresenceListener)
-    }
+  public actual fun release() {
+    cameraPresenceMonitor.removeCameraPresenceListener(cameraPresenceListener)
+  }
 }
-
 
 @Composable
 public actual fun rememberCameraDeviceState(): State<CameraDeviceState> {
-    val cameraDevicesManager = remember { CameraDevicesManager() }
-    val cameraDeviceState = cameraDevicesManager.cameraDevicesState.collectAsStateWithLifecycle()
+  val cameraDevicesManager = remember { CameraDevicesManager() }
+  val cameraDeviceState = cameraDevicesManager.cameraDevicesState.collectAsStateWithLifecycle()
 
-    DisposableEffect(Unit) {
-        onDispose {
-            cameraDevicesManager.release()
-        }
+  DisposableEffect(Unit) {
+    onDispose {
+      cameraDevicesManager.release()
     }
+  }
 
-    return cameraDeviceState
+  return cameraDeviceState
 }

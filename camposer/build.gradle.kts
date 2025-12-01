@@ -6,104 +6,93 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import ujizin.camposer.Config
 
 plugins {
-    alias(libs.plugins.library) // TODO migrate to kmp library
-    alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.dokka)
-    alias(libs.plugins.dokka.java.doc)
-    alias(libs.plugins.compose.multiplatform)
-    alias(libs.plugins.compose.compiler)
+  alias(libs.plugins.library) // TODO migrate to kmp library
+  alias(libs.plugins.kotlin.multiplatform)
+  alias(libs.plugins.dokka)
+  alias(libs.plugins.dokka.java.doc)
+  alias(libs.plugins.compose.multiplatform)
+  alias(libs.plugins.compose.compiler)
 }
 
 extra.apply {
-    set("PUBLISH_GROUP_ID", Config.groupId)
-    set("PUBLISH_ARTIFACT_ID", Config.artifactId)
-    set("PUBLISH_VERSION", Config.versionName)
+  set("PUBLISH_GROUP_ID", Config.groupId)
+  set("PUBLISH_ARTIFACT_ID", Config.artifactId)
+  set("PUBLISH_VERSION", Config.versionName)
 }
 
-apply(from = "${rootDir}/scripts/publish-module.gradle")
+apply(from = "$rootDir/scripts/publish-module.gradle")
 
 kotlin {
-    targets.configureEach {
-        compilations.configureEach {
-            compilerOptions.configure {
-                freeCompilerArgs.add("-Xexpect-actual-classes")
-            }
-        }
+  targets.configureEach {
+    compilations.configureEach {
+      compilerOptions.configure { freeCompilerArgs.add("-Xexpect-actual-classes") }
+    }
+  }
+
+  explicitApi()
+  androidTarget {
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    compilerOptions { jvmTarget.set(JvmTarget.JVM_11) }
+  }
+
+  listOf(iosX64(), iosArm64(), iosSimulatorArm64()).forEach { iosTarget ->
+    iosTarget.binaries.framework {
+      baseName = "Camposer"
+      isStatic = true
+    }
+    @Suppress("PropertyName")
+    iosTarget.compilations.getByName("main") {
+      val CMFormat by cinterops.creating
+      val NSKeyValueObserving by cinterops.creating
+    }
+  }
+
+  sourceSets {
+    commonMain.dependencies {
+      implementation(compose.runtime)
+      implementation(compose.foundation)
     }
 
-    explicitApi()
-    androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
-        }
-
+    androidInstrumentedTest.dependencies {
+      implementation(libs.androidx.test.core)
+      implementation(libs.androidx.test.rules)
+      implementation(compose.desktop.uiTestJUnit4)
     }
 
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
-            baseName = "Camposer"
-            isStatic = true
-        }
-        iosTarget.compilations.getByName("main") {
-            val CMFormat by cinterops.creating
-            val NSKeyValueObserving by cinterops.creating
-        }
+    androidMain.dependencies {
+      implementation(compose.preview)
+      api(libs.bundles.camerax)
     }
 
-    sourceSets {
-
-        commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-        }
-
-        androidInstrumentedTest.dependencies {
-            implementation(libs.androidx.test.core)
-            implementation(libs.androidx.test.rules)
-            implementation(compose.desktop.uiTestJUnit4)
-        }
-
-        androidMain.dependencies {
-            implementation(compose.preview)
-            api(libs.bundles.camerax)
-        }
-
-        iosMain.dependencies {
-        }
-    }
+    iosMain.dependencies {}
+  }
 }
 
 android {
-    namespace = "com.ujizin.camposer"
-    compileSdk = Config.compileSdk
-    defaultConfig {
-        minSdk = Config.minSdk
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
+  namespace = "com.ujizin.camposer"
+  compileSdk = Config.compileSdk
+  defaultConfig {
+    minSdk = Config.minSdk
+    testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+  }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
+  compileOptions {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+  }
 
-
-    publishing {
-        singleVariant("release") {
-            withJavadocJar()
-            withSourcesJar()
-        }
+  publishing {
+    singleVariant("release") {
+      withJavadocJar()
+      withSourcesJar()
     }
+  }
 }
 
-//dokka {
+// dokka {
 //    dokkaSourceSets {
 //        named("main") {
 //            enableAndroidDocumentationLink.set(true)
 //        }
 //    }
-//}
+// }

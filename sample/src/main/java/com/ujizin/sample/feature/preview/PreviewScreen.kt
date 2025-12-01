@@ -41,108 +41,119 @@ import java.io.File
 
 @Composable
 fun PreviewScreen(
-    viewModel: PreviewViewModel = koinViewModel(),
-    onBackPressed: () -> Unit,
+  viewModel: PreviewViewModel = koinViewModel(),
+  onBackPressed: () -> Unit,
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val intentSenderLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartIntentSenderForResult()
-    ) {
-        if (it.resultCode == Activity.RESULT_OK) {
-            onBackPressed()
-        }
+  val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+  val intentSenderLauncher = rememberLauncherForActivityResult(
+    contract = ActivityResultContracts.StartIntentSenderForResult(),
+  ) {
+    if (it.resultCode == Activity.RESULT_OK) {
+      onBackPressed()
+    }
+  }
+
+  when (val result: PreviewUiState = uiState) {
+    PreviewUiState.Initial -> {}
+
+    PreviewUiState.Empty -> {}
+
+    is PreviewUiState.Ready -> {
+      val context = LocalContext.current
+      when {
+        result.isVideo -> PreviewVideoSection(result.file)
+        else -> PreviewImageSection(result.file)
+      }
+      PreviewTopAppBar(
+        onBackPressed = onBackPressed,
+        onDeleteClick = {
+          viewModel.deleteFile(context, intentSenderLauncher, result.file)
+        },
+      )
     }
 
-    when (val result: PreviewUiState = uiState) {
-        PreviewUiState.Initial -> {}
-        PreviewUiState.Empty -> {}
-        is PreviewUiState.Ready -> {
-            val context = LocalContext.current
-            when {
-                result.isVideo -> PreviewVideoSection(result.file)
-                else -> PreviewImageSection(result.file)
-            }
-            PreviewTopAppBar(
-                onBackPressed = onBackPressed,
-                onDeleteClick = {
-                    viewModel.deleteFile(context, intentSenderLauncher, result.file)
-                }
-            )
-        }
-
-        PreviewUiState.Deleted -> LaunchedEffect(Unit) {
-            onBackPressed()
-        }
+    PreviewUiState.Deleted -> {
+      LaunchedEffect(Unit) {
+        onBackPressed()
+      }
     }
+  }
 }
 
 @Composable
 fun PreviewTopAppBar(
-    onBackPressed: () -> Unit,
-    onDeleteClick: () -> Unit,
+  onBackPressed: () -> Unit,
+  onDeleteClick: () -> Unit,
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-    ) {
-        NavigationIcon(
-            modifier = Modifier
-                .background(Color.Black.copy(alpha = 0.1F), CircleShape),
-            icon = Icons.Filled.ArrowBack,
-            contentDescription = stringResource(R.string.back),
-            onClick = onBackPressed
-        )
-        NavigationIcon(
-            modifier = Modifier
-                .background(Color.Black.copy(alpha = 0.1F), CircleShape),
-            icon = Icons.Filled.Delete,
-            contentDescription = stringResource(R.string.delete),
-            onClick = onDeleteClick
-        )
-    }
+  Row(
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(16.dp),
+    horizontalArrangement = Arrangement.SpaceBetween,
+  ) {
+    NavigationIcon(
+      modifier = Modifier
+        .background(Color.Black.copy(alpha = 0.1F), CircleShape),
+      icon = Icons.Filled.ArrowBack,
+      contentDescription = stringResource(R.string.back),
+      onClick = onBackPressed,
+    )
+    NavigationIcon(
+      modifier = Modifier
+        .background(Color.Black.copy(alpha = 0.1F), CircleShape),
+      icon = Icons.Filled.Delete,
+      contentDescription = stringResource(R.string.delete),
+      onClick = onDeleteClick,
+    )
+  }
 }
 
 @Composable
 private fun PreviewVideoSection(file: File) {
-    val context = LocalContext.current
-    val lifecycle by LocalLifecycleOwner.current.lifecycle.observeAsState()
-    val player = remember {
-        ExoPlayer.Builder(context).build().apply {
-            addMediaItem(MediaItem.fromUri(file.toUri()))
-            prepare()
-            playWhenReady = true
-        }
+  val context = LocalContext.current
+  val lifecycle by LocalLifecycleOwner.current.lifecycle.observeAsState()
+  val player = remember {
+    ExoPlayer.Builder(context).build().apply {
+      addMediaItem(MediaItem.fromUri(file.toUri()))
+      prepare()
+      playWhenReady = true
     }
+  }
 
-    DisposableEffect(AndroidView(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black),
-        factory = { ctx ->
-            StyledPlayerView(ctx).apply { this.player = player }
-        },
-        update = { playerView ->
-            when (lifecycle) {
-                Lifecycle.Event.ON_PAUSE -> {
-                    playerView.onPause()
-                    player.pause()
-                }
+  DisposableEffect(
+    AndroidView(
+      modifier = Modifier
+        .fillMaxSize()
+        .background(Color.Black),
+      factory = { ctx ->
+        StyledPlayerView(ctx).apply { this.player = player }
+      },
+      update = { playerView ->
+        when (lifecycle) {
+          Lifecycle.Event.ON_PAUSE -> {
+            playerView.onPause()
+            player.pause()
+          }
 
-                Lifecycle.Event.ON_RESUME -> playerView.onResume()
-                else -> Unit
-            }
+          Lifecycle.Event.ON_RESUME -> {
+            playerView.onResume()
+          }
+
+          else -> {
+            Unit
+          }
         }
-    )) { onDispose { player.release() } }
+      },
+    ),
+  ) { onDispose { player.release() } }
 }
 
 @Composable
 private fun PreviewImageSection(file: File) {
-    AsyncImage(
-        modifier = Modifier.fillMaxSize(),
-        model = file,
-        contentScale = ContentScale.Fit,
-        contentDescription = file.name,
-    )
+  AsyncImage(
+    modifier = Modifier.fillMaxSize(),
+    model = file,
+    contentScale = ContentScale.Fit,
+    contentDescription = file.name,
+  )
 }

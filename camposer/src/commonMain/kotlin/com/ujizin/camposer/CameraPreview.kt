@@ -49,106 +49,106 @@ import kotlinx.coroutines.delay
  * */
 @Composable
 public fun CameraPreview(
-    modifier: Modifier = Modifier,
-    cameraSession: CameraSession,
-    camSelector: CamSelector = cameraSession.state.camSelector,
-    captureMode: CaptureMode = cameraSession.state.captureMode,
-    captureStrategy: ImageCaptureStrategy = cameraSession.state.imageCaptureStrategy,
-    scaleType: ScaleType = cameraSession.state.scaleType,
-    imageAnalyzer: ImageAnalyzer? = null,
-    camFormat: CamFormat = cameraSession.state.camFormat,
-    implementationMode: ImplementationMode = cameraSession.state.implementationMode,
-    isImageAnalysisEnabled: Boolean = imageAnalyzer != null,
-    isFocusOnTapEnabled: Boolean = cameraSession.state.isFocusOnTapEnabled,
-    isPinchToZoomEnabled: Boolean = cameraSession.state.isPinchToZoomEnabled,
-    onPreviewStreamChanged: () -> Unit = {},
-    switchCameraContent: @Composable (ImageBitmap) -> Unit = {},
-    onFocus: suspend (onComplete: () -> Unit) -> Unit = { onComplete ->
-        delay(1000L)
-        onComplete()
-    },
-    focusTapContent: @Composable () -> Unit = { SquareCornerFocus() },
-    content: @Composable BoxScope.() -> Unit = {},
+  modifier: Modifier = Modifier,
+  cameraSession: CameraSession,
+  camSelector: CamSelector = cameraSession.state.camSelector,
+  captureMode: CaptureMode = cameraSession.state.captureMode,
+  captureStrategy: ImageCaptureStrategy = cameraSession.state.imageCaptureStrategy,
+  scaleType: ScaleType = cameraSession.state.scaleType,
+  imageAnalyzer: ImageAnalyzer? = null,
+  camFormat: CamFormat = cameraSession.state.camFormat,
+  implementationMode: ImplementationMode = cameraSession.state.implementationMode,
+  isImageAnalysisEnabled: Boolean = imageAnalyzer != null,
+  isFocusOnTapEnabled: Boolean = cameraSession.state.isFocusOnTapEnabled,
+  isPinchToZoomEnabled: Boolean = cameraSession.state.isPinchToZoomEnabled,
+  onPreviewStreamChanged: () -> Unit = {},
+  switchCameraContent: @Composable (ImageBitmap) -> Unit = {},
+  onFocus: suspend (onComplete: () -> Unit) -> Unit = { onComplete ->
+    delay(1000L)
+    onComplete()
+  },
+  focusTapContent: @Composable () -> Unit = { SquareCornerFocus() },
+  content: @Composable BoxScope.() -> Unit = {},
 ) {
-    val isCameraIdle by rememberUpdatedState(!cameraSession.isStreaming)
-    var tapOffset by remember { mutableStateOf(Offset.Zero) }
-    var latestBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
+  val isCameraIdle by rememberUpdatedState(!cameraSession.isStreaming)
+  var tapOffset by remember { mutableStateOf(Offset.Zero) }
+  var latestBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
 
-    Box(modifier = modifier) {
-        CameraPreviewImpl(
-            modifier = Modifier
-                .fillMaxSize()
-                .clipToBounds(),
-            cameraSession = cameraSession,
-            captureMode = captureMode,
-            camSelector = camSelector,
-            imageCaptureStrategy = captureStrategy,
-            camFormat = camFormat,
-            scaleType = scaleType,
-            imageAnalyzer = imageAnalyzer,
-            isImageAnalysisEnabled = isImageAnalysisEnabled,
-            implementationMode = implementationMode,
-            isFocusOnTapEnabled = isFocusOnTapEnabled,
-            isPinchToZoomEnabled = isPinchToZoomEnabled,
-            onTapFocus = { tapOffset = it },
-            onSwitchCamera = { latestBitmap = it },
-        )
+  Box(modifier = modifier) {
+    CameraPreviewImpl(
+      modifier = Modifier
+        .fillMaxSize()
+        .clipToBounds(),
+      cameraSession = cameraSession,
+      captureMode = captureMode,
+      camSelector = camSelector,
+      imageCaptureStrategy = captureStrategy,
+      camFormat = camFormat,
+      scaleType = scaleType,
+      imageAnalyzer = imageAnalyzer,
+      isImageAnalysisEnabled = isImageAnalysisEnabled,
+      implementationMode = implementationMode,
+      isFocusOnTapEnabled = isFocusOnTapEnabled,
+      isPinchToZoomEnabled = isPinchToZoomEnabled,
+      onTapFocus = { tapOffset = it },
+      onSwitchCamera = { latestBitmap = it },
+    )
 
-        FocusTap(
-            offset = tapOffset,
-            onFocus = { onFocus { tapOffset = Offset.Zero } },
-        ) { focusTapContent() }
+    FocusTap(
+      offset = tapOffset,
+      onFocus = { onFocus { tapOffset = Offset.Zero } },
+    ) { focusTapContent() }
 
-        CameraSwitchContent(
-            modifier = Modifier.fillMaxSize(),
-            isCameraIdle = isCameraIdle,
-            bitmap = latestBitmap,
-            onPreviewStreamChanged = onPreviewStreamChanged,
-            onResetBitmap = { latestBitmap = null },
-            switchCameraContent = switchCameraContent,
-        )
+    CameraSwitchContent(
+      modifier = Modifier.fillMaxSize(),
+      isCameraIdle = isCameraIdle,
+      bitmap = latestBitmap,
+      onPreviewStreamChanged = onPreviewStreamChanged,
+      onResetBitmap = { latestBitmap = null },
+      switchCameraContent = switchCameraContent,
+    )
 
-        content()
-    }
+    content()
+  }
 }
 
 @Composable
 private fun CameraSwitchContent(
-    modifier: Modifier = Modifier,
-    bitmap: ImageBitmap?,
-    isCameraIdle: Boolean,
-    onPreviewStreamChanged: () -> Unit,
-    onResetBitmap: () -> Unit,
-    switchCameraContent: @Composable (ImageBitmap) -> Unit,
+  modifier: Modifier = Modifier,
+  bitmap: ImageBitmap?,
+  isCameraIdle: Boolean,
+  onPreviewStreamChanged: () -> Unit,
+  onResetBitmap: () -> Unit,
+  switchCameraContent: @Composable (ImageBitmap) -> Unit,
 ) {
-    LaunchedEffect(isCameraIdle) {
-        if (!isCameraIdle) onResetBitmap()
-    }
+  LaunchedEffect(isCameraIdle) {
+    if (!isCameraIdle) onResetBitmap()
+  }
 
-    if (!isCameraIdle || bitmap == null) {
-        return
-    }
+  if (!isCameraIdle || bitmap == null) {
+    return
+  }
 
-    LaunchedEffect(bitmap) { onPreviewStreamChanged() }
+  LaunchedEffect(bitmap) { onPreviewStreamChanged() }
 
-    switchCameraContent(bitmap)
+  switchCameraContent(bitmap)
 }
 
 @Composable
 internal expect fun CameraPreviewImpl(
-    modifier: Modifier = Modifier,
-    cameraSession: CameraSession,
-    camSelector: CamSelector,
-    captureMode: CaptureMode,
-    camFormat: CamFormat,
-    imageCaptureStrategy: ImageCaptureStrategy,
-    scaleType: ScaleType,
-    imageAnalyzer: ImageAnalyzer?,
-    implementationMode: ImplementationMode,
-    isImageAnalysisEnabled: Boolean,
-    isFocusOnTapEnabled: Boolean,
-    isPinchToZoomEnabled: Boolean,
-    onTapFocus: (Offset) -> Unit,
-    onSwitchCamera: (ImageBitmap) -> Unit,
-    content: @Composable () -> Unit = {},
+  modifier: Modifier = Modifier,
+  cameraSession: CameraSession,
+  camSelector: CamSelector,
+  captureMode: CaptureMode,
+  camFormat: CamFormat,
+  imageCaptureStrategy: ImageCaptureStrategy,
+  scaleType: ScaleType,
+  imageAnalyzer: ImageAnalyzer?,
+  implementationMode: ImplementationMode,
+  isImageAnalysisEnabled: Boolean,
+  isFocusOnTapEnabled: Boolean,
+  isPinchToZoomEnabled: Boolean,
+  onTapFocus: (Offset) -> Unit,
+  onSwitchCamera: (ImageBitmap) -> Unit,
+  content: @Composable () -> Unit = {},
 )

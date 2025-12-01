@@ -34,121 +34,124 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.ujizin.sample.R
 import coil.compose.AsyncImage
 import coil.decode.VideoFrameDecoder
 import coil.request.ImageRequest
 import coil.request.videoFrameMillis
+import com.ujizin.sample.R
 import kotlinx.coroutines.delay
 import java.io.File
 
-
 @Composable
 fun PictureActions(
-    modifier: Modifier = Modifier,
-    isVideo: Boolean,
-    isRecording: Boolean,
-    lastPicture: File?,
-    onGalleryClick: () -> Unit,
-    onRecording: () -> Unit,
-    onTakePicture: () -> Unit,
-    onSwitchCamera: () -> Unit,
+  modifier: Modifier = Modifier,
+  isVideo: Boolean,
+  isRecording: Boolean,
+  lastPicture: File?,
+  onGalleryClick: () -> Unit,
+  onRecording: () -> Unit,
+  onTakePicture: () -> Unit,
+  onSwitchCamera: () -> Unit,
 ) {
-    Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        GalleryButton(lastPicture, onClick = onGalleryClick)
-        PictureButton(
-            isVideo = isVideo,
-            isRecording = isRecording,
-            onClick = { if (isVideo) onRecording() else onTakePicture() }
-        )
-        SwitchButton(onClick = onSwitchCamera)
-    }
+  Row(
+    modifier = modifier,
+    horizontalArrangement = Arrangement.SpaceEvenly,
+    verticalAlignment = Alignment.CenterVertically,
+  ) {
+    GalleryButton(lastPicture, onClick = onGalleryClick)
+    PictureButton(
+      isVideo = isVideo,
+      isRecording = isRecording,
+      onClick = { if (isVideo) onRecording() else onTakePicture() },
+    )
+    SwitchButton(onClick = onSwitchCamera)
+  }
 }
 
 @Composable
-fun GalleryButton(lastPicture: File?, onClick: () -> Unit) {
-    var shouldAnimate by remember { mutableStateOf(false) }
-    val animScale by animateFloatAsState(targetValue = if (shouldAnimate) 1.25F else 1F)
-    AsyncImage(
-        modifier = Modifier
-            .scale(animScale)
-            .size(48.dp)
-            .clip(CircleShape)
-            .background(Color.Black.copy(alpha = 0.5F), CircleShape)
-            .clickable(onClick = onClick),
-        contentScale = ContentScale.Crop,
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(lastPicture)
-            .decoderFactory(VideoFrameDecoder.Factory())
-            .videoFrameMillis(1)
-            .build(),
-        contentDescription = stringResource(R.string.gallery)
-    )
+fun GalleryButton(
+  lastPicture: File?,
+  onClick: () -> Unit,
+) {
+  var shouldAnimate by remember { mutableStateOf(false) }
+  val animScale by animateFloatAsState(targetValue = if (shouldAnimate) 1.25F else 1F)
+  AsyncImage(
+    modifier = Modifier
+      .scale(animScale)
+      .size(48.dp)
+      .clip(CircleShape)
+      .background(Color.Black.copy(alpha = 0.5F), CircleShape)
+      .clickable(onClick = onClick),
+    contentScale = ContentScale.Crop,
+    model = ImageRequest
+      .Builder(LocalContext.current)
+      .data(lastPicture)
+      .decoderFactory(VideoFrameDecoder.Factory())
+      .videoFrameMillis(1)
+      .build(),
+    contentDescription = stringResource(R.string.gallery),
+  )
 
-    LaunchedEffect(lastPicture) {
-        shouldAnimate = true
-        delay(50)
-        shouldAnimate = false
-    }
+  LaunchedEffect(lastPicture) {
+    shouldAnimate = true
+    delay(50)
+    shouldAnimate = false
+  }
 }
 
 @Composable
 private fun SwitchButton(
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit,
+  modifier: Modifier = Modifier,
+  onClick: () -> Unit,
 ) {
-    var clicked by remember { mutableStateOf(false) }
-    val rotate by animateFloatAsState(
-        targetValue = if (clicked) 360F else 1F,
-        animationSpec = tween(durationMillis = 500)
+  var clicked by remember { mutableStateOf(false) }
+  val rotate by animateFloatAsState(
+    targetValue = if (clicked) 360F else 1F,
+    animationSpec = tween(durationMillis = 500),
+  )
+  Button(
+    modifier = Modifier
+      .rotate(rotate)
+      .size(48.dp)
+      .background(Color.DarkGray.copy(alpha = 0.25F), CircleShape)
+      .clip(CircleShape)
+      .then(modifier),
+    onClick = {
+      clicked = !clicked
+      onClick()
+    },
+  ) {
+    Image(
+      modifier = Modifier.size(24.dp),
+      painter = painterResource(id = R.drawable.refresh),
+      colorFilter = ColorFilter.tint(Color.White),
+      contentDescription = stringResource(R.string.refresh),
     )
-    Button(
-        modifier = Modifier
-            .rotate(rotate)
-            .size(48.dp)
-            .background(Color.DarkGray.copy(alpha = 0.25F), CircleShape)
-            .clip(CircleShape)
-            .then(modifier),
-        onClick = {
-            clicked = !clicked
-            onClick()
-        }
-    ) {
-        Image(
-            modifier = Modifier.size(24.dp),
-            painter = painterResource(id = R.drawable.refresh),
-            colorFilter = ColorFilter.tint(Color.White),
-            contentDescription = stringResource(R.string.refresh)
-        )
-    }
+  }
 }
 
 @Composable
 private fun PictureButton(
-    modifier: Modifier = Modifier,
-    isVideo: Boolean,
-    isRecording: Boolean,
-    onClick: () -> Unit,
+  modifier: Modifier = Modifier,
+  isVideo: Boolean,
+  isRecording: Boolean,
+  onClick: () -> Unit,
 ) {
-    val color by animateColorAsState(
-        targetValue = if (isVideo) Color.Red else Color.Transparent,
-        animationSpec = tween(durationMillis = 250)
-    )
+  val color by animateColorAsState(
+    targetValue = if (isVideo) Color.Red else Color.Transparent,
+    animationSpec = tween(durationMillis = 250),
+  )
 
-    val innerPadding by animateDpAsState(targetValue = if (isRecording) 24.dp else 8.dp)
-    val percentShape by animateIntAsState(targetValue = if (isRecording) 25 else 50)
-    Button(
-        modifier = Modifier
-            .size(80.dp)
-            .border(BorderStroke(4.dp, Color.White), CircleShape)
-            .padding(innerPadding)
-            .background(color, RoundedCornerShape(percentShape))
-            .clip(CircleShape)
-            .then(modifier),
-        onClick = onClick
-    )
+  val innerPadding by animateDpAsState(targetValue = if (isRecording) 24.dp else 8.dp)
+  val percentShape by animateIntAsState(targetValue = if (isRecording) 25 else 50)
+  Button(
+    modifier = Modifier
+      .size(80.dp)
+      .border(BorderStroke(4.dp, Color.White), CircleShape)
+      .padding(innerPadding)
+      .background(color, RoundedCornerShape(percentShape))
+      .clip(CircleShape)
+      .then(modifier),
+    onClick = onClick,
+  )
 }

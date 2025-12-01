@@ -3,7 +3,9 @@ package com.ujizin.camposer.shared
 import androidx.compose.ui.window.ComposeUIViewController
 import platform.UIKit.UIViewController
 
-fun CameraViewController(): UIViewController = ComposeUIViewController {
+@Suppress("FunctionName")
+fun CameraViewController(): UIViewController =
+  ComposeUIViewController {
 //    var cameraGranted by remember { mutableStateOf(false) }
 //    var audioGranted by remember { mutableStateOf(false) }
 //    AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo, {
@@ -15,4 +17,4 @@ fun CameraViewController(): UIViewController = ComposeUIViewController {
 //    })
 
     CameraScreen()
-}
+  }

@@ -15,64 +15,66 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 internal class CamSelectorTest : CameraTest() {
+  private lateinit var camSelectorState: MutableState<CamSelector>
 
-    private lateinit var camSelectorState: MutableState<CamSelector>
+  private lateinit var isCamSwitchedToFront: MutableState<Boolean>
+  private lateinit var isCamSwitchedToBack: MutableState<Boolean>
+  private lateinit var isPreviewStreamChanged: MutableState<Boolean>
 
-    private lateinit var isCamSwitchedToFront: MutableState<Boolean>
-    private lateinit var isCamSwitchedToBack: MutableState<Boolean>
-    private lateinit var isPreviewStreamChanged: MutableState<Boolean>
+  @Before
+  fun setup() {
+    isCamSwitchedToFront = mutableStateOf(false)
+    isCamSwitchedToBack = mutableStateOf(false)
+    isPreviewStreamChanged = mutableStateOf(false)
+  }
 
-    @Before
-    fun setup() {
-        isCamSwitchedToFront = mutableStateOf(false)
-        isCamSwitchedToBack = mutableStateOf(false)
-        isPreviewStreamChanged = mutableStateOf(false)
+  @Test
+  fun test_camSelectorToFront() =
+    with(composeTestRule) {
+      initCamSelectorCamera(CamSelector.Back)
+
+      camSelectorState.value = CamSelector.Front
+
+      runOnIdle {
+        assertEquals(true, isCamSwitchedToFront.value)
+        assertEquals(true, isPreviewStreamChanged.value)
+        assertEquals(false, isCamSwitchedToBack.value)
+      }
     }
 
-    @Test
-    fun test_camSelectorToFront() = with(composeTestRule) {
-        initCamSelectorCamera(CamSelector.Back)
+  @Test
+  fun test_camSelectorToBack() =
+    with(composeTestRule) {
+      initCamSelectorCamera(CamSelector.Front)
 
-        camSelectorState.value = CamSelector.Front
+      camSelectorState.value = CamSelector.Back
 
-        runOnIdle {
-            assertEquals(true, isCamSwitchedToFront.value)
-            assertEquals(true, isPreviewStreamChanged.value)
-            assertEquals(false, isCamSwitchedToBack.value)
-        }
+      runOnIdle {
+        assertEquals(true, isCamSwitchedToBack.value)
+        assertEquals(true, isPreviewStreamChanged.value)
+        assertEquals(false, isCamSwitchedToFront.value)
+      }
     }
 
-    @Test
-    fun test_camSelectorToBack() = with(composeTestRule) {
-        initCamSelectorCamera(CamSelector.Front)
+  private fun ComposeContentTestRule.initCamSelectorCamera(initialValue: CamSelector) =
+    initCameraSession { state ->
+      camSelectorState = remember { mutableStateOf(initialValue) }
+      isCamSwitchedToBack = remember { mutableStateOf(false) }
+      isCamSwitchedToFront = remember { mutableStateOf(false) }
+      isPreviewStreamChanged = remember { mutableStateOf(false) }
 
-        camSelectorState.value = CamSelector.Back
-
-        runOnIdle {
-            assertEquals(true, isCamSwitchedToBack.value)
-            assertEquals(true, isPreviewStreamChanged.value)
-            assertEquals(false, isCamSwitchedToFront.value)
-        }
-    }
-
-    private fun ComposeContentTestRule.initCamSelectorCamera(
-        initialValue: CamSelector
-    ) = initCameraSession { state ->
-        camSelectorState = remember { mutableStateOf(initialValue) }
-        isCamSwitchedToBack = remember { mutableStateOf(false) }
-        isCamSwitchedToFront = remember { mutableStateOf(false) }
-        isPreviewStreamChanged = remember { mutableStateOf(false) }
-
-        CameraPreview(
-            cameraSession = state,
-            camSelector = camSelectorState.value,
-            switchCameraContent = {
-                LaunchedEffect(Unit) {
-                    isCamSwitchedToBack.value = camSelectorState.value.camPosition == CamPosition.Back
-                    isCamSwitchedToFront.value = camSelectorState.value.camPosition == CamPosition.Front
-                }
-            },
-            onPreviewStreamChanged = { isPreviewStreamChanged.value = true }
-        )
+      CameraPreview(
+        cameraSession = state,
+        camSelector = camSelectorState.value,
+        switchCameraContent = {
+          LaunchedEffect(Unit) {
+            isCamSwitchedToBack.value =
+              camSelectorState.value.camPosition == CamPosition.Back
+            isCamSwitchedToFront.value =
+              camSelectorState.value.camPosition == CamPosition.Front
+          }
+        },
+        onPreviewStreamChanged = { isPreviewStreamChanged.value = true },
+      )
     }
 }

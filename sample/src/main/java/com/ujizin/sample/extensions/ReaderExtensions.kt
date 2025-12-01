@@ -13,26 +13,26 @@ import kotlinx.coroutines.withContext
 import java.nio.ByteBuffer
 
 fun ByteBuffer.toByteArray(): ByteArray {
-    rewind()
-    val data = ByteArray(remaining())
-    get(data)
-    return data
+  rewind()
+  val data = ByteArray(remaining())
+  get(data)
+  return data
 }
 
 @WorkerThread
 suspend fun MultiFormatReader.getQRCodeResult(
-    image: ImageProxy,
-    dispatcher: CoroutineDispatcher = Dispatchers.IO
+  image: ImageProxy,
+  dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) = withContext(dispatcher) {
-    with(image) {
-        val data = planes.firstOrNull()?.buffer?.toByteArray()
-        val source = PlanarYUVLuminanceSource(data, width, height, 0, 0, width, height, false)
-        val binaryBitmap = BinaryBitmap(HybridBinarizer(source))
-        try {
-            decode(binaryBitmap)
-        } catch (e: NotFoundException) {
-            e.printStackTrace()
-            null
-        }
+  with(image) {
+    val data = planes.firstOrNull()?.buffer?.toByteArray()
+    val source = PlanarYUVLuminanceSource(data, width, height, 0, 0, width, height, false)
+    val binaryBitmap = BinaryBitmap(HybridBinarizer(source))
+    try {
+      decode(binaryBitmap)
+    } catch (e: NotFoundException) {
+      e.printStackTrace()
+      null
     }
+  }
 }

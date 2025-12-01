@@ -30,34 +30,34 @@ import kotlin.math.roundToInt
 
 @Composable
 internal fun FocusTap(
-    modifier: Modifier = Modifier,
-    offset: Offset,
-    onFocus: suspend () -> Unit = {},
-    focusContent: @Composable () -> Unit = {}
+  modifier: Modifier = Modifier,
+  offset: Offset,
+  onFocus: suspend () -> Unit = {},
+  focusContent: @Composable () -> Unit = {},
 ) {
-    val isFocused by remember(offset) { derivedStateOf { offset != Offset.Zero } }
-    if (isFocused) {
-        val focusMovable = remember(offset) {
-            movableContentOf {
-                Box(
-                    Modifier
-                        .then(modifier)
-                        .layout { measurable, constraints ->
-                            val placeable = measurable.measure(constraints)
-                            layout(placeable.width, placeable.height) {
-                                val relativeX = offset.x.roundToInt() - placeable.width / 2
-                                val relativeY = offset.y.roundToInt() - placeable.height / 2
-                                placeable.placeRelative(relativeX, relativeY)
-                            }
-                        }
-                ) {
-                    focusContent()
-                }
-            }
+  val isFocused by remember(offset) { derivedStateOf { offset != Offset.Zero } }
+  if (isFocused) {
+    val focusMovable = remember(offset) {
+      movableContentOf {
+        Box(
+          Modifier
+            .then(modifier)
+            .layout { measurable, constraints ->
+              val placeable = measurable.measure(constraints)
+              layout(placeable.width, placeable.height) {
+                val relativeX = offset.x.roundToInt() - placeable.width / 2
+                val relativeY = offset.y.roundToInt() - placeable.height / 2
+                placeable.placeRelative(relativeX, relativeY)
+              }
+            },
+        ) {
+          focusContent()
         }
-        focusMovable()
-        LaunchedEffect(offset) { onFocus() }
+      }
     }
+    focusMovable()
+    LaunchedEffect(offset) { onFocus() }
+  }
 }
 
 /**
@@ -65,47 +65,45 @@ internal fun FocusTap(
  * */
 @Composable
 public fun SquareCornerFocus(
-    modifier: Modifier = Modifier,
-    tapSize: Dp = DefaultFocusSize,
-    borderSize: Dp = Dp.Unspecified,
-    borderStroke: BorderStroke = DefaultBorderStroke,
+  modifier: Modifier = Modifier,
+  tapSize: Dp = DefaultFocusSize,
+  borderSize: Dp = Dp.Unspecified,
+  borderStroke: BorderStroke = DefaultBorderStroke,
 ) {
-    val scaleAnim by scaleAsState()
-    Box(
-        Modifier
-            .size(tapSize)
-            .scale(scaleAnim)
-            .drawBehind {
-                drawCornerBorder(
-                    brush = borderStroke.brush,
-                    x = size.width,
-                    y = size.height,
-                    thickness = borderStroke.width,
-                    borderSize = borderSize
-                )
-            }
-            .then(modifier),
-    )
+  val scaleAnim by scaleAsState()
+  Box(
+    Modifier
+      .size(tapSize)
+      .scale(scaleAnim)
+      .drawBehind {
+        drawCornerBorder(
+          brush = borderStroke.brush,
+          x = size.width,
+          y = size.height,
+          thickness = borderStroke.width,
+          borderSize = borderSize,
+        )
+      }.then(modifier),
+  )
 }
-
 
 /**
  * Square focus shape composable.
  * */
 @Composable
 public fun SquareFocus(
-    modifier: Modifier = Modifier,
-    tapSize: Dp = DefaultFocusSize,
-    borderStroke: BorderStroke = DefaultBorderStroke,
+  modifier: Modifier = Modifier,
+  tapSize: Dp = DefaultFocusSize,
+  borderStroke: BorderStroke = DefaultBorderStroke,
 ) {
-    val scaleAnim by scaleAsState()
-    Box(
-        Modifier
-            .size(tapSize)
-            .scale(scaleAnim)
-            .border(borderStroke)
-            .then(modifier),
-    )
+  val scaleAnim by scaleAsState()
+  Box(
+    Modifier
+      .size(tapSize)
+      .scale(scaleAnim)
+      .border(borderStroke)
+      .then(modifier),
+  )
 }
 
 /**
@@ -113,32 +111,32 @@ public fun SquareFocus(
  * */
 @Composable
 public fun CircleFocus(
-    modifier: Modifier = Modifier,
-    tapSize: Dp = DefaultFocusSize,
-    borderStroke: BorderStroke = DefaultBorderStroke,
+  modifier: Modifier = Modifier,
+  tapSize: Dp = DefaultFocusSize,
+  borderStroke: BorderStroke = DefaultBorderStroke,
 ) {
-    val scaleAnim by scaleAsState()
-    Box(
-        Modifier
-            .size(tapSize)
-            .scale(scaleAnim)
-            .border(borderStroke, CircleShape)
-            .then(modifier),
-    )
+  val scaleAnim by scaleAsState()
+  Box(
+    Modifier
+      .size(tapSize)
+      .scale(scaleAnim)
+      .border(borderStroke, CircleShape)
+      .then(modifier),
+  )
 }
 
 @Composable
 internal fun scaleAsState(
-    initialValue: Float = 1.5F,
-    targetValue: Float = 1F,
-    animationSpec: AnimationSpec<Float>? = null,
+  initialValue: Float = 1.5F,
+  targetValue: Float = 1F,
+  animationSpec: AnimationSpec<Float>? = null,
 ): State<Float> {
-    var scale by remember { mutableStateOf(initialValue) }
-    LaunchedEffect(scale) { scale = targetValue }
-    return animateFloatAsState(
-        targetValue = scale,
-        animationSpec = animationSpec ?: tween(easing = LinearOutSlowInEasing)
-    )
+  var scale by remember { mutableStateOf(initialValue) }
+  LaunchedEffect(scale) { scale = targetValue }
+  return animateFloatAsState(
+    targetValue = scale,
+    animationSpec = animationSpec ?: tween(easing = LinearOutSlowInEasing),
+  )
 }
 
 private val DefaultFocusSize = 64.dp

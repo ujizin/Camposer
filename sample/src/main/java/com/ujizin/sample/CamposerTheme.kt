@@ -8,12 +8,12 @@ import androidx.compose.ui.text.font.FontFamily
 
 @Composable
 fun CamposerTheme(content: @Composable () -> Unit) {
-    MaterialTheme(
-        colors = MaterialTheme.colors.copy(
-            primary = colorResource(id = R.color.primary),
-            background = colorResource(id = R.color.light_gray),
-        ),
-        typography = Typography(defaultFontFamily = FontFamily.SansSerif),
-        content = content
-    )
+  MaterialTheme(
+    colors = MaterialTheme.colors.copy(
+      primary = colorResource(id = R.color.primary),
+      background = colorResource(id = R.color.light_gray),
+    ),
+    typography = Typography(defaultFontFamily = FontFamily.SansSerif),
+    content = content,
+  )
 }

@@ -12,14 +12,14 @@ import androidx.camera.core.ImageCapture
  * @see ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY
  * */
 public actual enum class ImageCaptureStrategy(
-    @ImageCapture.CaptureMode internal val mode: Int,
-    internal val fallback: Int = mode,
+  @ImageCapture.CaptureMode internal val mode: Int,
+  internal val fallback: Int = mode,
 ) {
-    @ExperimentalZeroShutterLag
-    MinLatency(
-        ImageCapture.CAPTURE_MODE_ZERO_SHUTTER_LAG,
-        ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY
-    ),
-    MaxQuality(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY),
-    Balanced(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY);
+  @ExperimentalZeroShutterLag
+  MinLatency(
+    ImageCapture.CAPTURE_MODE_ZERO_SHUTTER_LAG,
+    ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY,
+  ),
+  MaxQuality(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY),
+  Balanced(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY),
 }

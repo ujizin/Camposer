@@ -13,46 +13,48 @@ import platform.darwin.NSObjectProtocol
 
 @OptIn(ExperimentalForeignApi::class)
 internal class PreviewManager(
-    val videoPreviewLayer: AVCaptureVideoPreviewLayer = AVCaptureVideoPreviewLayer(),
+  val videoPreviewLayer: AVCaptureVideoPreviewLayer = AVCaptureVideoPreviewLayer(),
 ) {
+  private val notificationCenter: NSNotificationCenter by lazy {
+    NSNotificationCenter.defaultCenter
+  }
 
-    private val notificationCenter: NSNotificationCenter by lazy {
-        NSNotificationCenter.defaultCenter
+  private var currentGravity: AVLayerVideoGravity = videoPreviewLayer.videoGravity
+
+  private var orientationObserver: NSObjectProtocol? = null
+
+  internal fun start(avCaptureSession: AVCaptureSession) =
+    with(videoPreviewLayer) {
+      setSession(avCaptureSession)
     }
 
-    private var currentGravity: AVLayerVideoGravity = videoPreviewLayer.videoGravity
+  internal fun attachView(view: UIView) =
+    with(videoPreviewLayer) {
+      view.layer.addSublayer(this)
+      setFrame(view.bounds)
 
-    private var orientationObserver: NSObjectProtocol? = null
+      orientationObserver = notificationCenter.addObserverForName(
+        UIDeviceOrientationDidChangeNotification,
+        null,
+        null,
+      ) { updateOrientation() }
 
-    internal fun start(avCaptureSession: AVCaptureSession) = with(videoPreviewLayer) {
-        setSession(avCaptureSession)
+      updateOrientation()
+      setVideoGravity(currentGravity)
     }
 
-    internal fun attachView(view: UIView) = with(videoPreviewLayer) {
-        view.layer.addSublayer(this)
-        setFrame(view.bounds)
-
-        orientationObserver = notificationCenter.addObserverForName(
-            UIDeviceOrientationDidChangeNotification,
-            null,
-            null
-        ) { updateOrientation() }
-
-        updateOrientation()
-        setVideoGravity(currentGravity)
+  private fun updateOrientation() =
+    videoPreviewLayer.connection?.apply {
+      videoOrientation = sharedApplication().statusBarOrientation.toVideoOrientation()
     }
 
-    private fun updateOrientation() = videoPreviewLayer.connection?.apply {
-        videoOrientation = sharedApplication().statusBarOrientation.toVideoOrientation()
-    }
+  internal fun setGravity(gravity: AVLayerVideoGravity) {
+    currentGravity = gravity
+    videoPreviewLayer.setVideoGravity(gravity)
+  }
 
-    internal fun setGravity(gravity: AVLayerVideoGravity) {
-        currentGravity = gravity
-        videoPreviewLayer.setVideoGravity(gravity)
-    }
-
-    internal fun detachView() {
-        orientationObserver?.let(notificationCenter::removeObserver)
-        videoPreviewLayer.removeFromSuperlayer()
-    }
+  internal fun detachView() {
+    orientationObserver?.let(notificationCenter::removeObserver)
+    videoPreviewLayer.removeFromSuperlayer()
+  }
 }

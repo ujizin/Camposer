@@ -20,28 +20,27 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun Button(
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    contentPaddingValues: PaddingValues = PaddingValues(0.dp),
-    onClick: () -> Unit,
-    content: @Composable BoxScope.() -> Unit = {},
+  modifier: Modifier = Modifier,
+  enabled: Boolean = true,
+  contentPaddingValues: PaddingValues = PaddingValues(0.dp),
+  onClick: () -> Unit,
+  content: @Composable BoxScope.() -> Unit = {},
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-    val pressed by interactionSource.collectIsPressedAsState()
-    val scale by animateFloatAsState(if (pressed) 0.9F else 1F)
+  val interactionSource = remember { MutableInteractionSource() }
+  val pressed by interactionSource.collectIsPressedAsState()
+  val scale by animateFloatAsState(if (pressed) 0.9F else 1F)
 
-    Box(
-        modifier = Modifier
-            .scale(scale)
-            .then(modifier)
-            .clickable(
-                enabled = enabled,
-                indication = ripple(bounded = true),
-                interactionSource = interactionSource,
-                onClick = onClick,
-            )
-            .padding(contentPaddingValues),
-        contentAlignment = Alignment.Center,
-        content = content
-    )
+  Box(
+    modifier = Modifier
+      .scale(scale)
+      .then(modifier)
+      .clickable(
+        enabled = enabled,
+        indication = ripple(bounded = true),
+        interactionSource = interactionSource,
+        onClick = onClick,
+      ).padding(contentPaddingValues),
+    contentAlignment = Alignment.Center,
+    content = content,
+  )
 }

@@ -31,125 +31,133 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 class CameraViewModel(
-    private val fileDataSource: FileDataSource,
-    private val userDataSource: UserDataSource,
+  private val fileDataSource: FileDataSource,
+  private val userDataSource: UserDataSource,
 ) : ViewModel() {
+  private val _uiState: MutableStateFlow<CameraUiState> = MutableStateFlow(CameraUiState.Initial)
+  val uiState: StateFlow<CameraUiState> get() = _uiState
 
-    private val _uiState: MutableStateFlow<CameraUiState> = MutableStateFlow(CameraUiState.Initial)
-    val uiState: StateFlow<CameraUiState> get() = _uiState
+  private val reader = MultiFormatReader().apply {
+    val map = mapOf(DecodeHintType.POSSIBLE_FORMATS to arrayListOf(BarcodeFormat.QR_CODE))
+    setHints(map)
+  }
 
-    private val reader = MultiFormatReader().apply {
-        val map = mapOf(DecodeHintType.POSSIBLE_FORMATS to arrayListOf(BarcodeFormat.QR_CODE))
-        setHints(map)
-    }
+  private lateinit var user: User
 
-    private lateinit var user: User
+  init {
+    initCamera()
+  }
 
-    init {
-        initCamera()
-    }
-
-    private fun initCamera() {
-        viewModelScope.launch {
-            userDataSource.getUser()
-                .onStart { CameraUiState.Initial }
-                .collect { user ->
-                    _uiState.value = CameraUiState.Ready(user, fileDataSource.lastPicture).apply {
-                        this@CameraViewModel.user = user
-                    }
-                }
+  private fun initCamera() {
+    viewModelScope.launch {
+      userDataSource
+        .getUser()
+        .onStart { CameraUiState.Initial }
+        .collect { user ->
+          _uiState.value = CameraUiState.Ready(user, fileDataSource.lastPicture).apply {
+            this@CameraViewModel.user = user
+          }
         }
     }
+  }
 
-    fun takePicture(cameraController: CameraController) = with(cameraController) {
-        viewModelScope.launch {
-            when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> takePicture(
-                    fileDataSource.imageContentValues,
-                    onResult = ::onImageResult
-                )
+  fun takePicture(cameraController: CameraController) =
+    with(cameraController) {
+      viewModelScope.launch {
+        when {
+          Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> takePicture(
+            fileDataSource.imageContentValues,
+            onResult = ::onImageResult,
+          )
 
-                else -> takePicture(
-                    fileDataSource.getFile("jpg"),
-                    ::onImageResult
-                )
-            }
+          else -> takePicture(
+            fileDataSource.getFile("jpg"),
+            ::onImageResult,
+          )
         }
+      }
     }
 
-    @SuppressLint("MissingPermission")
-    fun toggleRecording(contentResolver: ContentResolver, cameraController: CameraController) =
-        with(cameraController) {
-            viewModelScope.launch {
-                when {
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> toggleRecording(
-                        MediaStoreOutputOptions.Builder(
-                            contentResolver,
-                            MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-                        ).setContentValues(fileDataSource.videoContentValues).build(),
-                        onResult = ::onVideoResult
-                    )
-
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> {
-                        toggleRecording(
-                            FileOutputOptions.Builder(fileDataSource.getFile("mp4")).build(),
-                            onResult = ::onVideoResult
-                        )
-                    }
-                }
-            }
+  @SuppressLint("MissingPermission")
+  fun toggleRecording(
+    contentResolver: ContentResolver,
+    cameraController: CameraController,
+  ) = with(cameraController) {
+    viewModelScope.launch {
+      when {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
+          toggleRecording(
+            MediaStoreOutputOptions
+              .Builder(
+                contentResolver,
+                MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+              ).setContentValues(fileDataSource.videoContentValues)
+              .build(),
+            onResult = ::onVideoResult,
+          )
         }
 
-    fun analyzeImage(image: ImageProxy) {
-        viewModelScope.launch {
-            if (image.format !in listOf(YUV_420_888, YUV_422_888, YUV_444_888)) {
-                Log.e("QRCodeAnalyzer", "Expected YUV, now = ${image.format}")
-            }
-            val qrCodeResult = reader.getQRCodeResult(image)
-            _uiState.update {
-                CameraUiState.Ready(
-                    user = user,
-                    lastPicture = fileDataSource.lastPicture,
-                    qrCodeText = qrCodeResult?.text
-                )
-            }
-            image.close()
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> {
+          toggleRecording(
+            FileOutputOptions.Builder(fileDataSource.getFile("mp4")).build(),
+            onResult = ::onVideoResult,
+          )
         }
+      }
     }
+  }
 
-    private fun captureSuccess() {
-        viewModelScope.launch {
-            _uiState.update {
-                CameraUiState.Ready(user = user, lastPicture = fileDataSource.lastPicture)
-            }
-        }
+  fun analyzeImage(image: ImageProxy) {
+    viewModelScope.launch {
+      if (image.format !in listOf(YUV_420_888, YUV_422_888, YUV_444_888)) {
+        Log.e("QRCodeAnalyzer", "Expected YUV, now = ${image.format}")
+      }
+      val qrCodeResult = reader.getQRCodeResult(image)
+      _uiState.update {
+        CameraUiState.Ready(
+          user = user,
+          lastPicture = fileDataSource.lastPicture,
+          qrCodeText = qrCodeResult?.text,
+        )
+      }
+      image.close()
     }
+  }
 
-    private fun onVideoResult(videoResult: CaptureResult<Uri?>) {
-        when (videoResult) {
-            is CaptureResult.Error -> onError(videoResult.throwable)
-            is CaptureResult.Success -> captureSuccess()
-        }
+  private fun captureSuccess() {
+    viewModelScope.launch {
+      _uiState.update {
+        CameraUiState.Ready(user = user, lastPicture = fileDataSource.lastPicture)
+      }
     }
+  }
 
-    private fun onImageResult(imageResult: CaptureResult<Uri?>) {
-        when (imageResult) {
-            is CaptureResult.Error -> onError(imageResult.throwable)
-            is CaptureResult.Success -> captureSuccess()
-        }
+  private fun onVideoResult(videoResult: CaptureResult<Uri?>) {
+    when (videoResult) {
+      is CaptureResult.Error -> onError(videoResult.throwable)
+      is CaptureResult.Success -> captureSuccess()
     }
+  }
 
-    private fun onError(throwable: Throwable?) {
-        _uiState.update { CameraUiState.Ready(user, fileDataSource.lastPicture, throwable) }
+  private fun onImageResult(imageResult: CaptureResult<Uri?>) {
+    when (imageResult) {
+      is CaptureResult.Error -> onError(imageResult.throwable)
+      is CaptureResult.Success -> captureSuccess()
     }
+  }
+
+  private fun onError(throwable: Throwable?) {
+    _uiState.update { CameraUiState.Ready(user, fileDataSource.lastPicture, throwable) }
+  }
 }
 
 sealed interface CameraUiState {
-    data object Initial : CameraUiState
-    data class Ready(
-        val user: User,
-        val lastPicture: File?,
-        val throwable: Throwable? = null,
-        val qrCodeText: String? = null,
-    ) : CameraUiState
+  data object Initial : CameraUiState
+
+  data class Ready(
+    val user: User,
+    val lastPicture: File?,
+    val throwable: Throwable? = null,
+    val qrCodeText: String? = null,
+  ) : CameraUiState
 }

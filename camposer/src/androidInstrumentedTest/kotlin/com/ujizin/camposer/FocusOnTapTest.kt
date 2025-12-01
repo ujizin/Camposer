@@ -27,95 +27,99 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 @LargeTest
 internal class FocusOnTapTest : CameraTest() {
+  private lateinit var isFocusTappedState: MutableState<Boolean>
 
-    private lateinit var isFocusTappedState: MutableState<Boolean>
-
-    private val isCameraXFocused: Boolean
-        get() = when (cameraSession.cameraXController.tapToFocusInfoState.value?.focusState) {
-            CameraController.TAP_TO_FOCUS_STARTED, CameraController.TAP_TO_FOCUS_FOCUSED -> true
-            else -> false
-        }
-
-    @Test
-    fun test_focusOnTap(): Unit = with(composeTestRule) {
-        initFocusCamera(initialValue = true)
-
-        onNodeWithTag(FOCUS_TEST_TAG).performClick()
-
-        runOnIdle {
-            assertEquals(true, isCameraXFocused)
-            assertEquals(true, isFocusTappedState.value)
-        }
-
-        onNodeWithTag(FOCUS_TAP_CONTENT_TAG).assertIsDisplayed()
+  private val isCameraXFocused: Boolean
+    get() = when (
+      cameraSession.cameraXController.tapToFocusInfoState.value
+        ?.focusState
+    ) {
+      CameraController.TAP_TO_FOCUS_STARTED, CameraController.TAP_TO_FOCUS_FOCUSED -> true
+      else -> false
     }
 
-    @Test
-    fun test_focusOnTapDisable() = with(composeTestRule) {
-        initFocusCamera(initialValue = false)
+  @Test
+  fun test_focusOnTap(): Unit =
+    with(composeTestRule) {
+      initFocusCamera(initialValue = true)
 
+      onNodeWithTag(FOCUS_TEST_TAG).performClick()
 
-        onNodeWithTag(FOCUS_TEST_TAG).performClick()
+      runOnIdle {
+        assertEquals(true, isCameraXFocused)
+        assertEquals(true, isFocusTappedState.value)
+      }
 
-        runOnIdle {
-            assertEquals(false, isFocusTappedState.value)
-            assertEquals(false, isCameraXFocused)
-        }
+      onNodeWithTag(FOCUS_TAP_CONTENT_TAG).assertIsDisplayed()
     }
 
-    @Test
-    fun test_onFocusCallbackOnComplete() = with(composeTestRule) {
-        var completed = false
-        initFocusCamera(initialValue = true) { onComplete ->
-            delay(FOCUS_DELAY)
-            onComplete()
-            completed = true
-        }
+  @Test
+  fun test_focusOnTapDisable() =
+    with(composeTestRule) {
+      initFocusCamera(initialValue = false)
 
-        onNodeWithTag(FOCUS_TEST_TAG).performClick()
-        onNodeWithTag(FOCUS_TAP_CONTENT_TAG).assertIsDisplayed()
+      onNodeWithTag(FOCUS_TEST_TAG).performClick()
 
-        runOnIdle {
-            assertEquals(true, isCameraXFocused)
-            assertEquals(true, isFocusTappedState.value)
-        }
-
-        waitUntil(FOCUS_ON_COMPLETE_DELAY) { completed }
-
-        onNodeWithTag(FOCUS_TAP_CONTENT_TAG).assertDoesNotExist()
+      runOnIdle {
+        assertEquals(false, isFocusTappedState.value)
+        assertEquals(false, isCameraXFocused)
+      }
     }
 
-    private fun ComposeContentTestRule.initFocusCamera(
-        initialValue: Boolean = true,
-        onFocus: suspend (onComplete: () -> Unit) -> Unit = { onComplete ->
-            delay(DEFAULT_FOCUS_DELAY)
-            onComplete()
-        },
-    ) = initCameraSession { state ->
-        val isFocusOnTapEnabled by remember { mutableStateOf(initialValue) }
-        isFocusTappedState = remember { mutableStateOf(false) }
-        CameraPreview(
-            modifier = Modifier.testTag(FOCUS_TEST_TAG),
-            cameraSession = state,
-            isFocusOnTapEnabled = isFocusOnTapEnabled,
-            focusTapContent = {
-                Box(
-                    modifier = Modifier
-                        .testTag(FOCUS_TAP_CONTENT_TAG)
-                        .background(Color.Red)
-                        .size(64.dp)
-                )
-                LaunchedEffect(Unit) { isFocusTappedState.value = true }
-            },
-            onFocus = onFocus
+  @Test
+  fun test_onFocusCallbackOnComplete() =
+    with(composeTestRule) {
+      var completed = false
+      initFocusCamera(initialValue = true) { onComplete ->
+        delay(FOCUS_DELAY)
+        onComplete()
+        completed = true
+      }
+
+      onNodeWithTag(FOCUS_TEST_TAG).performClick()
+      onNodeWithTag(FOCUS_TAP_CONTENT_TAG).assertIsDisplayed()
+
+      runOnIdle {
+        assertEquals(true, isCameraXFocused)
+        assertEquals(true, isFocusTappedState.value)
+      }
+
+      waitUntil(FOCUS_ON_COMPLETE_DELAY) { completed }
+
+      onNodeWithTag(FOCUS_TAP_CONTENT_TAG).assertDoesNotExist()
+    }
+
+  private fun ComposeContentTestRule.initFocusCamera(
+    initialValue: Boolean = true,
+    onFocus: suspend (onComplete: () -> Unit) -> Unit = { onComplete ->
+      delay(DEFAULT_FOCUS_DELAY)
+      onComplete()
+    },
+  ) = initCameraSession { state ->
+    val isFocusOnTapEnabled by remember { mutableStateOf(initialValue) }
+    isFocusTappedState = remember { mutableStateOf(false) }
+    CameraPreview(
+      modifier = Modifier.testTag(FOCUS_TEST_TAG),
+      cameraSession = state,
+      isFocusOnTapEnabled = isFocusOnTapEnabled,
+      focusTapContent = {
+        Box(
+          modifier = Modifier
+            .testTag(FOCUS_TAP_CONTENT_TAG)
+            .background(Color.Red)
+            .size(64.dp),
         )
-    }
+        LaunchedEffect(Unit) { isFocusTappedState.value = true }
+      },
+      onFocus = onFocus,
+    )
+  }
 
-    private companion object {
-        private const val FOCUS_TEST_TAG = "focus_test_tag"
-        private const val FOCUS_TAP_CONTENT_TAG = "focus_tap_content_tag"
-        private const val DEFAULT_FOCUS_DELAY = 300L
-        private const val FOCUS_DELAY = 500L
-        private const val FOCUS_ON_COMPLETE_DELAY = 2_500L
-    }
+  private companion object {
+    private const val FOCUS_TEST_TAG = "focus_test_tag"
+    private const val FOCUS_TAP_CONTENT_TAG = "focus_tap_content_tag"
+    private const val DEFAULT_FOCUS_DELAY = 300L
+    private const val FOCUS_DELAY = 500L
+    private const val FOCUS_ON_COMPLETE_DELAY = 2_500L
+  }
 }

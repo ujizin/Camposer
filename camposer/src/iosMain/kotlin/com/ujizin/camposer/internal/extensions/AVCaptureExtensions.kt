@@ -19,60 +19,55 @@ import platform.UIKit.UIInterfaceOrientationLandscapeLeft
 import platform.UIKit.UIInterfaceOrientationLandscapeRight
 import platform.UIKit.UIInterfaceOrientationPortraitUpsideDown
 
-internal fun AVCaptureSession.tryAddInput(
-    input: AVCaptureDeviceInput,
-): Boolean {
-    if (inputs.contains(input)) return true
+internal fun AVCaptureSession.tryAddInput(input: AVCaptureDeviceInput): Boolean {
+  if (inputs.contains(input)) return true
 
-    return canAddInput(input).apply {
-        if (this) addInput(input)
-    }
+  return canAddInput(input).apply {
+    if (this) addInput(input)
+  }
 }
 
+internal fun AVCaptureSession.tryAddOutput(output: AVCaptureOutput): Boolean {
+  if (outputs.contains(output)) return true
 
-internal fun AVCaptureSession.tryAddOutput(
-    output: AVCaptureOutput,
-): Boolean {
-    if (outputs.contains(output)) return true
-
-    return canAddOutput(output).apply {
-        if (this) addOutput(output)
-    }
+  return canAddOutput(output).apply {
+    if (this) addOutput(output)
+  }
 }
 
 internal fun AVCaptureSession.isFlashModeSupported(flashMode: AVCaptureFlashMode): Boolean {
-    val output = outputs.firstIsInstanceOrNull<AVCapturePhotoOutput>()
-    return output?.supportedFlashModes?.contains(flashMode) ?: false
+  val output = outputs.firstIsInstanceOrNull<AVCapturePhotoOutput>()
+  return output?.supportedFlashModes?.contains(flashMode) ?: false
 }
 
 internal fun AVCaptureOutput.setMirrorEnabled(isMirrored: Boolean) {
-    connectionWithMediaType(AVMediaTypeVideo)?.setVideoMirrored(isMirrored)
+  connectionWithMediaType(AVMediaTypeVideo)?.setVideoMirrored(isMirrored)
 }
 
 @OptIn(ExperimentalForeignApi::class)
 internal fun AVCaptureDevice.toDeviceInput(): AVCaptureDeviceInput =
-    executeWithErrorHandling { ptr ->
-        AVCaptureDeviceInput.deviceInputWithDevice(
-            this,
-            ptr
-        )!!
-    }
+  executeWithErrorHandling { ptr ->
+    AVCaptureDeviceInput.deviceInputWithDevice(
+      this,
+      ptr,
+    )!!
+  }
 
 @OptIn(ExperimentalForeignApi::class)
-internal fun AVCaptureDevice.withConfigurationLock(
-    block: AVCaptureDevice.() -> Unit,
-) = executeWithErrorHandling { nsErrorPtr ->
+internal fun AVCaptureDevice.withConfigurationLock(block: AVCaptureDevice.() -> Unit) =
+  executeWithErrorHandling { nsErrorPtr ->
     try {
-        lockForConfiguration(nsErrorPtr)
-        block()
+      lockForConfiguration(nsErrorPtr)
+      block()
     } finally {
-        unlockForConfiguration()
+      unlockForConfiguration()
     }
-}
+  }
 
-internal fun UIInterfaceOrientation.toVideoOrientation(): AVCaptureVideoOrientation = when (this) {
+internal fun UIInterfaceOrientation.toVideoOrientation(): AVCaptureVideoOrientation =
+  when (this) {
     UIInterfaceOrientationLandscapeLeft -> AVCaptureVideoOrientationLandscapeLeft
     UIInterfaceOrientationLandscapeRight -> AVCaptureVideoOrientationLandscapeRight
     UIInterfaceOrientationPortraitUpsideDown -> AVCaptureVideoOrientationPortraitUpsideDown
     else -> AVCaptureVideoOrientationPortrait
-}
+  }

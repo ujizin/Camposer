@@ -16,41 +16,41 @@ import com.ujizin.sample.R
 
 @Composable
 fun Section(
-    modifier: Modifier = Modifier,
-    title: @Composable () -> Unit,
-    onBackPressed: () -> Unit,
-    content: @Composable (PaddingValues) -> Unit,
+  modifier: Modifier = Modifier,
+  title: @Composable () -> Unit,
+  onBackPressed: () -> Unit,
+  content: @Composable (PaddingValues) -> Unit,
 ) {
-    Scaffold(
-        modifier = modifier,
-        topBar = {
-            TopAppBar(
-                contentColor = Color.White,
-                title = { title() },
-                navigationIcon = {
-                    NavigationIcon(
-                        icon = Icons.Filled.ArrowBack,
-                        contentDescription = stringResource(id = R.string.back),
-                        onClick = onBackPressed,
-                    )
-                },
-            )
+  Scaffold(
+    modifier = modifier,
+    topBar = {
+      TopAppBar(
+        contentColor = Color.White,
+        title = { title() },
+        navigationIcon = {
+          NavigationIcon(
+            icon = Icons.Filled.ArrowBack,
+            contentDescription = stringResource(id = R.string.back),
+            onClick = onBackPressed,
+          )
         },
-    ) { content(it) }
+      )
+    },
+  ) { content(it) }
 }
 
 @Composable
 fun NavigationIcon(
-    modifier: Modifier = Modifier,
-    icon: ImageVector,
-    contentDescription: String,
-    onClick: () -> Unit,
+  modifier: Modifier = Modifier,
+  icon: ImageVector,
+  contentDescription: String,
+  onClick: () -> Unit,
 ) {
-    IconButton(modifier = modifier, onClick = onClick) {
-        Icon(
-            imageVector = icon,
-            contentDescription = contentDescription,
-            tint = Color.White,
-        )
-    }
+  IconButton(modifier = modifier, onClick = onClick) {
+    Icon(
+      imageVector = icon,
+      contentDescription = contentDescription,
+      tint = Color.White,
+    )
+  }
 }

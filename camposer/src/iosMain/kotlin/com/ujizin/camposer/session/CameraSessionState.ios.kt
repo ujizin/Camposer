@@ -5,6 +5,5 @@ import androidx.compose.runtime.remember
 import com.ujizin.camposer.controller.camera.CameraController
 
 @Composable
-public actual fun rememberCameraSession(controller: CameraController): CameraSession {
-    return remember(controller) { CameraSession(controller) }
-}
+public actual fun rememberCameraSession(controller: CameraController): CameraSession =
+  remember(controller) { CameraSession(controller) }

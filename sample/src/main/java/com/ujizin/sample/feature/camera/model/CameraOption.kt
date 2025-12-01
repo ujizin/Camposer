@@ -5,17 +5,22 @@ import androidx.annotation.StringRes
 import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.sample.R
 
-enum class CameraOption(@StringRes val titleRes: Int) {
-    Photo(R.string.photo),
-    Video(R.string.video),
-    QRCode(R.string.qr_code);
+enum class CameraOption(
+  @StringRes val titleRes: Int,
+) {
+  Photo(R.string.photo),
+  Video(R.string.video),
+  QRCode(R.string.qr_code),
+  ;
 
-    fun toCaptureMode(): CaptureMode = when(this) {
-        QRCode, Photo -> CaptureMode.Image
-        Video -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            CaptureMode.Video
-        } else {
-            throw IllegalStateException("Camera state not support video capture mode")
-        }
+  fun toCaptureMode(): CaptureMode =
+    when (this) {
+      QRCode, Photo -> CaptureMode.Image
+
+      Video -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        CaptureMode.Video
+      } else {
+        throw IllegalStateException("Camera state not support video capture mode")
+      }
     }
 }

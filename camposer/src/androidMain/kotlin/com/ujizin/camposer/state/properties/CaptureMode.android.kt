@@ -10,8 +10,10 @@ import androidx.camera.view.CameraController.VIDEO_CAPTURE
  * @see IMAGE_CAPTURE
  * @see VIDEO_CAPTURE
  * */
-public actual enum class CaptureMode(internal val value: Int) {
-    Image(IMAGE_CAPTURE),
+public actual enum class CaptureMode(
+  internal val value: Int,
+) {
+  Image(IMAGE_CAPTURE),
 
-    Video(VIDEO_CAPTURE),
+  Video(VIDEO_CAPTURE),
 }

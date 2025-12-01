@@ -16,33 +16,41 @@ import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 internal fun <T> asyncCameraConfig(
-    mutex: Mutex,
-    value: T,
-    check: (T) -> Unit = {},
-    predicate: (old: T, new: T) -> Boolean = { old, new -> old != new },
-    onDispose: (old: T) -> Unit = {},
-    onSet: (field: T) -> T = { it },
-    block: (new: T) -> Unit = {},
-): ReadWriteProperty<Any?, T> = object : ReadWriteProperty<Any?, T> {
+  mutex: Mutex,
+  value: T,
+  check: (T) -> Unit = {},
+  predicate: (old: T, new: T) -> Boolean = { old, new -> old != new },
+  onDispose: (old: T) -> Unit = {},
+  onSet: (field: T) -> T = { it },
+  block: (new: T) -> Unit = {},
+): ReadWriteProperty<Any?, T> =
+  object : ReadWriteProperty<Any?, T> {
     private var currentValue by mutableStateOf(value)
 
     private var job: Job? = null
 
-    override fun getValue(thisRef: Any?, property: KProperty<*>): T = currentValue
+    override fun getValue(
+      thisRef: Any?,
+      property: KProperty<*>,
+    ): T = currentValue
 
-    override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
-        if (!predicate(currentValue, value)) return
-        check(value)
-        val tmpValue = currentValue
-        currentValue = onSet(value)
-        job?.cancel()
-        job = CoroutineScope(Dispatchers.IO).launch {
-            mutex.withLock {
-                withContext(NonCancellable) {
-                    onDispose(tmpValue)
-                    block(currentValue)
-                }
-            }
+    override fun setValue(
+      thisRef: Any?,
+      property: KProperty<*>,
+      value: T,
+    ) {
+      if (!predicate(currentValue, value)) return
+      check(value)
+      val tmpValue = currentValue
+      currentValue = onSet(value)
+      job?.cancel()
+      job = CoroutineScope(Dispatchers.IO).launch {
+        mutex.withLock {
+          withContext(NonCancellable) {
+            onDispose(tmpValue)
+            block(currentValue)
+          }
         }
+      }
     }
-}
+  }

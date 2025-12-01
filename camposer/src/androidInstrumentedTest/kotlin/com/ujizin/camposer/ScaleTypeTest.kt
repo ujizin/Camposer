@@ -12,25 +12,25 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 internal class ScaleTypeTest : CameraTest() {
+  private lateinit var scaleType: MutableState<ScaleType>
 
-    private lateinit var scaleType: MutableState<ScaleType>
-
-    @Test
-    fun test_scaleType() = with(composeTestRule) {
-        initScaleTypeCamera()
-        ScaleType.entries.forEach { scale ->
-            scaleType.value = scale
-            runOnIdle { assertEquals(cameraSession.state.scaleType, scaleType.value) }
-        }
+  @Test
+  fun test_scaleType() =
+    with(composeTestRule) {
+      initScaleTypeCamera()
+      ScaleType.entries.forEach { scale ->
+        scaleType.value = scale
+        runOnIdle { assertEquals(cameraSession.state.scaleType, scaleType.value) }
+      }
     }
 
-    private fun ComposeContentTestRule.initScaleTypeCamera(
-        initialValue: ScaleType = ScaleType.FitStart,
-    ) = initCameraSession { state ->
-        scaleType = remember { mutableStateOf(initialValue) }
-        CameraPreview(
-            cameraSession = state,
-            scaleType = scaleType.value,
-        )
-    }
+  private fun ComposeContentTestRule.initScaleTypeCamera(
+    initialValue: ScaleType = ScaleType.FitStart,
+  ) = initCameraSession { state ->
+    scaleType = remember { mutableStateOf(initialValue) }
+    CameraPreview(
+      cameraSession = state,
+      scaleType = scaleType.value,
+    )
+  }
 }

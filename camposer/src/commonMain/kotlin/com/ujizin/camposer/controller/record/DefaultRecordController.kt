@@ -2,34 +2,23 @@ package com.ujizin.camposer.controller.record
 
 import com.ujizin.camposer.CaptureResult
 
-public interface RecordController {
-
-    public val isMuted: Boolean
-
-    public val isRecording: Boolean
-
-    public fun startRecording(filename: String, onVideoCaptured: (CaptureResult<String>) -> Unit)
-    public fun resumeRecording()
-    public fun pauseRecording()
-    public fun stopRecording()
-
-    public fun muteRecording(isMuted: Boolean)
-}
-
 internal expect class DefaultRecordController : RecordController {
-    override var isMuted: Boolean
-        internal set
+  override var isMuted: Boolean
+    internal set
 
-    override var isRecording: Boolean
-        internal set
+  override var isRecording: Boolean
+    internal set
 
-    override fun startRecording(
-        filename: String,
-        onVideoCaptured: (CaptureResult<String>) -> Unit,
-    )
+  override fun startRecording(
+    filename: String,
+    onVideoCaptured: (CaptureResult<String>) -> Unit,
+  )
 
-    override fun resumeRecording()
-    override fun pauseRecording()
-    override fun stopRecording()
-    override fun muteRecording(isMuted: Boolean)
+  override fun resumeRecording()
+
+  override fun pauseRecording()
+
+  override fun stopRecording()
+
+  override fun muteRecording(isMuted: Boolean)
 }

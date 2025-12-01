@@ -10,7 +10,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,59 +29,64 @@ import com.ujizin.sample.CamposerTheme
 import kotlinx.coroutines.delay
 
 @Composable
-fun QrCodeBox(modifier: Modifier = Modifier, qrCodeText: String?) {
-    var latestQrCode by remember(Unit) { mutableStateOf(qrCodeText.orEmpty()) }
-    var showQrCode by remember { mutableStateOf(false) }
-    if (showQrCode) {
-        val context = LocalContext.current
-        val intent = remember(latestQrCode) {
-            Intent(Intent.ACTION_VIEW, Uri.parse(latestQrCode)).takeIf {
-                URLUtil.isValidUrl(latestQrCode)
-            }
+fun QrCodeBox(
+  modifier: Modifier = Modifier,
+  qrCodeText: String?,
+) {
+  var latestQrCode by remember(Unit) { mutableStateOf(qrCodeText.orEmpty()) }
+  var showQrCode by remember { mutableStateOf(false) }
+  if (showQrCode) {
+    val context = LocalContext.current
+    val intent =
+      remember(latestQrCode) {
+        Intent(Intent.ACTION_VIEW, Uri.parse(latestQrCode)).takeIf {
+          URLUtil.isValidUrl(latestQrCode)
         }
-        Box(
-            modifier = modifier,
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(
-                modifier = Modifier
-                    .clickable(enabled = intent != null) { context.startActivity(intent) }
-                    .width(240.dp)
-                    .background(Color.White, RoundedCornerShape(4.dp))
-                    .padding(8.dp),
-                textAlign = TextAlign.Center,
-                text = latestQrCode,
-                fontWeight = FontWeight.SemiBold,
-                color = if (intent != null) Color(0xFF6891E4) else Color.Black,
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 1,
-            )
-        }
+      }
+    Box(
+      modifier = modifier,
+      contentAlignment = Alignment.Center,
+    ) {
+      Text(
+        modifier =
+          Modifier
+            .clickable(enabled = intent != null) { context.startActivity(intent) }
+            .width(240.dp)
+            .background(Color.White, RoundedCornerShape(4.dp))
+            .padding(8.dp),
+        textAlign = TextAlign.Center,
+        text = latestQrCode,
+        fontWeight = FontWeight.SemiBold,
+        color = if (intent != null) Color(0xFF6891E4) else Color.Black,
+        overflow = TextOverflow.Ellipsis,
+        maxLines = 1,
+      )
     }
+  }
 
-    LaunchedEffect(qrCodeText) {
-        if (qrCodeText != null) {
-            showQrCode = true
-            latestQrCode = qrCodeText
-        } else {
-            delay(1000)
-            showQrCode = false
-        }
+  LaunchedEffect(qrCodeText) {
+    if (qrCodeText != null) {
+      showQrCode = true
+      latestQrCode = qrCodeText
+    } else {
+      delay(1000)
+      showQrCode = false
     }
+  }
 }
 
 @Preview
 @Composable
 private fun PreviewQrCodeBox() {
-    CamposerTheme {
-        QrCodeBox(qrCodeText = "#UJI")
-    }
+  CamposerTheme {
+    QrCodeBox(qrCodeText = "#UJI")
+  }
 }
 
 @Preview
 @Composable
 private fun PreviewFullQrCodeBox() {
-    CamposerTheme {
-        QrCodeBox(qrCodeText = "https://www.google.com")
-    }
+  CamposerTheme {
+    QrCodeBox(qrCodeText = "https://www.google.com")
+  }
 }

@@ -1,4 +1,4 @@
-package com.ujizin.camposer.code_scanner
+package com.ujizin.camposer.codescanner
 
 /**
  * Exception thrown when a specific [CodeType] is not supported by the device's camera scanner.
@@ -10,6 +10,6 @@ package com.ujizin.camposer.code_scanner
  * @param message The detail message for this exception. Defaults to a standard error message including the code type.
  */
 public class CodeTypeNotSupportedException(
-    public val codeType: CodeType,
-    message: String = "Code type $codeType is not supported by this device.",
+  public val codeType: CodeType,
+  message: String = "Code type $codeType is not supported by this device.",
 ) : Exception(message)

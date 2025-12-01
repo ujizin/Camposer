@@ -6,22 +6,24 @@ import android.os.Handler
 import android.os.Looper
 import java.util.concurrent.Executor
 
-private class MainThreadExecutor(context: Context) : Executor {
-    private val handler: Handler = Handler(context.mainLooper)
+private class MainThreadExecutor(
+  context: Context,
+) : Executor {
+  private val handler: Handler = Handler(context.mainLooper)
 
-    override fun execute(r: Runnable) {
-        if (Looper.myLooper() == Looper.getMainLooper()) {
-            r.run()
-            return
-        }
-
-        handler.post(r)
+  override fun execute(r: Runnable) {
+    if (Looper.myLooper() == Looper.getMainLooper()) {
+      r.run()
+      return
     }
+
+    handler.post(r)
+  }
 }
 
 internal val Context.compatMainExecutor: Executor
-    get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-        mainExecutor
-    } else {
-        MainThreadExecutor(this)
-    }
+  get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+    mainExecutor
+  } else {
+    MainThreadExecutor(this)
+  }
