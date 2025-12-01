@@ -37,6 +37,7 @@ import com.ujizin.camposer.manager.CameraDeviceState
 import com.ujizin.camposer.manager.rememberCameraDeviceState
 import com.ujizin.camposer.session.rememberCameraSession
 import com.ujizin.camposer.state.properties.CaptureMode
+import com.ujizin.camposer.state.properties.FlashMode
 import com.ujizin.camposer.state.properties.OrientationStrategy
 import com.ujizin.camposer.state.properties.ScaleType
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
@@ -44,7 +45,6 @@ import com.ujizin.camposer.state.properties.format.CamFormat
 import com.ujizin.camposer.state.properties.format.config.FrameRateConfig
 import com.ujizin.camposer.state.properties.format.config.ResolutionConfig
 import com.ujizin.camposer.state.properties.format.config.VideoStabilizationConfig
-import com.ujizin.camposer.state.properties.inverse
 import com.ujizin.camposer.state.properties.selector.CamLensType
 import com.ujizin.camposer.state.properties.selector.CamPosition
 import com.ujizin.camposer.state.properties.selector.CamSelector
@@ -169,7 +169,7 @@ fun CameraScreen() {
       Button(onClick = { cameraController.setTorchEnabled(!isTorchEnabled) }) {
         Text("Torch: $isTorchEnabled")
       }
-      Button(onClick = { cameraController.setFlashMode(flashMode.inverse) }) {
+      Button(onClick = { cameraController.setFlashMode(if (flashMode == FlashMode.Off) FlashMode.On else FlashMode.Off) }) {
         Text("Flash mode: $flashMode")
       }
       Button(onClick = {
