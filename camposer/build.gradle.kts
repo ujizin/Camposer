@@ -53,18 +53,22 @@ kotlin {
       implementation(compose.foundation)
     }
 
-    androidInstrumentedTest.dependencies {
-      implementation(libs.androidx.test.core)
-      implementation(libs.androidx.test.rules)
-      implementation(compose.desktop.uiTestJUnit4)
-    }
-
     androidMain.dependencies {
       implementation(compose.preview)
       api(libs.bundles.camerax)
     }
 
     iosMain.dependencies {}
+
+    commonTest.dependencies {
+      implementation(libs.kotlin.test)
+    }
+
+    androidInstrumentedTest.dependencies {
+      implementation(libs.androidx.test.core)
+      implementation(libs.androidx.test.rules)
+      implementation(compose.desktop.uiTestJUnit4)
+    }
   }
 }
 

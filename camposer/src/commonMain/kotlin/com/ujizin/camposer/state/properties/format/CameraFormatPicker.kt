@@ -67,7 +67,7 @@ internal object CameraFormatPicker {
       } * weight
     }
 
-    score -= (format.width.toLong() * format.height.toLong()).toDouble() / 100_000.0
+    score -= (format.width.toLong() * format.height.toLong()).toDouble() / 1_000_000.0
 
     return score
   }
@@ -88,12 +88,19 @@ internal object CameraFormatPicker {
   private fun getFpsDistance(
     format: CameraData,
     fps: Int,
-  ): Float =
-    when {
-      fps in (format.minFps ?: 0)..(format.maxFps ?: 0) -> 0F
-      fps < (format.minFps ?: 0) -> ((format.minFps ?: 0) - fps).toFloat()
-      else -> (fps - (format.maxFps ?: 0)).toFloat()
+  ): Float {
+    val minFps = format.minFps ?: 0
+    val maxFps = format.maxFps ?: 0
+    return when {
+      fps in minFps..maxFps -> when {
+        minFps == fps || maxFps == fps -> 0F
+        else -> 0.5F
+      }
+
+      fps < minFps -> (minFps - fps).toFloat()
+      else -> (fps - maxFps).toFloat()
     }
+  }
 
   private fun getStabilizationDistance(
     format: CameraData,
@@ -102,7 +109,7 @@ internal object CameraFormatPicker {
     val modes = format.videoStabilizationModes ?: return 1F
     return when {
       desiredMode == null -> if (modes.any { it != VideoStabilizationMode.Off }) 0F else 1F
-      modes.contains(desiredMode) -> 0F
+      modes.contains(desiredMode) -> (modes.size / 10F).coerceAtMost(0.6F) - 0.1F
       modes.any { it != VideoStabilizationMode.Off } -> 0.5F
       else -> 1.0F
     }
@@ -111,7 +118,7 @@ internal object CameraFormatPicker {
   private fun getPositionalWeight(
     index: Int,
     total: Int,
-    base: Double = 10.0,
+    base: Double = 100.0,
   ): Double {
     val exponent = (total - index).toDouble()
     return base.pow(exponent)
