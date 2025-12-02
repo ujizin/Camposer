@@ -60,7 +60,6 @@ public actual class CameraDevicesManager(
   init {
     mainScope.launch {
       cameraProvider = ProcessCameraProvider.getInstance(context).await(mainExecutor)
-      updateCameraDevices()
       cameraProvider.addCameraPresenceListener(
         executor = mainExecutor,
         listener = cameraPresenceListener,
