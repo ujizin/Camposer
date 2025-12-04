@@ -1,6 +1,7 @@
 package com.ujizin.camposer.controller.takepicture
 
 import com.ujizin.camposer.CaptureResult
+import com.ujizin.camposer.error.CaptureModeException
 import com.ujizin.camposer.internal.command.IOSTakePictureCommand
 import com.ujizin.camposer.internal.extensions.toCaptureResult
 import com.ujizin.camposer.session.IOSCameraSession
@@ -8,7 +9,7 @@ import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.FlashMode
 import platform.AVFoundation.AVCaptureDeviceInput
-import platform.AVFoundation.AVCaptureDevicePositionFront
+import platform.AVFoundation.AVCaptureDevicePosition
 import platform.AVFoundation.flashMode
 import platform.AVFoundation.position
 
@@ -23,13 +24,19 @@ internal actual class DefaultTakePictureCommand(
   private val captureDeviceInput: AVCaptureDeviceInput
     get() = iosCameraSession.captureDeviceInput
 
+  private val currentPosition: AVCaptureDevicePosition
+    get() = captureDeviceInput.device.position
+
   actual override fun takePicture(onImageCaptured: (CaptureResult<ByteArray>) -> Unit) {
-    require(cameraState.captureMode == CaptureMode.Image) {
-      "Capture mode must be CaptureMode.Image"
+    if (cameraState.captureMode != CaptureMode.Image) {
+      onImageCaptured(
+        CaptureResult.Error(CaptureModeException(CaptureMode.Image)),
+      )
+      return
     }
 
     takePictureCommand(
-      isMirrorEnabled = captureDeviceInput.device.position == AVCaptureDevicePositionFront,
+      isMirrorEnabled = cameraState.mirrorMode.isMirrorEnabled(currentPosition),
       flashMode = cameraState.flashMode.mode,
       videoOrientation = cameraState.getCurrentVideoOrientation(),
       onPictureCaptured = onPictureCaptured(onImageCaptured),
@@ -40,13 +47,16 @@ internal actual class DefaultTakePictureCommand(
     filename: String,
     onImageCaptured: (CaptureResult<String>) -> Unit,
   ) {
-    require(cameraState.captureMode == CaptureMode.Image) {
-      "Capture mode must be CaptureMode.Image"
+    if (cameraState.captureMode != CaptureMode.Image) {
+      onImageCaptured(
+        CaptureResult.Error(CaptureModeException(CaptureMode.Image)),
+      )
+      return
     }
 
     takePictureCommand(
       filename = filename,
-      isMirrorEnabled = captureDeviceInput.device.position == AVCaptureDevicePositionFront,
+      isMirrorEnabled = cameraState.mirrorMode.isMirrorEnabled(currentPosition),
       flashMode = captureDeviceInput.device.flashMode,
       videoOrientation = cameraState.getCurrentVideoOrientation(),
       onPictureCaptured = onPictureCaptured(onImageCaptured),

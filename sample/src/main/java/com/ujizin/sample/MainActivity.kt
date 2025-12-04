@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
         AppPermission {
           val navHost = rememberNavController()
           NavGraph(navHost)
-//                    com.ujizin.camposer.shared.CameraScreen()
+//          com.ujizin.camposer.shared.CameraScreen()
         }
       }
     }

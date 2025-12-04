@@ -54,7 +54,7 @@ dependencies {
   implementation(libs.lifecycle)
   implementation(libs.lifecycle.viewmodel)
 
-  implementation(libs.exoplayer)
+//  implementation(libs.exoplayer)
 
   implementation(libs.zxing.core)
 

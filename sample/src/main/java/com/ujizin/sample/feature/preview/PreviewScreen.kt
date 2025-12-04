@@ -1,5 +1,8 @@
 package com.ujizin.sample.feature.preview
 
+//import com.google.android.exoplayer2.ExoPlayer
+//import com.google.android.exoplayer2.MediaItem
+//import com.google.android.exoplayer2.ui.StyledPlayerView
 import android.app.Activity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -14,28 +17,18 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.net.toUri
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.ujizin.sample.R
 import com.ujizin.sample.components.NavigationIcon
-import com.ujizin.sample.extensions.observeAsState
 import org.koin.androidx.compose.koinViewModel
 import java.io.File
 
@@ -110,42 +103,42 @@ fun PreviewTopAppBar(
 
 @Composable
 private fun PreviewVideoSection(file: File) {
-  val context = LocalContext.current
-  val lifecycle by LocalLifecycleOwner.current.lifecycle.observeAsState()
-  val player = remember {
-    ExoPlayer.Builder(context).build().apply {
-      addMediaItem(MediaItem.fromUri(file.toUri()))
-      prepare()
-      playWhenReady = true
-    }
-  }
-
-  DisposableEffect(
-    AndroidView(
-      modifier = Modifier
-        .fillMaxSize()
-        .background(Color.Black),
-      factory = { ctx ->
-        StyledPlayerView(ctx).apply { this.player = player }
-      },
-      update = { playerView ->
-        when (lifecycle) {
-          Lifecycle.Event.ON_PAUSE -> {
-            playerView.onPause()
-            player.pause()
-          }
-
-          Lifecycle.Event.ON_RESUME -> {
-            playerView.onResume()
-          }
-
-          else -> {
-            Unit
-          }
-        }
-      },
-    ),
-  ) { onDispose { player.release() } }
+//  val context = LocalContext.current
+//  val lifecycle by LocalLifecycleOwner.current.lifecycle.observeAsState()
+//  val player = remember {
+//    ExoPlayer.Builder(context).build().apply {
+//      addMediaItem(MediaItem.fromUri(file.toUri()))
+//      prepare()
+//      playWhenReady = true
+//    }
+//  }
+//
+//  DisposableEffect(
+//    AndroidView(
+//      modifier = Modifier
+//        .fillMaxSize()
+//        .background(Color.Black),
+//      factory = { ctx ->
+//        StyledPlayerView(ctx).apply { this.player = player }
+//      },
+//      update = { playerView ->
+//        when (lifecycle) {
+//          Lifecycle.Event.ON_PAUSE -> {
+//            playerView.onPause()
+//            player.pause()
+//          }
+//
+//          Lifecycle.Event.ON_RESUME -> {
+//            playerView.onResume()
+//          }
+//
+//          else -> {
+//            Unit
+//          }
+//        }
+//      },
+//    ),
+//  ) { onDispose { player.release() } }
 }
 
 @Composable

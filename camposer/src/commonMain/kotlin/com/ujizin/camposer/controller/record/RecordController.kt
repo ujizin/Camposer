@@ -22,11 +22,11 @@ public interface RecordController {
     onVideoCaptured: (CaptureResult<String>) -> Unit,
   )
 
-  public fun resumeRecording()
+  public fun resumeRecording(): Result<Boolean>
 
-  public fun pauseRecording()
+  public fun pauseRecording(): Result<Boolean>
 
-  public fun stopRecording()
+  public fun stopRecording(): Result<Boolean>
 
-  public fun muteRecording(isMuted: Boolean)
+  public fun muteRecording(isMuted: Boolean): Result<Boolean>
 }

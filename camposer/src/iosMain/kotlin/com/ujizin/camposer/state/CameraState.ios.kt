@@ -15,6 +15,7 @@ import com.ujizin.camposer.state.properties.FlashMode
 import com.ujizin.camposer.state.properties.ImageAnalyzer
 import com.ujizin.camposer.state.properties.ImageCaptureStrategy
 import com.ujizin.camposer.state.properties.ImplementationMode
+import com.ujizin.camposer.state.properties.MirrorMode
 import com.ujizin.camposer.state.properties.OrientationStrategy
 import com.ujizin.camposer.state.properties.ScaleType
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
@@ -67,6 +68,10 @@ public actual class CameraState(
     iosCameraSession.setFlashMode(it.mode)
   }
     internal set
+
+  public actual var mirrorMode: MirrorMode by distinctConfig(
+    value = MirrorMode.OnlyInFront,
+  )
 
   public actual var camFormat: CamFormat by distinctConfig(
     value = CamFormat.Default,

@@ -43,10 +43,6 @@ public actual class CameraDevicesManager {
     override fun onCameraUpdated() {
       _cameraDevicesState.update { CameraDeviceState.Devices(getAvailableCameras()) }
     }
-
-    override fun onCameraRemoved() {
-      _cameraDevicesState.update { CameraDeviceState.Devices(getAvailableCameras()) }
-    }
   }
 
   init {
@@ -73,9 +69,7 @@ public actual class CameraDevicesManager {
       position = AVCaptureDevicePositionUnspecified,
     )
 
-    val devices = discovery.devices
-    println("devices qntd: ${devices.size}")
-    return devices
+    return discovery.devices
       .filterIsInstance<AVCaptureDevice>()
       .map { device -> device.toCameraDevice() }
   }

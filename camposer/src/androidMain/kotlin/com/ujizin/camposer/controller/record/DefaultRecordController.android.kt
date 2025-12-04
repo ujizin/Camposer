@@ -17,6 +17,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.util.Consumer
 import com.ujizin.camposer.CaptureResult
+import com.ujizin.camposer.error.RecordNotInitializedException
 import java.io.File
 import java.util.concurrent.Executor
 
@@ -93,21 +94,27 @@ internal actual class DefaultRecordController(
     )
   }
 
-  actual override fun resumeRecording() {
-    recordController?.resume()
+  actual override fun resumeRecording(): Result<Boolean> {
+    recordController?.resume() ?: return Result.failure(RecordNotInitializedException())
+    return Result.success(true)
   }
 
-  actual override fun pauseRecording() {
-    recordController?.pause()
+  actual override fun pauseRecording(): Result<Boolean> {
+    recordController?.pause() ?: return Result.failure(RecordNotInitializedException())
+    return Result.success(true)
   }
 
-  actual override fun stopRecording() {
-    recordController?.stop()
+  actual override fun stopRecording(): Result<Boolean> {
+    recordController?.stop() ?: return Result.failure(RecordNotInitializedException())
+    return Result.success(true)
   }
 
-  actual override fun muteRecording(isMuted: Boolean) {
-    recordController?.mute(isMuted)
+  actual override fun muteRecording(isMuted: Boolean): Result<Boolean> {
+    recordController?.mute(isMuted) ?: return Result.failure(
+      RecordNotInitializedException(),
+    )
     this.isMuted = isMuted
+    return Result.success(true)
   }
 
   private fun prepareRecording(

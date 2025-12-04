@@ -6,6 +6,7 @@ import com.ujizin.camposer.state.properties.FlashMode
 import com.ujizin.camposer.state.properties.ImageAnalyzer
 import com.ujizin.camposer.state.properties.ImageCaptureStrategy
 import com.ujizin.camposer.state.properties.ImplementationMode
+import com.ujizin.camposer.state.properties.MirrorMode
 import com.ujizin.camposer.state.properties.OrientationStrategy
 import com.ujizin.camposer.state.properties.ScaleType
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
@@ -32,6 +33,8 @@ public expect class CameraState {
   public var scaleType: ScaleType
     internal set
   public var flashMode: FlashMode
+    internal set
+  public var mirrorMode: MirrorMode
     internal set
   public var camFormat: CamFormat
     internal set

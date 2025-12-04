@@ -18,7 +18,7 @@ internal class CameraPresenceMonitor : NSObject() {
   private val mainScope = MainScope()
 
   private val debouncer = Debouncer(
-    duration = CONNECTION_DEBOUNCER_TIME_IN_MILLIS.milliseconds,
+    duration = 100.milliseconds,
     scope = mainScope,
   )
 
@@ -85,9 +85,5 @@ internal class CameraPresenceMonitor : NSObject() {
   internal fun release() {
     dispose()
     mainScope.cancel()
-  }
-
-  companion object {
-    private const val CONNECTION_DEBOUNCER_TIME_IN_MILLIS = 100L
   }
 }

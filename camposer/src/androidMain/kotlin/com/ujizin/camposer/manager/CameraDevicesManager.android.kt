@@ -80,6 +80,7 @@ public actual class CameraDevicesManager(
           videoData = CameraUtils.getVideoResolutions(info),
           lensType = CameraUtils.getCamLensTypes(info),
           position = CamPosition.findByLens(info.lensFacing),
+          name = "", // is there any way to get this???
         )
       }
     }

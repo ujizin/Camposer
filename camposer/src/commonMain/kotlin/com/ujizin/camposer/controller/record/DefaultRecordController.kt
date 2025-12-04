@@ -14,11 +14,11 @@ internal expect class DefaultRecordController : RecordController {
     onVideoCaptured: (CaptureResult<String>) -> Unit,
   )
 
-  override fun resumeRecording()
+  override fun resumeRecording(): Result<Boolean>
 
-  override fun pauseRecording()
+  override fun pauseRecording(): Result<Boolean>
 
-  override fun stopRecording()
+  override fun stopRecording(): Result<Boolean>
 
-  override fun muteRecording(isMuted: Boolean)
+  override fun muteRecording(isMuted: Boolean): Result<Boolean>
 }

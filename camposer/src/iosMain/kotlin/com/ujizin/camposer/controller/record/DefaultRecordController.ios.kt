@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.ujizin.camposer.CaptureResult
+import com.ujizin.camposer.error.CaptureModeException
 import com.ujizin.camposer.internal.error.CameraNotRunningException
 import com.ujizin.camposer.internal.error.ErrorRecordVideoException
 import com.ujizin.camposer.internal.error.VideoOutputNotFoundException
@@ -13,7 +14,7 @@ import com.ujizin.camposer.internal.extensions.toCaptureResult
 import com.ujizin.camposer.session.IOSCameraSession
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.properties.CaptureMode
-import platform.AVFoundation.AVCaptureDevicePositionFront
+import platform.AVFoundation.AVCaptureDevicePosition
 import platform.AVFoundation.AVCaptureFileOutput
 import platform.AVFoundation.AVCaptureFileOutputRecordingDelegateProtocol
 import platform.AVFoundation.AVCaptureMovieFileOutput
@@ -35,6 +36,8 @@ internal actual class DefaultRecordController(
   private val videoRecordOutput: AVCaptureMovieFileOutput?
     get() = captureSession.outputs.firstIsInstanceOrNull<AVCaptureMovieFileOutput>()
 
+  private val currentPosition: AVCaptureDevicePosition
+    get() = iosCameraSession.captureDeviceInput.device.position
   private var videoDelegate: AVCaptureFileOutputRecordingDelegateProtocol? = null
 
   actual override var isMuted: Boolean by mutableStateOf(false)
@@ -44,41 +47,45 @@ internal actual class DefaultRecordController(
     filename: String,
     onVideoCaptured: (CaptureResult<String>) -> Unit,
   ) = start(
-    isMirrorEnabled =
-      iosCameraSession.captureDeviceInput.device.position == AVCaptureDevicePositionFront,
+    isMirrorEnabled = cameraState.mirrorMode.isMirrorEnabled(currentPosition),
     videoOrientation = cameraState.getCurrentVideoOrientation(),
     filename = filename,
     onVideoCapture = { result -> onVideoCaptured(result.toCaptureResult()) },
   ).apply { isRecording = true }
 
-  actual override fun resumeRecording() {
-    require(cameraState.captureMode == CaptureMode.Video) {
-      "Capture mode must be CaptureMode.Video"
+  actual override fun resumeRecording(): Result<Boolean> {
+    if (cameraState.captureMode != CaptureMode.Video) {
+      return Result.failure(CaptureModeException(CaptureMode.Video))
     }
 
-    videoRecordOutput?.resumeRecording() ?: throw VideoOutputNotFoundException()
+    videoRecordOutput?.resumeRecording() ?: return Result.failure(VideoOutputNotFoundException())
+    return Result.success(true)
   }
 
-  actual override fun pauseRecording() {
-    require(cameraState.captureMode == CaptureMode.Video) {
-      "Capture mode must be CaptureMode.Video"
+  actual override fun pauseRecording(): Result<Boolean> {
+    if (cameraState.captureMode != CaptureMode.Video) {
+      return Result.failure(CaptureModeException(CaptureMode.Video))
     }
 
-    videoRecordOutput?.pauseRecording() ?: throw VideoOutputNotFoundException()
+    videoRecordOutput?.pauseRecording() ?: return Result.failure(VideoOutputNotFoundException())
+    return Result.success(true)
   }
 
-  actual override fun stopRecording() {
-    require(cameraState.captureMode == CaptureMode.Video) {
-      "Capture mode must be CaptureMode.Video"
+  actual override fun stopRecording(): Result<Boolean> {
+    if (cameraState.captureMode != CaptureMode.Video) {
+      return Result.failure(CaptureModeException(CaptureMode.Video))
     }
-    videoRecordOutput?.stopRecording() ?: throw VideoOutputNotFoundException()
+
+    videoRecordOutput?.stopRecording() ?: return Result.failure(VideoOutputNotFoundException())
     isRecording = false
     isMuted = false
+    return Result.success(true)
   }
 
-  actual override fun muteRecording(isMuted: Boolean) {
+  actual override fun muteRecording(isMuted: Boolean): Result<Boolean> {
     this.isMuted = isMuted
     iosCameraSession.setAudioEnabled(!isMuted)
+    return Result.success(true)
   }
 
   fun start(
@@ -88,15 +95,12 @@ internal actual class DefaultRecordController(
     onVideoCapture: (Result<String>) -> Unit,
   ) {
     if (!captureSession.isRunning()) {
-      return onVideoCapture(
-        Result.failure(CameraNotRunningException()),
-      )
+      return onVideoCapture(Result.failure(CameraNotRunningException()))
     }
 
     val videoRecordOutput = videoRecordOutput
     if (videoRecordOutput == null) {
-      onVideoCapture(Result.failure(VideoOutputNotFoundException()))
-      return
+      return onVideoCapture(Result.failure(VideoOutputNotFoundException()))
     }
 
     videoRecordOutput.setMirrorEnabled(isMirrorEnabled)

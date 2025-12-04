@@ -169,11 +169,29 @@ fun CameraScreen() {
       Button(onClick = { cameraController.setTorchEnabled(!isTorchEnabled) }) {
         Text("Torch: $isTorchEnabled")
       }
-      Button(onClick = { cameraController.setFlashMode(if (flashMode == FlashMode.Off) FlashMode.On else FlashMode.Off) }) {
+      Button(onClick = {
+        cameraController.setFlashMode(
+          if (flashMode ==
+            FlashMode.Off
+          ) {
+            FlashMode.On
+          } else {
+            FlashMode.Off
+          },
+        )
+      }) {
         Text("Flash mode: $flashMode")
       }
       Button(onClick = {
         camSelector = camSelector.inverse
+        //        camSelector =
+//          if (camSelector.camPosition ==
+//            CamPosition.Back
+//          ) {
+//            CamSelector(CamPosition.External)
+//          } else {
+//            CamSelector.Back
+//          }
       }) {
         Text("Cam selector: $camSelector")
       }

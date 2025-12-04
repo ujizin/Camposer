@@ -22,6 +22,7 @@ import com.ujizin.camposer.state.properties.FlashMode
 import com.ujizin.camposer.state.properties.ImageAnalyzer
 import com.ujizin.camposer.state.properties.ImageCaptureStrategy
 import com.ujizin.camposer.state.properties.ImplementationMode
+import com.ujizin.camposer.state.properties.MirrorMode
 import com.ujizin.camposer.state.properties.OrientationStrategy
 import com.ujizin.camposer.state.properties.ScaleType
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
@@ -68,8 +69,12 @@ public actual class CameraState internal constructor(
   )
     internal set
 
-  public actual var scaleType: ScaleType = ScaleType.FillCenter
+  public actual var scaleType: ScaleType by mutableStateOf(ScaleType.FillCenter)
     internal set
+
+  public actual var mirrorMode: MirrorMode by distinctConfig(MirrorMode.OnlyInFront) {
+    controller.videoCaptureMirrorMode = mirrorMode.mode
+  }
 
   public actual var flashMode: FlashMode by distinctConfig(
     value = FlashMode.find(controller.imageCaptureFlashMode),
@@ -168,12 +173,11 @@ public actual class CameraState internal constructor(
     internal set
 
   init {
-    controller.initializationFuture.addListener({
-      (context as LifecycleOwner).lifecycle.addObserver(CameraConfigSaver())
-      controller.setEnabledUseCases(getUseCases())
-      controller.isTapToFocusEnabled = isFocusOnTapEnabled
-      setCamSelector(camSelector)
-    }, mainExecutor)
+    with(controller) {
+      initializationFuture.addListener({
+        initializeCameraConfigState(context)
+      }, mainExecutor)
+    }
   }
 
   public fun setEffects(effects: Set<CameraEffect>) {
@@ -182,6 +186,14 @@ public actual class CameraState internal constructor(
 
   public fun clearEffects() {
     controller.clearEffects()
+  }
+
+  private fun CameraController.initializeCameraConfigState(context: Context) {
+    (context as LifecycleOwner).lifecycle.addObserver(CameraConfigSaver())
+    setEnabledUseCases(getUseCases())
+    isTapToFocusEnabled = isFocusOnTapEnabled
+    videoCaptureMirrorMode = mirrorMode.mode
+    setCamSelector(camSelector)
   }
 
   private fun setCamSelector(selector: CamSelector) {
