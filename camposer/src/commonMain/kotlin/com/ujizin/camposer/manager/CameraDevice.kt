@@ -13,6 +13,7 @@ import com.ujizin.camposer.state.properties.selector.CameraId
  * and supported configurations for both photo and video capture.
  *
  * @param cameraId The unique identifier for the camera hardware.
+ * @param name The name for the camera hardware
  * @param position The physical position of the camera (e.g., [CamPosition.Front] or [CamPosition.Back]).
  * @param lensType A list of lens types supported by this camera device.
  * @param photoData A list of supported resolutions and configurations for taking photos.
@@ -20,6 +21,7 @@ import com.ujizin.camposer.state.properties.selector.CameraId
  */
 public class CameraDevice internal constructor(
   public val cameraId: CameraId,
+  public val name: String,
   public val position: CamPosition,
   public val lensType: List<CamLensType>,
   public val photoData: List<CameraData>,
@@ -29,6 +31,7 @@ public class CameraDevice internal constructor(
     if (this === other) return true
     if (other !is CameraDevice) return false
 
+    if (name != other.name) return false
     if (cameraId != other.cameraId) return false
     if (position != other.position) return false
     if (lensType != other.lensType) return false
@@ -38,6 +41,7 @@ public class CameraDevice internal constructor(
 
   override fun hashCode(): Int {
     var result = cameraId.hashCode()
+    result = 31 * result + name.hashCode()
     result = 31 * result + position.hashCode()
     result = 31 * result + lensType.hashCode()
     result = 31 * result + photoData.hashCode()
@@ -46,5 +50,5 @@ public class CameraDevice internal constructor(
   }
 
   override fun toString(): String =
-    "CameraDevice(cameraId=$cameraId, position=$position, lensType=$lensType"
+    "CameraDevice(cameraId=$cameraId, name=$name, position=$position, lensType=$lensType)"
 }

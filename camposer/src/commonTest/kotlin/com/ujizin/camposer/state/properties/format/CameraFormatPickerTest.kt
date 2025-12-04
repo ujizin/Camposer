@@ -26,7 +26,6 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 class CameraFormatPickerTest {
-
   @Test
   fun `getBestFormatByOrder returns null for empty formats`() {
     val result = getBestFormatByOrder(configs = defaultConfigs, formats = emptyList())
@@ -60,7 +59,6 @@ class CameraFormatPickerTest {
     assertEquals(cameraDataMediumResolution, result)
   }
 
-
   @Test
   fun `getBestFormatByOrder prioritizes low resolution when low is priority`() {
     val formats = cameraDataStandardList
@@ -73,7 +71,7 @@ class CameraFormatPickerTest {
   }
 
   @Test
-  fun `getBestFormatByOrder respects High Resolution priority and Aspect ratio 4x3 (No High exist)`() {
+  fun `getBestFormatByOrder respects High Resolution priority and Aspect ratio 4x3`() {
     val result = getBestFormatByOrder(
       configs = listOf(
         convertResolutionConfig(cameraDataHighResolution),
@@ -100,14 +98,13 @@ class CameraFormatPickerTest {
     val result = getBestFormatByOrder(
       configs = listOf(
         AspectRatioConfig(aspectRatio = 16F / 9F),
-        convertResolutionConfig(cameraDataMediumResolution)
+        convertResolutionConfig(cameraDataMediumResolution),
       ),
       formats = cameraDataStandardList,
     )
 
     assertEquals(cameraDataMediumResolution, result)
   }
-
 
   @Test
   fun `getBestFormatByOrder respects AspectRatioConfig 4x3 priority`() {
@@ -163,7 +160,7 @@ class CameraFormatPickerTest {
   }
 
   @Test
-  fun `getBestFormatByOrder respects VideoStabilizationConfig Cinematic Extended Enhanced priority`() {
+  fun `getBestFormatByOrder respects VideoStabilizationConfig Cinematic EE priority`() {
     val result = getBestFormatByOrder(
       configs = listOf(VideoStabilizationConfig(VideoStabilizationMode.CinematicExtendedEnhanced)),
       formats = cameraDataStabilizationList,
@@ -188,7 +185,7 @@ class CameraFormatPickerTest {
     val resultA = getBestFormatByOrder(
       configs = listOf(
         AspectRatioConfig(aspectRatio = 4F / 3F),
-        convertResolutionConfig(cameraDataHighResolution)
+        convertResolutionConfig(cameraDataHighResolution),
       ),
       formats = cameraDataStandardList,
     )
@@ -212,7 +209,7 @@ class CameraFormatPickerTest {
       cameraDataHighResolution,
       cameraDataVideoStabilizationHighCinematic,
       cameraDataHigh16X9_4KResolution,
-      cameraDataHigh4X3_4KResolution
+      cameraDataHigh4X3_4KResolution,
     )
 
     // Aspect ratio 4x3, 4k resolution
@@ -347,7 +344,7 @@ class CameraFormatPickerTest {
         assertEquals(cameraDataHighResolution, it)
       },
       onFrameRateChanged = { },
-      onStabilizationModeChanged = { }
+      onStabilizationModeChanged = { },
     )
 
     assertEquals(true, inFormatChangedCalled)
@@ -360,7 +357,7 @@ class CameraFormatPickerTest {
       formats = emptyList(),
       onFormatChanged = { error("OnFormatChanged should not be invoked") },
       onFrameRateChanged = { },
-      onStabilizationModeChanged = { }
+      onStabilizationModeChanged = { },
     )
   }
 
@@ -375,7 +372,7 @@ class CameraFormatPickerTest {
       formats = formats,
       onFormatChanged = { },
       onFrameRateChanged = { capturedFps = it },
-      onStabilizationModeChanged = { }
+      onStabilizationModeChanged = { },
     )
 
     assertEquals(target60Fps, capturedFps)
@@ -386,7 +383,7 @@ class CameraFormatPickerTest {
       formats = formats,
       onFormatChanged = { },
       onFrameRateChanged = { capturedFps = it },
-      onStabilizationModeChanged = { }
+      onStabilizationModeChanged = { },
     )
 
     assertEquals(target35Fps, capturedFps)
@@ -403,7 +400,7 @@ class CameraFormatPickerTest {
       formats = formats,
       onFormatChanged = { },
       onFrameRateChanged = { capturedFps = it },
-      onStabilizationModeChanged = { }
+      onStabilizationModeChanged = { },
     )
 
     val expectedMinFps = cameraDataHighResolution.minFps
@@ -423,7 +420,7 @@ class CameraFormatPickerTest {
       formats = formats,
       onFormatChanged = { },
       onFrameRateChanged = { capturedFps = it },
-      onStabilizationModeChanged = { }
+      onStabilizationModeChanged = { },
     )
 
     val expectedMinFps = cameraDataHighResolution.maxFps
@@ -442,7 +439,7 @@ class CameraFormatPickerTest {
       formats = formats,
       onFormatChanged = { },
       onFrameRateChanged = { capturedFps = it },
-      onStabilizationModeChanged = { }
+      onStabilizationModeChanged = { },
     )
 
     val expectedMaxFps = cameraDataHighResolution.maxFps
@@ -460,7 +457,7 @@ class CameraFormatPickerTest {
       formats = formats,
       onFormatChanged = { },
       onFrameRateChanged = { },
-      onStabilizationModeChanged = { capturedMode = it }
+      onStabilizationModeChanged = { capturedMode = it },
     )
 
     assertEquals(targetMode, capturedMode)
@@ -477,7 +474,7 @@ class CameraFormatPickerTest {
       formats = formats,
       onFormatChanged = { },
       onFrameRateChanged = { },
-      onStabilizationModeChanged = { capturedMode = it }
+      onStabilizationModeChanged = { capturedMode = it },
     )
 
     assertEquals(VideoStabilizationMode.Off, capturedMode)
@@ -493,7 +490,7 @@ class CameraFormatPickerTest {
       formats = formats,
       onFormatChanged = { },
       onFrameRateChanged = { },
-      onStabilizationModeChanged = { capturedMode = it }
+      onStabilizationModeChanged = { capturedMode = it },
     )
 
     assertEquals(VideoStabilizationMode.Off, capturedMode)
@@ -511,7 +508,7 @@ class CameraFormatPickerTest {
         frameRateChangedCalled = true
         error("Test!")
       },
-      onStabilizationModeChanged = { }
+      onStabilizationModeChanged = { },
     )
 
     assertEquals(true, frameRateChangedCalled)
@@ -530,7 +527,7 @@ class CameraFormatPickerTest {
       onStabilizationModeChanged = {
         stabilizationChangedCalled = true
         error("Test!")
-      }
+      },
     )
 
     assertEquals(true, stabilizationChangedCalled)
@@ -568,16 +565,19 @@ class CameraFormatPickerTest {
   @Test
   fun `getBestFormatByOrder partial match scoring`() {
     val formatExactMatch = CameraData(
-      width = 1920, height = 1080,
-      videoStabilizationModes = listOf(VideoStabilizationMode.Cinematic)
+      width = 1920,
+      height = 1080,
+      videoStabilizationModes = listOf(VideoStabilizationMode.Cinematic),
     )
     val formatPartialMatch = CameraData(
-      width = 1920, height = 1080,
-      videoStabilizationModes = listOf(VideoStabilizationMode.Standard)
+      width = 1920,
+      height = 1080,
+      videoStabilizationModes = listOf(VideoStabilizationMode.Standard),
     )
     val formatNoModes = CameraData(
-      width = 1920, height = 1080,
-      videoStabilizationModes = emptyList()
+      width = 1920,
+      height = 1080,
+      videoStabilizationModes = emptyList(),
     )
 
     val config = listOf(VideoStabilizationConfig(VideoStabilizationMode.Cinematic))
@@ -585,14 +585,14 @@ class CameraFormatPickerTest {
     // Format exact, partial & no modes
     val resultAll = getBestFormatByOrder(
       configs = config,
-      formats = listOf(formatNoModes, formatPartialMatch, formatExactMatch)
+      formats = listOf(formatNoModes, formatPartialMatch, formatExactMatch),
     )
     assertEquals(formatExactMatch, resultAll)
 
     // Format partial & no modes
     val resultPartialVsNone = getBestFormatByOrder(
       configs = config,
-      formats = listOf(formatNoModes, formatPartialMatch)
+      formats = listOf(formatNoModes, formatPartialMatch),
     )
     assertEquals(formatPartialMatch, resultPartialVsNone)
 

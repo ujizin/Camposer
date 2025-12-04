@@ -4,7 +4,6 @@ import com.ujizin.camposer.state.properties.CameraData
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
 
 object CameraDataUtils {
-
   val cameraDataHighResolution = CameraData(width = 1920, height = 1080, minFps = 8, maxFps = 60)
 
   val cameraDataMediumResolution = CameraData(width = 1280, height = 720, minFps = 8, maxFps = 30)
@@ -32,8 +31,10 @@ object CameraDataUtils {
     videoStabilizationModes = listOf(VideoStabilizationMode.Standard),
   )
 
-  val cameraDataHigh16X9_4KResolution = CameraData(width = 3840, height = 2160, minFps = 8, maxFps = 30)
-  val cameraDataHigh4X3_4KResolution = CameraData(width = 4000, height = 3000, minFps = 8, maxFps = 30)
+  val cameraDataHigh16X9_4KResolution =
+    CameraData(width = 3840, height = 2160, minFps = 8, maxFps = 30)
+  val cameraDataHigh4X3_4KResolution =
+    CameraData(width = 4000, height = 3000, minFps = 8, maxFps = 30)
 
   val cameraDataStandardList = listOf(
     cameraDataHighResolution,

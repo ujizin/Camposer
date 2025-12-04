@@ -40,20 +40,12 @@ public actual class CameraDevicesManager {
   private val cameraPresenceMonitor = CameraPresenceMonitor()
 
   private val cameraPresenceListener = object : CameraPresenceMonitor.Listener {
-    override fun onCameraAdded(device: AVCaptureDevice) {
-      _cameraDevicesState.updateOnlyIfReady { state ->
-        state.copy(devices = state.devices + device.toCameraDevice())
-      }
+    override fun onCameraUpdated() {
+      _cameraDevicesState.update { CameraDeviceState.Devices(getAvailableCameras()) }
     }
 
-    override fun onCameraRemoved(device: AVCaptureDevice) {
-      _cameraDevicesState.updateOnlyIfReady { state ->
-        val cameraDeviceToBeDeleted = state.devices.find {
-          it.cameraId.uniqueId == device.uniqueID
-        } ?: return@updateOnlyIfReady state
-
-        state.copy(devices = state.devices - cameraDeviceToBeDeleted)
-      }
+    override fun onCameraRemoved() {
+      _cameraDevicesState.update { CameraDeviceState.Devices(getAvailableCameras()) }
     }
   }
 
@@ -72,6 +64,7 @@ public actual class CameraDevicesManager {
       AVCaptureDeviceTypeBuiltInDualCamera,
       AVCaptureDeviceTypeBuiltInDualWideCamera,
       AVCaptureDeviceTypeBuiltInTripleCamera,
+      AVCaptureDeviceTypeExternal,
     )
 
     val discovery = AVCaptureDeviceDiscoverySession.discoverySessionWithDeviceTypes(
@@ -80,7 +73,9 @@ public actual class CameraDevicesManager {
       position = AVCaptureDevicePositionUnspecified,
     )
 
-    return discovery.devices
+    val devices = discovery.devices
+    println("devices qntd: ${devices.size}")
+    return devices
       .filterIsInstance<AVCaptureDevice>()
       .map { device -> device.toCameraDevice() }
   }
@@ -89,6 +84,7 @@ public actual class CameraDevicesManager {
     val formats = formats.filterIsInstance<AVCaptureDeviceFormat>()
     return CameraDevice(
       cameraId = CameraId(uniqueID),
+      name = localizedName,
       position = getCamPosition(),
       lensType = CamLensType.getPhysicalLensByVirtual(deviceType),
       photoData = CameraFormatUtils.getPhotoFormats(formats),
@@ -118,6 +114,7 @@ public actual class CameraDevicesManager {
 
   public actual fun release() {
     cameraPresenceMonitor.removeCameraPresenceListener(cameraPresenceListener)
+    cameraPresenceMonitor.release()
   }
 }
 

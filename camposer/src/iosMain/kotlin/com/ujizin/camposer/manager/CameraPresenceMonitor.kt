@@ -1,19 +1,26 @@
 package com.ujizin.camposer.manager
 
-import platform.AVFoundation.AVCaptureDevice
+import com.ujizin.camposer.internal.utils.Debouncer
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
 import platform.AVFoundation.AVCaptureDeviceWasConnectedNotification
 import platform.AVFoundation.AVCaptureDeviceWasDisconnectedNotification
 import platform.Foundation.NSNotificationCenter
 import platform.darwin.NSObject
 import platform.darwin.NSObjectProtocol
+import kotlin.time.Duration.Companion.milliseconds
 
-// TODO still needs to be tested
 internal class CameraPresenceMonitor : NSObject() {
   interface Listener {
-    fun onCameraAdded(device: AVCaptureDevice)
-
-    fun onCameraRemoved(device: AVCaptureDevice)
+    fun onCameraUpdated()
   }
+
+  private val mainScope = MainScope()
+
+  private val debouncer = Debouncer(
+    duration = CONNECTION_DEBOUNCER_TIME_IN_MILLIS.milliseconds,
+    scope = mainScope,
+  )
 
   private val notificationCenter = NSNotificationCenter.defaultCenter
   private val listeners: MutableSet<Listener> = mutableSetOf()
@@ -24,7 +31,7 @@ internal class CameraPresenceMonitor : NSObject() {
   fun addCameraPresenceListener(listener: Listener) {
     if (listeners.contains(listener)) return
 
-    this.listeners.add(listener)
+    listeners.add(listener)
     if (listeners.size == 1) {
       start()
     }
@@ -50,9 +57,8 @@ internal class CameraPresenceMonitor : NSObject() {
       `object` = null,
       queue = null,
     ) { notification ->
-      val device = notification?.userInfo?.get("AVCaptureDevice") as? AVCaptureDevice
-      if (device != null) {
-        listeners.forEach { it.onCameraAdded(device) }
+      debouncer.submit {
+        listeners.forEach { it.onCameraUpdated() }
       }
     }
   }
@@ -63,9 +69,8 @@ internal class CameraPresenceMonitor : NSObject() {
       `object` = null,
       queue = null,
     ) { notification ->
-      val device = notification?.userInfo?.get("AVCaptureDevice") as? AVCaptureDevice
-      if (device != null) {
-        listeners.forEach { it.onCameraRemoved(device) }
+      debouncer.submit {
+        listeners.forEach { it.onCameraUpdated() }
       }
     }
   }
@@ -75,5 +80,14 @@ internal class CameraPresenceMonitor : NSObject() {
     disconnectionObserver?.let(notificationCenter::removeObserver)
     connectionObserver = null
     disconnectionObserver = null
+  }
+
+  internal fun release() {
+    dispose()
+    mainScope.cancel()
+  }
+
+  companion object {
+    private const val CONNECTION_DEBOUNCER_TIME_IN_MILLIS = 100L
   }
 }

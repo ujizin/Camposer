@@ -98,6 +98,7 @@ internal object CameraFormatPicker {
       }
 
       fps < minFps -> (minFps - fps).toFloat()
+
       else -> (fps - maxFps).toFloat()
     }
   }

@@ -7,18 +7,14 @@ import androidx.camera.video.Quality
 import androidx.camera.video.QualitySelector
 import androidx.camera.view.CameraController
 import com.ujizin.camposer.info.CameraInfo
+import com.ujizin.camposer.internal.utils.Debouncer
 import com.ujizin.camposer.state.properties.CameraData
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import com.ujizin.camposer.state.properties.format.config.AspectRatioConfig
 import com.ujizin.camposer.state.properties.format.config.CameraFormatConfig
 import com.ujizin.camposer.state.properties.format.config.ResolutionConfig
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.math.abs
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 public actual class CamFormat
@@ -106,22 +102,6 @@ public actual class CamFormat
     override fun hashCode(): Int = configs.hashCode()
 
     override fun toString(): String = "CamFormat(configs=$configs)"
-
-    private class Debouncer(
-      private val duration: Duration,
-      private val scope: CoroutineScope,
-    ) {
-      private var job: Job? = null
-
-      fun submit(block: suspend () -> Unit) {
-        job?.cancel()
-        job =
-          scope.launch {
-            delay(duration)
-            block()
-          }
-      }
-    }
 
     public actual companion object {
       private const val CONFIGS_DEBOUNCE_MILLIS = 250L

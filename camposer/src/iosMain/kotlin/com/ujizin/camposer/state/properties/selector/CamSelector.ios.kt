@@ -11,6 +11,7 @@ import platform.AVFoundation.AVCaptureDeviceTypeBuiltInDualCamera
 import platform.AVFoundation.AVCaptureDeviceTypeBuiltInDualWideCamera
 import platform.AVFoundation.AVCaptureDeviceTypeBuiltInTripleCamera
 import platform.AVFoundation.AVCaptureDeviceTypeBuiltInWideAngleCamera
+import platform.AVFoundation.AVCaptureDeviceTypeExternal
 import platform.AVFoundation.AVMediaTypeVideo
 import platform.AVFoundation.position
 
@@ -63,6 +64,10 @@ public actual class CamSelector {
       }
 
       addAll(camLensTypes.map { it.type })
+
+      if (camPosition == CamPosition.External) {
+        add(AVCaptureDeviceTypeExternal)
+      }
 
       add(AVCaptureDeviceTypeBuiltInWideAngleCamera)
     }.distinct()
