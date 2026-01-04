@@ -1,8 +1,6 @@
 package com.ujizin.camposer.session
 
 import androidx.annotation.RestrictTo
-import androidx.annotation.VisibleForTesting
-import androidx.annotation.VisibleForTesting.Companion.NONE
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,8 +8,9 @@ import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.controller.record.DefaultRecordController
 import com.ujizin.camposer.controller.takepicture.DefaultTakePictureCommand
 import com.ujizin.camposer.info.CameraInfo
-import com.ujizin.camposer.internal.core.CameraManagerInternal
-import com.ujizin.camposer.internal.core.CameraManagerInternalImpl
+import com.ujizin.camposer.internal.core.CameraEngine
+import com.ujizin.camposer.internal.core.CameraEngineImpl
+import com.ujizin.camposer.internal.core.IOSCameraEngine
 import com.ujizin.camposer.internal.core.ios.IOSCameraController
 import com.ujizin.camposer.manager.PreviewManager
 import com.ujizin.camposer.state.CameraState
@@ -23,19 +22,23 @@ import platform.CoreGraphics.CGPoint
 import platform.UIKit.UIView
 
 @OptIn(ExperimentalForeignApi::class)
-public actual class CameraSession private constructor(
-  internal val iosCameraController: IOSCameraController,
-  public actual val controller: CameraController,
-  public actual val info: CameraInfo = CameraInfo(iosCameraController),
-  internal actual val cameraManager: CameraManagerInternal = CameraManagerInternalImpl(
-    cameraController = iosCameraController,
-    cameraInfo = info,
-  ),
-  public actual val state: CameraState = cameraManager.cameraState,
+public actual class CameraSession internal constructor(
+  internal actual val cameraEngine: CameraEngine,
+  internal val iosCameraController: IOSCameraController = (cameraEngine as IOSCameraEngine)
+    .iOSCameraController,
+  public actual val controller: CameraController = cameraEngine.cameraController,
+  public actual val info: CameraInfo = cameraEngine.cameraInfo,
+  public actual val state: CameraState = cameraEngine.cameraState,
 ) {
   @get:RestrictTo(RestrictTo.Scope.LIBRARY)
   public val cameraController: DefaultIOSCameraController
     get() = iosCameraController as DefaultIOSCameraController
+
+  public actual var isInitialized: Boolean by mutableStateOf(false)
+    private set
+
+  public actual var isStreaming: Boolean by mutableStateOf(false)
+    internal set
 
   public constructor(
     controller: CameraController,
@@ -43,25 +46,13 @@ public actual class CameraSession private constructor(
       captureSession = AVCaptureSession(),
       previewManager = PreviewManager(),
     ),
-  ) : this(controller = controller, iosCameraController = iosCameraSession)
-
-  @VisibleForTesting(NONE)
-  internal constructor(
-    controller: CameraController,
-    iosCameraSession: IOSCameraController,
-    cameraInfo: CameraInfo,
-    cameraManagerInternal: CameraManagerInternal,
   ) : this(
-    controller = controller,
-    iosCameraController = iosCameraSession,
-    info = cameraInfo,
-    cameraManager = cameraManagerInternal,
+    cameraEngine = CameraEngineImpl(
+      cameraController = controller,
+      iOSCameraController = iosCameraSession,
+      cameraInfo = CameraInfo(iosCameraSession),
+    ),
   )
-
-  public actual var isInitialized: Boolean by mutableStateOf(false)
-    private set
-  public actual var isStreaming: Boolean by mutableStateOf(false)
-    internal set
 
   init {
     setupCamera()
@@ -70,8 +61,8 @@ public actual class CameraSession private constructor(
   private fun setupCamera() =
     with(iosCameraController) {
       controller.initialize(
-        recordController = DefaultRecordController(cameraManager),
-        takePictureCommand = DefaultTakePictureCommand(cameraManager),
+        recordController = DefaultRecordController(cameraEngine),
+        takePictureCommand = DefaultTakePictureCommand(cameraEngine),
         cameraState = state,
         cameraInfo = info,
       )

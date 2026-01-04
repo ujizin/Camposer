@@ -1,5 +1,6 @@
 package com.ujizin.camposer.fake
 
+import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.info.AndroidCameraInfo
 import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.state.properties.CaptureMode
@@ -17,6 +18,8 @@ internal actual class FakeCameraTest(
   internal val cameraXController: FakeCameraXController,
 ) {
   actual constructor() : this(FakeCameraXController())
+
+  actual val cameraController: CameraController = CameraController()
 
   actual val cameraInfo: CameraInfo by lazy {
     CameraInfo(
@@ -57,9 +60,10 @@ internal actual class FakeCameraTest(
     assertEquals(expected.value, cameraXController.useCases)
   }
 
-  actual fun assertZoomRatio(expected: Float) = runBlocking(Dispatchers.Main) {
-    assertEquals(expected, cameraXController.zoomState.value?.zoomRatio)
-  }
+  actual fun assertZoomRatio(expected: Float) =
+    runBlocking(Dispatchers.Main) {
+      assertEquals(expected, cameraXController.zoomState.value?.zoomRatio)
+    }
 
   actual fun assertFlashMode(expected: FlashMode) {
     assertEquals(expected.mode, cameraXController.imageCaptureFlashMode)

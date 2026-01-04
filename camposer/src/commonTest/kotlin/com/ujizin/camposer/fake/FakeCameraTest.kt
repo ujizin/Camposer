@@ -1,5 +1,6 @@
 package com.ujizin.camposer.fake
 
+import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.FlashMode
@@ -9,6 +10,8 @@ import com.ujizin.camposer.state.properties.format.CamFormat
 import com.ujizin.camposer.state.properties.selector.CamSelector
 
 internal expect class FakeCameraTest() {
+  val cameraController: CameraController
+
   val cameraInfo: CameraInfo
 
   var isFlashSupported: Boolean

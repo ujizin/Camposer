@@ -2,7 +2,7 @@ package com.ujizin.camposer.session
 
 import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.info.CameraInfo
-import com.ujizin.camposer.internal.core.CameraManagerInternal
+import com.ujizin.camposer.internal.core.CameraEngine
 import com.ujizin.camposer.state.CameraState
 
 /**
@@ -41,7 +41,7 @@ public expect class CameraSession {
   public var isInitialized: Boolean
     private set
 
-  internal val cameraManager: CameraManagerInternal
+  internal val cameraEngine: CameraEngine
 
   internal fun onSessionStarted()
 }

@@ -1,5 +1,7 @@
 package com.ujizin.camposer.internal.core
 
+import com.ujizin.camposer.controller.camera.CameraController
+import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.FlashMode
@@ -13,8 +15,10 @@ import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import com.ujizin.camposer.state.properties.format.CamFormat
 import com.ujizin.camposer.state.properties.selector.CamSelector
 
-internal expect class CameraManagerInternalImpl : CameraManagerInternal {
+internal expect class CameraEngineImpl : CameraEngine {
+  override val cameraController: CameraController
   override val cameraState: CameraState
+  override val cameraInfo: CameraInfo
 
   override fun resetConfig()
 

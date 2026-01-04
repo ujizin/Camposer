@@ -1,5 +1,6 @@
 package com.ujizin.camposer.internal.core
 
+import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.internal.core.ios.IOSCameraController
 import com.ujizin.camposer.internal.extensions.toVideoOrientation
@@ -23,11 +24,12 @@ import kotlinx.coroutines.IO
 import platform.UIKit.UIApplication
 
 @OptIn(ExperimentalForeignApi::class)
-internal actual class CameraManagerInternalImpl(
-  override val cameraController: IOSCameraController,
-  internal val cameraInfo: CameraInfo,
+internal actual class CameraEngineImpl(
+  actual override val cameraController: CameraController,
+  override val iOSCameraController: IOSCameraController,
+  actual override val cameraInfo: CameraInfo,
   private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-) : IOSCameraManagerInternal {
+) : IOSCameraEngine {
   actual override val cameraState = CameraState(
     cameraInfo = cameraInfo,
     dispatcher = dispatcher,
@@ -35,30 +37,30 @@ internal actual class CameraManagerInternalImpl(
   )
 
   init {
-    cameraController.setPreviewGravity(cameraState.scaleType.gravity)
+    iOSCameraController.setPreviewGravity(cameraState.scaleType.gravity)
   }
 
   actual override fun isMirrorEnabled(): Boolean =
-    cameraState.mirrorMode.isMirrorEnabled(cameraController.getCurrentPosition())
+    cameraState.mirrorMode.isMirrorEnabled(iOSCameraController.getCurrentPosition())
 
   actual override fun setCaptureMode(captureMode: CaptureMode) {
-    cameraController.addOutput(captureMode.output)
+    iOSCameraController.addOutput(captureMode.output)
     updateConfig(captureModeChanged = true)
   }
 
   actual override fun removeCaptureMode(captureMode: CaptureMode) {
-    cameraController.removeOutput(captureMode.output)
+    iOSCameraController.removeOutput(captureMode.output)
   }
 
   actual override fun setCamSelector(camSelector: CamSelector) {
-    cameraController.setCaptureDevice(cameraController.getCaptureDevice(camSelector))
+    iOSCameraController.setCaptureDevice(iOSCameraController.getCaptureDevice(camSelector))
     updateConfig(camSelectorChanged = true)
   }
 
   actual override fun setCamFormat(camFormat: CamFormat) {
     camFormat.applyConfigs(
       cameraInfo = cameraInfo,
-      iosCameraController = cameraController,
+      iosCameraController = iOSCameraController,
       onDeviceFormatUpdated = { cameraInfo.rebind(output = cameraState.captureMode.output) },
       onStabilizationModeChanged = ::setVideoStabilizationMode,
       onFrameRateChanged = ::setFrameRate,
@@ -66,7 +68,7 @@ internal actual class CameraManagerInternalImpl(
   }
 
   actual override fun setScaleType(scaleType: ScaleType) {
-    cameraController.setPreviewGravity(scaleType.gravity)
+    iOSCameraController.setPreviewGravity(scaleType.gravity)
   }
 
   actual override fun setImageAnalyzer(imageAnalyzer: ImageAnalyzer?) {
@@ -87,24 +89,24 @@ internal actual class CameraManagerInternalImpl(
   ) {
     when {
       cameraState.frameRate != minFps -> cameraState.frameRate = minFps
-      else -> cameraController.setFrameRate(minFps)
+      else -> iOSCameraController.setFrameRate(minFps)
     }
   }
 
   actual override fun setFlashMode(flashMode: FlashMode) {
-    cameraController.setFlashMode(flashMode.mode)
+    iOSCameraController.setFlashMode(flashMode.mode)
   }
 
   actual override fun setTorchEnabled(isTorchEnabled: Boolean) {
-    cameraController.setTorchEnabled(isTorchEnabled)
+    iOSCameraController.setTorchEnabled(isTorchEnabled)
   }
 
   actual override fun setExposureCompensation(exposureCompensation: Float) {
-    cameraController.setExposureCompensation(exposureCompensation)
+    iOSCameraController.setExposureCompensation(exposureCompensation)
   }
 
   actual override fun setImageCaptureStrategy(imageCaptureStrategy: ImageCaptureStrategy) {
-    cameraController.setCameraOutputQuality(
+    iOSCameraController.setCameraOutputQuality(
       quality = imageCaptureStrategy.quality,
       highResolutionEnabled = imageCaptureStrategy.highResolutionEnabled,
     )
@@ -112,7 +114,7 @@ internal actual class CameraManagerInternalImpl(
 
   actual override fun isVideoStabilizationSupported(
     videoStabilizationMode: VideoStabilizationMode,
-  ): Boolean = cameraController.isVideoStabilizationSupported(videoStabilizationMode.value)
+  ): Boolean = iOSCameraController.isVideoStabilizationSupported(videoStabilizationMode.value)
 
   actual override fun setVideoStabilizationMode(videoStabilizationMode: VideoStabilizationMode) {
     when {
@@ -121,13 +123,13 @@ internal actual class CameraManagerInternalImpl(
       }
 
       else -> {
-        cameraController.setVideoStabilization(videoStabilizationMode.value)
+        iOSCameraController.setVideoStabilization(videoStabilizationMode.value)
       }
     }
   }
 
   actual override fun setZoomRatio(zoomRatio: Float) {
-    cameraController.setZoomRatio(zoomRatio)
+    iOSCameraController.setZoomRatio(zoomRatio)
   }
 
   actual override fun resetConfig() =
@@ -138,7 +140,7 @@ internal actual class CameraManagerInternalImpl(
       exposureCompensation = 0F
       flashMode = FlashMode.Off
       isTorchEnabled = false
-      cameraController.setCameraOutputQuality(
+      iOSCameraController.setCameraOutputQuality(
         quality = imageCaptureStrategy.quality,
         highResolutionEnabled = imageCaptureStrategy.highResolutionEnabled,
       )
@@ -166,7 +168,7 @@ internal actual class CameraManagerInternalImpl(
 
   override fun getCurrentVideoOrientation() =
     when (cameraState.orientationStrategy) {
-      OrientationStrategy.Device -> cameraController.getCurrentDeviceOrientation()
+      OrientationStrategy.Device -> iOSCameraController.getCurrentDeviceOrientation()
       OrientationStrategy.Preview -> UIApplication.sharedApplication.statusBarOrientation
     }.toVideoOrientation()
 

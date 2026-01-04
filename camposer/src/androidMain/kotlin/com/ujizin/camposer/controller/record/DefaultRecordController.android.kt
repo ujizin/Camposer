@@ -15,21 +15,21 @@ import androidx.compose.runtime.setValue
 import androidx.core.util.Consumer
 import com.ujizin.camposer.CaptureResult
 import com.ujizin.camposer.error.RecordNotInitializedException
-import com.ujizin.camposer.internal.core.AndroidCameraManagerInternal
-import com.ujizin.camposer.internal.core.CameraManagerInternal
+import com.ujizin.camposer.internal.core.AndroidCameraEngine
+import com.ujizin.camposer.internal.core.CameraEngine
 import com.ujizin.camposer.internal.core.camerax.RecordEvent
 import com.ujizin.camposer.internal.core.camerax.RecordingWrapper
 import java.io.File
 
 internal actual class DefaultRecordController private constructor(
-  controllerInternal: AndroidCameraManagerInternal,
+  cameraEngine: AndroidCameraEngine,
 ) : AndroidRecordController {
-  constructor(cameraManager: CameraManagerInternal) : this(
-    controllerInternal = cameraManager as AndroidCameraManagerInternal,
+  constructor(cameraEngine: CameraEngine) : this(
+    cameraEngine = cameraEngine as AndroidCameraEngine,
   )
 
-  private val controller = controllerInternal.controller
-  private val mainExecutor = controllerInternal.mainExecutor
+  private val controller = cameraEngine.cameraXController
+  private val mainExecutor = cameraEngine.mainExecutor
 
   private var recordController: RecordingWrapper? = null
 

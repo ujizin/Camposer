@@ -2,25 +2,25 @@ package com.ujizin.camposer.controller.record
 
 import com.ujizin.camposer.CaptureResult
 import com.ujizin.camposer.error.CaptureModeException
-import com.ujizin.camposer.internal.core.CameraManagerInternal
-import com.ujizin.camposer.internal.core.IOSCameraManagerInternal
+import com.ujizin.camposer.internal.core.CameraEngine
+import com.ujizin.camposer.internal.core.IOSCameraEngine
 import com.ujizin.camposer.internal.core.ios.IOSCameraController
 import com.ujizin.camposer.internal.extensions.toCaptureResult
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.properties.CaptureMode
 
 internal actual class DefaultRecordController private constructor(
-  private val cameraManager: IOSCameraManagerInternal,
+  private val cameraEngine: IOSCameraEngine,
 ) : RecordController {
-  internal constructor(cameraControllerInternal: CameraManagerInternal) : this(
-    cameraControllerInternal as IOSCameraManagerInternal,
+  internal constructor(cameraControllerInternal: CameraEngine) : this(
+    cameraControllerInternal as IOSCameraEngine,
   )
 
   private val controller: IOSCameraController
-    get() = cameraManager.cameraController
+    get() = cameraEngine.iOSCameraController
 
   private val cameraState: CameraState
-    get() = cameraManager.cameraState
+    get() = cameraEngine.cameraState
 
   actual override var isMuted: Boolean = controller.isMuted
     get() = controller.isMuted
@@ -34,8 +34,8 @@ internal actual class DefaultRecordController private constructor(
     filename: String,
     onVideoCaptured: (CaptureResult<String>) -> Unit,
   ) = controller.startRecording(
-    isMirrorEnabled = this@DefaultRecordController.cameraManager.isMirrorEnabled(),
-    videoOrientation = this@DefaultRecordController.cameraManager.getCurrentVideoOrientation(),
+    isMirrorEnabled = this@DefaultRecordController.cameraEngine.isMirrorEnabled(),
+    videoOrientation = this@DefaultRecordController.cameraEngine.getCurrentVideoOrientation(),
     filename = filename,
     onVideoCaptured = { result -> onVideoCaptured(result.toCaptureResult()) },
   )

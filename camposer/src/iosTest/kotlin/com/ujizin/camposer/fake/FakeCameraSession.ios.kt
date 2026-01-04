@@ -9,10 +9,10 @@ internal actual fun createCameraSession(
   testDispatcher: CoroutineDispatcher,
   autoStart: Boolean,
 ) = CameraSession(
-  controller = CameraController(),
-  iosCameraSession = fakeCameraTest.fakeIosCameraController,
-  cameraInfo = fakeCameraTest.cameraInfo,
-  cameraManagerInternal = FakeCameraManagerInternal(fakeCameraTest, testDispatcher),
+  cameraEngine = FakeCameraEngine(
+    cameraTest = fakeCameraTest,
+    testDispatcher = testDispatcher,
+  ),
 ).apply {
   if (autoStart) startCamera()
 }

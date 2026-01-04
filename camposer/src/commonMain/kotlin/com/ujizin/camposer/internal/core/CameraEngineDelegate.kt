@@ -15,7 +15,7 @@ import com.ujizin.camposer.state.properties.selector.CamSelector
 /**
  * A delegate interface for controlling camera operations and settings.
  */
-internal interface CameraManagerDelegate {
+internal interface CameraEngineDelegate {
   fun setCaptureMode(captureMode: CaptureMode)
 
   fun removeCaptureMode(captureMode: CaptureMode)

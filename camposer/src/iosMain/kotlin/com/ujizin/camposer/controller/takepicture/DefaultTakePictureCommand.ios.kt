@@ -2,8 +2,8 @@ package com.ujizin.camposer.controller.takepicture
 
 import com.ujizin.camposer.CaptureResult
 import com.ujizin.camposer.error.CaptureModeException
-import com.ujizin.camposer.internal.core.CameraManagerInternal
-import com.ujizin.camposer.internal.core.IOSCameraManagerInternal
+import com.ujizin.camposer.internal.core.CameraEngine
+import com.ujizin.camposer.internal.core.IOSCameraEngine
 import com.ujizin.camposer.internal.core.ios.IOSCameraController
 import com.ujizin.camposer.internal.extensions.toCaptureResult
 import com.ujizin.camposer.state.CameraState
@@ -11,19 +11,17 @@ import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.FlashMode
 
 internal actual class DefaultTakePictureCommand private constructor(
-  private val cameraManager: IOSCameraManagerInternal,
+  private val cameraEngine: IOSCameraEngine,
 ) : TakePictureCommand {
-  internal constructor(
-    controller: CameraManagerInternal,
-  ) : this(
-    cameraManager = controller as IOSCameraManagerInternal,
-  )
-
   private val cameraState: CameraState
-    get() = cameraManager.cameraState
+    get() = cameraEngine.cameraState
 
   private val controller: IOSCameraController
-    get() = cameraManager.cameraController
+    get() = cameraEngine.iOSCameraController
+
+  internal constructor(cameraEngine: CameraEngine) : this(
+    cameraEngine = cameraEngine as IOSCameraEngine,
+  )
 
   actual override fun takePicture(onImageCaptured: (CaptureResult<ByteArray>) -> Unit) {
     if (cameraState.captureMode != CaptureMode.Image) {
@@ -34,9 +32,9 @@ internal actual class DefaultTakePictureCommand private constructor(
     }
 
     controller.takePicture(
-      isMirrorEnabled = cameraManager.isMirrorEnabled(),
+      isMirrorEnabled = cameraEngine.isMirrorEnabled(),
       flashMode = cameraState.flashMode.mode,
-      videoOrientation = cameraManager.getCurrentVideoOrientation(),
+      videoOrientation = cameraEngine.getCurrentVideoOrientation(),
       onPictureCaptured = onPictureCaptured(onImageCaptured),
     )
   }
@@ -54,9 +52,9 @@ internal actual class DefaultTakePictureCommand private constructor(
 
     controller.takePicture(
       filename = filename,
-      isMirrorEnabled = cameraManager.isMirrorEnabled(),
+      isMirrorEnabled = cameraEngine.isMirrorEnabled(),
       flashMode = cameraState.flashMode.mode,
-      videoOrientation = cameraManager.getCurrentVideoOrientation(),
+      videoOrientation = cameraEngine.getCurrentVideoOrientation(),
       onPictureCaptured = onPictureCaptured(onImageCaptured),
     )
   }
@@ -69,7 +67,7 @@ internal actual class DefaultTakePictureCommand private constructor(
 
       // iOS disables the torch when flash mode is on, so the torch must be re-enabled.
       if (cameraState.isTorchEnabled && cameraState.flashMode == FlashMode.On) {
-        cameraManager.setTorchEnabled(true)
+        cameraEngine.setTorchEnabled(true)
       }
     }
 }

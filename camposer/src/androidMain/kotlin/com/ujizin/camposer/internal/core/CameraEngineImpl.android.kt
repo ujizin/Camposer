@@ -10,6 +10,7 @@ import androidx.camera.view.CameraController.IMAGE_ANALYSIS
 import androidx.compose.ui.util.fastCoerceIn
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.internal.core.camerax.CameraXController
 import com.ujizin.camposer.state.CameraState
@@ -31,16 +32,17 @@ import kotlinx.coroutines.Dispatchers
 import java.util.concurrent.Executor
 import kotlin.math.roundToInt
 
-internal actual class CameraManagerInternalImpl(
-  override val controller: CameraXController,
-  private val cameraInfo: CameraInfo,
+internal actual class CameraEngineImpl(
+  actual override val cameraController: CameraController,
+  actual override val cameraInfo: CameraInfo,
+  override val cameraXController: CameraXController,
   private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-) : AndroidCameraManagerInternal {
+) : AndroidCameraEngine {
   override val mainExecutor: Executor
-    get() = controller.mainExecutor
+    get() = cameraXController.mainExecutor
 
   override val contentResolver: ContentResolver
-    get() = controller.contentResolver
+    get() = cameraXController.contentResolver
 
   actual override val cameraState: CameraState = CameraState(
     cameraInfo = cameraInfo,
@@ -49,15 +51,15 @@ internal actual class CameraManagerInternalImpl(
   )
 
   actual override fun isMirrorEnabled(): Boolean =
-    when (controller.videoCaptureMirrorMode) {
+    when (cameraXController.videoCaptureMirrorMode) {
       MIRROR_MODE_ON -> true
       MIRROR_MODE_OFF -> false
       else -> cameraState.camSelector.camPosition == CamPosition.Front
     }
 
   override fun onCameraInitialized() {
-    controller.lifecycleOwner.lifecycle.addObserver(CameraConfigSaver())
-    with(controller) {
+    cameraXController.lifecycleOwner.lifecycle.addObserver(CameraConfigSaver())
+    with(cameraXController) {
       setEnabledUseCases(getUseCases())
       setZoomRatio(cameraState.zoomRatio)
       isTapToFocusEnabled = cameraState.isFocusOnTapEnabled
@@ -67,36 +69,38 @@ internal actual class CameraManagerInternalImpl(
   }
 
   actual override fun setCaptureMode(captureMode: CaptureMode) {
-    controller.setEnabledUseCases(getUseCases(captureMode))
+    cameraXController.setEnabledUseCases(getUseCases(captureMode))
   }
 
   actual override fun setCamSelector(camSelector: CamSelector) {
-    controller.cameraSelector = camSelector.selector
+    cameraXController.cameraSelector = camSelector.selector
     cameraInfo.rebind()
   }
 
   actual override fun setCamFormat(camFormat: CamFormat) {
     camFormat.applyConfigs(
       cameraInfo = cameraInfo,
-      controller = controller,
+      controller = cameraXController,
       onFrameRateChanged = ::setFrameRate,
       onStabilizationModeChanged = ::setVideoStabilizationMode,
     )
   }
 
   actual override fun setMirrorMode(mirrorMode: MirrorMode) {
-    controller.videoCaptureMirrorMode = mirrorMode.mode
+    cameraXController.videoCaptureMirrorMode = mirrorMode.mode
   }
 
   actual override fun setImageAnalyzer(imageAnalyzer: ImageAnalyzer?) {
-    controller.setImageAnalysisAnalyzer(
-      controller.mainExecutor,
+    cameraXController.setImageAnalysisAnalyzer(
+      cameraXController.mainExecutor,
       imageAnalyzer?.analyzer ?: return,
     )
   }
 
   actual override fun setImageAnalyzerEnabled(isImageAnalyzerEnabled: Boolean) {
-    controller.setEnabledUseCases(getUseCases(isImageAnalyzerEnabled = isImageAnalyzerEnabled))
+    cameraXController.setEnabledUseCases(
+      getUseCases(isImageAnalyzerEnabled = isImageAnalyzerEnabled),
+    )
   }
 
   actual override fun setFrameRate(
@@ -105,26 +109,26 @@ internal actual class CameraManagerInternalImpl(
   ) {
     when {
       cameraState.frameRate != minFps -> cameraState.frameRate = minFps
-      else -> controller.videoCaptureTargetFrameRate = Range(minFps, maxFps)
+      else -> cameraXController.videoCaptureTargetFrameRate = Range(minFps, maxFps)
     }
   }
 
   actual override fun setFlashMode(flashMode: FlashMode) {
-    controller.imageCaptureFlashMode = flashMode.mode
+    cameraXController.imageCaptureFlashMode = flashMode.mode
   }
 
   actual override fun setTorchEnabled(isTorchEnabled: Boolean) {
-    controller.enableTorch(isTorchEnabled)
+    cameraXController.enableTorch(isTorchEnabled)
   }
 
   actual override fun setExposureCompensation(exposureCompensation: Float) {
-    controller.setExposureCompensationIndex(
+    cameraXController.setExposureCompensationIndex(
       exposureCompensation.roundToInt(),
     )
   }
 
   actual override fun setFocusOnTapEnabled(isFocusOnTapEnabled: Boolean) {
-    controller.isTapToFocusEnabled = isFocusOnTapEnabled
+    cameraXController.isTapToFocusEnabled = isFocusOnTapEnabled
   }
 
   @OptIn(ExperimentalZeroShutterLag::class)
@@ -134,7 +138,7 @@ internal actual class CameraManagerInternalImpl(
       imageCaptureStrategy == MinLatency && !isZSLSupported -> imageCaptureStrategy.fallback
       else -> imageCaptureStrategy.mode
     }
-    controller.imageCaptureMode = mode
+    cameraXController.imageCaptureMode = mode
   }
 
   actual override fun isVideoStabilizationSupported(
@@ -151,7 +155,7 @@ internal actual class CameraManagerInternalImpl(
   }
 
   actual override fun setZoomRatio(zoomRatio: Float) {
-    controller.setZoomRatio(zoomRatio)
+    cameraXController.setZoomRatio(zoomRatio)
   }
 
   actual override fun resetConfig() =

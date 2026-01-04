@@ -13,7 +13,6 @@ import com.ujizin.camposer.session.rememberCameraSession
 import org.junit.Rule
 
 internal abstract class CameraTest {
-
   @get:Rule(order = 0)
   val liveDataImmediateRule = InstantTaskExecutorRule()
 

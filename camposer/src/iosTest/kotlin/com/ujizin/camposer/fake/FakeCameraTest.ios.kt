@@ -1,5 +1,6 @@
 package com.ujizin.camposer.fake
 
+import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.FlashMode
@@ -15,6 +16,7 @@ internal actual class FakeCameraTest(
 ) {
   actual constructor() : this(fakeIosCameraController = FakeIosCameraController())
 
+  actual val cameraController: CameraController = CameraController()
   actual val cameraInfo: CameraInfo = CameraInfo(fakeIosCameraController)
 
   actual var hasErrorInRecording: Boolean

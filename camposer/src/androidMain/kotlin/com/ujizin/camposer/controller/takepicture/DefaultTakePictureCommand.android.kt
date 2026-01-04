@@ -9,26 +9,27 @@ import androidx.camera.core.ImageCapture.OutputFileOptions
 import androidx.camera.core.ImageCapture.OutputFileResults
 import androidx.camera.core.ImageCaptureException
 import com.ujizin.camposer.CaptureResult
-import com.ujizin.camposer.internal.core.AndroidCameraManagerInternal
-import com.ujizin.camposer.internal.core.CameraManagerInternal
+import com.ujizin.camposer.internal.core.AndroidCameraEngine
+import com.ujizin.camposer.internal.core.CameraEngine
 import com.ujizin.camposer.internal.core.camerax.CameraXController
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.concurrent.Executor
 
 internal actual class DefaultTakePictureCommand private constructor(
-  private val cameraManager: AndroidCameraManagerInternal,
+  private val cameraEngine: AndroidCameraEngine,
 ) : AndroidTakePictureCommand {
-  internal constructor(
-    cameraManager: CameraManagerInternal,
-  ) : this(cameraManager = cameraManager as AndroidCameraManagerInternal)
-
   private val controller: CameraXController
-    get() = cameraManager.controller
+    get() = cameraEngine.cameraXController
+
   private val mainExecutor: Executor
-    get() = cameraManager.mainExecutor
+    get() = cameraEngine.mainExecutor
   private val contentResolver: ContentResolver
-    get() = cameraManager.contentResolver
+    get() = cameraEngine.contentResolver
+
+  internal constructor(
+    cameraEngine: CameraEngine,
+  ) : this(cameraEngine = cameraEngine as AndroidCameraEngine)
 
   actual override fun takePicture(onImageCaptured: (CaptureResult<ByteArray>) -> Unit) {
     val byteArrayOS = ByteArrayOutputStream()
@@ -121,6 +122,6 @@ internal actual class DefaultTakePictureCommand private constructor(
 
   fun createMetadata() =
     ImageCapture.Metadata().apply {
-      this.isReversedHorizontal = cameraManager.isMirrorEnabled()
+      this.isReversedHorizontal = cameraEngine.isMirrorEnabled()
     }
 }

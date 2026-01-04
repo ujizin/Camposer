@@ -24,8 +24,10 @@ import org.junit.runner.RunWith
 internal class ZoomRatioTest : CameraTest() {
   lateinit var zoomRatio: State<Float>
 
-  private val currentCameraXZoom: Float?
-    get() = cameraSession.cameraXController.cameraInfo?.zoomState?.value
+  private val actualCameraXZoom: Float?
+    get() = cameraSession.cameraXController.cameraInfo
+      ?.zoomState
+      ?.value
       ?.zoomRatio
 
   private lateinit var configurationScreen: Configuration
@@ -47,13 +49,13 @@ internal class ZoomRatioTest : CameraTest() {
 
       runOnIdle {
         waitUntil(
-          conditionDescription = "expected: ${cameraSession.info.maxZoom}, actual: $currentCameraXZoom",
+          "expected ${cameraSession.info.maxZoom} actual: $actualCameraXZoom",
           timeoutMillis = ZOOM_RATIO_TIMEOUT,
-          condition = { currentCameraXZoom == cameraSession.info.maxZoom }
+          condition = { actualCameraXZoom == cameraSession.info.maxZoom },
         )
-        assertNotEquals(UNREACHABLE_MAX_ZOOM_VALUE, currentCameraXZoom)
+        assertNotEquals(UNREACHABLE_MAX_ZOOM_VALUE, actualCameraXZoom)
         assertEquals(cameraSession.info.maxZoom, zoomRatio.value)
-        assertEquals(cameraSession.info.maxZoom, currentCameraXZoom)
+        assertEquals(cameraSession.info.maxZoom, actualCameraXZoom)
       }
     }
 
@@ -66,12 +68,12 @@ internal class ZoomRatioTest : CameraTest() {
 
       runOnIdle {
         waitUntil(
-          conditionDescription = "expected: ${cameraSession.info.minZoom}, actual: $currentCameraXZoom",
+          "expected ${cameraSession.info.minZoom}, actual $actualCameraXZoom",
           timeoutMillis = ZOOM_RATIO_TIMEOUT,
-          condition = { currentCameraXZoom == cameraSession.info.minZoom }
+          condition = { actualCameraXZoom == cameraSession.info.minZoom },
         )
-        assertNotEquals(UNREACHABLE_MIN_ZOOM_VALUE, currentCameraXZoom)
-        assertEquals(cameraSession.info.minZoom, currentCameraXZoom)
+        assertNotEquals(UNREACHABLE_MIN_ZOOM_VALUE, actualCameraXZoom)
+        assertEquals(cameraSession.info.minZoom, actualCameraXZoom)
       }
     }
 
@@ -83,7 +85,7 @@ internal class ZoomRatioTest : CameraTest() {
       cameraController.setZoomRatio(cameraSession.info.maxZoom)
       runOnIdle {
         assertEquals(cameraSession.info.maxZoom, zoomRatio.value)
-        assertEquals(currentCameraXZoom, zoomRatio.value)
+        assertEquals(actualCameraXZoom, zoomRatio.value)
       }
     }
 
@@ -102,7 +104,7 @@ internal class ZoomRatioTest : CameraTest() {
         if (cameraSession.info.isZoomSupported) {
           assertNotEquals(DEFAULT_ZOOM_VALUE, zoomRatio.value)
         }
-        assertEquals(currentCameraXZoom, zoomRatio.value)
+        assertEquals(actualCameraXZoom, zoomRatio.value)
       }
     }
 
@@ -119,7 +121,7 @@ internal class ZoomRatioTest : CameraTest() {
 
       runOnIdle {
         assertEquals(DEFAULT_ZOOM_VALUE, zoomRatio.value)
-        assertEquals(currentCameraXZoom, zoomRatio.value)
+        assertEquals(actualCameraXZoom, zoomRatio.value)
       }
     }
 

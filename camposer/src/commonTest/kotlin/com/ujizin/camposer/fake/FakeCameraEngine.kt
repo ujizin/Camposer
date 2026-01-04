@@ -1,6 +1,6 @@
 package com.ujizin.camposer.fake
 
-import com.ujizin.camposer.internal.core.CameraManagerInternal
+import com.ujizin.camposer.internal.core.CameraEngine
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.FlashMode
@@ -15,10 +15,10 @@ import com.ujizin.camposer.state.properties.format.CamFormat
 import com.ujizin.camposer.state.properties.selector.CamSelector
 import kotlinx.coroutines.CoroutineDispatcher
 
-internal expect class FakeCameraManagerInternal(
+internal expect class FakeCameraEngine(
   cameraTest: FakeCameraTest,
   testDispatcher: CoroutineDispatcher,
-) : CameraManagerInternal {
+) : CameraEngine {
   override val cameraState: CameraState
 
   override fun isMirrorEnabled(): Boolean

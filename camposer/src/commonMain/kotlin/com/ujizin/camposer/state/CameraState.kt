@@ -2,7 +2,7 @@ package com.ujizin.camposer.state
 
 import androidx.compose.ui.util.fastCoerceIn
 import com.ujizin.camposer.info.CameraInfo
-import com.ujizin.camposer.internal.core.CameraManagerDelegate
+import com.ujizin.camposer.internal.core.CameraEngineDelegate
 import com.ujizin.camposer.internal.utils.asyncDistinctConfig
 import com.ujizin.camposer.internal.utils.distinctConfig
 import com.ujizin.camposer.session.CameraSession
@@ -33,7 +33,7 @@ import kotlinx.coroutines.sync.Mutex
  */
 public class CameraState internal constructor(
   private val cameraInfo: CameraInfo,
-  private val cameraDelegate: CameraManagerDelegate,
+  private val cameraDelegate: CameraEngineDelegate,
   private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
   private val cameraMutex = Mutex()
@@ -201,7 +201,7 @@ internal fun CameraSession.update(
 
   with(state) {
     if (isToUpdateCamera) {
-      cameraManager.resetConfig()
+      cameraEngine.resetConfig()
     }
 
     this.camSelector = camSelector

@@ -120,7 +120,8 @@ internal class FakeCameraXController : CameraXController {
     get() = CameraXExecutors.directExecutor()
 
   override val zoomState = MutableLiveData<ZoomState>().apply {
-    runBlocking(Dispatchers.Main) { // Post value does not work ._.
+    runBlocking(Dispatchers.Main) {
+      // Post value does not work ._.
       value = object : ZoomState {
         override fun getZoomRatio(): Float = fakeZoomRatio
 

@@ -2,7 +2,6 @@ package com.ujizin.camposer.session
 
 import android.content.Context
 import androidx.annotation.RestrictTo
-import androidx.annotation.VisibleForTesting
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
 import androidx.compose.runtime.Stable
@@ -16,9 +15,9 @@ import com.ujizin.camposer.controller.takepicture.DefaultTakePictureCommand
 import com.ujizin.camposer.extensions.compatMainExecutor
 import com.ujizin.camposer.info.AndroidCameraInfo
 import com.ujizin.camposer.info.CameraInfo
-import com.ujizin.camposer.internal.core.AndroidCameraManagerInternal
-import com.ujizin.camposer.internal.core.CameraManagerInternal
-import com.ujizin.camposer.internal.core.CameraManagerInternalImpl
+import com.ujizin.camposer.internal.core.AndroidCameraEngine
+import com.ujizin.camposer.internal.core.CameraEngine
+import com.ujizin.camposer.internal.core.CameraEngineImpl
 import com.ujizin.camposer.internal.core.camerax.CameraXController
 import com.ujizin.camposer.internal.core.camerax.CameraXControllerWrapper
 import com.ujizin.camposer.state.CameraState
@@ -29,15 +28,17 @@ import com.ujizin.camposer.state.CameraState
  * To be created use [rememberCameraSession].
  * */
 @Stable
-public actual class CameraSession private constructor(
-  internal actual val cameraManager: CameraManagerInternal,
-  public actual val controller: CameraController,
-  public actual val info: CameraInfo,
-  public actual val state: CameraState = cameraManager.cameraState,
+public actual class CameraSession internal constructor(
+  internal actual val cameraEngine: CameraEngine,
+  public actual val controller: CameraController = cameraEngine.cameraController,
+  public actual val info: CameraInfo = cameraEngine.cameraInfo,
+  public actual val state: CameraState = cameraEngine.cameraState,
 ) {
-  internal val androidCameraManagerInternal = cameraManager as AndroidCameraManagerInternal
+  internal val androidCameraEngine
+    get() = cameraEngine as AndroidCameraEngine
+
   internal val cameraXControllerWrapper: CameraXController
-    get() = androidCameraManagerInternal.controller
+    get() = androidCameraEngine.cameraXController
 
   @get:RestrictTo(RestrictTo.Scope.LIBRARY)
   public val cameraXController: LifecycleCameraController
@@ -87,31 +88,18 @@ public actual class CameraSession private constructor(
     info: CameraInfo,
   ) : this(
     controller = cameraController,
-    cameraManager = CameraManagerInternalImpl(
-      controller = cameraXController,
+    cameraEngine = CameraEngineImpl(
+      cameraXController = cameraXController,
       cameraInfo = info,
+      cameraController = cameraController,
     ),
     info = info,
-  ) {
-    this.previewView = PreviewView(context)
-  }
-
-  @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-  internal constructor(
-    cameraController: CameraController,
-    cameraManagerInternal: CameraManagerInternal,
-    cameraInfo: CameraInfo,
-  ) : this(
-    controller = cameraController,
-    cameraManager = cameraManagerInternal,
-    state = cameraManagerInternal.cameraState,
-    info = cameraInfo,
   )
 
   init {
     controller.initialize(
-      recordController = DefaultRecordController(cameraManager = cameraManager),
-      takePictureCommand = DefaultTakePictureCommand(cameraManager = cameraManager),
+      recordController = DefaultRecordController(cameraEngine = cameraEngine),
+      takePictureCommand = DefaultTakePictureCommand(cameraEngine = cameraEngine),
       cameraState = state,
       cameraInfo = info,
     )
@@ -119,7 +107,7 @@ public actual class CameraSession private constructor(
     cameraXControllerWrapper.onInitialize {
       info.rebind()
       cameraXControllerWrapper.isPinchToZoomEnabled = false
-      androidCameraManagerInternal.onCameraInitialized()
+      androidCameraEngine.onCameraInitialized()
       isInitialized = true
     }
   }
