@@ -20,6 +20,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.ujizin.camposer.extensions.setCameraTouchEvent
+import com.ujizin.camposer.internal.observeAsState
 import com.ujizin.camposer.internal.zoom.PinchToZoomController
 import com.ujizin.camposer.session.CameraSession
 import com.ujizin.camposer.state.properties.CaptureMode
@@ -76,8 +77,13 @@ internal actual fun CameraPreviewImpl(
   LaunchedEffect(latestBitmap) { latestBitmap?.let(onSwitchCamera) }
 
   LaunchedEffect(cameraSession) {
-    val previewView = cameraSession.previewView
-    if (previewView.controller == cameraSession.cameraXController) return@LaunchedEffect
+    val previewView = cameraSession.previewView ?: return@LaunchedEffect
+    if (cameraSession.cameraXControllerWrapper.isCameraControllerEquals(
+        previewView.controller,
+      )
+    ) {
+      return@LaunchedEffect
+    }
 
     previewView.onViewBind(
       cameraSession = cameraSession,
@@ -95,7 +101,8 @@ internal actual fun CameraPreviewImpl(
   AndroidView(
     modifier = modifier.onGloballyPositioned { cameraOffset = it.positionInParent() },
     factory = {
-      cameraSession.previewView.apply {
+      PreviewView(it).apply {
+        cameraSession.previewView = this
         this.scaleType = scaleType.type
         this.implementationMode = implementationMode.value
       }
@@ -129,8 +136,6 @@ internal actual fun CameraPreviewImpl(
           camFormat = camFormat,
           isPinchToZoomEnabled = isPinchToZoomEnabled,
         )
-
-        cameraSession.controller.onSessionStarted()
       }
     },
   )
@@ -147,8 +152,9 @@ private fun PreviewView.onViewBind(
     ViewGroup.LayoutParams.MATCH_PARENT,
     ViewGroup.LayoutParams.MATCH_PARENT,
   )
-  controller = cameraSession.cameraXController.apply {
+  cameraSession.cameraXControllerWrapper.apply {
     bindToLifecycle(lifecycleOwner)
+    attachPreview(this@onViewBind)
   }
 
   previewStreamState.observe(lifecycleOwner) { state ->

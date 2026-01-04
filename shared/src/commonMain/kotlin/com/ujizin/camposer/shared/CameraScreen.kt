@@ -105,9 +105,9 @@ fun CameraScreen() {
   LaunchedEffect(camDeviceState) {
     val camDeviceState = camDeviceState
     if (camDeviceState is CameraDeviceState.Devices) {
-      println("Camera screen: ${camDeviceState.devices}")
+      println("Camera screen: ${camDeviceState.cameraDevices}")
       val cameraDevice =
-        camDeviceState.devices.find {
+        camDeviceState.cameraDevices.find {
           it.lensType.containsAll(
             listOf(
               CamLensType.UltraWide,
@@ -115,7 +115,7 @@ fun CameraScreen() {
               CamLensType.Telephoto,
             ),
           )
-        } ?: camDeviceState.devices.first()
+        } ?: camDeviceState.cameraDevices.first()
       camSelector = CamSelector(cameraDevice)
     }
   }

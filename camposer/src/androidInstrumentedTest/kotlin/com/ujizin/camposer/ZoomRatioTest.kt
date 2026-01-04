@@ -25,7 +25,7 @@ internal class ZoomRatioTest : CameraTest() {
   lateinit var zoomRatio: State<Float>
 
   private val currentCameraXZoom: Float?
-    get() = cameraSession.cameraXController.zoomState.value
+    get() = cameraSession.cameraXController.cameraInfo?.zoomState?.value
       ?.zoomRatio
 
   private lateinit var configurationScreen: Configuration
@@ -41,12 +41,16 @@ internal class ZoomRatioTest : CameraTest() {
   @Test
   fun test_limitToMaxZoomRatio() =
     with(composeTestRule) {
-      initZoomCamera(UNREACHABLE_MAX_ZOOM_VALUE)
+      initZoomCamera()
 
-      runOnUiThread {
-        waitUntil(10000) { currentCameraXZoom != cameraSession.info.minZoom }
-      }
+      cameraController.setZoomRatio(UNREACHABLE_MAX_ZOOM_VALUE)
+
       runOnIdle {
+        waitUntil(
+          conditionDescription = "expected: ${cameraSession.info.maxZoom}, actual: $currentCameraXZoom",
+          timeoutMillis = ZOOM_RATIO_TIMEOUT,
+          condition = { currentCameraXZoom == cameraSession.info.maxZoom }
+        )
         assertNotEquals(UNREACHABLE_MAX_ZOOM_VALUE, currentCameraXZoom)
         assertEquals(cameraSession.info.maxZoom, zoomRatio.value)
         assertEquals(cameraSession.info.maxZoom, currentCameraXZoom)
@@ -56,8 +60,16 @@ internal class ZoomRatioTest : CameraTest() {
   @Test
   fun test_limitToMinZoomRatio() =
     with(composeTestRule) {
-      initZoomCamera(UNREACHABLE_MIN_ZOOM_VALUE)
+      initZoomCamera()
+
+      cameraController.setZoomRatio(UNREACHABLE_MIN_ZOOM_VALUE)
+
       runOnIdle {
+        waitUntil(
+          conditionDescription = "expected: ${cameraSession.info.minZoom}, actual: $currentCameraXZoom",
+          timeoutMillis = ZOOM_RATIO_TIMEOUT,
+          condition = { currentCameraXZoom == cameraSession.info.minZoom }
+        )
         assertNotEquals(UNREACHABLE_MIN_ZOOM_VALUE, currentCameraXZoom)
         assertEquals(cameraSession.info.minZoom, currentCameraXZoom)
       }
@@ -134,5 +146,6 @@ internal class ZoomRatioTest : CameraTest() {
     private const val UNREACHABLE_MIN_ZOOM_VALUE = -1F
     private const val UNREACHABLE_MAX_ZOOM_VALUE = 9999F
     private const val DEFAULT_ZOOM_VALUE = 1F
+    private const val ZOOM_RATIO_TIMEOUT = 5000L
   }
 }

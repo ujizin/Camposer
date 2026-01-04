@@ -63,19 +63,20 @@ public abstract class com/ujizin/camposer/controller/camera/CommonCameraControll
 	public fun isMuted ()Z
 	public fun isRecording ()Z
 	public fun isRunning ()Lkotlinx/coroutines/flow/StateFlow;
-	public fun muteRecording (Z)V
-	public fun pauseRecording ()V
-	public fun resumeRecording ()V
+	public fun muteRecording-IoAF18A (Z)Ljava/lang/Object;
+	public fun pauseRecording-d1pmJ48 ()Ljava/lang/Object;
+	public fun resumeRecording-d1pmJ48 ()Ljava/lang/Object;
 	protected final fun runBind (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 	public fun setExposureCompensation (F)V
 	public fun setFlashMode-IoAF18A (Lcom/ujizin/camposer/state/properties/FlashMode;)Ljava/lang/Object;
+	public fun setMirrorMode (Lcom/ujizin/camposer/state/properties/MirrorMode;)V
 	public fun setOrientationStrategy (Lcom/ujizin/camposer/state/properties/OrientationStrategy;)V
 	public fun setTorchEnabled-IoAF18A (Z)Ljava/lang/Object;
 	public fun setVideoFrameRate-IoAF18A (I)Ljava/lang/Object;
 	public fun setVideoStabilizationEnabled-IoAF18A (Lcom/ujizin/camposer/state/properties/VideoStabilizationMode;)Ljava/lang/Object;
 	public fun setZoomRatio (F)V
 	public fun startRecording (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
-	public fun stopRecording ()V
+	public fun stopRecording-d1pmJ48 ()Ljava/lang/Object;
 	public fun takePicture (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
 	public fun takePicture (Lkotlin/jvm/functions/Function1;)V
 	public fun toggleRecording (Landroidx/camera/video/FileDescriptorOutputOptions;Landroidx/camera/view/video/AudioConfig;Lkotlin/jvm/functions/Function1;)V
@@ -113,11 +114,11 @@ public final class com/ujizin/camposer/controller/record/AndroidRecordController
 public abstract interface class com/ujizin/camposer/controller/record/RecordController {
 	public abstract fun isMuted ()Z
 	public abstract fun isRecording ()Z
-	public abstract fun muteRecording (Z)V
-	public abstract fun pauseRecording ()V
-	public abstract fun resumeRecording ()V
+	public abstract fun muteRecording-IoAF18A (Z)Ljava/lang/Object;
+	public abstract fun pauseRecording-d1pmJ48 ()Ljava/lang/Object;
+	public abstract fun resumeRecording-d1pmJ48 ()Ljava/lang/Object;
 	public abstract fun startRecording (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
-	public abstract fun stopRecording ()V
+	public abstract fun stopRecording-d1pmJ48 ()Ljava/lang/Object;
 }
 
 public abstract interface class com/ujizin/camposer/controller/takepicture/AndroidTakePictureCommand : com/ujizin/camposer/controller/takepicture/TakePictureCommand {
@@ -134,6 +135,17 @@ public final class com/ujizin/camposer/controller/takepicture/AndroidTakePicture
 public abstract interface class com/ujizin/camposer/controller/takepicture/TakePictureCommand {
 	public abstract fun takePicture (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
 	public abstract fun takePicture (Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class com/ujizin/camposer/error/CaptureModeException : java/lang/Exception {
+	public static final field $stable I
+	public fun <init> (Lcom/ujizin/camposer/state/properties/CaptureMode;Ljava/lang/String;)V
+	public synthetic fun <init> (Lcom/ujizin/camposer/state/properties/CaptureMode;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public final class com/ujizin/camposer/error/RecordNotInitializedException : java/lang/Exception {
+	public static final field $stable I
+	public fun <init> ()V
 }
 
 public final class com/ujizin/camposer/extensions/CameraStateExtensionsKt {
@@ -167,13 +179,16 @@ public final class com/ujizin/camposer/info/CameraInfo {
 	public final fun isTorchSupported ()Z
 	public final fun isZeroShutterLagSupported ()Z
 	public final fun isZoomSupported ()Z
+	public final fun setExposureSupported (Z)V
 }
 
 public final class com/ujizin/camposer/manager/CameraDevice {
 	public static final field $stable I
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getCameraId ()Lcom/ujizin/camposer/state/properties/selector/CameraId;
+	public final fun getFov ()F
 	public final fun getLensType ()Ljava/util/List;
+	public final fun getName ()Ljava/lang/String;
 	public final fun getPhotoData ()Ljava/util/List;
 	public final fun getPosition ()Lcom/ujizin/camposer/state/properties/selector/CamPosition;
 	public final fun getVideoData ()Ljava/util/List;
@@ -191,7 +206,7 @@ public final class com/ujizin/camposer/manager/CameraDeviceState$Devices : com/u
 	public final fun copy (Ljava/util/List;)Lcom/ujizin/camposer/manager/CameraDeviceState$Devices;
 	public static synthetic fun copy$default (Lcom/ujizin/camposer/manager/CameraDeviceState$Devices;Ljava/util/List;ILjava/lang/Object;)Lcom/ujizin/camposer/manager/CameraDeviceState$Devices;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getDevices ()Ljava/util/List;
+	public final fun getCameraDevices ()Ljava/util/List;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -222,11 +237,11 @@ public final class com/ujizin/camposer/session/CameraSession {
 	public final fun getCameraXController ()Landroidx/camera/view/LifecycleCameraController;
 	public final fun getController ()Lcom/ujizin/camposer/controller/camera/CameraController;
 	public final fun getInfo ()Lcom/ujizin/camposer/info/CameraInfo;
-	public final fun getMainExecutor ()Ljava/util/concurrent/Executor;
 	public final fun getPreviewView ()Landroidx/camera/view/PreviewView;
 	public final fun getState ()Lcom/ujizin/camposer/state/CameraState;
 	public final fun isInitialized ()Z
 	public final fun isStreaming ()Z
+	public final fun setPreviewView (Landroidx/camera/view/PreviewView;)V
 }
 
 public final class com/ujizin/camposer/session/CameraSessionState_androidKt {
@@ -236,7 +251,6 @@ public final class com/ujizin/camposer/session/CameraSessionState_androidKt {
 
 public final class com/ujizin/camposer/state/CameraState {
 	public static final field $stable I
-	public final fun clearEffects ()V
 	public final fun getCamFormat ()Lcom/ujizin/camposer/state/properties/format/CamFormat;
 	public final fun getCamSelector ()Lcom/ujizin/camposer/state/properties/selector/CamSelector;
 	public final fun getCaptureMode ()Lcom/ujizin/camposer/state/properties/CaptureMode;
@@ -246,6 +260,7 @@ public final class com/ujizin/camposer/state/CameraState {
 	public final fun getImageAnalyzer ()Lcom/ujizin/camposer/state/properties/ImageAnalyzer;
 	public final fun getImageCaptureStrategy ()Lcom/ujizin/camposer/state/properties/ImageCaptureStrategy;
 	public final fun getImplementationMode ()Lcom/ujizin/camposer/state/properties/ImplementationMode;
+	public final fun getMirrorMode ()Lcom/ujizin/camposer/state/properties/MirrorMode;
 	public final fun getOrientationStrategy ()Lcom/ujizin/camposer/state/properties/OrientationStrategy;
 	public final fun getScaleType ()Lcom/ujizin/camposer/state/properties/ScaleType;
 	public final fun getVideoStabilizationMode ()Lcom/ujizin/camposer/state/properties/VideoStabilizationMode;
@@ -254,7 +269,7 @@ public final class com/ujizin/camposer/state/CameraState {
 	public final fun isImageAnalyzerEnabled ()Z
 	public final fun isPinchToZoomEnabled ()Z
 	public final fun isTorchEnabled ()Z
-	public final fun setEffects (Ljava/util/Set;)V
+	public final fun setMirrorMode (Lcom/ujizin/camposer/state/properties/MirrorMode;)V
 }
 
 public final class com/ujizin/camposer/state/properties/CameraData {
@@ -302,7 +317,6 @@ public final class com/ujizin/camposer/state/properties/ImageAnalyzer {
 	public fun <init> (Landroidx/camera/view/CameraController;Lcom/ujizin/camposer/state/properties/ImageAnalysisBackpressureStrategy;Landroidx/camera/core/resolutionselector/ResolutionSelector;ILandroidx/camera/core/ImageAnalysis$Analyzer;)V
 	public synthetic fun <init> (Landroidx/camera/view/CameraController;Lcom/ujizin/camposer/state/properties/ImageAnalysisBackpressureStrategy;Landroidx/camera/core/resolutionselector/ResolutionSelector;ILandroidx/camera/core/ImageAnalysis$Analyzer;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getImageAnalysisImageQueueDepth ()I
 	public fun hashCode ()I
 	public final fun update (Lcom/ujizin/camposer/state/properties/ImageAnalysisBackpressureStrategy;Landroidx/camera/core/resolutionselector/ResolutionSelector;ILandroidx/camera/core/ImageAnalysis$Analyzer;)V
 	public static synthetic fun update$default (Lcom/ujizin/camposer/state/properties/ImageAnalyzer;Lcom/ujizin/camposer/state/properties/ImageAnalysisBackpressureStrategy;Landroidx/camera/core/resolutionselector/ResolutionSelector;ILandroidx/camera/core/ImageAnalysis$Analyzer;ILjava/lang/Object;)V
@@ -324,6 +338,15 @@ public final class com/ujizin/camposer/state/properties/ImplementationMode : jav
 	public final fun getInverse ()Lcom/ujizin/camposer/state/properties/ImplementationMode;
 	public static fun valueOf (Ljava/lang/String;)Lcom/ujizin/camposer/state/properties/ImplementationMode;
 	public static fun values ()[Lcom/ujizin/camposer/state/properties/ImplementationMode;
+}
+
+public final class com/ujizin/camposer/state/properties/MirrorMode : java/lang/Enum {
+	public static final field Off Lcom/ujizin/camposer/state/properties/MirrorMode;
+	public static final field On Lcom/ujizin/camposer/state/properties/MirrorMode;
+	public static final field OnlyInFront Lcom/ujizin/camposer/state/properties/MirrorMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/ujizin/camposer/state/properties/MirrorMode;
+	public static fun values ()[Lcom/ujizin/camposer/state/properties/MirrorMode;
 }
 
 public final class com/ujizin/camposer/state/properties/OrientationStrategy : java/lang/Enum {

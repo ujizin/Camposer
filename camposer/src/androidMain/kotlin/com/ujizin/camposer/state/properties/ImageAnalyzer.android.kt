@@ -4,7 +4,6 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.view.CameraController
 import androidx.compose.runtime.Stable
-import com.ujizin.camposer.internal.utils.distinctConfig
 import com.ujizin.camposer.state.properties.ImageAnalysisBackpressureStrategy.Companion.find
 
 /**
@@ -21,9 +20,7 @@ import com.ujizin.camposer.state.properties.ImageAnalysisBackpressureStrategy.Co
 public actual class ImageAnalyzer(
   private val controller: CameraController,
   imageAnalysisBackpressureStrategy: ImageAnalysisBackpressureStrategy =
-    find(
-      controller.imageAnalysisBackpressureStrategy,
-    ),
+    find(controller.imageAnalysisBackpressureStrategy),
   resolutionSelector: ResolutionSelector? = null,
   imageAnalysisImageQueueDepth: Int = controller.imageAnalysisImageQueueDepth,
   internal var analyzer: ImageAnalysis.Analyzer,
@@ -55,12 +52,11 @@ public actual class ImageAnalyzer(
    * Image analysis image queue depth, use [com.ujizin.camposer.session.rememberImageAnalyzer] to set value.
    * @see com.ujizin.camposer.session.rememberImageAnalyzer
    * */
-  public var imageAnalysisImageQueueDepth: Int by distinctConfig(
-    controller.imageAnalysisImageQueueDepth,
-  ) {
-    controller.imageAnalysisImageQueueDepth = it
-  }
-    internal set
+  internal var imageAnalysisImageQueueDepth: Int
+    get() = controller.imageAnalysisImageQueueDepth
+    set(value) {
+      controller.imageAnalysisImageQueueDepth = value
+    }
 
   init {
     updateCamera(
@@ -104,7 +100,6 @@ public actual class ImageAnalyzer(
     if (this === other) return true
     if (other !is ImageAnalyzer) return false
 
-    if (controller != other.controller) return false
     if (imageAnalysisBackpressureStrategy !=
       other.imageAnalysisBackpressureStrategy
     ) {
@@ -118,8 +113,7 @@ public actual class ImageAnalyzer(
   }
 
   override fun hashCode(): Int {
-    var result = controller.hashCode()
-    result = 31 * result + imageAnalysisBackpressureStrategy
+    var result = 31 * imageAnalysisBackpressureStrategy
     result = 31 * result + (imageAnalysisResolutionSelector?.hashCode() ?: 0)
     result = 31 * result + imageAnalysisImageQueueDepth
     result = 31 * result + analyzer.hashCode()

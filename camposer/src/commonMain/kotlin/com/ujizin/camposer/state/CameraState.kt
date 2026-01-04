@@ -1,5 +1,10 @@
 package com.ujizin.camposer.state
 
+import androidx.compose.ui.util.fastCoerceIn
+import com.ujizin.camposer.info.CameraInfo
+import com.ujizin.camposer.internal.core.CameraManagerDelegate
+import com.ujizin.camposer.internal.utils.asyncDistinctConfig
+import com.ujizin.camposer.internal.utils.distinctConfig
 import com.ujizin.camposer.session.CameraSession
 import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.FlashMode
@@ -11,7 +16,12 @@ import com.ujizin.camposer.state.properties.OrientationStrategy
 import com.ujizin.camposer.state.properties.ScaleType
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import com.ujizin.camposer.state.properties.format.CamFormat
+import com.ujizin.camposer.state.properties.format.Default
 import com.ujizin.camposer.state.properties.selector.CamSelector
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.sync.Mutex
 
 /**
  * A state holder for the Camera composition.
@@ -21,45 +31,150 @@ import com.ujizin.camposer.state.properties.selector.CamSelector
  * flash settings, zoom levels, exposure compensation, and feature toggles like pinch-to-zoom
  * or focus-on-tap.
  */
-public expect class CameraState {
-  public var isImageAnalyzerEnabled: Boolean
-    internal set
-  public var captureMode: CaptureMode
-    internal set
-  public var imageCaptureStrategy: ImageCaptureStrategy
-    internal set
-  public var camSelector: CamSelector
-    internal set
-  public var scaleType: ScaleType
-    internal set
-  public var flashMode: FlashMode
-    internal set
-  public var mirrorMode: MirrorMode
-    internal set
-  public var camFormat: CamFormat
-    internal set
-  public var implementationMode: ImplementationMode
-    internal set
-  public var imageAnalyzer: ImageAnalyzer?
-    internal set
-  public var zoomRatio: Float
-    internal set
-  public var exposureCompensation: Float
-    internal set
-  public var isPinchToZoomEnabled: Boolean
-    internal set
-  public var isFocusOnTapEnabled: Boolean
-    internal set
-  public var isTorchEnabled: Boolean
-    internal set
-  public var orientationStrategy: OrientationStrategy
-    internal set
-  public var frameRate: Int
-    internal set
-  public var videoStabilizationMode: VideoStabilizationMode
+public class CameraState internal constructor(
+  private val cameraInfo: CameraInfo,
+  private val cameraDelegate: CameraManagerDelegate,
+  private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
+) {
+  private val cameraMutex = Mutex()
+
+  public var captureMode: CaptureMode by asyncDistinctConfig(
+    mutex = cameraMutex,
+    dispatcher = dispatcher,
+    value = CaptureMode.Image,
+    onDispose = cameraDelegate::removeCaptureMode,
+    block = cameraDelegate::setCaptureMode,
+  )
     internal set
 
-  internal fun resetConfig()
+  public var camSelector: CamSelector by asyncDistinctConfig(
+    mutex = cameraMutex,
+    dispatcher = dispatcher,
+    value = CamSelector.Back,
+    block = cameraDelegate::setCamSelector,
+  )
+    internal set
+
+  public var scaleType: ScaleType by distinctConfig(
+    value = ScaleType.FillCenter,
+    block = cameraDelegate::setScaleType,
+  )
+    internal set
+
+  public var flashMode: FlashMode by distinctConfig(
+    value = FlashMode.Off,
+    predicate = { old, new -> old != new },
+    check = { check(it.isFlashAvailable()) { "Flash must be supported to be enabled" } },
+    block = cameraDelegate::setFlashMode,
+  )
+    internal set
+
+  public var mirrorMode: MirrorMode by distinctConfig(
+    value = MirrorMode.OnlyInFront,
+    block = cameraDelegate::setMirrorMode,
+  )
+
+  public var camFormat: CamFormat by distinctConfig(
+    value = CamFormat.Default,
+    block = cameraDelegate::setCamFormat,
+  )
+    internal set
+
+  // No-op in iOS
+  public var implementationMode: ImplementationMode by distinctConfig(
+    value = ImplementationMode.Performance,
+    block = cameraDelegate::setImplementationMode,
+  )
+    internal set
+
+  public var imageAnalyzer: ImageAnalyzer? by distinctConfig(
+    value = null,
+    onDispose = cameraDelegate::disposeImageAnalyzer,
+    block = cameraDelegate::setImageAnalyzer,
+  )
+    internal set
+
+  public var isImageAnalyzerEnabled: Boolean by distinctConfig(
+    value = imageAnalyzer != null,
+    block = cameraDelegate::setImageAnalyzerEnabled,
+  )
+    internal set
+
+  public var isPinchToZoomEnabled: Boolean by distinctConfig(
+    value = true,
+    block = cameraDelegate::setPinchToZoomEnabled,
+  )
+    internal set
+
+  public var exposureCompensation: Float by distinctConfig(
+    value = 0F,
+    check = {
+      check(cameraInfo.isExposureSupported) { "Exposure compensation must be supported to be set" }
+    },
+    onSet = { it.fastCoerceIn(cameraInfo.minExposure, cameraInfo.maxExposure) },
+    block = cameraDelegate::setExposureCompensation,
+  )
+    internal set
+
+  public var imageCaptureStrategy: ImageCaptureStrategy by distinctConfig(
+    value = ImageCaptureStrategy.Balanced,
+    block = cameraDelegate::setImageCaptureStrategy,
+  )
+    internal set
+
+  public var zoomRatio: Float by distinctConfig(
+    value = cameraInfo.minZoom,
+    onSet = { it.fastCoerceIn(cameraInfo.minZoom, cameraInfo.maxZoom) },
+    block = cameraDelegate::setZoomRatio,
+  )
+    internal set
+
+  public var isFocusOnTapEnabled: Boolean by distinctConfig(
+    value = true,
+    cameraDelegate::setFocusOnTapEnabled,
+  )
+    internal set
+
+  public var isTorchEnabled: Boolean by distinctConfig(
+    value = false,
+    check = {
+      check((!it || cameraInfo.isTorchAvailable)) { "Torch must be supported to enable" }
+    },
+    predicate = { old, new -> old != new && (!new || cameraInfo.isTorchAvailable) },
+    block = cameraDelegate::setTorchEnabled,
+  )
+    internal set
+
+  public var orientationStrategy: OrientationStrategy by distinctConfig(
+    value = OrientationStrategy.Device,
+    block = cameraDelegate::setOrientationStrategy,
+  )
+    internal set
+
+  public var frameRate: Int by distinctConfig(
+    value = -1,
+    check = {
+      check(it in cameraInfo.minFPS..cameraInfo.maxFPS) {
+        "FPS $it must be in range ${cameraInfo.minFPS..cameraInfo.maxFPS}"
+      }
+    },
+    block = { cameraDelegate.setFrameRate(it, it) },
+  )
+    internal set
+
+  public var videoStabilizationMode: VideoStabilizationMode by distinctConfig(
+    value = VideoStabilizationMode.Off,
+    check = {
+      check(cameraDelegate.isVideoStabilizationSupported(it)) {
+        "Video stabilization mode must be supported to enable"
+      }
+    },
+    block = cameraDelegate::setVideoStabilizationMode,
+  )
+    internal set
+
+  private fun FlashMode.isFlashAvailable() =
+    this == FlashMode.Off || (cameraInfo.isFlashSupported && cameraInfo.isFlashAvailable)
 }
 
 internal expect fun CameraSession.isToResetConfig(
@@ -83,20 +198,23 @@ internal fun CameraSession.update(
   val isCaptureModeChanged = state.captureMode != captureMode
 
   val isToUpdateCamera = isToResetConfig(isCamSelectorChanged, isCaptureModeChanged)
+
   with(state) {
     if (isToUpdateCamera) {
-      resetConfig()
+      cameraManager.resetConfig()
     }
 
     this.camSelector = camSelector
     this.camFormat = camFormat
     this.captureMode = captureMode
     this.scaleType = scaleType
-    this.isImageAnalyzerEnabled = isImageAnalysisEnabled
     this.imageAnalyzer = imageAnalyzer
+    this.isImageAnalyzerEnabled = isImageAnalysisEnabled
     this.implementationMode = implementationMode
     this.isFocusOnTapEnabled = isFocusOnTapEnabled
     this.imageCaptureStrategy = imageCaptureStrategy
     this.isPinchToZoomEnabled = isPinchToZoomEnabled
   }
+
+  onSessionStarted()
 }

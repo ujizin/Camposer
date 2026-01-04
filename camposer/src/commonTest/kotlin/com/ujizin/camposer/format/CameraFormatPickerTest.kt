@@ -1,7 +1,8 @@
-package com.ujizin.camposer.state.properties.format
+package com.ujizin.camposer.format
 
 import com.ujizin.camposer.state.properties.CameraData
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
+import com.ujizin.camposer.state.properties.format.CameraFormatPicker
 import com.ujizin.camposer.state.properties.format.CameraFormatPicker.getBestFormatByOrder
 import com.ujizin.camposer.state.properties.format.config.AspectRatioConfig
 import com.ujizin.camposer.state.properties.format.config.FrameRateConfig
@@ -27,13 +28,13 @@ import kotlin.test.assertNull
 
 class CameraFormatPickerTest {
   @Test
-  fun `getBestFormatByOrder returns null for empty formats`() {
+  fun getBestFormatByOrder_returns_null_for_empty_formats() {
     val result = getBestFormatByOrder(configs = defaultConfigs, formats = emptyList())
     assertNull(result)
   }
 
   @Test
-  fun `getBestFormatByOrder returns single available format`() {
+  fun getBestFormatByOrder_returns_single_available_format() {
     val formats = listOf(cameraDataDefault)
     val result = getBestFormatByOrder(configs = defaultConfigs, formats = formats)
 
@@ -41,7 +42,7 @@ class CameraFormatPickerTest {
   }
 
   @Test
-  fun `getBestFormatByOrder prioritizes higher resolution when no config`() {
+  fun getBestFormatByOrder_prioritizes_higher_resolution_when_no_config() {
     val formats = cameraDataStandardList
     val result = getBestFormatByOrder(configs = emptyList(), formats = formats)
 
@@ -49,7 +50,7 @@ class CameraFormatPickerTest {
   }
 
   @Test
-  fun `getBestFormatByOrder prioritizes medium resolution when medium is priority`() {
+  fun getBestFormatByOrder_prioritizes_medium_resolution_when_medium_is_priority() {
     val formats = cameraDataStandardList
     val result = getBestFormatByOrder(
       configs = listOf(convertResolutionConfig(cameraDataMediumResolution)),
@@ -60,7 +61,7 @@ class CameraFormatPickerTest {
   }
 
   @Test
-  fun `getBestFormatByOrder prioritizes low resolution when low is priority`() {
+  fun getBestFormatByOrder_prioritizes_low_resolution_when_low_is_priority() {
     val formats = cameraDataStandardList
     val result = getBestFormatByOrder(
       configs = listOf(convertResolutionConfig(cameraDataLowResolution)),
@@ -71,7 +72,7 @@ class CameraFormatPickerTest {
   }
 
   @Test
-  fun `getBestFormatByOrder respects High Resolution priority and Aspect ratio 4x3`() {
+  fun getBestFormatByOrder_respects_High_Resolution_priority_and_Aspect_ratio_4x3() {
     val result = getBestFormatByOrder(
       configs = listOf(
         convertResolutionConfig(cameraDataHighResolution),
@@ -84,7 +85,7 @@ class CameraFormatPickerTest {
   }
 
   @Test
-  fun `getBestFormatByOrder respects AspectRatioConfig 16x9 priority`() {
+  fun getBestFormatByOrder_respects_AspectRatioConfig_16x9_priority() {
     val result = getBestFormatByOrder(
       configs = listOf(AspectRatioConfig(aspectRatio = 16F / 9F)),
       formats = cameraDataStandardList,
@@ -94,7 +95,7 @@ class CameraFormatPickerTest {
   }
 
   @Test
-  fun `getBestFormatByOrder respects AspectRatioConfig 16x9 priority and Medium Resolution`() {
+  fun getBestFormatByOrder_respects_AspectRatioConfig_16x9_priority_and_Medium_Resolution() {
     val result = getBestFormatByOrder(
       configs = listOf(
         AspectRatioConfig(aspectRatio = 16F / 9F),
@@ -107,7 +108,7 @@ class CameraFormatPickerTest {
   }
 
   @Test
-  fun `getBestFormatByOrder respects AspectRatioConfig 4x3 priority`() {
+  fun getBestFormatByOrder_respects_AspectRatioConfig_4x3_priority() {
     val result = getBestFormatByOrder(
       configs = listOf(AspectRatioConfig(aspectRatio = 4F / 3F)),
       formats = cameraDataStandardList,
@@ -117,7 +118,7 @@ class CameraFormatPickerTest {
   }
 
   @Test
-  fun `getBestFormatByOrder respects AspectRatioConfig 4x3 priority and High Resolution`() {
+  fun getBestFormatByOrder_respects_AspectRatioConfig_4x3_priority_and_High_Resolution() {
     val result = getBestFormatByOrder(
       configs = listOf(
         AspectRatioConfig(aspectRatio = 4F / 3F),
@@ -130,7 +131,7 @@ class CameraFormatPickerTest {
   }
 
   @Test
-  fun `getBestFormatByOrder respects FrameRateConfig 60 priority`() {
+  fun getBestFormatByOrder_respects_FrameRateConfig_60_priority() {
     val result = getBestFormatByOrder(
       configs = listOf(FrameRateConfig(60)),
       formats = cameraDataStandardList,
@@ -140,7 +141,7 @@ class CameraFormatPickerTest {
   }
 
   @Test
-  fun `getBestFormatByOrder respects FrameRateConfig 30 priority`() {
+  fun getBestFormatByOrder_respects_FrameRateConfig_30_priority() {
     val result = getBestFormatByOrder(
       configs = listOf(FrameRateConfig(30)),
       formats = cameraDataStandardList,
@@ -150,7 +151,7 @@ class CameraFormatPickerTest {
   }
 
   @Test
-  fun `getBestFormatByOrder respects FrameRateConfig 24 priority`() {
+  fun getBestFormatByOrder_respects_FrameRateConfig_24_priority() {
     val result = getBestFormatByOrder(
       configs = listOf(FrameRateConfig(24)),
       formats = cameraDataStandardList,
@@ -160,7 +161,7 @@ class CameraFormatPickerTest {
   }
 
   @Test
-  fun `getBestFormatByOrder respects VideoStabilizationConfig Cinematic EE priority`() {
+  fun getBestFormatByOrder_respects_VideoStabilizationConfig_Cinematic_EE_priority() {
     val result = getBestFormatByOrder(
       configs = listOf(VideoStabilizationConfig(VideoStabilizationMode.CinematicExtendedEnhanced)),
       formats = cameraDataStabilizationList,
@@ -170,7 +171,7 @@ class CameraFormatPickerTest {
   }
 
   @Test
-  fun `getBestFormatByOrder respects VideoStabilizationConfig Standard priority`() {
+  fun getBestFormatByOrder_respects_VideoStabilizationConfig_Standard_priority() {
     val result = getBestFormatByOrder(
       configs = listOf(VideoStabilizationConfig(VideoStabilizationMode.Standard)),
       formats = cameraDataStabilizationList,
@@ -180,7 +181,7 @@ class CameraFormatPickerTest {
   }
 
   @Test
-  fun `getBestFormatByOrder config order weighting Aspect vs Resolution`() {
+  fun getBestFormatByOrder_config_order_weighting_Aspect_vs_Resolution() {
     // Case A: [AspectRatio(4:3), Resolution(High)] -> Priority to Aspect Ratio 4:3 (Low Res 4:3 > High Res 16:9)
     val resultA = getBestFormatByOrder(
       configs = listOf(
@@ -204,7 +205,7 @@ class CameraFormatPickerTest {
   }
 
   @Test
-  fun `getBestFormatByOrder config order weighting Aspect vs Resolution vs Frame Rate`() {
+  fun getBestFormatByOrder_config_order_weighting_Aspect_vs_Resolution_vs_Frame_Rate() {
     val formats = listOf(
       cameraDataHighResolution,
       cameraDataVideoStabilizationHighCinematic,
@@ -332,7 +333,7 @@ class CameraFormatPickerTest {
   }
 
   @Test
-  fun `selectBestFormatByOrder invokes onFormatChanged`() {
+  fun selectBestFormatByOrder_invokes_onFormatChanged() {
     var inFormatChangedCalled = false
     val formats = cameraDataStandardList
 
@@ -351,7 +352,7 @@ class CameraFormatPickerTest {
   }
 
   @Test
-  fun `selectBestFormatByOrder no callbacks invoked if formats empty`() {
+  fun selectBestFormatByOrder_no_callbacks_invoked_if_formats_empty() {
     CameraFormatPicker.selectBestFormatByOrder(
       configs = emptyList(),
       formats = emptyList(),
@@ -362,7 +363,7 @@ class CameraFormatPickerTest {
   }
 
   @Test
-  fun `selectBestFormatByOrder FPS selection within range`() {
+  fun selectBestFormatByOrder_FPS_selection_within_range() {
     var capturedFps: Int? = null
     val target60Fps = 60
     val formats = cameraDataStandardList
@@ -390,7 +391,7 @@ class CameraFormatPickerTest {
   }
 
   @Test
-  fun `selectBestFormatByOrder FPS clamping to min`() {
+  fun selectBestFormatByOrder_FPS_clamping_to_min() {
     var capturedFps: Int? = null
     val targetLowFps = 1
     val formats = cameraDataStandardList
@@ -410,7 +411,7 @@ class CameraFormatPickerTest {
   }
 
   @Test
-  fun `selectBestFormatByOrder FPS clamping to max`() {
+  fun selectBestFormatByOrder_FPS_clamping_to_max() {
     var capturedFps: Int? = null
     val targetHighFps = 999
     val formats = cameraDataStandardList
@@ -430,7 +431,7 @@ class CameraFormatPickerTest {
   }
 
   @Test
-  fun `selectBestFormatByOrder FPS default to max when no config`() {
+  fun selectBestFormatByOrder_FPS_default_to_max_when_no_config() {
     var capturedFps: Int? = null
     val formats = cameraDataStandardList
 
@@ -447,7 +448,7 @@ class CameraFormatPickerTest {
   }
 
   @Test
-  fun `selectBestFormatByOrder Stabilization selection supported mode`() {
+  fun selectBestFormatByOrder_Stabilization_selection_supported_mode() {
     var capturedMode: VideoStabilizationMode? = null
     val targetMode = VideoStabilizationMode.CinematicExtendedEnhanced
     val formats = cameraDataStabilizationList
@@ -464,7 +465,7 @@ class CameraFormatPickerTest {
   }
 
   @Test
-  fun `selectBestFormatByOrder Stabilization fallback to Off`() {
+  fun selectBestFormatByOrder_Stabilization_fallback_to_Off() {
     var capturedMode: VideoStabilizationMode? = null
     val targetMode = VideoStabilizationMode.CinematicExtendedEnhanced
     val formats = cameraDataStandardList // Does not support cinematic
@@ -481,7 +482,7 @@ class CameraFormatPickerTest {
   }
 
   @Test
-  fun `selectBestFormatByOrder Stabilization default when no config`() {
+  fun selectBestFormatByOrder_Stabilization_default_when_no_config() {
     var capturedMode: VideoStabilizationMode? = null
     val formats = cameraDataStabilizationList
 
@@ -497,7 +498,7 @@ class CameraFormatPickerTest {
   }
 
   @Test
-  fun `selectBestFormatByOrder catch exceptions in FPS callback`() {
+  fun selectBestFormatByOrder_catch_exceptions_in_FPS_callback() {
     var formatChangedCalled = false
     var frameRateChangedCalled = false
     CameraFormatPicker.selectBestFormatByOrder(
@@ -516,7 +517,7 @@ class CameraFormatPickerTest {
   }
 
   @Test
-  fun `selectBestFormatByOrder catch exceptions in Stabilization callback`() {
+  fun selectBestFormatByOrder_catch_exceptions_in_Stabilization_callback() {
     var formatChangedCalled = false
     var stabilizationChangedCalled = false
     CameraFormatPicker.selectBestFormatByOrder(
@@ -535,7 +536,7 @@ class CameraFormatPickerTest {
   }
 
   @Test
-  fun `getBestFormatByOrder edge case zero resolution config`() {
+  fun getBestFormatByOrder_edge_case_zero_resolution_config() {
     val result = getBestFormatByOrder(
       configs = listOf(ResolutionConfig(0, 0)),
       formats = cameraDataStandardList,
@@ -546,7 +547,7 @@ class CameraFormatPickerTest {
   }
 
   @Test
-  fun `getBestFormatByOrder edge case null stabilization modes in format`() {
+  fun getBestFormatByOrder_edge_case_null_stabilization_modes_in_format() {
     val formatWithNullStabilization = CameraData(
       width = 1920,
       height = 1080,
@@ -563,7 +564,7 @@ class CameraFormatPickerTest {
   }
 
   @Test
-  fun `getBestFormatByOrder partial match scoring`() {
+  fun getBestFormatByOrder_partial_match_scoring() {
     val formatExactMatch = CameraData(
       width = 1920,
       height = 1080,

@@ -1,0 +1,15 @@
+package com.ujizin.camposer.fake
+
+import com.ujizin.camposer.controller.camera.CameraController
+import com.ujizin.camposer.session.CameraSession
+import kotlinx.coroutines.CoroutineDispatcher
+
+internal actual fun createCameraSession(
+  fakeCameraTest: FakeCameraTest,
+  testDispatcher: CoroutineDispatcher,
+  autoStart: Boolean,
+) = CameraSession(
+  cameraController = CameraController(),
+  cameraManagerInternal = FakeCameraManagerInternal(fakeCameraTest, testDispatcher),
+  cameraInfo = fakeCameraTest.cameraInfo,
+)

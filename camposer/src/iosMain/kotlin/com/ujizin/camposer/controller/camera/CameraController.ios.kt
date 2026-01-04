@@ -1,3 +1,10 @@
 package com.ujizin.camposer.controller.camera
 
-public actual class CameraController : IOSCameraController()
+import com.ujizin.camposer.controller.record.RecordController
+import com.ujizin.camposer.controller.takepicture.TakePictureCommand
+
+public actual class CameraController :
+  CommonCameraController<
+    RecordController,
+    TakePictureCommand,
+  >()

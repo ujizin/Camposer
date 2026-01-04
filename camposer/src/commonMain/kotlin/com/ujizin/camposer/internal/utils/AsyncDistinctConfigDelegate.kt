@@ -1,8 +1,9 @@
-package com.ujizin.camposer.state
+package com.ujizin.camposer.internal.utils
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -15,10 +16,11 @@ import kotlinx.coroutines.withContext
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-internal fun <T> asyncCameraConfig(
+internal fun <T> asyncDistinctConfig(
   mutex: Mutex,
   value: T,
   check: (T) -> Unit = {},
+  dispatcher: CoroutineDispatcher = Dispatchers.IO,
   predicate: (old: T, new: T) -> Boolean = { old, new -> old != new },
   onDispose: (old: T) -> Unit = {},
   onSet: (field: T) -> T = { it },
@@ -44,7 +46,7 @@ internal fun <T> asyncCameraConfig(
       val tmpValue = currentValue
       currentValue = onSet(value)
       job?.cancel()
-      job = CoroutineScope(Dispatchers.IO).launch {
+      job = CoroutineScope(dispatcher).launch {
         mutex.withLock {
           withContext(NonCancellable) {
             onDispose(tmpValue)

@@ -9,10 +9,11 @@ ktlint = "1.8.0"
 gradle = "8.12.3"
 gradle-nexus = "2.0.0"
 androidx-test = "1.7.0"
+androidx-arch-core = "2.2.0"
 camerax = "1.5.2"
-compose-bom = "2025.09.01"
+compose-bom = "2025.12.00"
 kotlinx-io = "0.8.0"
-compose-multiplatform = "1.8.2"
+compose-multiplatform = "1.11.0-alpha01"
 binary-compatibility-validator = "0.18.1"
 
 # Camposer scanner
@@ -37,8 +38,6 @@ media-kmp = "2.0.6"
 
 [libraries]
 
-kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
-
 lifecycle = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
 lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-savedstate", version.ref = "lifecycle" }
 
@@ -49,6 +48,8 @@ compose-runtime = { module = "androidx.compose.runtime:runtime" }
 compose-ui = { module = "androidx.compose.ui:ui" }
 compose-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
+compose-junit4-android = { module = "androidx.compose.ui:ui-test-junit4-android" }
+compose-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 
 compose-foundation = { module = "androidx.compose.foundation:foundation" }
 compose-material3 = { module = "androidx.compose.material:material" }
@@ -84,6 +85,7 @@ media-kmp = { module = "io.github.khubaibkhan4:mediaplayer-kmp", version.ref = "
 
 androidx-test-core = { module = "androidx.test:core-ktx", version.ref = "androidx-test" }
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-test" }
+androidx-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "androidx-arch-core" }
 
 mlkit-barcode-scanning = { module = "com.google.mlkit:barcode-scanning", version.ref = "mlkit-barcode" }
 androidx-camera-mlkit-vision = { group = "androidx.camera", name = "camera-mlkit-vision", version.ref = "camera-mlkit-vision" }

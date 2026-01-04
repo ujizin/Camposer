@@ -76,6 +76,7 @@ public actual class CameraDevicesManager(
               identifier = info.cameraIdentifier,
               physicalCameraInfos = info.physicalCameraInfos,
             ),
+          fov = CameraUtils.getMinFov(info),
           photoData = CameraUtils.getPhotoResolutions(info),
           videoData = CameraUtils.getVideoResolutions(info),
           lensType = CameraUtils.getCamLensTypes(info),

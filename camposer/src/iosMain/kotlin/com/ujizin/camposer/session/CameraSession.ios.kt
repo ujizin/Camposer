@@ -1,5 +1,8 @@
 package com.ujizin.camposer.session
 
+import androidx.annotation.RestrictTo
+import androidx.annotation.VisibleForTesting
+import androidx.annotation.VisibleForTesting.Companion.NONE
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -7,50 +10,52 @@ import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.controller.record.DefaultRecordController
 import com.ujizin.camposer.controller.takepicture.DefaultTakePictureCommand
 import com.ujizin.camposer.info.CameraInfo
+import com.ujizin.camposer.internal.core.CameraManagerInternal
+import com.ujizin.camposer.internal.core.CameraManagerInternalImpl
+import com.ujizin.camposer.internal.core.ios.IOSCameraController
 import com.ujizin.camposer.manager.PreviewManager
 import com.ujizin.camposer.state.CameraState
-import kotlinx.cinterop.COpaquePointer
+import com.ujizin.camposer.state.properties.selector.getCaptureDevice
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.AVFoundation.AVCaptureSession
 import platform.CoreGraphics.CGPoint
-import platform.Foundation.NSKeyValueChangeNewKey
-import platform.Foundation.NSKeyValueObservingOptionNew
-import platform.Foundation.addObserver
-import platform.Foundation.removeObserver
 import platform.UIKit.UIView
-import platform.darwin.NSObject
-import platform.foundation.NSKeyValueObservingProtocol
 
 @OptIn(ExperimentalForeignApi::class)
 public actual class CameraSession private constructor(
-  public val captureSession: AVCaptureSession = AVCaptureSession(),
-  public val iosCameraSession: IOSCameraSession,
-  internal val controller: CameraController,
-  internal val previewManager: PreviewManager,
-  public actual val info: CameraInfo = CameraInfo(iosCameraSession),
-  public actual val state: CameraState = CameraState(iosCameraSession, info),
+  internal val iosCameraController: IOSCameraController,
+  public actual val controller: CameraController,
+  public actual val info: CameraInfo = CameraInfo(iosCameraController),
+  internal actual val cameraManager: CameraManagerInternal = CameraManagerInternalImpl(
+    cameraController = iosCameraController,
+    cameraInfo = info,
+  ),
+  public actual val state: CameraState = cameraManager.cameraState,
 ) {
+  @get:RestrictTo(RestrictTo.Scope.LIBRARY)
+  public val cameraController: DefaultIOSCameraController
+    get() = iosCameraController as DefaultIOSCameraController
+
   public constructor(
     controller: CameraController,
-    captureSession: AVCaptureSession = AVCaptureSession(),
-  ) : this(
-    controller = controller,
-    captureSession = captureSession,
-    previewManager = PreviewManager(),
-  )
+    iosCameraSession: IOSCameraController = DefaultIOSCameraController(
+      captureSession = AVCaptureSession(),
+      previewManager = PreviewManager(),
+    ),
+  ) : this(controller = controller, iosCameraController = iosCameraSession)
 
+  @VisibleForTesting(NONE)
   internal constructor(
     controller: CameraController,
-    previewManager: PreviewManager = PreviewManager(),
-    captureSession: AVCaptureSession = AVCaptureSession(),
-    iosCameraSession: IOSCameraSession = IOSCameraSession(captureSession, previewManager),
+    iosCameraSession: IOSCameraController,
+    cameraInfo: CameraInfo,
+    cameraManagerInternal: CameraManagerInternal,
   ) : this(
     controller = controller,
-    previewManager = previewManager,
-    iosCameraSession = iosCameraSession,
-    captureSession = captureSession,
-    info = CameraInfo(iosCameraSession),
+    iosCameraController = iosCameraSession,
+    info = cameraInfo,
+    cameraManager = cameraManagerInternal,
   )
 
   public actual var isInitialized: Boolean by mutableStateOf(false)
@@ -58,78 +63,52 @@ public actual class CameraSession private constructor(
   public actual var isStreaming: Boolean by mutableStateOf(false)
     internal set
 
-  private var runningObserver = object : NSObject(), NSKeyValueObservingProtocol {
-    override fun observeValueForKeyPath(
-      keyPath: String?,
-      ofObject: Any?,
-      change: Map<Any?, *>?,
-      context: COpaquePointer?,
-    ) {
-      isStreaming = change?.get(NSKeyValueChangeNewKey) as? Boolean == true
-    }
-  }
-
   init {
     setupCamera()
   }
 
   private fun setupCamera() =
-    with(iosCameraSession) {
+    with(iosCameraController) {
       controller.initialize(
-        recordController = DefaultRecordController(
-          iosCameraSession = iosCameraSession,
-          cameraState = state,
-        ),
-        takePictureCommand = DefaultTakePictureCommand(
-          iosCameraSession = iosCameraSession,
-          cameraState = state,
-        ),
+        recordController = DefaultRecordController(cameraManager),
+        takePictureCommand = DefaultTakePictureCommand(cameraManager),
         cameraState = state,
         cameraInfo = info,
       )
 
-      setCaptureDevice(device = state.camSelector.captureDevice)
-      info.rebind(state.captureMode.output)
-
-      captureSession.addObserver(
-        observer = runningObserver,
-        forKeyPath = RUNNING_KEY_PATH,
-        options = NSKeyValueObservingOptionNew,
-        context = null,
+      setCaptureDevice(
+        device = iosCameraController.getCaptureDevice(state.camSelector),
       )
+      info.rebind(state.captureMode.output)
       isInitialized = true
     }
 
-  internal fun onSessionStarted() {
+  internal actual fun onSessionStarted() {
     if (controller.isRunning.value) return
     controller.onSessionStarted()
   }
 
   @OptIn(ExperimentalForeignApi::class)
   internal fun startCamera() =
-    iosCameraSession.start(
+    iosCameraController.start(
       captureOutput = state.captureMode.output,
-      device = state.camSelector.captureDevice,
+      device = iosCameraController.getCaptureDevice(state.camSelector),
       isMuted = controller.isMuted,
+      onRunningChanged = { isStreaming = it },
     )
 
   internal fun renderCamera(view: UIView) {
-    iosCameraSession.renderPreviewLayer(view = view)
+    iosCameraController.renderPreviewLayer(view = view)
   }
 
   internal fun setFocusPoint(focusPoint: CValue<CGPoint>) =
-    iosCameraSession.setFocusPoint(focusPoint)
+    iosCameraController.setFocusPoint(focusPoint)
 
   internal fun recoveryState() {
-    iosCameraSession.setTorchEnabled(state.isTorchEnabled)
+    iosCameraController.setTorchEnabled(state.isTorchEnabled)
   }
 
   internal fun dispose() {
-    iosCameraSession.captureSession.removeObserver(runningObserver, RUNNING_KEY_PATH)
-    iosCameraSession.release()
-  }
-
-  internal companion object {
-    private const val RUNNING_KEY_PATH = "running"
+    iosCameraController.release()
   }
 }

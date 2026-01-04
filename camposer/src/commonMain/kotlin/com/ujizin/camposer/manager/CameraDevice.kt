@@ -15,6 +15,7 @@ import com.ujizin.camposer.state.properties.selector.CameraId
  * @param cameraId The unique identifier for the camera hardware.
  * @param name The name for the camera hardware
  * @param position The physical position of the camera (e.g., [CamPosition.Front] or [CamPosition.Back]).
+ * @param fov The field of view (FOV) of the camera in degrees.
  * @param lensType A list of lens types supported by this camera device.
  * @param photoData A list of supported resolutions and configurations for taking photos.
  * @param videoData A list of supported resolutions and configurations for recording videos.
@@ -23,6 +24,7 @@ public class CameraDevice internal constructor(
   public val cameraId: CameraId,
   public val name: String,
   public val position: CamPosition,
+  public val fov: Float,
   public val lensType: List<CamLensType>,
   public val photoData: List<CameraData>,
   public val videoData: List<CameraData>,
@@ -36,6 +38,7 @@ public class CameraDevice internal constructor(
     if (position != other.position) return false
     if (lensType != other.lensType) return false
     if (photoData != other.photoData) return false
+    if (fov != other.fov) return false
     return videoData == other.videoData
   }
 
@@ -46,9 +49,10 @@ public class CameraDevice internal constructor(
     result = 31 * result + lensType.hashCode()
     result = 31 * result + photoData.hashCode()
     result = 31 * result + videoData.hashCode()
+    result = 31 * result + fov.hashCode()
     return result
   }
 
   override fun toString(): String =
-    "CameraDevice(cameraId=$cameraId, name=$name, position=$position, lensType=$lensType)"
+    "CameraDevice(cameraId=$cameraId, name=$name, position=$position, lensType=$lensType, fov=$fov, videoData=$videoData)"
 }

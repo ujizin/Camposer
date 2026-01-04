@@ -74,6 +74,19 @@ internal object CameraUtils {
     )
   }
 
+  internal fun getMinFov(info: CameraInfo): Float {
+    return (info as Camera2CameraInfoImpl)
+      .cameraCharacteristicsMap
+      .mapNotNull { (_, characteristics) ->
+        val sensorSize = characteristics.get(SENSOR_INFO_PHYSICAL_SIZE) ?: return@mapNotNull null
+        val focalLengths = characteristics.get(LENS_INFO_AVAILABLE_FOCAL_LENGTHS)
+          ?: return@mapNotNull null
+
+        getFOV(focalLengths = focalLengths, sensorSize = sensorSize)
+      }.minOrNull()
+      ?.toFloat() ?: 100F
+  }
+
   internal fun getCamLensTypes(info: CameraInfo): List<CamLensType> {
     return (info as Camera2CameraInfoImpl)
       .cameraCharacteristicsMap

@@ -60,6 +60,7 @@ internal class FlashModeTest : CameraTest() {
       initFlashCamera(camSelector = CamSelector.Front)
       // Ensure that there's no flash unit on device
       cameraSession.info.isFlashSupported = false
+      cameraSession.info.isFlashAvailable = false
 
       cameraController.setFlashMode(FlashMode.On)
       onNodeWithTag("${FlashMode.On}").assertDoesNotExist()

@@ -1,5 +1,6 @@
 package com.ujizin.sample.feature.camera
 
+import android.util.Log
 import android.widget.Toast
 import androidx.camera.core.ImageProxy
 import androidx.compose.foundation.Image
@@ -124,7 +125,7 @@ fun CameraSection(
             useFrontCamera -> CamSelector.Front.camPosition
             else -> CamSelector.Back.camPosition
           },
-        camLensTypes = listOf(CamLensType.UltraWide),
+        camLensTypes = listOf(CamLensType.Wide),
       ),
     )
   }
@@ -145,7 +146,8 @@ fun CameraSection(
   LaunchedEffect(camDeviceState) {
     val camDeviceState = camDeviceState
     if (camDeviceState is CameraDeviceState.Devices) {
-      camSelector = CamSelector(camDeviceState.devices.first())
+      Log.d("YUJI", "devices: ${camDeviceState.cameraDevices}")
+//      camSelector = CamSelector(camDeviceState.cameraDevices.first())
     }
   }
 
@@ -157,8 +159,8 @@ fun CameraSection(
       remember {
         CamFormat(
           AspectRatioConfig(1F),
-          FrameRateConfig(240),
           ResolutionConfig.UltraHigh,
+          FrameRateConfig(60),
           VideoStabilizationConfig(VideoStabilizationMode.Standard),
         )
       },

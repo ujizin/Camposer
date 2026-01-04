@@ -1,8 +1,9 @@
-@file:OptIn(ExperimentalComposeLibrary::class)
+@file:OptIn(ExperimentalComposeLibrary::class, ExperimentalKotlinGradlePluginApi::class)
 
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 import ujizin.camposer.Config
 
 plugins {
@@ -33,6 +34,19 @@ kotlin {
   androidTarget {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     compilerOptions { jvmTarget.set(JvmTarget.JVM_11) }
+
+    instrumentedTestVariant {
+      sourceSetTree.set(KotlinSourceSetTree.test)
+      dependencies {
+
+        implementation(libs.androidx.test.core)
+        implementation(libs.androidx.test.rules)
+        implementation(libs.androidx.core.testing)
+        implementation(compose.desktop.uiTestJUnit4)
+        androidTestImplementation(libs.compose.junit4.android)
+        debugImplementation(libs.compose.manifest)
+      }
+    }
   }
 
   listOf(iosX64(), iosArm64(), iosSimulatorArm64()).forEach { iosTarget ->
@@ -61,13 +75,8 @@ kotlin {
     iosMain.dependencies {}
 
     commonTest.dependencies {
-      implementation(libs.kotlin.test)
-    }
-
-    androidInstrumentedTest.dependencies {
-      implementation(libs.androidx.test.core)
-      implementation(libs.androidx.test.rules)
-      implementation(compose.desktop.uiTestJUnit4)
+      implementation(kotlin("test"))
+      implementation(compose.uiTest)
     }
   }
 }
@@ -78,6 +87,10 @@ android {
   defaultConfig {
     minSdk = Config.minSdk
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+  }
+
+  testOptions {
+    unitTests.isReturnDefaultValues = true
   }
 
   compileOptions {

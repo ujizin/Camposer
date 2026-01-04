@@ -1,41 +1,22 @@
 package com.ujizin.camposer.state.properties.selector
 
+import com.ujizin.camposer.internal.core.ios.IOSCameraController
 import com.ujizin.camposer.manager.CameraDevice
 import com.ujizin.camposer.state.properties.selector.CamLensType.Telephoto
 import com.ujizin.camposer.state.properties.selector.CamLensType.UltraWide
 import com.ujizin.camposer.state.properties.selector.CamLensType.Wide
-import platform.AVFoundation.AVCaptureDevice
-import platform.AVFoundation.AVCaptureDeviceDiscoverySession
 import platform.AVFoundation.AVCaptureDeviceType
 import platform.AVFoundation.AVCaptureDeviceTypeBuiltInDualCamera
 import platform.AVFoundation.AVCaptureDeviceTypeBuiltInDualWideCamera
 import platform.AVFoundation.AVCaptureDeviceTypeBuiltInTripleCamera
 import platform.AVFoundation.AVCaptureDeviceTypeBuiltInWideAngleCamera
 import platform.AVFoundation.AVCaptureDeviceTypeExternal
-import platform.AVFoundation.AVMediaTypeVideo
-import platform.AVFoundation.position
 
 public actual class CamSelector {
   public actual val camPosition: CamPosition
   public actual val camLensTypes: List<CamLensType>
 
   internal var cameraDevice: CameraDevice? = null
-
-  internal val captureDevice: AVCaptureDevice
-    get() = AVCaptureDeviceDiscoverySession
-      .discoverySessionWithDeviceTypes(
-        getDeviceTypes(),
-        AVMediaTypeVideo,
-        camPosition.value,
-      ).devices
-      .firstOrNull {
-        val device = it as? AVCaptureDevice
-        when {
-          cameraDevice != null -> cameraDevice?.cameraId?.uniqueId == device?.uniqueID
-          else -> device?.position == camPosition.value
-        }
-      } as? AVCaptureDevice
-      ?: error("No camera found to position $camPosition with $camLensTypes")
 
   public actual constructor(camPosition: CamPosition, camLensTypes: List<CamLensType>) {
     this.camPosition = camPosition
@@ -94,3 +75,10 @@ public actual class CamSelector {
     public actual val Back: CamSelector = CamSelector(CamPosition.Back)
   }
 }
+
+internal fun IOSCameraController.getCaptureDevice(camSelector: CamSelector) =
+  getCaptureDevice(
+    camSelector.getDeviceTypes(),
+    camSelector.camPosition.value,
+    camSelector.cameraDevice?.cameraId?.uniqueId,
+  ) ?: error("No camera found to position ${camSelector.camPosition}")

@@ -2,6 +2,7 @@ package com.ujizin.camposer
 
 import android.Manifest
 import android.os.Build
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -12,10 +13,11 @@ import com.ujizin.camposer.session.rememberCameraSession
 import org.junit.Rule
 
 internal abstract class CameraTest {
-  @get:Rule(order = 1)
-  val composeTestRule = createComposeRule()
 
   @get:Rule(order = 0)
+  val liveDataImmediateRule = InstantTaskExecutorRule()
+
+  @get:Rule(order = 1)
   val permissions: GrantPermissionRule = GrantPermissionRule.grant(
     *mutableListOf(
       Manifest.permission.CAMERA,
@@ -35,6 +37,9 @@ internal abstract class CameraTest {
     }.toTypedArray(),
   )
 
+  @get:Rule(order = 2)
+  val composeTestRule = createComposeRule()
+
   protected lateinit var cameraSession: CameraSession
   protected val cameraController: CameraController = CameraController()
 
@@ -45,7 +50,7 @@ internal abstract class CameraTest {
       cameraSession = rememberCameraSession(cameraController)
       block(cameraSession)
     }
-    waitUntil(CAMERA_TIMEOUT) { cameraSession.isStreaming }
+    waitUntil(CAMERA_TIMEOUT) { cameraSession.isStreaming && cameraSession.isInitialized }
   }
 
   private companion object {

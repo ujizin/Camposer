@@ -4,10 +4,9 @@ import com.ujizin.camposer.CaptureResult
 
 internal expect class DefaultRecordController : RecordController {
   override var isMuted: Boolean
-    internal set
-
+    private set
   override var isRecording: Boolean
-    internal set
+    private set
 
   override fun startRecording(
     filename: String,

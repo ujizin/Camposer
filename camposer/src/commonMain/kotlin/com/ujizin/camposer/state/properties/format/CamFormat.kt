@@ -31,6 +31,12 @@ public expect class CamFormat {
     vararg configs: CameraFormatConfig,
   )
 
+  override fun equals(other: Any?): Boolean
+
+  override fun hashCode(): Int
+
+  override fun toString(): String
+
   public companion object
 }
 

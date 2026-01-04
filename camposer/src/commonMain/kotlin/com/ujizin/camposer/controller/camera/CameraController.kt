@@ -34,9 +34,13 @@ public expect class CameraController : CameraControllerContract {
   )
 
   override fun resumeRecording(): Result<Boolean>
+
   override fun pauseRecording(): Result<Boolean>
+
   override fun stopRecording(): Result<Boolean>
+
   override fun muteRecording(isMuted: Boolean): Result<Boolean>
+
   override fun takePicture(onImageCaptured: (CaptureResult<ByteArray>) -> Unit)
 
   override fun takePicture(
@@ -55,6 +59,8 @@ public expect class CameraController : CameraControllerContract {
   override fun setFlashMode(flashMode: FlashMode): Result<Unit>
 
   override fun setTorchEnabled(isTorchEnabled: Boolean): Result<Unit>
+
   override fun setVideoFrameRate(frameRate: Int): Result<Unit>
+
   override fun setVideoStabilizationEnabled(mode: VideoStabilizationMode): Result<Unit>
 }

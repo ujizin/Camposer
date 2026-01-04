@@ -1,4 +1,4 @@
-package com.ujizin.camposer
+package com.ujizin.camposer.internal
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect

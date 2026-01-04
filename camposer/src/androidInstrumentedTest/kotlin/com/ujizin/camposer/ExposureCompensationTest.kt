@@ -17,7 +17,7 @@ internal class ExposureCompensationTest : CameraTest() {
   private lateinit var exposureCompensation: State<Float>
 
   private val cameraInfo: CameraInfo?
-    get() = cameraSession.cameraXController.cameraInfo
+    get() = cameraSession.cameraXControllerWrapper.cameraInfo
 
   private val currentExposure: Float?
     get() = cameraInfo?.exposureState?.exposureCompensationIndex?.toFloat()

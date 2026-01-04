@@ -30,5 +30,6 @@ internal actual interface CameraControllerContract :
   actual fun setVideoStabilizationEnabled(mode: VideoStabilizationMode): Result<Unit>
 
   actual fun setOrientationStrategy(strategy: OrientationStrategy)
+
   actual fun setMirrorMode(mirrorMode: MirrorMode)
 }

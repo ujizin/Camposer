@@ -17,9 +17,9 @@ public sealed interface CameraDeviceState {
   /**
    * Represents the state where camera devices have been successfully loaded.
    *
-   * @property devices The list of available [CameraDevice]s.
+   * @property cameraDevices The list of available [CameraDevice]s.
    */
   public data class Devices(
-    val devices: List<CameraDevice>,
+    val cameraDevices: List<CameraDevice>,
   ) : CameraDeviceState
 }

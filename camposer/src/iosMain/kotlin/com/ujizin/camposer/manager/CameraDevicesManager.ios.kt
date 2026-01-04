@@ -80,6 +80,7 @@ public actual class CameraDevicesManager {
       cameraId = CameraId(uniqueID),
       name = localizedName,
       position = getCamPosition(),
+      fov = activeFormat.videoFieldOfView,
       lensType = CamLensType.getPhysicalLensByVirtual(deviceType),
       photoData = CameraFormatUtils.getPhotoFormats(formats),
       videoData = CameraFormatUtils.getVideoFormats(formats),
@@ -97,14 +98,6 @@ public actual class CameraDevicesManager {
         else -> CamPosition.Unknown
       }
     }
-
-  private fun MutableStateFlow<CameraDeviceState>.updateOnlyIfReady(
-    block: (CameraDeviceState.Devices) -> CameraDeviceState,
-  ) {
-    if (value is CameraDeviceState.Devices) {
-      update { block(it as CameraDeviceState.Devices) }
-    }
-  }
 
   public actual fun release() {
     cameraPresenceMonitor.removeCameraPresenceListener(cameraPresenceListener)

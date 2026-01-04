@@ -2,7 +2,6 @@ package com.ujizin.camposer
 
 import androidx.camera.core.TorchState
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.test.junit4.ComposeContentTestRule

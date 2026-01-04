@@ -7,8 +7,10 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.ujizin.camposer.state.properties.CameraData
+import java.util.concurrent.Executor
 
 public actual class CameraInfo internal constructor(
+  private val mainExecutor: Executor,
   private val cameraInfo: AndroidCameraInfo,
 ) {
   public actual val isZoomSupported: Boolean by derivedStateOf {
@@ -20,10 +22,7 @@ public actual class CameraInfo internal constructor(
   public actual var maxZoom: Float by mutableFloatStateOf(cameraInfo.maxZoom)
     private set
 
-  public actual val isExposureSupported: Boolean by derivedStateOf {
-    maxExposure !=
-      cameraInfo.initialExposure
-  }
+  public actual var isExposureSupported: Boolean by mutableStateOf(cameraInfo.isExposureSupported)
   public actual var minExposure: Float by mutableFloatStateOf(cameraInfo.minExposure)
     private set
   public actual var maxExposure: Float by mutableFloatStateOf(cameraInfo.maxExposure)
@@ -31,7 +30,7 @@ public actual class CameraInfo internal constructor(
   public actual var isFlashSupported: Boolean by mutableStateOf(cameraInfo.isFlashSupported)
     internal set
   public actual var isFlashAvailable: Boolean by mutableStateOf(cameraInfo.isFlashSupported)
-    private set
+    internal set
   public actual var isTorchSupported: Boolean by mutableStateOf(cameraInfo.isFlashSupported)
     private set
   public actual var isTorchAvailable: Boolean by mutableStateOf(cameraInfo.isFlashSupported)
@@ -56,17 +55,20 @@ public actual class CameraInfo internal constructor(
     private set
 
   internal fun rebind() {
-    minZoom = cameraInfo.minZoom
-    maxZoom = cameraInfo.maxZoom
-    minExposure = cameraInfo.minExposure
-    maxExposure = cameraInfo.maxExposure
-    isFlashSupported = cameraInfo.isFlashSupported
-    isFlashAvailable = cameraInfo.isFlashSupported
-    isTorchSupported = cameraInfo.isFlashSupported
-    isTorchAvailable = cameraInfo.isFlashSupported
-    isFocusSupported = cameraInfo.isFocusSupported
-    isZeroShutterLagSupported = cameraInfo.isZeroShutterLagSupported
-    minFPS = cameraInfo.minFPS
-    maxFPS = cameraInfo.maxFPS
+    mainExecutor.execute {
+      minZoom = cameraInfo.minZoom
+      maxZoom = cameraInfo.maxZoom
+      minExposure = cameraInfo.minExposure
+      maxExposure = cameraInfo.maxExposure
+      isExposureSupported = cameraInfo.isExposureSupported
+      isFlashSupported = cameraInfo.isFlashSupported
+      isFlashAvailable = cameraInfo.isFlashSupported
+      isTorchSupported = cameraInfo.isFlashSupported
+      isTorchAvailable = cameraInfo.isFlashSupported
+      isFocusSupported = cameraInfo.isFocusSupported
+      isZeroShutterLagSupported = cameraInfo.isZeroShutterLagSupported
+      minFPS = cameraInfo.minFPS
+      maxFPS = cameraInfo.maxFPS
+    }
   }
 }

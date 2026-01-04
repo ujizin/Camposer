@@ -30,8 +30,8 @@ import com.ujizin.camposer.state.properties.CameraData
 public expect class CameraInfo {
   public val isZoomSupported: Boolean
 
-  public val isExposureSupported: Boolean
-
+  public var isExposureSupported: Boolean
+    private set
   public var minZoom: Float
     private set
   public var maxZoom: Float

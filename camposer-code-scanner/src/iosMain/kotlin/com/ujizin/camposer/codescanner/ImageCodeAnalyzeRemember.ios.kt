@@ -15,16 +15,16 @@ public actual fun CameraSession.rememberCodeImageAnalyzer(
   codeAnalyzerListener: CodeAnalyzerListener,
 ): ImageAnalyzer {
   val codeAnalyzer =
-    remember(iosCameraSession.previewLayer, codeTypes, codeAnalyzerListener) {
+    remember(cameraController.previewLayer, codeTypes, codeAnalyzerListener) {
       val codeAnalyzerDelegate =
         ImageCodeAnalyzer(
-          iosCameraSession.previewLayer,
+          cameraController.previewLayer,
           codeTypes,
           codeAnalyzerListener,
         )
 
       ImageAnalyzer(
-        iosCameraSession = iosCameraSession,
+        controller = cameraController,
         analyzer =
           ImageAnalyzer.Analyzer(
             output = AVCaptureMetadataOutput(),
@@ -50,7 +50,7 @@ public actual fun CameraSession.rememberCodeImageAnalyzer(
       )
     }
 
-  DisposableEffect(codeAnalyzer) { onDispose { codeAnalyzer.onDispose() } }
+  DisposableEffect(codeAnalyzer) { onDispose { codeAnalyzer.dispose() } }
 
   return codeAnalyzer
 }

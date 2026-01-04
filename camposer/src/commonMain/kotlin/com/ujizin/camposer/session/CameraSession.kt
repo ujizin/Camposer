@@ -1,6 +1,8 @@
 package com.ujizin.camposer.session
 
+import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.info.CameraInfo
+import com.ujizin.camposer.internal.core.CameraManagerInternal
 import com.ujizin.camposer.state.CameraState
 
 /**
@@ -23,6 +25,11 @@ public expect class CameraSession {
   public val info: CameraInfo
 
   /**
+   * The current controller bind to the camera.
+   * */
+  public val controller: CameraController
+
+  /**
    * Check if camera is streaming or not.
    * */
   public var isStreaming: Boolean
@@ -33,4 +40,8 @@ public expect class CameraSession {
    * */
   public var isInitialized: Boolean
     private set
+
+  internal val cameraManager: CameraManagerInternal
+
+  internal fun onSessionStarted()
 }

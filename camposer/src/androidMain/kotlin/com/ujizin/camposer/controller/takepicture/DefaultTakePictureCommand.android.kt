@@ -8,19 +8,28 @@ import androidx.camera.core.ImageCapture.OnImageSavedCallback
 import androidx.camera.core.ImageCapture.OutputFileOptions
 import androidx.camera.core.ImageCapture.OutputFileResults
 import androidx.camera.core.ImageCaptureException
-import androidx.camera.core.MirrorMode.MIRROR_MODE_OFF
-import androidx.camera.core.MirrorMode.MIRROR_MODE_ON
-import androidx.camera.view.CameraController
 import com.ujizin.camposer.CaptureResult
+import com.ujizin.camposer.internal.core.AndroidCameraManagerInternal
+import com.ujizin.camposer.internal.core.CameraManagerInternal
+import com.ujizin.camposer.internal.core.camerax.CameraXController
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.concurrent.Executor
 
-internal actual class DefaultTakePictureCommand(
-  private val controller: CameraController,
-  private val mainExecutor: Executor,
-  private val contentResolver: ContentResolver,
+internal actual class DefaultTakePictureCommand private constructor(
+  private val cameraManager: AndroidCameraManagerInternal,
 ) : AndroidTakePictureCommand {
+  internal constructor(
+    cameraManager: CameraManagerInternal,
+  ) : this(cameraManager = cameraManager as AndroidCameraManagerInternal)
+
+  private val controller: CameraXController
+    get() = cameraManager.controller
+  private val mainExecutor: Executor
+    get() = cameraManager.mainExecutor
+  private val contentResolver: ContentResolver
+    get() = cameraManager.contentResolver
+
   actual override fun takePicture(onImageCaptured: (CaptureResult<ByteArray>) -> Unit) {
     val byteArrayOS = ByteArrayOutputStream()
     takePicture(
@@ -49,18 +58,10 @@ internal actual class DefaultTakePictureCommand(
         .setMetadata(createMetadata())
         .build(),
     ) { androidResult ->
-      val result =
-        when (androidResult) {
-          is CaptureResult.Error -> {
-            CaptureResult.Error(androidResult.throwable)
-          }
-
-          is CaptureResult.Success -> {
-            CaptureResult.Success(
-              data = androidResult.data?.toString() ?: filename,
-            )
-          }
-        }
+      val result = when (androidResult) {
+        is CaptureResult.Error -> CaptureResult.Error(androidResult.throwable)
+        is CaptureResult.Success -> CaptureResult.Success(data = filename)
+      }
       onImageCaptured(result)
     }
 
@@ -73,11 +74,8 @@ internal actual class DefaultTakePictureCommand(
       outputFileOptions =
         OutputFileOptions
           .Builder(
-            // contentResolver =
             contentResolver,
-            // saveCollection =
             saveCollection,
-            // contentValues =
             contentValues,
           ).setMetadata(createMetadata())
           .build(),
@@ -123,11 +121,6 @@ internal actual class DefaultTakePictureCommand(
 
   fun createMetadata() =
     ImageCapture.Metadata().apply {
-      val isMirrorModeEnabled = when (controller.videoCaptureMirrorMode) {
-        MIRROR_MODE_ON -> true
-        MIRROR_MODE_OFF -> false
-        else -> return@apply
-      }
-      this.isReversedHorizontal = isMirrorModeEnabled
+      this.isReversedHorizontal = cameraManager.isMirrorEnabled()
     }
 }

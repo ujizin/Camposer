@@ -1,7 +1,7 @@
 package com.ujizin.camposer.state.properties.format
 
 import com.ujizin.camposer.info.CameraInfo
-import com.ujizin.camposer.session.IOSCameraSession
+import com.ujizin.camposer.internal.core.ios.IOSCameraController
 import com.ujizin.camposer.state.properties.CameraData
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import com.ujizin.camposer.state.properties.format.CameraFormatPicker.selectBestFormatByOrder
@@ -19,7 +19,7 @@ public actual class CamFormat actual constructor(
   @OptIn(ExperimentalForeignApi::class)
   internal fun applyConfigs(
     cameraInfo: CameraInfo,
-    iosCameraSession: IOSCameraSession,
+    iosCameraController: IOSCameraController,
     onDeviceFormatUpdated: () -> Unit,
     onStabilizationModeChanged: (VideoStabilizationMode) -> Unit,
     onFrameRateChanged: (Int) -> Unit,
@@ -28,14 +28,14 @@ public actual class CamFormat actual constructor(
     formats = cameraInfo.allFormats,
     onFormatChanged = { cameraData ->
       val format = cameraData.metadata[CameraData.DEVICE_FORMAT] as AVCaptureDeviceFormat
-      iosCameraSession.setDeviceFormat(format)
+      iosCameraController.setDeviceFormat(format)
       onDeviceFormatUpdated()
     },
     onFrameRateChanged = onFrameRateChanged,
     onStabilizationModeChanged = onStabilizationModeChanged,
   )
 
-  override fun equals(other: Any?): Boolean {
+  actual override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || this::class != other::class) return false
 
@@ -44,9 +44,9 @@ public actual class CamFormat actual constructor(
     return configs == other.configs
   }
 
-  override fun hashCode(): Int = configs.hashCode()
+  actual override fun hashCode(): Int = configs.hashCode()
 
-  override fun toString(): String = "CameraResolution(cameraData=$configs)"
+  actual override fun toString(): String = "CameraResolution(cameraData=$configs)"
 
   public actual companion object
 }

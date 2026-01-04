@@ -2,6 +2,7 @@ package com.ujizin.camposer.state.properties.selector
 
 import android.annotation.SuppressLint
 import androidx.camera.camera2.internal.Camera2CameraInfoImpl
+import androidx.camera.core.CameraInfo
 import androidx.camera.core.CameraSelector
 import com.ujizin.camposer.internal.utils.CameraUtils
 import com.ujizin.camposer.manager.CameraDevice
@@ -53,11 +54,16 @@ public actual class CamSelector {
           camPosition.value == info.lensFacing
         }
 
-        val logicalSenseFilter = lensFilter.filter { info ->
-          CameraUtils.getCamLensTypes(info).containsAll(camLensTypes)
-        }
+        val logicalSenseFilter = lensFilter
+          .map { info -> info to CameraUtils.getCamLensTypes(info) }
+          .filter { (_, lenses) -> lenses.containsAll(camLensTypes) }
+          .maxWithOrNull(
+            compareBy<Pair<CameraInfo, List<CamLensType>>> { (_, lenses) ->
+              lenses.size == camLensTypes.size
+            }.thenBy { (_, lenses) -> lenses.size },
+          )?.first
 
-        logicalSenseFilter.ifEmpty { lensFilter }.ifEmpty { cameraInfos }
+        listOfNotNull(logicalSenseFilter).ifEmpty { lensFilter }.ifEmpty { cameraInfos }
       }.requireLensFacing(camPosition.value)
       .build()
 

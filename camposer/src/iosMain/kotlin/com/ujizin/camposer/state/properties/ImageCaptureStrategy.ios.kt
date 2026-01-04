@@ -6,7 +6,7 @@ import platform.AVFoundation.AVCapturePhotoQualityPrioritizationQuality
 import platform.AVFoundation.AVCapturePhotoQualityPrioritizationSpeed
 
 public actual enum class ImageCaptureStrategy(
-  internal val strategy: AVCapturePhotoQualityPrioritization,
+  internal val quality: AVCapturePhotoQualityPrioritization,
   internal val highResolutionEnabled: Boolean,
 ) {
   MinLatency(AVCapturePhotoQualityPrioritizationSpeed, false),

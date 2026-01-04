@@ -8,9 +8,6 @@ import androidx.annotation.RequiresPermission
 import androidx.camera.video.FileDescriptorOutputOptions
 import androidx.camera.video.FileOutputOptions
 import androidx.camera.video.MediaStoreOutputOptions
-import androidx.camera.video.Recording
-import androidx.camera.video.VideoRecordEvent
-import androidx.camera.view.CameraController
 import androidx.camera.view.video.AudioConfig
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,17 +15,28 @@ import androidx.compose.runtime.setValue
 import androidx.core.util.Consumer
 import com.ujizin.camposer.CaptureResult
 import com.ujizin.camposer.error.RecordNotInitializedException
+import com.ujizin.camposer.internal.core.AndroidCameraManagerInternal
+import com.ujizin.camposer.internal.core.CameraManagerInternal
+import com.ujizin.camposer.internal.core.camerax.RecordEvent
+import com.ujizin.camposer.internal.core.camerax.RecordingWrapper
 import java.io.File
-import java.util.concurrent.Executor
 
-internal actual class DefaultRecordController(
-  private val cameraController: CameraController,
-  private val mainExecutor: Executor,
+internal actual class DefaultRecordController private constructor(
+  controllerInternal: AndroidCameraManagerInternal,
 ) : AndroidRecordController {
-  private var recordController: Recording? = null
+  constructor(cameraManager: CameraManagerInternal) : this(
+    controllerInternal = cameraManager as AndroidCameraManagerInternal,
+  )
+
+  private val controller = controllerInternal.controller
+  private val mainExecutor = controllerInternal.mainExecutor
+
+  private var recordController: RecordingWrapper? = null
 
   actual override var isMuted: Boolean by mutableStateOf(false)
+    private set
   actual override var isRecording: Boolean by mutableStateOf(false)
+    private set
 
   @RequiresPermission(Manifest.permission.RECORD_AUDIO)
   actual override fun startRecording(
@@ -56,7 +64,7 @@ internal actual class DefaultRecordController(
     onResult: (CaptureResult<Uri?>) -> Unit,
   ) = prepareRecording(onResult) {
     isMuted = !audioConfig.audioEnabled
-    cameraController.startRecording(
+    controller.startRecording(
       fileDescriptorOutputOptions,
       audioConfig,
       mainExecutor,
@@ -72,7 +80,7 @@ internal actual class DefaultRecordController(
   ): Unit =
     prepareRecording(onResult) {
       isMuted = !audioConfig.audioEnabled
-      cameraController.startRecording(
+      controller.startRecording(
         fileOutputOptions,
         audioConfig,
         mainExecutor,
@@ -86,7 +94,7 @@ internal actual class DefaultRecordController(
     onResult: (CaptureResult<Uri?>) -> Unit,
   ) = prepareRecording(onError = onResult) {
     isMuted = !audioConfig.audioEnabled
-    cameraController.startRecording(
+    controller.startRecording(
       mediaStoreOutputOptions,
       audioConfig,
       mainExecutor,
@@ -119,7 +127,7 @@ internal actual class DefaultRecordController(
 
   private fun prepareRecording(
     onError: (CaptureResult.Error) -> Unit,
-    onRecordBuild: () -> Recording,
+    onRecordBuild: () -> RecordingWrapper,
   ) {
     try {
       isRecording = true
@@ -130,26 +138,20 @@ internal actual class DefaultRecordController(
     }
   }
 
-  private fun getConsumerEvent(
-    onResult: (CaptureResult<Uri?>) -> Unit,
-  ): Consumer<VideoRecordEvent> =
-    Consumer { event ->
-      if (event is VideoRecordEvent.Finalize) {
+  private fun getConsumerEvent(onResult: (CaptureResult<Uri?>) -> Unit): Consumer<RecordEvent> =
+    Consumer { record ->
+      if (record.isFinalized) {
         isRecording = false
         isMuted = false
         val result =
           when {
-            !event.hasError() -> {
-              CaptureResult.Success(event.outputResults.outputUri)
-            }
+            !record.hasError -> CaptureResult.Success(record.outputUri)
 
-            else -> {
-              CaptureResult.Error(
-                Exception(
-                  "Video error code: ${event.error}, cause: ${event.cause}",
-                ),
-              )
-            }
+            else -> CaptureResult.Error(
+              Exception(
+                "Video error code: ${record.error}, cause: ${record.cause}",
+              ),
+            )
           }
         recordController = null
         onResult(result)
