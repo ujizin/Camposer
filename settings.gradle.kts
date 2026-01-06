@@ -19,4 +19,4 @@ include(":camposer")
 include(":camposer-code-scanner")
 
 include(":samples:sample-android")
-include(":shared")
+include(":samples:shared")

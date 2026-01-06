@@ -65,5 +65,5 @@ dependencies {
   implementation(libs.cloudy)
 
   implementation(project(":camposer"))
-  implementation(project(":shared"))
+  implementation(project(":samples:shared"))
 }
