@@ -15,7 +15,7 @@ plugins {
 }
 
 apiValidation {
-  ignoredProjects.addAll(listOf("sample", "shared"))
+  ignoredProjects.addAll(listOf("sample-android", "shared"))
 }
 
 dokka {
