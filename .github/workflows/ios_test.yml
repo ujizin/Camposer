@@ -1,0 +1,26 @@
+name: IOS Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ '*' ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6.0.1
+      - name: Set up JDK
+        uses: actions/setup-java@v5.1.0
+        with:
+          distribution: 'zulu'
+          java-version: 21
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: build
+        run: ./gradlew clean iosSimulatorArm64Test
