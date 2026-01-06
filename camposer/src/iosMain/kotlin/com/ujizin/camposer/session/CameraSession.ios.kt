@@ -30,7 +30,7 @@ public actual class CameraSession internal constructor(
   public actual val info: CameraInfo = cameraEngine.cameraInfo,
   public actual val state: CameraState = cameraEngine.cameraState,
 ) {
-  @get:RestrictTo(RestrictTo.Scope.LIBRARY)
+  @get:RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
   public val cameraController: DefaultIOSCameraController
     get() = iosCameraController as DefaultIOSCameraController
 

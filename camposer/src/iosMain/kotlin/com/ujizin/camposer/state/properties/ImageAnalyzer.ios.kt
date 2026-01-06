@@ -1,8 +1,10 @@
 package com.ujizin.camposer.state.properties
 
+import androidx.compose.runtime.Stable
 import com.ujizin.camposer.internal.core.ios.IOSCameraController
 import platform.AVFoundation.AVCaptureOutput
 
+@Stable
 public actual class ImageAnalyzer(
   internal val controller: IOSCameraController,
   internal val analyzer: Analyzer<*>,

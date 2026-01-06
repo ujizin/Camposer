@@ -1,5 +1,0 @@
-# Resolution Preset
-
-## Introduction
-
-Resolution 

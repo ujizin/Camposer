@@ -1,6 +1,6 @@
 # Recording video
 
-The CameraController provides full functionality for recording videos, saving them to a specified file path using `kotlinx.io`.
+The CameraController provides full functionality for recording videos, saving them to a specified file path (String).
 
 ## File Path
 
@@ -10,7 +10,7 @@ To record a video, you must provide a destination file path:
 import kotlinx.io.path.Path
 import kotlinx.io.path.systemTemporaryDirectory
 
-val path = Path("$SystemTemporaryDirectory/photo.mp4")
+val path = "$SystemTemporaryDirectory/photo.mp4" // SystemTemporaryDirectory from kotlinx io
 ```
 
 ## Start recording

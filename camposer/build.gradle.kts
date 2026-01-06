@@ -1,6 +1,5 @@
-@file:OptIn(ExperimentalComposeLibrary::class, ExperimentalKotlinGradlePluginApi::class)
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
 
-import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
@@ -42,8 +41,7 @@ kotlin {
         implementation(libs.androidx.test.core)
         implementation(libs.androidx.test.rules)
         implementation(libs.androidx.core.testing)
-        implementation(compose.desktop.uiTestJUnit4)
-        androidTestImplementation(libs.compose.junit4.android)
+        implementation(libs.compose.junit4.android)
         debugImplementation(libs.compose.manifest)
       }
     }
@@ -76,7 +74,7 @@ kotlin {
 
     commonTest.dependencies {
       implementation(kotlin("test"))
-      implementation(compose.uiTest)
+      implementation(libs.kotlinx.coroutines.test)
     }
   }
 }
@@ -106,10 +104,9 @@ android {
   }
 }
 
-// dokka {
-//    dokkaSourceSets {
-//        named("main") {
-//            enableAndroidDocumentationLink.set(true)
-//        }
-//    }
-// }
+dokka {
+  moduleName.set("Camposer")
+  dokkaPublications.html {
+    failOnWarning.set(true)
+  }
+}

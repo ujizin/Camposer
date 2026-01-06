@@ -9,7 +9,7 @@ Camposer provides two available modes:
 
 ```kotlin
 var captureMode by remember { mutableStateOf(CaptureMode.Image) }
-val cameraSession = remembercameraSession()
+val cameraSession = rememberCameraSession()
 
 CameraPreview(
     cameraSession = cameraSession,

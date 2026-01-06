@@ -1,12 +1,10 @@
 package com.ujizin.camposer.session
 
-import androidx.compose.ui.test.ExperimentalTestApi
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-@OptIn(ExperimentalTestApi::class)
 internal class CameraExposureCompensationTest : CameraSessionTest() {
   @Test
   fun test_preview_exposure_changed() {

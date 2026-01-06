@@ -1,12 +1,10 @@
 package com.ujizin.camposer.session
 
-import androidx.compose.ui.test.ExperimentalTestApi
 import com.ujizin.camposer.state.properties.CaptureMode
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@OptIn(ExperimentalTestApi::class)
 internal class CameraCaptureModeTest : CameraSessionTest() {
   @Test
   fun test_capture_mode_image() =

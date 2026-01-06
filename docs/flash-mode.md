@@ -1,35 +1,43 @@
-# Flash Mode
+# Flash Mode & Torch
 
 ## Introduction
 
-Configuring flash differs slightly from other camera settings. To ensure stability and prevent bugs or crashes, flash mode should be managed using cameraSession’s remember functions.
+To configure flash mode, you will need to set in `CameraController`. This will ensure stability and prevent bugs or crashes when some camera info configuration is changed.
 
-## cameraSession.rememberFlashMode
+It's also important to say that flash needs to be supported by camera, to check this info you can access:
 
-`cameraSession.rememberFlashMode` is a composable helper that stores and manages the flash mode state for a camera preview. It ensures that flash configuration:
+```kotlin
+// Check if flash mode is supported
+val isFlashModeSupported by rememberUpdatedState(cameraSession.info.isFlashModeSupported)
 
-- Persists across recompositions and configuration changes (such as screen rotations).
-- Automatically respects the capabilities of the currently selected camera, disabling flash when it is not available.
+// Check if torch is supported
+val isTorchSupported by rememberUpdatedState(cameraSession.info.isTorchSupported)
+```
 
 ## Usage Example
 
 The following example demonstrates initializing flash mode and toggling it via a button. By default, the flash starts in the Off state:
 
 ```kotlin
-val cameraSession = remembercameraSession()
-var flashMode by cameraSession.rememberFlashMode(
-    initialFlashMode = FlashMode.Off, // Options: .Off, .On, .Auto (default: Off)
-    useSaver = true // Automatically restore flash mode on configuration changes (default: true)
-)
+val cameraController = remember { CameraController() }
+val cameraSession = rememberCameraSession(cameraController)
+val flashMode by rememberUpdatedState(cameraSession.state.flashMode)
+val isTorchEnabled by rememberUpdatedState(cameraSession.state.isTorchEnabled)
 
 CameraPreview(
     cameraSession = cameraSession,
     flashMode = flashMode
 ) {
     Button(
-        onClick = { flashMode = flashMode.reverse }
+        onClick = { cameraController.setFlashMode(flashMode.reverse) } // Options: .Off, .On, .Auto (default: Off)
     ) {
         Text("Flash $flashMode")
+    }
+
+    Button(
+        onClick = { cameraController.setTorchEnabled(flashMode.reverse) } // Options: true, false
+    ) {
+        Text("Torch $isTorchEnabled")
     }
 }
 ```

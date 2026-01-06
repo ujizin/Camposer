@@ -2,17 +2,16 @@
 
 # Camposer libraries
 
-kotlin = "2.2.10"
-dokka = "2.0.0"
+gradle = "8.13.2"
+gradle-nexus = "2.0.0"
 spotless = "8.1.0"
 ktlint = "1.8.0"
-gradle = "8.12.3"
-gradle-nexus = "2.0.0"
+kotlin = "2.2.10"
+dokka = "2.0.0"
 androidx-test = "1.7.0"
 androidx-arch-core = "2.2.0"
 camerax = "1.5.2"
-compose-bom = "2025.12.00"
-kotlinx-io = "0.8.0"
+coroutines = "1.10.2"
 compose-multiplatform = "1.11.0-alpha01"
 binary-compatibility-validator = "0.18.1"
 
@@ -23,6 +22,7 @@ camera-mlkit-vision = "1.5.1"
 
 # Sample app libraries
 
+compose-bom = "2025.12.00"
 zxing = "3.5.3"
 cloudy = "0.2.7"
 appcompat = "1.10.1"
@@ -35,6 +35,7 @@ coil = "2.7.0"
 koin = "4.1.0"
 datastore = "1.1.7"
 media-kmp = "2.0.6"
+kotlinx-io = "0.8.0"
 
 [libraries]
 
@@ -68,7 +69,7 @@ koin = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
-
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 camera-core = { module = "androidx.camera:camera-core", version.ref = "camerax" }
 camerax-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "camerax" }
 camerax-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "camerax" }

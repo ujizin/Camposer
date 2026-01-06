@@ -13,24 +13,26 @@ theme:
   features:
     - navigation.footer
     - navigation.instant
+    - content.code.copy
+    - content.code.annotate
   font:
     text: Inter
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: deep purple
+      primary: black
       toggle:
         icon: material/weather-night
         name: Switch to dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: deep purple
+      primary: black
       toggle:
         icon: material/weather-sunny
         name: Switch to light mode
 
 markdown_extensions:
-  - pymdownx.smartsymbols
+  - smarty
   - pymdownx.highlight:
       anchor_linenums: true
       line_spans: __span
@@ -38,6 +40,18 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.superfences
+  - codehilite:
+      guess_lang: false
+  - footnotes
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.inlinehilite
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - admonition
 
 nav:
   - Overview: index.md
@@ -48,20 +62,17 @@ nav:
     - camera-controller/camera-controller.md
     - camera-controller/take-picture.md
     - camera-controller/record-video.md
-  - Resolution Preset: resolution-preset.md
-  - Flash Mode: flash-mode.md
-  - Torch: torch.md
+  - Camera Format: camera-format.md
+  - Mirror Mode: mirror-mode.md
+  - Flash Mode & Torch: flash-mode.md
   - Focus on Tap: focus-on-tap.md 
   - Zoom: zoom.md
-  - Image Capture Strategy: image-capture-strategy.md
   - Exposure Compensation: exposure-compensation.md
+  - Orientation Strategy: orientation-strategy.md
+  - Image Capture Strategy: image-capture-strategy.md
   - Scale Type: scale-type.md
   - Implementation Mode: implementation-mode.md
   - Image Analyzer: 
     - image-analyzer/code-analyzer.md
     - image-analyzer/image-analyzer.md
-  
-# extra:
-#   version:
-#     provider: mike
-    
+  - API docs: ./api/index.html

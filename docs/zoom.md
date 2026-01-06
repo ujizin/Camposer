@@ -2,18 +2,28 @@
 
 ## Zoom support
 
-Zoom can be initialized and managed as a state within Compose. The following example demonstrates how to set up zoom for a camera preview:
+Zoom can be initialized and managed as state within Compose. The following example demonstrates how to set up and control zoom using `CameraController`:
 
 ```kotlin
-val cameraSession = remembercameraSession()
-var zoomRatio by remember { mutableStateOf(cameraSession.minZoom) }
+val cameraSession = rememberCameraSession()
+val zoomRatio by rememberUpdatedState(cameraSession.state.zoomRatio)
+val minZoom by rememberUpdatedState(cameraSession.info.minZoom)
+val maxZoom by rememberUpdatedState(cameraSession.info.maxZoom)
 
 CameraPreview(
     cameraSession = cameraSession,
-    zoomRatio = zoomRatio,
-    onZoomRatioChanged = { zoomRatio = it },
     isPinchToZoomEnabled = true // Default is already true
-)
+) {
+
+    Button(
+        onClick = { 
+            val zoom = (zoomRatio + 1F).coerceIn(minZoom, maxZoom)
+            controller.setZoomRatio(zoom)
+        }
+    ) {
+        Text("Zoom ratio: $zoomRatio")
+    }
+}
 ```
 
 **Note:**

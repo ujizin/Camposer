@@ -6,7 +6,7 @@ The imageCaptureStrategy parameter defines how the camera optimizes the photo ca
 
 | Strategy | Android | iOS |
 |-----------|----------------|--------------|
-| **`ImageCaptureStrategy.MinLatency`** | `ImageCapture.CAPTURE_MODE_ZERO_SHUTTER_LAG` | `AVCapturePhotoQualityPrioritizationSpeed` |
+| **`ImageCaptureStrategy.MinLatency`** | `ImageCapture.CAPTURE_MODE_ZERO_SHUTTER_LAG` (Fallback to Balanced if not supported)| `AVCapturePhotoQualityPrioritizationSpeed` |
 | **`ImageCaptureStrategy.MaxQuality`** | `ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY` | `AVCapturePhotoQualityPrioritizationQuality` *(High Resolution enabled)* |
 | **`ImageCaptureStrategy.Balanced`** | `ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY` | `AVCapturePhotoQualityPrioritizationBalanced` |
 

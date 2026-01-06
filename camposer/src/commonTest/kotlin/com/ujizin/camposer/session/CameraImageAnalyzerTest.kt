@@ -1,6 +1,5 @@
 package com.ujizin.camposer.session
 
-import androidx.compose.ui.test.ExperimentalTestApi
 import com.ujizin.camposer.state.properties.ImageAnalyzer
 import com.ujizin.camposer.utils.createFakeImageAnalyzer
 import kotlin.test.Test
@@ -8,7 +7,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-@OptIn(ExperimentalTestApi::class)
 internal class CameraImageAnalyzerTest : CameraSessionTest() {
   @Test
   fun test_preview_image_analyzer_set() {

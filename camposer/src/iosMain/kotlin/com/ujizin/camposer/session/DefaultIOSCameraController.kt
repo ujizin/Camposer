@@ -1,5 +1,6 @@
 package com.ujizin.camposer.session
 
+import androidx.annotation.RestrictTo
 import com.ujizin.camposer.internal.OrientationManager
 import com.ujizin.camposer.internal.command.IOSTakePictureCommand
 import com.ujizin.camposer.internal.controller.IOSRecordController
@@ -79,6 +80,7 @@ import platform.darwin.dispatch_async
 import platform.foundation.NSKeyValueObservingProtocol
 
 @OptIn(ExperimentalForeignApi::class)
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class DefaultIOSCameraController internal constructor(
   override val captureSession: AVCaptureSession,
   internal val previewManager: PreviewManager,

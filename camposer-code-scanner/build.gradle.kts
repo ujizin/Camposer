@@ -5,6 +5,8 @@ plugins {
   alias(libs.plugins.kotlin.multiplatform.library)
   alias(libs.plugins.compose.multiplatform)
   alias(libs.plugins.compose.compiler)
+  alias(libs.plugins.dokka)
+  alias(libs.plugins.dokka.java.doc)
 }
 
 kotlin {
@@ -55,5 +57,12 @@ kotlin {
       dependencies {
       }
     }
+  }
+}
+
+dokka {
+  moduleName.set("Camposer Code Scanner")
+  dokkaPublications.html {
+    failOnWarning.set(true)
   }
 }

@@ -10,9 +10,9 @@ The following table shows the corresponding values for each platform when using 
 
 | Type | Android | iOS |
 | -------- | ------- | ------- |
-| FitStart | FIT_START | AVLayerVideoGravityResize | 
-| FitCenter | FIT_CENTER | AVLayerVideoGravityResize |
-| FitEnd | FIT_END | AVLayerVideoGravityResize | 
+| FitStart | FIT_START | AVLayerVideoGravityResizeAspect | 
+| FitCenter | FIT_CENTER | AVLayerVideoGravityResizeAspect |
+| FitEnd | FIT_END | AVLayerVideoGravityResizeAspect | 
 | FillStart | FILL_START | AVLayerVideoGravityResizeAspectFill |
 | FillCenter | FILL_CENTER | AVLayerVideoGravityResizeAspectFill |
 | FillEnd | FILL_END | AVLayerVideoGravityResizeAspectFill |

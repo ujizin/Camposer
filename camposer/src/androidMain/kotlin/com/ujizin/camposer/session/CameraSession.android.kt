@@ -40,7 +40,7 @@ public actual class CameraSession internal constructor(
   internal val cameraXControllerWrapper: CameraXController
     get() = androidCameraEngine.cameraXController
 
-  @get:RestrictTo(RestrictTo.Scope.LIBRARY)
+  @get:RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
   public val cameraXController: LifecycleCameraController
     get() = cameraXControllerWrapper.get()
 

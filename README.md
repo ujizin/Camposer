@@ -1,20 +1,21 @@
 # Camposer
 
 <p align="center">
- <img src="sample/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" />
+ <img src="docs/assets/ic_launcher_round.png" width="200"/>
 </p>
 <p align="center">
   <a href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"/></a>
   <img src="https://github.com/ujizin/Camposer/actions/workflows/android_test.yml/badge.svg?branch=main"/>
+  <img src="https://github.com/ujizin/Camposer/actions/workflows/ios_test.yml/badge.svg?branch=main"/>
   <img src="https://github.com/ujizin/Camposer/actions/workflows/build.yml/badge.svg?branch=main"/>
-  <a href="https://android-arsenal.com/api?level=23"><img alt="API" src="https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat"/></a>
+  <a href="https://android-arsenal.com/api?level=23"><img alt="API" src="https://img.shields.io/badge/API-23%2B-brightgreen.svg?style=flat"/></a>
   <a href="https://github.com/ujizin"><img alt="Profile" src="https://badgen.net/badge/ujizin/Github/orange?icon=github"/></a>
-  <a href="https://medium.com/@lucasyujideveloper/camposer-camera-library-using-jetpack-compose-for-android-3af63220fa00"><img src="https://badgen.net/badge/icon/Medium?icon=medium&label=Story"/></a>
-  <a href="https://ujizin.github.io/Camposer/"><img alt="Dokka" src="https://badgen.net/badge/Dokka/Camposer/purple?icon=libraries"/></a></br>
+  <a href="https://medium.com/@lucasyujideveloper/camposer-camera-library-using-jetpack-compose-for-android-3af63220fa00"><img src="https://badgen.net/badge/icon/Medium?icon=medium&label=Story (Android)"/></a>
+  <a href="https://ujizin.github.io/Camposer/api/index.html"><img alt="Dokka" src="https://badgen.net/badge/Dokka/Camposer/purple?icon=libraries"/></a></br>
   <a href="https://androidweekly.net/issues/issue-546"><img src="https://androidweekly.net/issues/issue-546/badge"/></a>
 </p>
 
-<p align="center">Tired to use a camera in Jetpack Compose with interoperability? Then Camposer was made for you. <br> A camera library totally in Jetpack Compose which supports taking photos, recording videos, flash modes, zoom ratio, and among others!</p>
+<p align="center">A Multiplatform Camera Library totally in Jetpack Compose which supports taking photos, recording videos, flash modes, zoom ratio, and among others!</p>
 <br>
 <p align="center">
 <img src="https://user-images.githubusercontent.com/51065868/201734193-053dd4f5-c9cb-4a62-9692-1a62264911a5.gif" width="250"/> <img src="https://user-images.githubusercontent.com/51065868/201736304-f1f1b5fa-3f3d-4c12-9d40-a790e0d4d82b.gif" width="250"/>
@@ -54,13 +55,13 @@ CameraPreview(
 To take picture use `CameraSession` and call `takePicture` method from it.
 
 ```Kotlin
-// Using content values
-cameraSession.takePicture(contentValues, mediaURI) { result ->
+// Using temporary byte array
+cameraSession.takePicture) { result ->
   /* ... */
 }
 
 // Using files
-cameraSession.takePicture(file) { result -> /* ... */ }
+cameraSession.takePicture(fileName) { result -> /* ... */ }
 ```
 
 ### Recording videos
@@ -69,22 +70,15 @@ Change the capture mode for `CaptureMode.Video` on `CameraPreview` and call `tog
 
 ```Kotlin
 // Using content values
-cameraSession.startRecording()
-cameraSession.stopRecording(contentValues, mediaURI) { result ->
+cameraSession.startRecording(fileName) { result ->
   /* ... */
 }
-
-// Using file
-cameraSession.startRecording()
-cameraSession.stopRecording(file) { result -> /* ... */ }
+cameraSession.stopRecording()
 
 // Using content values + toggle
-cameraSession.toggleRecording(contentValues, mediaURI) { result ->
+cameraSession.toggleRecording(fileName) { result ->
   /* ... */
 }
-
-// Using files + toggle
-cameraSession.toggleRecording(file) { result -> /* ... */ }
 ```
 
 ### Switch cameras
@@ -104,7 +98,7 @@ camSelector = camSelector.inverse
 
 ###  Other configurations
 
-If you want to use other configurations, you can see our [wiki](https://github.com/DevLucasYuji/Camposer/wiki).
+If you want to use other configurations, you can see our [wiki](https://ujizin.github.io/Camposer).
 
 Have a `fun code()`!
 

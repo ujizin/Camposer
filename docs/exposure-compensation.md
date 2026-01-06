@@ -13,23 +13,28 @@ val minExposure = cameraSession.info.minExposure
 val maxExposure = cameraSession.info.maxExposure
 ```
 
+To set the desired exposure compensation, use the CameraController.
+
+```Kotlin
+cameraController.setExposureCompensation(1F)
+```
+
 ## Usage Example
 
 ```kotlin
-val cameraSession = remembercameraSession()
-var exposureCompensation by remember { mutableStateOf(0f) }
+val controller = remember { CameraController() }
+val cameraSession = rememberCameraSession(controller)
+val minExposure by rememberUpdateState(cameraSession.info.minExposure)
+val maxExposure by rememberUpdateState(cameraSession.info.maxExposure)
+val exposureCompensation by rememberUpdateState(cameraSession.state.exposureCompensation)
 
 CameraPreview(
     cameraSession = cameraSession,
-    exposureCompensation = exposureCompensation,
 ) {
-    val minExposure = cameraSession.info.minExposure
-    val maxExposure = cameraSession.info.maxExposure
-
     Row {
         Button(onClick = {
-            exposureCompensation = (exposureCompensation - 1f)
-                .coerceAtLeast(minExposure)
+            val exposure = (exposureCompensation - 1F).coerceAtLeast(minExposure)
+            controller.setExposureCompensation(exposure)
         }) {
             Text("-")
         }
@@ -37,8 +42,8 @@ CameraPreview(
         Text("Exposure: $exposureCompensation")
 
         Button(onClick = {
-            exposureCompensation = (exposureCompensation + 1f)
-                .coerceAtMost(maxExposure)
+            val exposure = (exposureCompensation + 1f).coerceAtMost(maxExposure)
+            controller.setExposureCompensation(exposure)
         }) {
             Text("+")
         }

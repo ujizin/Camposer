@@ -1,12 +1,10 @@
 package com.ujizin.camposer.session
 
-import androidx.compose.ui.test.ExperimentalTestApi
 import com.ujizin.camposer.state.properties.selector.CamSelector
 import com.ujizin.camposer.state.properties.selector.inverse
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@OptIn(ExperimentalTestApi::class)
 internal class CameraSelectorTest : CameraSessionTest() {
   @Test
   fun test_preview_cam_selector_back() {

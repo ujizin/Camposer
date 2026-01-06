@@ -1,13 +1,11 @@
 package com.ujizin.camposer.session
 
-import androidx.compose.ui.test.ExperimentalTestApi
 import com.ujizin.camposer.state.properties.FlashMode
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-@OptIn(ExperimentalTestApi::class)
 internal class CameraFlashModeTest : CameraSessionTest() {
   @Test
   fun test_preview_flash_mode_on() {

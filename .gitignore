@@ -17,3 +17,5 @@
 local.properties
 /.kotlin
 buildSrc/.kotlin
+docs/api
+site

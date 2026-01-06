@@ -1,5 +1,6 @@
 package com.ujizin.camposer.internal.core.ios
 
+import androidx.annotation.RestrictTo
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.AVFoundation.AVCaptureDevice
@@ -18,6 +19,7 @@ import platform.CoreGraphics.CGPoint
 import platform.UIKit.UIView
 
 @OptIn(ExperimentalForeignApi::class)
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public interface IOSCameraController {
   // iOS API
   public val captureSession: AVCaptureSession

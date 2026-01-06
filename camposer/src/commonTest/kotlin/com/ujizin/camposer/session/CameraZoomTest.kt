@@ -1,12 +1,10 @@
 package com.ujizin.camposer.session
 
-import androidx.compose.ui.test.ExperimentalTestApi
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
-@OptIn(ExperimentalTestApi::class)
 internal class CameraZoomTest : CameraSessionTest() {
   @Test
   fun test_preview_zoom_change() =

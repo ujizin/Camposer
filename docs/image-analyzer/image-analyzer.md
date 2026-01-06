@@ -34,7 +34,7 @@ actual class OCRImageAnalyzer(
 ```kotlin
 actual class OCRImageAnalyzer(
     private val listener: OCRListener
-): NSObject(), , AVCaptureMetadataOutputObjectsDelegateProtocol {
+): NSObject(), , AVCaptureVideoDataOutputSampleBufferDelegate {
      override fun captureOutput(
         output: AVCaptureOutput,
         didOutputMetadataObjects: List<*>,
@@ -94,7 +94,7 @@ public actual fun cameraSession.rememberOCRAnalyzer(
 ### Attaching the Analyzer in Compose (Example)
 
 ```kotlin
-val cameraSession = remembercameraSession()
+val cameraSession = rememberCameraSession()
 val ocrImageAnalyzer = cameraSession.rememberOCRAnalyzer {
     // Result here!
 }
