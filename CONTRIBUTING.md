@@ -21,7 +21,7 @@ To ensure your changes do not break binary compatibility in future releases, run
 > If you are not familiar with ABI, please refer to the official documentation
 
 ```Bash
-./gradlew apiDump
+./gradlew updateLegacyAbi
 ```
 
 ### Tests

@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import ujizin.camposer.Config
 
 plugins {
@@ -18,12 +19,15 @@ android {
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
   compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
   }
-  kotlinOptions {
-    jvmTarget = "1.8"
+  kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_17)
+    }
   }
+
   buildFeatures {
     compose = true
   }

@@ -20,7 +20,7 @@ jobs:
       - name: spotless
         run: ./gradlew spotlessCheck
 
-  api_check:
+  abi_check:
     name: API check
     runs-on: ubuntu-latest
     steps:
@@ -32,7 +32,7 @@ jobs:
           distribution: 'zulu'
           java-version: 21
       - name: API check
-        run: ./gradlew apiCheck
+        run: ./gradlew checkLegacyAbi
   build:
     runs-on: ubuntu-latest
     steps:

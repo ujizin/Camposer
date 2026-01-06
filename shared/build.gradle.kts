@@ -60,10 +60,10 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        implementation(compose.runtime)
+        implementation(libs.compose.runtime)
+        implementation(libs.compose.foundation)
         implementation(compose.ui)
         implementation(compose.material3)
-        implementation(compose.foundation)
         implementation(libs.media.kmp)
         implementation(libs.kotlinx.io)
         implementation(project(":camposer"))

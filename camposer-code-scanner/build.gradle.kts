@@ -1,16 +1,31 @@
+@file:OptIn(ExperimentalAbiValidation::class)
+
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 import ujizin.camposer.Config
 
 plugins {
-  alias(libs.plugins.kotlin.multiplatform)
   alias(libs.plugins.kotlin.multiplatform.library)
+  alias(libs.plugins.kotlin.multiplatform)
   alias(libs.plugins.compose.multiplatform)
   alias(libs.plugins.compose.compiler)
   alias(libs.plugins.dokka)
-  alias(libs.plugins.dokka.java.doc)
 }
+
+extra.apply {
+  set("PUBLISH_GROUP_ID", Config.groupId)
+  set("PUBLISH_ARTIFACT_ID", Config.artifactId)
+  set("PUBLISH_VERSION", Config.versionName)
+}
+
+apply(from = "$rootDir/scripts/publish-module.gradle")
 
 kotlin {
   explicitApi()
+
+  abiValidation {
+    enabled.set(true)
+  }
+
   androidLibrary {
     namespace = "com.ujizin.camposer.code_scanner"
     compileSdk = Config.compileSdk
@@ -40,8 +55,8 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        implementation(compose.runtime)
-        implementation(compose.foundation)
+        implementation(libs.compose.runtime)
+        implementation(libs.compose.foundation)
         implementation(project(":camposer"))
       }
     }
@@ -62,7 +77,4 @@ kotlin {
 
 dokka {
   moduleName.set("Camposer Code Scanner")
-  dokkaPublications.html {
-    failOnWarning.set(true)
-  }
 }

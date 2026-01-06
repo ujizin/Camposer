@@ -1,0 +1,69 @@
+public abstract interface class com/ujizin/camposer/codescanner/CodeAnalyzerListener {
+	public abstract fun onCodeScanned (Lcom/ujizin/camposer/codescanner/CodeResult;)V
+}
+
+public final class com/ujizin/camposer/codescanner/CodeResult {
+	public static final field $stable I
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCorners ()Ljava/util/List;
+	public final fun getFrameRect ()Lcom/ujizin/camposer/codescanner/FrameRect;
+	public final fun getText ()Ljava/lang/String;
+	public final fun getType ()Lcom/ujizin/camposer/codescanner/CodeType;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/ujizin/camposer/codescanner/CodeType : java/lang/Enum {
+	public static final field Aztec Lcom/ujizin/camposer/codescanner/CodeType;
+	public static final field Barcode128 Lcom/ujizin/camposer/codescanner/CodeType;
+	public static final field Barcode39 Lcom/ujizin/camposer/codescanner/CodeType;
+	public static final field Barcode93 Lcom/ujizin/camposer/codescanner/CodeType;
+	public static final field BarcodeEAN13 Lcom/ujizin/camposer/codescanner/CodeType;
+	public static final field BarcodeEAN8 Lcom/ujizin/camposer/codescanner/CodeType;
+	public static final field CodaBar Lcom/ujizin/camposer/codescanner/CodeType;
+	public static final field DataMatrix Lcom/ujizin/camposer/codescanner/CodeType;
+	public static final field ITF Lcom/ujizin/camposer/codescanner/CodeType;
+	public static final field PDF417 Lcom/ujizin/camposer/codescanner/CodeType;
+	public static final field QRCode Lcom/ujizin/camposer/codescanner/CodeType;
+	public static final field UPCA Lcom/ujizin/camposer/codescanner/CodeType;
+	public static final field UPCE Lcom/ujizin/camposer/codescanner/CodeType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/ujizin/camposer/codescanner/CodeType;
+	public static fun values ()[Lcom/ujizin/camposer/codescanner/CodeType;
+}
+
+public final class com/ujizin/camposer/codescanner/CodeTypeNotSupportedException : java/lang/Exception {
+	public static final field $stable I
+	public fun <init> (Lcom/ujizin/camposer/codescanner/CodeType;Ljava/lang/String;)V
+	public synthetic fun <init> (Lcom/ujizin/camposer/codescanner/CodeType;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getCodeType ()Lcom/ujizin/camposer/codescanner/CodeType;
+}
+
+public final class com/ujizin/camposer/codescanner/CornerPointer {
+	public static final field $stable I
+	public fun <init> (II)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getX ()I
+	public final fun getY ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/ujizin/camposer/codescanner/FrameRect {
+	public static final field $stable I
+	public fun <init> (IIII)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBottom ()I
+	public final fun getHeight ()I
+	public final fun getLeft ()I
+	public final fun getRight ()I
+	public final fun getTop ()I
+	public final fun getWidth ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/ujizin/camposer/codescanner/ImageCodeAnalyzerRemember_androidKt {
+	public static final fun rememberCodeImageAnalyzer (Lcom/ujizin/camposer/session/CameraSession;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lcom/ujizin/camposer/codescanner/CodeAnalyzerListener;Landroidx/compose/runtime/Composer;II)Lcom/ujizin/camposer/state/properties/ImageAnalyzer;
+}
+

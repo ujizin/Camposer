@@ -6,14 +6,15 @@ gradle = "8.13.2"
 gradle-nexus = "2.0.0"
 spotless = "8.1.0"
 ktlint = "1.8.0"
-kotlin = "2.2.10"
-dokka = "2.0.0"
+kotlin = "2.3.0"
+dokka = "2.1.0"
 androidx-test = "1.7.0"
 androidx-arch-core = "2.2.0"
 camerax = "1.5.2"
 coroutines = "1.10.2"
 compose-multiplatform = "1.11.0-alpha01"
 binary-compatibility-validator = "0.18.1"
+maven-publish = "0.35.0"
 
 # Camposer scanner
 
@@ -45,19 +46,21 @@ lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-savedst
 compose-activity = { module = "androidx.activity:activity-compose", version.ref = "appcompat" }
 
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
-compose-runtime = { module = "androidx.compose.runtime:runtime" }
+compose-runtime-android = { module = "androidx.compose.runtime:runtime" }
 compose-ui = { module = "androidx.compose.ui:ui" }
 compose-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
-compose-junit4-android = { module = "androidx.compose.ui:ui-test-junit4-android" }
-compose-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 
-compose-foundation = { module = "androidx.compose.foundation:foundation" }
+compose-foundation-android = { module = "androidx.compose.foundation:foundation" }
 compose-material3 = { module = "androidx.compose.material:material" }
 compose-material3-icons = { module = "androidx.compose.material:material-icons-extended" }
 compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
 
 compose-lifecycle = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
+compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose-multiplatform" }
+compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose-multiplatform" }
+compose-ui-test = { module = "org.jetbrains.compose.ui:ui-test", version.ref = "compose-multiplatform" }
+compose-junit4 = { module = "org.jetbrains.compose.ui:ui-test-junit4", version.ref = "compose-multiplatform" }
 
 material = { module = "com.google.android.material:material", version.ref = "material" }
 
@@ -94,11 +97,11 @@ androidx-camera-mlkit-vision = { group = "androidx.camera", name = "camera-mlkit
 [bundles]
 
 compose = [
-  "compose-runtime",
+  "compose-runtime-android",
   "compose-ui",
   "compose-tooling-preview",
   "compose-ui-tooling",
-  "compose-foundation"
+  "compose-foundation-android"
 ]
 
 camerax = [
@@ -118,8 +121,8 @@ kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref 
 kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "gradle" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
-dokka-java-doc = { id = "org.jetbrains.dokka-javadoc", version.ref = "dokka" }
 gradle-nexus = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "gradle-nexus" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binary-compatibility-validator" }
+maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publish" }
