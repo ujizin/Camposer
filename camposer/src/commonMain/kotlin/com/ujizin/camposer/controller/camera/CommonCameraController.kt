@@ -1,6 +1,5 @@
 package com.ujizin.camposer.controller.camera
 
-import androidx.annotation.RestrictTo
 import com.ujizin.camposer.CaptureResult
 import com.ujizin.camposer.controller.record.RecordController
 import com.ujizin.camposer.controller.takepicture.TakePictureCommand
@@ -25,7 +24,6 @@ import kotlinx.coroutines.flow.update
  *
  * This class is intended to be used internally. Please use [CameraController] instead.
  */
-@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public abstract class CommonCameraController<
   RC : RecordController,
   TPC : TakePictureCommand,

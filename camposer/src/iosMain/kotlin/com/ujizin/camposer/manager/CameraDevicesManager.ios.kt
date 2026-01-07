@@ -32,9 +32,9 @@ import platform.AVFoundation.deviceType
 import platform.AVFoundation.position
 import platform.darwin.dispatch_async
 
-public actual class CameraDevicesManager {
+internal actual class CameraDevicesManager {
   private val _cameraDevicesState = MutableStateFlow<CameraDeviceState>(CameraDeviceState.Initial)
-  public actual val cameraDevicesState: StateFlow<CameraDeviceState> = _cameraDevicesState
+  actual val cameraDevicesState: StateFlow<CameraDeviceState> = _cameraDevicesState
     .asStateFlow()
 
   private val cameraPresenceMonitor = CameraPresenceMonitor()

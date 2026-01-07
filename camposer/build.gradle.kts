@@ -16,7 +16,7 @@ plugins {
 
 extra.apply {
   set("PUBLISH_GROUP_ID", Config.groupId)
-  set("PUBLISH_ARTIFACT_ID", Config.artifactId)
+  set("PUBLISH_ARTIFACT_ID", Config.Artifact.camposerId)
   set("PUBLISH_VERSION", Config.versionName)
 }
 

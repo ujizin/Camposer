@@ -1,6 +1,6 @@
 # Camposer Sample
 
-This is an example of how to use Camposer library! Using every (or almost) feature from Camposer!
+This is an example of how to use Camposer library in Android only!
 
 ## Stack
 

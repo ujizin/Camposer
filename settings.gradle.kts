@@ -17,6 +17,3 @@ rootProject.name = "Camposer"
 
 include(":camposer")
 include(":camposer-code-scanner")
-
-include(":samples:sample-android")
-include(":samples:shared")

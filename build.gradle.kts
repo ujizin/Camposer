@@ -14,10 +14,6 @@ plugins {
   alias(libs.plugins.binary.compatibility.validator)
 }
 
-apiValidation {
-  ignoredProjects.addAll(listOf("sample-android", "shared"))
-}
-
 dokka {
   dokkaPublications.html {
     moduleName.set("Camposer")

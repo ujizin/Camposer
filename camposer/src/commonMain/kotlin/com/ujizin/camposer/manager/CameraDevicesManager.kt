@@ -16,10 +16,10 @@ import kotlinx.coroutines.flow.StateFlow
  * @property cameraDevicesState A [StateFlow] emitting the current [CameraDeviceState], representing the status of available cameras.
  * @see rememberCameraDeviceState for a composable way to observe this state.
  */
-public expect class CameraDevicesManager {
-  public val cameraDevicesState: StateFlow<CameraDeviceState>
+internal expect class CameraDevicesManager {
+  val cameraDevicesState: StateFlow<CameraDeviceState>
 
-  public fun release()
+  fun release()
 }
 
 @Composable

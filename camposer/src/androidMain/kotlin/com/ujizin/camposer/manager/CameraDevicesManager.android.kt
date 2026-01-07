@@ -33,7 +33,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 @SuppressLint("RestrictedApi")
-public actual class CameraDevicesManager(
+internal actual class CameraDevicesManager(
   context: Context,
   private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
@@ -41,7 +41,7 @@ public actual class CameraDevicesManager(
   private val mainScope = MainScope()
 
   private val _cameraDevicesState = MutableStateFlow<CameraDeviceState>(CameraDeviceState.Initial)
-  public actual val cameraDevicesState: StateFlow<CameraDeviceState> =
+  actual val cameraDevicesState: StateFlow<CameraDeviceState> =
     _cameraDevicesState.asStateFlow()
 
   private lateinit var cameraProvider: ProcessCameraProvider

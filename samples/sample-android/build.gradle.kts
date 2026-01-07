@@ -1,8 +1,7 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import ujizin.camposer.Config
 
 plugins {
-  alias(libs.plugins.application)
+  alias(libs.plugins.android.application)
   alias(libs.plugins.kotlin.android)
   alias(libs.plugins.kotlin.serialization)
   alias(libs.plugins.compose.compiler)
@@ -10,12 +9,12 @@ plugins {
 
 android {
   namespace = "com.ujizin.sample"
-  compileSdk = Config.compileSdk
+  compileSdk = 36
   defaultConfig {
-    versionCode = Config.versionCode
-    versionName = Config.versionName
-    minSdk = Config.minSdk
-    targetSdk = Config.targetSdk
+    versionCode = 1
+    versionName = "1.0.0"
+    minSdk = 23
+    targetSdk = 36
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
   compileOptions {
@@ -36,34 +35,22 @@ android {
 dependencies {
   implementation(platform(libs.compose.bom))
   implementation(libs.bundles.compose)
-
   implementation(libs.compose.activity)
   implementation(libs.compose.material3)
   implementation(libs.compose.material3.icons)
   implementation(libs.compose.navigation)
   implementation(libs.compose.lifecycle)
-
   implementation(libs.accompanist.permissions)
-
   implementation(libs.coil)
   implementation(libs.coil.video)
-
   implementation(libs.material)
-
   implementation(libs.koin)
   implementation(libs.datastore)
-
   implementation(libs.kotlinx.serialization.json)
-
   implementation(libs.lifecycle)
   implementation(libs.lifecycle.viewmodel)
-
-//  implementation(libs.exoplayer)
-
+  implementation(libs.exoplayer)
   implementation(libs.zxing.core)
-
   implementation(libs.cloudy)
-
-  implementation(project(":camposer"))
-  implementation(project(":samples:shared"))
+  implementation(libs.camposer)
 }
