@@ -24,5 +24,6 @@ dependencyResolutionManagement {
 rootProject.name = "sample-android"
 include(
   ":sample-android",
+  ":sample-multiplatform:sample-kmp-android",
   ":sample-multiplatform:shared",
 )

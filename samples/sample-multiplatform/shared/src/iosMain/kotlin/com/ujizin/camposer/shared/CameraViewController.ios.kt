@@ -1,6 +1,7 @@
 package com.ujizin.camposer.shared
 
 import androidx.compose.ui.window.ComposeUIViewController
+import com.ujizin.camposer.shared.features.camera.CameraScreen
 import platform.UIKit.UIViewController
 
 @Suppress("FunctionName")
@@ -16,5 +17,5 @@ fun CameraViewController(): UIViewController =
 //        audioGranted = it
 //    })
 
-    CameraScreen()
+      CameraScreen()
   }

@@ -2,7 +2,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
   alias(libs.plugins.android.application)
-  alias(libs.plugins.kotlin.android)
   alias(libs.plugins.kotlin.serialization)
   alias(libs.plugins.compose.compiler)
 }
@@ -34,11 +33,11 @@ android {
 
 dependencies {
   implementation(platform(libs.compose.bom))
-  implementation(libs.bundles.compose)
+  implementation(libs.bundles.compose.android)
   implementation(libs.compose.activity)
-  implementation(libs.compose.material3)
+  implementation(libs.compose.material3.android)
   implementation(libs.compose.material3.icons)
-  implementation(libs.compose.navigation)
+  implementation(libs.compose.navigation.android)
   implementation(libs.compose.lifecycle)
   implementation(libs.accompanist.permissions)
   implementation(libs.coil)

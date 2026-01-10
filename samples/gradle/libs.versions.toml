@@ -1,9 +1,9 @@
 [versions]
 
-agp = "8.13.2"
+agp = "9.0.0-rc02"
 camposer = "1.0.0"
 kotlin = "2.3.0"
-compose-multiplatform = "1.11.0-alpha01"
+compose-multiplatform = "1.10.0-rc02"
 
 compose-bom = "2025.12.01"
 exoplayer = "2.19.1"
@@ -11,19 +11,22 @@ zxing = "3.5.4"
 cloudy = "0.4.0"
 appcompat = "1.12.2"
 material = "1.13.0"
+material3 = "1.9.0"
 lifecycle = "2.10.0"
+kmp-lifecycle = "2.8.0"
 navigation = "2.9.6"
 kotlinx-serialization = "1.9.0"
 accompanist = "0.37.3"
 coil = "2.7.0"
 koin = "4.1.1"
 datastore = "1.2.0"
-camera-core = "1.5.2"
 
 # kmp
 media-kmp = "2.0.6"
-kotlinx-io = "0.8.0"
-
+kotlinx-io = "0.8.2"
+core-ktx = "1.17.0"
+multiplatform-nav3-ui = "1.0.0-alpha06"
+moko-permissions = "0.20.1"
 [libraries]
 
 camposer = { module = "io.github.ujizin:camposer", version.ref = "camposer" }
@@ -39,23 +42,32 @@ lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-savedst
 compose-activity = { module = "androidx.activity:activity-compose", version.ref = "appcompat" }
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
 compose-runtime-android = { module = "androidx.compose.runtime:runtime" }
-compose-ui = { module = "androidx.compose.ui:ui" }
-compose-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
+compose-ui-android = { module = "androidx.compose.ui:ui" }
+compose-ui-preview-android = { module = "androidx.compose.ui:ui-tooling-preview" }
+compose-ui-tooling-android = { module = "androidx.compose.ui:ui-tooling" }
 compose-foundation-android = { module = "androidx.compose.foundation:foundation" }
-compose-material3 = { module = "androidx.compose.material:material" }
-compose-material3-icons = { module = "androidx.compose.material:material-icons-extended" }
-compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
+compose-navigation-android = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
 compose-lifecycle = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
+
+compose-material3-android = { module = "androidx.compose.material:material" }
+compose-material3-icons = { module = "androidx.compose.material:material-icons-extended" }
+
+exoplayer = { module = "com.google.android.exoplayer:exoplayer", version.ref = "exoplayer" }
+zxing-core = { module = "com.google.zxing:core", version.ref = "zxing" }
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
+cloudy = { module = "com.github.skydoves:cloudy", version.ref = "cloudy" }
+
+jetbrains-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "kmp-lifecycle" }
+jetbrains-navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "multiplatform-nav3-ui" }
+
+moko-permissions = { module = "dev.icerock.moko:permissions", version.ref = "moko-permissions" }
+moko-permissions-compose = { module = "dev.icerock.moko:permissions-compose", version.ref = "moko-permissions" }
+moko-permissions-camera = { module = "dev.icerock.moko:permissions-camera", version.ref = "moko-permissions" }
+moko-permissions-microphone = { module = "dev.icerock.moko:permissions-microphone", version.ref = "moko-permissions" }
 
 coil = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 coil-video = { module = "io.coil-kt:coil-video", version.ref = "coil" }
 
-exoplayer = { module = "com.google.android.exoplayer:exoplayer", version.ref = "exoplayer" }
-
-zxing-core = { module = "com.google.zxing:core", version.ref = "zxing" }
-accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
-cloudy = { module = "com.github.skydoves:cloudy", version.ref = "cloudy" }
 
 kotlinx-io = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kotlinx-io" }
 media-kmp = { module = "io.github.khubaibkhan4:mediaplayer-kmp", version.ref = "media-kmp" }
@@ -63,15 +75,29 @@ media-kmp = { module = "io.github.khubaibkhan4:mediaplayer-kmp", version.ref = "
 ## KMP Compose
 compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose-multiplatform" }
 compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose-multiplatform" }
+compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose-multiplatform" }
+compose-ui-tooling = { module = "org.jetbrains.compose.ui:ui-tooling", version.ref = "compose-multiplatform" }
+compose-ui-preview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "compose-multiplatform" }
+compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "material3" }
+
+core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
+ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 
 [bundles]
 
-compose = [
+compose-android = [
   "compose-runtime-android",
+  "compose-foundation-android",
+  "compose-ui-android",
+  "compose-ui-preview-android",
+  "compose-ui-tooling-android",
+]
+
+compose-kmp = [
+  "compose-runtime",
+  "compose-foundation",
   "compose-ui",
-  "compose-tooling-preview",
-  "compose-ui-tooling",
-  "compose-foundation-android"
+  "compose-ui-preview",
 ]
 
 [plugins]

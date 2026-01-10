@@ -1,4 +1,4 @@
-package com.ujizin.camposer.shared
+package com.ujizin.camposer.shared.features.camera
 
 import VideoPlayer
 import androidx.compose.foundation.Canvas
@@ -116,7 +116,7 @@ fun CameraScreen() {
             ),
           )
         } ?: camDeviceState.cameraDevices.first()
-      camSelector = CamSelector(cameraDevice)
+//      camSelector = CamSelector(cameraDevice)
     }
   }
 
