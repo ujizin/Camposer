@@ -1,7 +1,9 @@
 package com.ujizin.camposer.state.properties
 
+import com.ujizin.camposer.internal.extensions.firstIsInstanceOrNull
 import com.ujizin.camposer.state.properties.format.CamFormat
 import com.ujizin.camposer.state.properties.format.config.AspectRatioConfig
+import com.ujizin.camposer.state.properties.format.config.CameraFormatConfig
 import com.ujizin.camposer.state.properties.format.config.FrameRateConfig
 import com.ujizin.camposer.state.properties.format.config.ResolutionConfig
 import com.ujizin.camposer.state.properties.format.config.VideoStabilizationConfig
@@ -15,7 +17,7 @@ import com.ujizin.camposer.state.properties.format.config.VideoStabilizationConf
  *
  * @param width The width of the camera resolution in pixels.
  * @param height The height of the camera resolution in pixels.
- * @param isFocusSupported Indicates if auto-focus is supported for this camera configuration.
+ * @param isFocusSupported Indicates if autofocus is supported for this camera configuration.
  * @param minFps The minimum frames per second supported, or null if not applicable.
  * @param maxFps The maximum frames per second supported, or null if not applicable.
  * @param videoStabilizationModes A list of supported video stabilization modes, or null if none.
@@ -38,7 +40,7 @@ public class CameraData internal constructor(
           this += FrameRateConfig(fps = maxFps)
         }
 
-        if (videoStabilizationModes != null && videoStabilizationModes.isNotEmpty()) {
+        if (!videoStabilizationModes.isNullOrEmpty()) {
           this += VideoStabilizationConfig(mode = videoStabilizationModes.last())
         }
       }.toTypedArray(),
@@ -66,6 +68,22 @@ public class CameraData internal constructor(
     result = 31 * result + (videoStabilizationModes?.hashCode() ?: 0)
     result = 31 * result + isFocusSupported.hashCode()
     return result
+  }
+
+  internal fun getStabilizationModeByConfigs(
+    configs: List<CameraFormatConfig>,
+  ): VideoStabilizationMode {
+    val videoStabilizationConfig = configs.firstIsInstanceOrNull<VideoStabilizationConfig>()
+    val stabilizationMode = videoStabilizationConfig?.mode?.takeIf {
+      videoStabilizationModes?.contains(it) == true
+    } ?: VideoStabilizationMode.Off
+    return stabilizationMode
+  }
+
+  internal fun getFrameRateByConfigs(configs: List<CameraFormatConfig>): Int {
+    val fpsConfig = configs.firstIsInstanceOrNull<FrameRateConfig>()
+    val fps = fpsConfig?.fps?.coerceIn(minFps, maxFps) ?: maxFps
+    return fps ?: -1
   }
 
   override fun toString(): String =

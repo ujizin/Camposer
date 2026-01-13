@@ -44,7 +44,6 @@ internal object CameraUtils {
 
     return cameraInfo.getAllCameraData(
       cameraSizes = photoSizes,
-      ignoreFps = true,
       isFocusSupported = isFocusSupported,
     )
   }

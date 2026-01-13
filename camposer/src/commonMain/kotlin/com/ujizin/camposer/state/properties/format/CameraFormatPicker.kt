@@ -33,21 +33,12 @@ internal object CameraFormatPicker {
     onFormatChanged(cameraData)
 
     // Video stabilization
-    val videoStabilizationConfig = configs.firstIsInstanceOrNull<VideoStabilizationConfig>()
-    val stabilizationMode = videoStabilizationConfig?.mode?.takeIf {
-      cameraData.videoStabilizationModes?.contains(it) == true
-    } ?: VideoStabilizationMode.Off
-
+    val stabilizationMode = cameraData.getStabilizationModeByConfigs(configs)
     runCatching { onStabilizationModeChanged(stabilizationMode) }
 
     // FPS
-    val minFrameRate = cameraData.minFps
-    val maxFrameRate = cameraData.maxFps
-    if (minFrameRate != null && maxFrameRate != null) {
-      val fpsConfig = configs.firstIsInstanceOrNull<FrameRateConfig>()
-      val fps = fpsConfig?.fps?.coerceIn(minFrameRate, maxFrameRate) ?: maxFrameRate
-      runCatching { onFrameRateChanged(fps) }
-    }
+    val fps = cameraData.getFrameRateByConfigs(configs)
+    runCatching { onFrameRateChanged(fps) }
   }
 
   private fun getFinalScoreByOrder(
