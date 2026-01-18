@@ -20,7 +20,10 @@ fun SampleNavigation() {
     entryProvider = entryProvider {
       entry<Routes.PermissionRoute> {
         PermissionsScreen(
-          onAllPermissionGranted = { backStack.add(Routes.CameraRoute) }
+          onAllPermissionGranted = {
+            backStack.removeLastOrNull()
+            backStack.add(Routes.CameraRoute)
+          }
         )
       }
       entry<Routes.CameraRoute> {
