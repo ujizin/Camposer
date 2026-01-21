@@ -1,6 +1,6 @@
 # Taking Picture
 
-The CameraController provides functionality for taking pictures. There are two types of results you can retrieve:
+The CameraController provides functionality for taking pictures.
 
 ## ByteArray
 
@@ -11,29 +11,10 @@ Use this option when you do not want to save the picture to a file, but just ret
 ```kotlin
 cameraController.takePicture { result -> 
     when(result) {
-        CaptureResult.Success -> {
+        is CaptureResult.Success -> {
             uiState.update { it.copy(imageBitmap = result.data.decodeToImageBitmap()) }
         }
-        CaptureResult.Error -> // ...
-    }
-}
-```
-
-
-## Path (from `kotlinx.io`)
-
-Use this option when you want to save the picture to a specific file path and retrieve the saved file.
-
-### Usage Example
-
-```kotlin
-val path = Path("$SystemTemporaryDirectory/photo.jpg")
-cameraController.takePicture(path) { result -> 
-    when(result) {
-        CaptureResult.Success -> {
-            uiState.update { it.copy(filePath = "${result.path}") }
-        }
-        CaptureResult.Error -> // ...
+        is CaptureResult.Error -> // ...
     }
 }
 ```

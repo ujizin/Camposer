@@ -2,13 +2,13 @@
 
 ## Introduction
 
-To configure flash mode, you will need to set in `CameraController`. This will ensure stability and prevent bugs or crashes when some camera info configuration is changed.
+To configure flash mode, you need to use the `CameraController`. This ensures stability and prevents bugs or crashes when camera configuration changes.
 
-It's also important to say that flash needs to be supported by camera, to check this info you can access:
+It's also important to note that flash needs to be supported by the camera. To check this, you can access:
 
 ```kotlin
-// Check if flash mode is supported
-val isFlashModeSupported by rememberUpdatedState(cameraSession.info.isFlashModeSupported)
+// Check if flash is supported
+val isFlashSupported by rememberUpdatedState(cameraSession.info.isFlashSupported)
 
 // Check if torch is supported
 val isTorchSupported by rememberUpdatedState(cameraSession.info.isTorchSupported)
@@ -35,7 +35,7 @@ CameraPreview(
     }
 
     Button(
-        onClick = { cameraController.setTorchEnabled(flashMode.reverse) } // Options: true, false
+        onClick = { cameraController.setTorchEnabled(!isTorchEnabled) } // Options: true, false
     ) {
         Text("Torch $isTorchEnabled")
     }

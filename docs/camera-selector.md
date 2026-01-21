@@ -19,7 +19,7 @@ fun Camera() {
   var camSelector by remember { mutableStateOf(CamSelector.Back) } // Or CamSelector.Front
   CameraPreview(camSelector = camSelector) {
     Button(onClick = {
-      camSelector = camSelector.reverse // Switch Camera
+      camSelector = camSelector.inverse // Switch Camera
     }) { 
        Text("Switch") 
     }
@@ -79,7 +79,10 @@ fun CameraPreviewScreen() {
   LaunchedEffect(cameraDevicesState) {
     if (cameraDevicesState is CameraDeviceState.Devices) {
       val cameraDevices = cameraDevicesState.cameraDevices
-      camSelector = cameraDevices.find { /* your logic */ }
+      val selectedDevice = cameraDevices.find { /* your logic */ }
+      if (selectedDevice != null) {
+        camSelector = CamSelector(selectedDevice)
+      }
     }
   }
 

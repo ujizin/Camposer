@@ -27,7 +27,7 @@ CameraPreview(
 ```
 
 **Note:**
-The `isPinchToZoomEnabled` property only functions when both zoomRatio and onZoomRatioChanged are set. Without these, CameraPreview remains stateless, and pinch-to-zoom gestures will not affect the zoom.
+The `isPinchToZoomEnabled` property is enabled by default. Pinch gestures automatically update the zoom ratio through the camera controller.
 
 ## Camera Zoom Properties
 

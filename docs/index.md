@@ -16,10 +16,11 @@ Camposer is compatible with the following platforms:
 
 ## Features
 
+- [Camera Session](./camera-session.md)
 - [Camera Selector](./camera-selector.md)
 - [Capture Mode](./camera-capture-mode.md)
 - [Camera Controller](./camera-controller/camera-controller.md)
-    - [Taking Picture](./camera-controller/take-picture.md)
+    - [Take Picture](./camera-controller/take-picture.md)
     - [Record Video](./camera-controller/record-video.md)
 - [Camera Format (Resolution, FPS, Video stabilization)](./camera-format.md)
 - [Mirror Mode](./mirror-mode.md)

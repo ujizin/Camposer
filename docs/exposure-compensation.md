@@ -24,9 +24,9 @@ cameraController.setExposureCompensation(1F)
 ```kotlin
 val controller = remember { CameraController() }
 val cameraSession = rememberCameraSession(controller)
-val minExposure by rememberUpdateState(cameraSession.info.minExposure)
-val maxExposure by rememberUpdateState(cameraSession.info.maxExposure)
-val exposureCompensation by rememberUpdateState(cameraSession.state.exposureCompensation)
+val minExposure by rememberUpdatedState(cameraSession.info.minExposure)
+val maxExposure by rememberUpdatedState(cameraSession.info.maxExposure)
+val exposureCompensation by rememberUpdatedState(cameraSession.state.exposureCompensation)
 
 CameraPreview(
     cameraSession = cameraSession,

@@ -17,6 +17,7 @@ implementation("io.github.ujizin:camposer:<version>")
 ```
 
 You can find the latest version at the top-right corner of this documentation or on the [Camposer GitHub page](https://github.com/ujizin/camposer).
+
 ## Using CameraPreview Compose
 
 Camposer provides the CameraPreview composable, which displays a live camera feed directly within your Compose UI. It serves as the main entry point for integrating camera functionality into your app.

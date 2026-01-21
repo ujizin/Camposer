@@ -18,7 +18,12 @@ var implementationMode by remember { mutableStateOf(ImplementationMode.Compatibl
 CameraPreview(
     implementationMode = implementationMode
 ) {
-    Button(onClick = { implementationMode = implementationMode.reverse }) {
+    Button(onClick = {
+        implementationMode = when (implementationMode) {
+            ImplementationMode.Performance -> ImplementationMode.Compatible
+            ImplementationMode.Compatible -> ImplementationMode.Performance
+        }
+    }) {
         Text("Switch Implementation Mode")
     }
 }

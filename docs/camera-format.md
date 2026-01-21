@@ -39,7 +39,7 @@ The order of these configurations matters, as Camposer prioritizes them sequenti
 ```Kotlin
 // ...
 val camFormat = remember {
-    CameraFormat(
+    CamFormat(
         ResolutionConfig(3840, 2160),
         AspectRatio(16F / 9F),
         FrameRateConfig(60),

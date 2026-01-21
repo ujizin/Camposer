@@ -6,10 +6,10 @@ Focus on Tap is enabled by default in Camposer on supported devices. Users can t
 
 ## Check Focus-on-Tap Support
 
-To determine whether the device supports focus on tap functionality, use the `isFocusOnTapSupported` property from cameraSession:
+To determine whether the device supports focus on tap functionality, use the `isFocusSupported` property from cameraSession:
 
 ```kotlin
-val isFocusOnTapSupported = cameraSession.info.isFocusOnTapSupported
+val isFocusSupported = cameraSession.info.isFocusSupported
 ```
 
 ## Disable Focus on Tap

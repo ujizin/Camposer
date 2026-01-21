@@ -4,13 +4,10 @@ The CameraController provides full functionality for recording videos, saving th
 
 ## File Path
 
-To record a video, you must provide a destination file path:
+To record a video, you must provide a destination file path as a String:
 
 ```kotlin
-import kotlinx.io.path.Path
-import kotlinx.io.path.systemTemporaryDirectory
-
-val path = "$SystemTemporaryDirectory/photo.mp4" // SystemTemporaryDirectory from kotlinx io
+val path = "/path/to/save/video.mp4"
 ```
 
 ## Start recording
@@ -19,10 +16,12 @@ Start video recording with startRecording. The callback provides the recording r
 
 ```kotlin
 cameraController.startRecording(path) { result ->
-    CaptureResult.Success -> {
-        uiState.update { it.copy(filePath = "${result.data}") }
+    when(result) {
+        is CaptureResult.Success -> {
+            uiState.update { it.copy(filePath = result.data) }
+        }
+        is CaptureResult.Error -> // ...
     }
-    CaptureResult.Error -> // ...
 }
 ```
 

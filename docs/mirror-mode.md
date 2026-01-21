@@ -6,7 +6,7 @@ To enable mirror mode, configure it through the `CameraController`. The followin
 - **MirrorMode.OnlyInFront**: Enabled only when using the front camera
 - **MirrorMode.Off**: Disabled
 
-The effect takes effect when capturing a photo or recording a video.
+This mode applies when capturing a photo or recording a video.
 
 ### Usage example
 ```Kotlin
