@@ -12,6 +12,7 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v6.0.1
+
       - name: Set up JDK
         uses: actions/setup-java@v5.1.0
         with:
@@ -21,22 +22,27 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
+      - name: Gradle cache
+        uses: gradle/actions/setup-gradle@v4
+
       - name: Generate dokka (doc)
         run: ./gradlew dokkaGeneratePublicationHtml
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.8
+          python-version: '3.12'
+          cache: 'pip'
 
-      - name: Deploy MKDocs
-        run: |
-          pip3 install -r .github/docs-requirements.txt
-          mkdocs build
+      - name: Install dependencies
+        run: pip3 install -r .github/docs-requirements.txt
+
+      - name: Build MKDocs
+        run: mkdocs build
 
       - name: Deploy to Github Pages
-        uses: JamesIves/github-pages-deploy-action@3.7.1
+        uses: JamesIves/github-pages-deploy-action@v4.6.8
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: site
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: gh-pages
+          folder: site

@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ '*' ]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -17,7 +21,14 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
-      - name: spotless
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Gradle cache
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Spotless check
         run: ./gradlew spotlessCheck
 
   abi_check:
@@ -31,8 +42,16 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Gradle cache
+        uses: gradle/actions/setup-gradle@v4
+
       - name: API check
         run: ./gradlew checkLegacyAbi
+
   build:
     runs-on: ubuntu-latest
     steps:
@@ -47,5 +66,8 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: build
+      - name: Gradle cache
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build
         run: ./gradlew clean build

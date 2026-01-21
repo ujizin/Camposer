@@ -1,4 +1,4 @@
-name: IOS Test
+name: iOS Test
 
 on:
   push:
@@ -6,8 +6,12 @@ on:
   pull_request:
     branches: [ '*' ]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  build:
+  test:
     runs-on: macos-latest
 
     steps:
@@ -22,5 +26,8 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: build
+      - name: Gradle cache
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Run iOS tests
         run: ./gradlew clean iosSimulatorArm64Test
