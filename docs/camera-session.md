@@ -128,6 +128,35 @@ if (isInitialized) {
 }
 ```
 
+### hasInitializationError
+
+Indicates whether the camera initialization failed. This is useful for showing error UI or implementing retry logic.
+
+```kotlin
+val cameraSession = rememberCameraSession()
+val hasError by rememberUpdatedState(cameraSession.hasInitializationError)
+
+if (hasError) {
+    // Show error message and retry button
+    Column {
+        Text("Failed to initialize camera")
+        Button(onClick = {
+            if (cameraSession.retryInitialization()) {
+                // Retry successful, camera initialized
+            } else {
+                // Retry failed, still has error
+            }
+        }) {
+            Text("Retry")
+        }
+    }
+}
+```
+
+**Retry Initialization**: Use `cameraSession.retryInitialization()` to attempt initialization again after a failure. The method returns `true` if successful, `false` if it still fails.
+
+**Note**: This property is only set to `true` when initialization fails. It remains `false` during normal operation.
+
 ## Complete Example
 
 ```kotlin
@@ -146,6 +175,25 @@ fun CameraScreen() {
     
     // Access status
     val isStreaming by rememberUpdatedState(cameraSession.isStreaming)
+    val hasError by rememberUpdatedState(cameraSession.hasInitializationError)
+    
+    if (hasError) {
+        // Show error UI
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text("Failed to initialize camera")
+            Button(onClick = {
+                // Attempt to retry initialization
+                cameraSession.retryInitialization()
+            }) {
+                Text("Retry")
+            }
+        }
+        return
+    }
     
     CameraPreview(cameraSession = cameraSession) {
         Column {
@@ -176,9 +224,3 @@ fun CameraScreen() {
     }
 }
 ```
-
-## See Also
-
-- [Camera Controller](./camera-controller/camera-controller.md) - Detailed controller usage
-- [Camera State Properties](./camera-capture-mode.md) - Available state configurations
-- [Getting Started](./getting-started.md) - Basic setup guide

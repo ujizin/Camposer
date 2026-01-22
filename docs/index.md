@@ -9,10 +9,12 @@ A Kotlin Multiplatform camera library fully built in Jetpack Compose, supporting
 
 ## Platform Support
 
-Camposer is compatible with the following platforms:
+Camposer is a **Kotlin Multiplatform** library supporting:
 
-- Android
-- iOS
+| Platform | Status |
+|----------|--------|
+|  **Android** | ✅ Supported
+|  **iOS** | ✅ Supported
 
 ## Features
 
