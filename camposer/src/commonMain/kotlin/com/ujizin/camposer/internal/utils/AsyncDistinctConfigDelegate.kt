@@ -17,6 +17,7 @@ import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 internal fun <T> asyncDistinctConfig(
+  scope: CoroutineScope,
   mutex: Mutex,
   value: T,
   check: (T) -> Unit = {},
@@ -46,7 +47,7 @@ internal fun <T> asyncDistinctConfig(
       val tmpValue = currentValue
       currentValue = onSet(value)
       job?.cancel()
-      job = CoroutineScope(dispatcher).launch {
+      job = scope.launch(dispatcher) {
         mutex.withLock {
           withContext(NonCancellable) {
             onDispose(tmpValue)

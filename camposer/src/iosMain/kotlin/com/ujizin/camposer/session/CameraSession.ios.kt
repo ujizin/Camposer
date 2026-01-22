@@ -12,6 +12,7 @@ import com.ujizin.camposer.internal.core.CameraEngine
 import com.ujizin.camposer.internal.core.CameraEngineImpl
 import com.ujizin.camposer.internal.core.IOSCameraEngine
 import com.ujizin.camposer.internal.core.ios.IOSCameraController
+import com.ujizin.camposer.internal.utils.Logger
 import com.ujizin.camposer.manager.PreviewManager
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.properties.selector.getCaptureDevice
@@ -37,6 +38,9 @@ public actual class CameraSession internal constructor(
   public actual var isInitialized: Boolean by mutableStateOf(false)
     private set
 
+  public actual var hasInitializationError: Boolean by mutableStateOf(false)
+    internal set
+
   public actual var isStreaming: Boolean by mutableStateOf(false)
     internal set
 
@@ -58,21 +62,40 @@ public actual class CameraSession internal constructor(
     setupCamera()
   }
 
-  private fun setupCamera() =
-    with(iosCameraController) {
-      controller.initialize(
-        recordController = DefaultRecordController(cameraEngine),
-        takePictureCommand = DefaultTakePictureCommand(cameraEngine),
-        cameraState = state,
-        cameraInfo = info,
-      )
+  private fun setupCamera() = runCatching {
+      with(iosCameraController) {
+        controller.initialize(
+          recordController = DefaultRecordController(cameraEngine),
+          takePictureCommand = DefaultTakePictureCommand(cameraEngine),
+          cameraState = state,
+          cameraInfo = info,
+        )
 
-      setCaptureDevice(
-        device = iosCameraController.getCaptureDevice(state.camSelector),
-      )
-      info.rebind(state.captureMode.output)
-      isInitialized = true
+        setCaptureDevice(
+          device = iosCameraController.getCaptureDevice(state.camSelector),
+        )
+        info.rebind(state.captureMode.output)
+        isInitialized = true
+      }
+    }.onFailure { error ->
+      isInitialized = false
+      hasInitializationError = true
+      Logger.error("Failed to initialize camera session", error)
     }
+
+  public actual fun retryInitialization(): Boolean {
+    if (!hasInitializationError) {
+      Logger.debug("Retry skipped: no initialization error present")
+      return isInitialized
+    }
+
+    Logger.debug("Retrying camera initialization")
+    hasInitializationError = false
+    isInitialized = false
+
+    setupCamera()
+    return isInitialized
+  }
 
   internal actual fun onSessionStarted() {
     if (controller.isRunning.value) return
@@ -100,6 +123,7 @@ public actual class CameraSession internal constructor(
   }
 
   internal fun dispose() {
+    state.dispose()
     iosCameraController.release()
   }
 }

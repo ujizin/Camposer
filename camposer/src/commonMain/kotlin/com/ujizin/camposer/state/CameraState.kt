@@ -19,8 +19,11 @@ import com.ujizin.camposer.state.properties.format.CamFormat
 import com.ujizin.camposer.state.properties.format.Default
 import com.ujizin.camposer.state.properties.selector.CamSelector
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.sync.Mutex
 
 /**
@@ -37,8 +40,10 @@ public class CameraState internal constructor(
   private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
   private val cameraMutex = Mutex()
+  private val stateScope = CoroutineScope(dispatcher + SupervisorJob())
 
   public var captureMode: CaptureMode by asyncDistinctConfig(
+    scope = stateScope,
     mutex = cameraMutex,
     dispatcher = dispatcher,
     value = CaptureMode.Image,
@@ -48,6 +53,7 @@ public class CameraState internal constructor(
     internal set
 
   public var camSelector: CamSelector by asyncDistinctConfig(
+    scope = stateScope,
     mutex = cameraMutex,
     dispatcher = dispatcher,
     value = CamSelector.Back,
@@ -175,6 +181,15 @@ public class CameraState internal constructor(
 
   private fun FlashMode.isFlashAvailable() =
     this == FlashMode.Off || (cameraInfo.isFlashSupported && cameraInfo.isFlashAvailable)
+
+  /**
+   * Disposes this camera state and cancels all pending operations.
+   * This should be called when the camera session is no longer needed.
+   */
+  internal fun dispose() {
+    stateScope.cancel()
+    imageAnalyzer?.let { cameraDelegate.disposeImageAnalyzer(it) }
+  }
 }
 
 internal expect fun CameraSession.isToResetConfig(

@@ -20,6 +20,7 @@ import com.ujizin.camposer.internal.core.CameraEngine
 import com.ujizin.camposer.internal.core.CameraEngineImpl
 import com.ujizin.camposer.internal.core.camerax.CameraXController
 import com.ujizin.camposer.internal.core.camerax.CameraXControllerWrapper
+import com.ujizin.camposer.internal.utils.Logger
 import com.ujizin.camposer.state.CameraState
 
 /**
@@ -56,6 +57,9 @@ public actual class CameraSession internal constructor(
    * Check if camera state is initialized or not.
    * */
   public actual var isInitialized: Boolean by mutableStateOf(false)
+    internal set
+
+  public actual var hasInitializationError: Boolean by mutableStateOf(false)
     internal set
 
   public constructor(
@@ -97,19 +101,43 @@ public actual class CameraSession internal constructor(
   )
 
   init {
-    controller.initialize(
-      recordController = DefaultRecordController(cameraEngine = cameraEngine),
-      takePictureCommand = DefaultTakePictureCommand(cameraEngine = cameraEngine),
-      cameraState = state,
-      cameraInfo = info,
-    )
+    initialize()
+  }
 
-    cameraXControllerWrapper.onInitialize {
-      info.rebind()
-      cameraXControllerWrapper.isPinchToZoomEnabled = false
-      androidCameraEngine.onCameraInitialized()
-      isInitialized = true
+  private fun initialize() {
+    runCatching {
+      controller.initialize(
+        recordController = DefaultRecordController(cameraEngine = cameraEngine),
+        takePictureCommand = DefaultTakePictureCommand(cameraEngine = cameraEngine),
+        cameraState = state,
+        cameraInfo = info,
+      )
+
+      cameraXControllerWrapper.onInitialize {
+        info.rebind()
+        cameraXControllerWrapper.isPinchToZoomEnabled = false
+        androidCameraEngine.onCameraInitialized()
+        isInitialized = true
+      }
+    }.onFailure { error ->
+      isInitialized = false
+      hasInitializationError = true
+      Logger.error("Failed to initialize camera session", error)
     }
+  }
+
+  public actual fun retryInitialization(): Boolean {
+    if (!hasInitializationError) {
+      Logger.debug("Retry skipped: no initialization error present")
+      return isInitialized
+    }
+
+    Logger.debug("Retrying camera initialization")
+    hasInitializationError = false
+    isInitialized = false
+
+    initialize()
+    return isInitialized
   }
 
   internal actual fun onSessionStarted() {
@@ -125,6 +153,7 @@ public actual class CameraSession internal constructor(
   }
 
   internal fun dispose() {
+    state.dispose()
     cameraXControllerWrapper.unbind()
   }
 }

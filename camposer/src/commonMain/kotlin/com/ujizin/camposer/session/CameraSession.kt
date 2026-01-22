@@ -41,6 +41,21 @@ public expect class CameraSession {
   public var isInitialized: Boolean
     private set
 
+  /**
+   * Check if camera initialization failed.
+   * This can be used to show error UI or retry initialization.
+   * */
+  public var hasInitializationError: Boolean
+    internal set
+
+  /**
+   * Retry camera initialization after a failure.
+   * This method resets the error state and attempts to initialize the camera again.
+   * 
+   * @return true if retry was successful, false otherwise
+   */
+  public fun retryInitialization(): Boolean
+
   internal val cameraEngine: CameraEngine
 
   internal fun onSessionStarted()
