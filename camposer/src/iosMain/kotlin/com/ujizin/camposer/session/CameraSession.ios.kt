@@ -62,7 +62,8 @@ public actual class CameraSession internal constructor(
     setupCamera()
   }
 
-  private fun setupCamera() = runCatching {
+  private fun setupCamera() =
+    runCatching {
       with(iosCameraController) {
         controller.initialize(
           recordController = DefaultRecordController(cameraEngine),

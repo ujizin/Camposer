@@ -51,7 +51,7 @@ public expect class CameraSession {
   /**
    * Retry camera initialization after a failure.
    * This method resets the error state and attempts to initialize the camera again.
-   * 
+   *
    * @return true if retry was successful, false otherwise
    */
   public fun retryInitialization(): Boolean

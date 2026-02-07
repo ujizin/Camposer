@@ -10,8 +10,8 @@ internal actual class FakeCameraEngine actual constructor(
   cameraTest: FakeCameraTest,
   testDispatcher: CoroutineDispatcher,
 ) : IOSCameraEngine by CameraEngineImpl(
-  iOSCameraController = cameraTest.fakeIosCameraController,
-  cameraInfo = cameraTest.cameraInfo,
-  cameraController = cameraTest.cameraController,
-  dispatcher = testDispatcher,
-)
+    iOSCameraController = cameraTest.fakeIosCameraController,
+    cameraInfo = cameraTest.cameraInfo,
+    cameraController = cameraTest.cameraController,
+    dispatcher = testDispatcher,
+  )

@@ -36,7 +36,7 @@ class FakeIosCameraController : IOSCameraController {
     private set
   var fakePreviewView: UIView? = null
     private set
-  var fakeGravity: AVLayerVideoGravity? = null
+  var fakeGravity: AVLayerVideoGravity = null
     private set
   var fakeCaptureDevice: AVCaptureDevice? = null
     private set
