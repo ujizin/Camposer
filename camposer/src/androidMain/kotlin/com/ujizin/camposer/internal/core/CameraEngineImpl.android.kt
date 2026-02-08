@@ -73,8 +73,11 @@ internal actual class CameraEngineImpl(
   }
 
   actual override fun setCamSelector(camSelector: CamSelector) {
-    cameraXController.cameraSelector = camSelector.selector
-    cameraInfo.rebind()
+    mainExecutor.execute {
+      cameraXController.cameraSelector = camSelector.selector
+      cameraInfo.rebind()
+      resetConfig()
+    }
   }
 
   actual override fun setCamFormat(camFormat: CamFormat) {

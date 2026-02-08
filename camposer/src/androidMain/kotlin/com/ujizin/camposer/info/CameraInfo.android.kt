@@ -55,20 +55,18 @@ public actual class CameraInfo internal constructor(
     private set
 
   internal fun rebind() {
-    mainExecutor.execute {
-      minZoom = cameraInfo.minZoom
-      maxZoom = cameraInfo.maxZoom
-      minExposure = cameraInfo.minExposure
-      maxExposure = cameraInfo.maxExposure
-      isExposureSupported = cameraInfo.isExposureSupported
-      isFlashSupported = cameraInfo.isFlashSupported
-      isFlashAvailable = cameraInfo.isFlashSupported
-      isTorchSupported = cameraInfo.isFlashSupported
-      isTorchAvailable = cameraInfo.isFlashSupported
-      isFocusSupported = cameraInfo.isFocusSupported
-      isZeroShutterLagSupported = cameraInfo.isZeroShutterLagSupported
-      minFPS = cameraInfo.minFPS
-      maxFPS = cameraInfo.maxFPS
-    }
+    minZoom = cameraInfo.minZoom
+    maxZoom = cameraInfo.maxZoom
+    minExposure = cameraInfo.minExposure
+    maxExposure = cameraInfo.maxExposure
+    isExposureSupported = cameraInfo.isExposureSupported
+    isFlashSupported = cameraInfo.isFlashSupported
+    isFlashAvailable = cameraInfo.isFlashSupported
+    isTorchSupported = cameraInfo.isFlashSupported
+    isTorchAvailable = cameraInfo.isFlashSupported
+    isFocusSupported = cameraInfo.isFocusSupported
+    isZeroShutterLagSupported = cameraInfo.isZeroShutterLagSupported
+    minFPS = cameraInfo.minFPS
+    maxFPS = cameraInfo.maxFPS
   }
 }

@@ -87,9 +87,7 @@ internal class CameraXControllerWrapper(
   override var cameraSelector: CameraSelector
     get() = cameraXController.cameraSelector
     set(value) {
-      mainExecutor.execute {
-        cameraXController.cameraSelector = value
-      }
+      cameraXController.cameraSelector = value
     }
 
   override var videoCaptureTargetFrameRate: Range<Int>
