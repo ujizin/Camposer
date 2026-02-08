@@ -30,7 +30,7 @@ import com.ujizin.camposer.state.CameraState
  * */
 @Stable
 public actual class CameraSession internal constructor(
-  internal actual val cameraEngine: CameraEngine,
+  internal val cameraEngine: CameraEngine,
   public actual val controller: CameraController = cameraEngine.cameraController,
   public actual val info: CameraInfo = cameraEngine.cameraInfo,
   public actual val state: CameraState = cameraEngine.cameraState,

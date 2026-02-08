@@ -24,7 +24,7 @@ import platform.UIKit.UIView
 
 @OptIn(ExperimentalForeignApi::class)
 public actual class CameraSession internal constructor(
-  internal actual val cameraEngine: CameraEngine,
+  internal val cameraEngine: CameraEngine,
   internal val iosCameraController: IOSCameraController = (cameraEngine as IOSCameraEngine)
     .iOSCameraController,
   public actual val controller: CameraController = cameraEngine.cameraController,

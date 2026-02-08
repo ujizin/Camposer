@@ -192,11 +192,6 @@ public class CameraState internal constructor(
   }
 }
 
-internal expect fun CameraSession.isToResetConfig(
-  isCamSelectorChanged: Boolean,
-  isCaptureModeChanged: Boolean,
-): Boolean
-
 internal fun CameraSession.update(
   camSelector: CamSelector,
   captureMode: CaptureMode,
@@ -209,16 +204,7 @@ internal fun CameraSession.update(
   camFormat: CamFormat,
   isPinchToZoomEnabled: Boolean,
 ) {
-  val isCamSelectorChanged = state.camSelector != camSelector
-  val isCaptureModeChanged = state.captureMode != captureMode
-
-  val isToUpdateCamera = isToResetConfig(isCamSelectorChanged, isCaptureModeChanged)
-
   with(state) {
-    if (isToUpdateCamera) {
-      cameraEngine.resetConfig()
-    }
-
     this.camSelector = camSelector
     this.camFormat = camFormat
     this.captureMode = captureMode

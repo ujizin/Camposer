@@ -44,6 +44,7 @@ internal actual class CameraEngineImpl(
     cameraState.mirrorMode.isMirrorEnabled(iOSCameraController.getCurrentPosition())
 
   actual override fun setCaptureMode(captureMode: CaptureMode) {
+    resetConfig()
     iOSCameraController.addOutput(captureMode.output)
     updateConfig(captureModeChanged = true)
   }
@@ -53,6 +54,7 @@ internal actual class CameraEngineImpl(
   }
 
   actual override fun setCamSelector(camSelector: CamSelector) {
+    resetConfig()
     iOSCameraController.setCaptureDevice(iOSCameraController.getCaptureDevice(camSelector))
     updateConfig(camSelectorChanged = true)
   }
