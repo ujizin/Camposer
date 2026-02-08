@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlin.math.abs
@@ -193,4 +194,34 @@ private fun ZoomChip(
       fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
     )
   }
+}
+
+@Preview
+@Composable
+private fun ZoomSelectorDefaultPreview() {
+  ZoomSelector(
+    currentZoom = 1.0f,
+    minZoom = 1.0f,
+    maxZoom = 5.0f,
+  )
+}
+
+@Preview
+@Composable
+private fun ZoomSelectorCustomZoomPreview() {
+  ZoomSelector(
+    currentZoom = 2.5f,
+    minZoom = 1.0f,
+    maxZoom = 5.0f,
+  )
+}
+
+@Preview
+@Composable
+private fun ZoomSelectorMaxZoomPreview() {
+  ZoomSelector(
+    currentZoom = 5.0f,
+    minZoom = 1.0f,
+    maxZoom = 5.0f,
+  )
 }

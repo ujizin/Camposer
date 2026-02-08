@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.ujizin.camposer.state.properties.CaptureMode
@@ -42,7 +43,7 @@ fun BottomActionBar(
   onCaptureModeSelected: (CaptureMode) -> Unit = {},
 ) {
   Column(
-    modifier = modifier.fillMaxWidth(),
+    modifier = modifier,
     horizontalAlignment = Alignment.CenterHorizontally,
   ) {
     CaptureModeSelector(
@@ -55,7 +56,7 @@ fun BottomActionBar(
       modifier = Modifier
         .fillMaxWidth()
         .padding(horizontal = 32.dp)
-        .padding(bottom = 24.dp),
+        .padding(bottom = 48.dp),
       horizontalArrangement = Arrangement.SpaceBetween,
       verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -128,4 +129,24 @@ private fun CameraSwitchButton(
       modifier = Modifier.size(28.dp),
     )
   }
+}
+
+@Preview
+@Composable
+private fun BottomActionBarPhotoModePreview() {
+  BottomActionBar(
+    modifier = Modifier.background(Color.Black),
+    isRecording = false,
+    captureMode = CaptureMode.Image,
+  )
+}
+
+@Preview
+@Composable
+private fun BottomActionBarVideoRecordingPreview() {
+  BottomActionBar(
+    modifier = Modifier.background(Color.Black),
+    isRecording = true,
+    captureMode = CaptureMode.Video,
+  )
 }

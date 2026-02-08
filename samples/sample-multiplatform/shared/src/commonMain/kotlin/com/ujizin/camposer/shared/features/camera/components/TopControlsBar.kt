@@ -1,5 +1,6 @@
 package com.ujizin.camposer.shared.features.camera.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ujizin.camposer.state.properties.FlashMode
@@ -140,4 +142,60 @@ fun ResolutionIndicator(
       fontSize = 12.sp,
     )
   }
+}
+
+@Preview
+@Composable
+private fun TopControlsBarPreview() {
+  TopControlsBar(
+    modifier = Modifier.background(Color.Black),
+    flashMode = FlashMode.Auto,
+    isFlashSupported = true,
+  )
+}
+
+@Preview
+@Composable
+private fun TopControlsBarFlashOffPreview() {
+  TopControlsBar(
+    modifier = Modifier.background(Color.Black),
+    flashMode = FlashMode.Off,
+    isFlashSupported = true,
+  )
+}
+
+@Preview
+@Composable
+private fun TopControlsBarFlashOnPreview() {
+  TopControlsBar(
+    modifier = Modifier.background(Color.Black),
+    flashMode = FlashMode.On,
+    isFlashSupported = true,
+  )
+}
+
+@Preview
+@Composable
+private fun ControlButtonPreview() {
+  ControlButton(
+    icon = TablerIcons.Settings,
+    contentDescription = "Settings",
+  )
+}
+
+@Preview
+@Composable
+private fun FlashButtonAutoPreview() {
+  FlashButton(
+    flashMode = FlashMode.Auto,
+  )
+}
+
+@Preview
+@Composable
+private fun ResolutionIndicatorPreview() {
+  ResolutionIndicator(
+    modifier = Modifier.background(Color.Black),
+    aspectRatio = "4:3",
+  )
 }

@@ -70,13 +70,10 @@ kotlin {
     }
 
     androidMain.dependencies {
+      implementation(libs.compose.ui.tooling)
     }
 
     iosMain.dependencies {
     }
   }
-}
-
-dependencies {
-  "androidRuntimeClasspath"(libs.compose.ui.tooling)
 }
