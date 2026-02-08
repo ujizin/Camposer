@@ -8,27 +8,30 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.ujizin.camposer.shared.features.camera.CameraScreen
 import com.ujizin.camposer.shared.features.permission.PermissionsScreen
+import com.ujizin.camposer.shared.theme.CamposerTheme
 
 @Composable
 fun SampleNavigation() {
-  val backStack = rememberNavBackStack(Routes.config, Routes.PermissionRoute)
+  CamposerTheme {
+    val backStack = rememberNavBackStack(Routes.config, Routes.PermissionRoute)
 
-  NavDisplay(
-    modifier = Modifier.safeDrawingPadding(),
-    backStack = backStack,
-    onBack = { backStack.removeLastOrNull() },
-    entryProvider = entryProvider {
-      entry<Routes.PermissionRoute> {
-        PermissionsScreen(
-          onAllPermissionGranted = {
-            backStack.removeLastOrNull()
-            backStack.add(Routes.CameraRoute)
-          }
-        )
+    NavDisplay(
+      modifier = Modifier.safeDrawingPadding(),
+      backStack = backStack,
+      onBack = { backStack.removeLastOrNull() },
+      entryProvider = entryProvider {
+        entry<Routes.PermissionRoute> {
+          PermissionsScreen(
+            onAllPermissionGranted = {
+              backStack.removeLastOrNull()
+              backStack.add(Routes.CameraRoute)
+            }
+          )
+        }
+        entry<Routes.CameraRoute> {
+          CameraScreen()
+        }
       }
-      entry<Routes.CameraRoute> {
-        CameraScreen()
-      }
-    }
-  )
+    )
+  }
 }

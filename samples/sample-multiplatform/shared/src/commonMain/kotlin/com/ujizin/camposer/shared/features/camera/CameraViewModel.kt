@@ -1,6 +1,5 @@
 package com.ujizin.camposer.shared.features.camera
 
-import androidx.compose.ui.graphics.decodeToImageBitmap
 import androidx.lifecycle.ViewModel
 import com.ujizin.camposer.CaptureResult
 import com.ujizin.camposer.codescanner.CodeResult
@@ -25,38 +24,36 @@ class CameraViewModel : ViewModel() {
   private val _uiState = MutableStateFlow(CameraUiState())
   val uiState: StateFlow<CameraUiState> = _uiState.asStateFlow()
 
-  /**
-   * Initialize orientation strategy for the camera.
-   */
   fun initializeOrientationStrategy() {
     cameraController.setOrientationStrategy(OrientationStrategy.Preview)
   }
 
-  /**
-   * Take a picture and update the UI state with the captured bitmap.
-   */
   fun takePicture() {
     cameraController.takePicture { result ->
       if (result is CaptureResult.Success) {
+        val bitmap = result.data
         _uiState.update { state ->
-          state.copy(capturedBitmap = result.data.decodeToImageBitmap())
+          state.copy(
+            capturedBitmap = bitmap,
+            lastThumbnail = bitmap
+          )
         }
       }
     }
   }
 
-  /**
-   * Start or stop video recording based on current state.
-   */
   @OptIn(ExperimentalUuidApi::class)
   fun toggleRecording() {
     if (cameraController.isRecording) {
       cameraController.stopRecording()
+      _uiState.update { it.copy(isRecording = false) }
       return
     }
 
     val path = Path("$SystemTemporaryDirectory/video-${Uuid.random()}.mov")
+    _uiState.update { it.copy(isRecording = true) }
     cameraController.startRecording(path.toString()) { result ->
+      _uiState.update { it.copy(isRecording = false) }
       if (result is CaptureResult.Success) {
         _uiState.update { state ->
           state.copy(videoPath = result.data)
@@ -65,9 +62,6 @@ class CameraViewModel : ViewModel() {
     }
   }
 
-  /**
-   * Capture based on the current capture mode (Image or Video).
-   */
   fun capture() {
     when (_uiState.value.captureMode) {
       CaptureMode.Image -> takePicture()
@@ -75,82 +69,38 @@ class CameraViewModel : ViewModel() {
     }
   }
 
-  /**
-   * Toggle between front and back camera.
-   */
   fun toggleCamSelector() {
     _uiState.update { state ->
       state.copy(camSelector = state.camSelector.inverse)
     }
   }
 
-  /**
-   * Toggle between Image and Video capture modes.
-   */
-  fun toggleCaptureMode() {
+  fun setCaptureMode(mode: CaptureMode) {
     _uiState.update { state ->
-      state.copy(
-        captureMode = if (state.captureMode == CaptureMode.Image) {
-          CaptureMode.Video
-        } else {
-          CaptureMode.Image
-        }
-      )
+      state.copy(captureMode = mode)
     }
   }
 
   /**
-   * Increase zoom ratio by 1.
+   * Set zoom to a specific ratio.
    */
-  fun increaseZoom() {
-    val currentZoom = cameraController.state?.zoomRatio ?: 1f
-    cameraController.setZoomRatio(currentZoom + 1)
+  fun setZoom(zoom: Float) {
+    cameraController.setZoomRatio(zoom)
   }
 
   /**
-   * Increase exposure compensation by 1.
+   * Cycle flash mode: Off -> Auto -> On -> Off
    */
-  fun increaseExposure() {
-    val currentExposure = cameraController.state?.exposureCompensation ?: 0f
-    cameraController.setExposureCompensation(currentExposure + 1f)
-  }
-
-  /**
-   * Toggle flash mode between On and Off.
-   */
-  fun toggleFlashMode() {
-    val currentFlash = cameraController.state?.flashMode ?: FlashMode.Off
-    cameraController.setFlashMode(
-      if (currentFlash == FlashMode.Off) FlashMode.On else FlashMode.Off
-    )
-  }
-
-  /**
-   * Toggle torch on/off.
-   */
-  fun toggleTorch() {
-    val isTorchEnabled = cameraController.state?.isTorchEnabled ?: false
-    cameraController.setTorchEnabled(!isTorchEnabled)
-  }
-
-  /**
-   * Toggle video stabilization mode.
-   */
-  fun toggleVideoStabilization() {
-    val currentMode = cameraController.state?.videoStabilizationMode
-    val newMode = when (currentMode) {
-      com.ujizin.camposer.state.properties.VideoStabilizationMode.Off ->
-        com.ujizin.camposer.state.properties.VideoStabilizationMode.Standard
-      else -> com.ujizin.camposer.state.properties.VideoStabilizationMode.Off
+  fun cycleFlashMode() {
+    val flashMode = cameraController.state?.flashMode ?: return
+    val nextMode = when (flashMode) {
+      FlashMode.Off -> FlashMode.Auto
+      FlashMode.Auto -> FlashMode.On
+      FlashMode.On -> FlashMode.Off
     }
-    val result = cameraController.setVideoStabilizationEnabled(newMode)
-    println("Mode to be set: $newMode, result: ${result.isSuccess}, ${result.exceptionOrNull()}")
+    cameraController.setFlashMode(nextMode)
   }
 
-  /**
-   * Handle code scan result from the image analyzer.
-   * Can be used as method reference: viewModel::onCodeAnalyzed
-   */
   fun onCodeAnalyzed(code: CodeResult) {
     _uiState.update { state ->
       state.copy(
@@ -161,21 +111,4 @@ class CameraViewModel : ViewModel() {
     }
   }
 
-  /**
-   * Clear the captured bitmap.
-   */
-  fun clearCapturedBitmap() {
-    _uiState.update { state ->
-      state.copy(capturedBitmap = null)
-    }
-  }
-
-  /**
-   * Clear the video path.
-   */
-  fun clearVideoPath() {
-    _uiState.update { state ->
-      state.copy(videoPath = "")
-    }
-  }
 }

@@ -1,6 +1,5 @@
 package com.ujizin.camposer.shared.features.camera
 
-import androidx.compose.ui.graphics.ImageBitmap
 import com.ujizin.camposer.codescanner.CornerPointer
 import com.ujizin.camposer.codescanner.FrameRect
 import com.ujizin.camposer.state.properties.CaptureMode
@@ -18,7 +17,8 @@ data class CameraUiState(
   ),
   val captureMode: CaptureMode = CaptureMode.Image,
   val isRecording: Boolean = false,
-  val capturedBitmap: ImageBitmap? = null,
+  val capturedBitmap: ByteArray? = null,
+  val lastThumbnail: ByteArray? = null,
   val videoPath: String = "",
   val codeScanText: String = "",
   val frameRect: FrameRect? = null,
