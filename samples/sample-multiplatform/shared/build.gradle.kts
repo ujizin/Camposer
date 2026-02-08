@@ -48,6 +48,8 @@ kotlin {
       implementation(libs.compose.material3)
       implementation(libs.jetbrains.lifecycle.viewmodel)
       implementation(libs.jetbrains.navigation3.ui)
+      implementation(libs.compose.icons.tabler)
+      implementation(libs.compose.coil3)
 
       // Camposer
       implementation(libs.camposer)

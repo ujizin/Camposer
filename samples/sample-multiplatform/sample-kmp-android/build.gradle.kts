@@ -42,12 +42,10 @@ android {
 }
 
 dependencies {
-  implementation(libs.core.ktx)
   implementation(libs.lifecycle)
   implementation(libs.compose.activity)
   implementation(platform(libs.compose.bom))
   implementation(libs.compose.ui.android)
-  implementation(libs.ui.graphics)
   implementation(libs.compose.ui.preview.android)
   implementation(libs.compose.material3)
   implementation(project(":sample-multiplatform:shared"))
