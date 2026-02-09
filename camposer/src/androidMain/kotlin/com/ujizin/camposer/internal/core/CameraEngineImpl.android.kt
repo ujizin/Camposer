@@ -2,7 +2,6 @@ package com.ujizin.camposer.internal.core
 
 import android.content.ContentResolver
 import android.util.Range
-import androidx.annotation.OptIn
 import androidx.camera.core.ExperimentalZeroShutterLag
 import androidx.camera.core.MirrorMode.MIRROR_MODE_OFF
 import androidx.camera.core.MirrorMode.MIRROR_MODE_ON
@@ -70,6 +69,10 @@ internal actual class CameraEngineImpl(
 
   actual override fun setCaptureMode(captureMode: CaptureMode) {
     cameraXController.setEnabledUseCases(getUseCases(captureMode))
+    with(cameraState) {
+      zoomRatio = cameraInfo.minZoom
+      exposureCompensation = cameraInfo.minExposure
+    }
   }
 
   actual override fun setCamSelector(camSelector: CamSelector) {
