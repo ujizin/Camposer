@@ -1,17 +1,25 @@
 package com.ujizin.camposer.shared.features.camera
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.ujizin.camposer.CaptureResult
 import com.ujizin.camposer.codescanner.CodeResult
 import com.ujizin.camposer.controller.camera.CameraController
+import com.ujizin.camposer.shared.utils.saveVideoToGallery
 import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.FlashMode
 import com.ujizin.camposer.state.properties.OrientationStrategy
 import com.ujizin.camposer.state.properties.selector.inverse
+import io.github.vinceglb.filekit.FileKit
+import io.github.vinceglb.filekit.PlatformFile
+import io.github.vinceglb.filekit.dialogs.FileKitType
+import io.github.vinceglb.filekit.dialogs.openFilePicker
+import io.github.vinceglb.filekit.saveImageToGallery
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemTemporaryDirectory
 import kotlin.uuid.ExperimentalUuidApi
@@ -32,11 +40,9 @@ class CameraViewModel : ViewModel() {
     cameraController.takePicture { result ->
       if (result is CaptureResult.Success) {
         val bitmap = result.data
+        savePictureToGallery(bitmap)
         _uiState.update { state ->
-          state.copy(
-            capturedBitmap = bitmap,
-            lastThumbnail = bitmap
-          )
+          state.copy(capturedBitmap = bitmap, lastThumbnail = bitmap)
         }
       }
     }
@@ -55,10 +61,18 @@ class CameraViewModel : ViewModel() {
     cameraController.startRecording(path.toString()) { result ->
       _uiState.update { it.copy(isRecording = false) }
       if (result is CaptureResult.Success) {
+        val videoPath = result.data
         _uiState.update { state ->
-          state.copy(videoPath = result.data)
+          state.copy(videoPath = videoPath)
         }
+        saveVideoToGallery(videoPath)
       }
+    }
+  }
+
+  fun openGallery() {
+    viewModelScope.launch {
+      FileKit.openFilePicker(type = FileKitType.ImageAndVideo)
     }
   }
 
@@ -111,4 +125,22 @@ class CameraViewModel : ViewModel() {
     }
   }
 
+  @OptIn(ExperimentalUuidApi::class)
+  private fun savePictureToGallery(
+    pictureBytes: ByteArray,
+  ) {
+    viewModelScope.launch {
+      FileKit.saveImageToGallery(
+        filename = "camposer-${Uuid.random()}.jpeg",
+        bytes = pictureBytes,
+      )
+    }
+  }
+
+  private fun saveVideoToGallery(videoPath: String) {
+    viewModelScope.launch {
+      FileKit.saveVideoToGallery(file = PlatformFile(videoPath))
+    }
+  }
 }
+

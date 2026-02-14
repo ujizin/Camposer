@@ -106,7 +106,7 @@ fun CameraScreen(
         isRecording = uiState.isRecording,
         captureMode = uiState.captureMode,
         thumbnail = uiState.lastThumbnail,
-        onGalleryClick = { /* TODO: Open gallery */ },
+        onGalleryClick = cameraViewModel::openGallery,
         onShutterClick = cameraViewModel::capture,
         onCameraSwitchClick = cameraViewModel::toggleCamSelector,
         onCaptureModeSelected = cameraViewModel::setCaptureMode,

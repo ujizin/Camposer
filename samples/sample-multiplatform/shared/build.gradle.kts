@@ -64,6 +64,9 @@ kotlin {
 
       implementation(libs.media.kmp)
       implementation(libs.kotlinx.io)
+
+      api(libs.filekit.core)
+      api(libs.filekit.dialogs)
     }
 
     commonTest.dependencies {

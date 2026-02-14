@@ -4,6 +4,10 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>$(PRODUCT_NAME) access to photos and videos</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>$(PRODUCT_NAME) saves captured media to your photo library</string>
 	<key>NSMicrophoneInjectionUsageDescription</key>
 	<string>$(PRODUCT_NAME) access to mic</string>
 </dict>
