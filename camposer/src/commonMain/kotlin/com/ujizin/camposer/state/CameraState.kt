@@ -205,9 +205,9 @@ internal fun CameraSession.update(
   isPinchToZoomEnabled: Boolean,
 ) {
   with(state) {
+    this.captureMode = captureMode
     this.camSelector = camSelector
     this.camFormat = camFormat
-    this.captureMode = captureMode
     this.scaleType = scaleType
     this.imageAnalyzer = imageAnalyzer
     this.isImageAnalyzerEnabled = isImageAnalysisEnabled

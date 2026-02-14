@@ -161,9 +161,7 @@ internal class CameraXControllerWrapper(
   }
 
   override fun setEnabledUseCases(useCases: Int) {
-    mainExecutor.execute {
-      cameraXController.setEnabledUseCases(useCases)
-    }
+    cameraXController.setEnabledUseCases(useCases)
   }
 
   override fun enableTorch(isTorchEnabled: Boolean) {

@@ -68,10 +68,10 @@ internal actual class CameraEngineImpl(
   }
 
   actual override fun setCaptureMode(captureMode: CaptureMode) {
-    cameraXController.setEnabledUseCases(getUseCases(captureMode))
-    with(cameraState) {
-      zoomRatio = cameraInfo.minZoom
-      exposureCompensation = cameraInfo.minExposure
+    mainExecutor.execute {
+      cameraXController.setEnabledUseCases(getUseCases(captureMode))
+      setZoomRatio(cameraInfo.minZoom)
+      setExposureCompensation(0F)
     }
   }
 
@@ -120,14 +120,28 @@ internal actual class CameraEngineImpl(
   }
 
   actual override fun setFlashMode(flashMode: FlashMode) {
+    if (cameraState.flashMode != flashMode) {
+      cameraState.flashMode = flashMode
+      return
+    }
     cameraXController.imageCaptureFlashMode = flashMode.mode
   }
 
   actual override fun setTorchEnabled(isTorchEnabled: Boolean) {
+    if (cameraState.isTorchEnabled != isTorchEnabled) {
+      cameraState.isTorchEnabled = isTorchEnabled
+      return
+    }
+
     cameraXController.enableTorch(isTorchEnabled)
   }
 
   actual override fun setExposureCompensation(exposureCompensation: Float) {
+    if (cameraState.exposureCompensation != exposureCompensation) {
+      cameraState.exposureCompensation = exposureCompensation
+      return
+    }
+
     cameraXController.setExposureCompensationIndex(
       exposureCompensation.roundToInt(),
     )
@@ -161,16 +175,20 @@ internal actual class CameraEngineImpl(
   }
 
   actual override fun setZoomRatio(zoomRatio: Float) {
+    if (cameraState.zoomRatio != zoomRatio) {
+      cameraState.zoomRatio = zoomRatio
+      return
+    }
+
     cameraXController.setZoomRatio(zoomRatio)
   }
 
-  actual override fun resetConfig() =
-    with(cameraState) {
-      zoomRatio = cameraInfo.minZoom
-      exposureCompensation = 0F
-      flashMode = FlashMode.Off
-      isTorchEnabled = false
-    }
+  actual override fun resetConfig() {
+    setZoomRatio(cameraInfo.minZoom)
+    setExposureCompensation(0F)
+    setFlashMode(FlashMode.Off)
+    setTorchEnabled(false)
+  }
 
   actual override fun setPinchToZoomEnabled(isPinchToZoomEnabled: Boolean) {
     // no-op
