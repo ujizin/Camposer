@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.ujizin.camposer.CaptureResult
 import com.ujizin.camposer.codescanner.CodeResult
 import com.ujizin.camposer.controller.camera.CameraController
+import com.ujizin.camposer.shared.utils.getFirstFrameVideo
 import com.ujizin.camposer.shared.utils.saveVideoToGallery
 import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.FlashMode
@@ -39,11 +40,8 @@ class CameraViewModel : ViewModel() {
   fun takePicture() {
     cameraController.takePicture { result ->
       if (result is CaptureResult.Success) {
-        val bitmap = result.data
-        savePictureToGallery(bitmap)
-        _uiState.update { state ->
-          state.copy(capturedBitmap = bitmap, lastThumbnail = bitmap)
-        }
+        savePictureToGallery(result.data)
+        updateLastBitmapCaptured(result.data)
       }
     }
   }
@@ -62,10 +60,10 @@ class CameraViewModel : ViewModel() {
       _uiState.update { it.copy(isRecording = false) }
       if (result is CaptureResult.Success) {
         val videoPath = result.data
-        _uiState.update { state ->
-          state.copy(videoPath = videoPath)
+        viewModelScope.launch {
+          updateLastBitmapCaptured(getFirstFrameVideo(videoPath))
+          FileKit.saveVideoToGallery(file = PlatformFile(videoPath))
         }
-        saveVideoToGallery(videoPath)
       }
     }
   }
@@ -80,6 +78,7 @@ class CameraViewModel : ViewModel() {
     when (_uiState.value.captureMode) {
       CaptureMode.Image -> takePicture()
       CaptureMode.Video -> toggleRecording()
+      else -> Unit
     }
   }
 
@@ -111,6 +110,7 @@ class CameraViewModel : ViewModel() {
       FlashMode.Off -> FlashMode.Auto
       FlashMode.Auto -> FlashMode.On
       FlashMode.On -> FlashMode.Off
+      else -> FlashMode.Off
     }
     cameraController.setFlashMode(nextMode)
   }
@@ -137,10 +137,9 @@ class CameraViewModel : ViewModel() {
     }
   }
 
-  private fun saveVideoToGallery(videoPath: String) {
-    viewModelScope.launch {
-      FileKit.saveVideoToGallery(file = PlatformFile(videoPath))
+  private fun updateLastBitmapCaptured(byteArray: ByteArray) {
+    _uiState.update { state ->
+      state.copy(lastThumbnail = byteArray)
     }
   }
 }
-

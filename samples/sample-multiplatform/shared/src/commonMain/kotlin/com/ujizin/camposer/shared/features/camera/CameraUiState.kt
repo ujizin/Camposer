@@ -17,7 +17,6 @@ data class CameraUiState(
   ),
   val captureMode: CaptureMode = CaptureMode.Image,
   val isRecording: Boolean = false,
-  val capturedBitmap: ByteArray? = null,
   val lastThumbnail: ByteArray? = null,
   val videoPath: String = "",
   val codeScanText: String = "",
