@@ -2,6 +2,7 @@ package com.ujizin.camposer.internal.core
 
 import android.content.ContentResolver
 import android.util.Range
+import androidx.annotation.OptIn
 import androidx.camera.core.ExperimentalZeroShutterLag
 import androidx.camera.core.MirrorMode.MIRROR_MODE_OFF
 import androidx.camera.core.MirrorMode.MIRROR_MODE_ON
@@ -70,8 +71,7 @@ internal actual class CameraEngineImpl(
   actual override fun setCaptureMode(captureMode: CaptureMode) {
     mainExecutor.execute {
       cameraXController.setEnabledUseCases(getUseCases(captureMode))
-      setZoomRatio(cameraInfo.minZoom)
-      setExposureCompensation(0F)
+      resetPartialConfig()
     }
   }
 
@@ -90,6 +90,8 @@ internal actual class CameraEngineImpl(
       onFrameRateChanged = ::setFrameRate,
       onStabilizationModeChanged = ::setVideoStabilizationMode,
     )
+
+    resetPartialConfig()
   }
 
   actual override fun setMirrorMode(mirrorMode: MirrorMode) {
@@ -183,13 +185,6 @@ internal actual class CameraEngineImpl(
     cameraXController.setZoomRatio(zoomRatio)
   }
 
-  actual override fun resetConfig() {
-    setZoomRatio(cameraInfo.minZoom)
-    setExposureCompensation(0F)
-    setFlashMode(FlashMode.Off)
-    setTorchEnabled(false)
-  }
-
   actual override fun setPinchToZoomEnabled(isPinchToZoomEnabled: Boolean) {
     // no-op
   }
@@ -212,6 +207,17 @@ internal actual class CameraEngineImpl(
 
   actual override fun setOrientationStrategy(orientationStrategy: OrientationStrategy) {
     // no-op
+  }
+
+  actual override fun resetConfig() {
+    resetPartialConfig()
+    setFlashMode(FlashMode.Off)
+  }
+
+  private fun resetPartialConfig() {
+    setZoomRatio(cameraInfo.minZoom)
+    setExposureCompensation(0F)
+    setTorchEnabled(false)
   }
 
   private fun getUseCases(

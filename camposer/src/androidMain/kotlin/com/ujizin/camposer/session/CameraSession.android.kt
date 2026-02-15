@@ -141,7 +141,9 @@ public actual class CameraSession internal constructor(
   }
 
   internal actual fun onSessionStarted() {
-    controller.onSessionStarted()
+    cameraXControllerWrapper.mainExecutor.execute {
+      controller.onSessionStarted()
+    }
   }
 
   /**

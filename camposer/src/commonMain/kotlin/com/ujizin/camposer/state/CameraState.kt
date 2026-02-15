@@ -24,7 +24,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 /**
  * A state holder for the Camera composition.
@@ -182,6 +184,12 @@ public class CameraState internal constructor(
   private fun FlashMode.isFlashAvailable() =
     this == FlashMode.Off || (cameraInfo.isFlashSupported && cameraInfo.isFlashAvailable)
 
+  internal fun invokeWhenCompleted(block: () -> Unit) {
+    stateScope.launch {
+      cameraMutex.withLock { block() }
+    }
+  }
+
   /**
    * Disposes this camera state and cancels all pending operations.
    * This should be called when the camera session is no longer needed.
@@ -215,7 +223,7 @@ internal fun CameraSession.update(
     this.isFocusOnTapEnabled = isFocusOnTapEnabled
     this.imageCaptureStrategy = imageCaptureStrategy
     this.isPinchToZoomEnabled = isPinchToZoomEnabled
-  }
 
-  onSessionStarted()
+    state.invokeWhenCompleted(::onSessionStarted)
+  }
 }
