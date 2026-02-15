@@ -3,6 +3,7 @@ package com.ujizin.camposer.shared.features.camera
 import com.ujizin.camposer.codescanner.CornerPointer
 import com.ujizin.camposer.codescanner.FrameRect
 import com.ujizin.camposer.state.properties.CaptureMode
+import com.ujizin.camposer.state.properties.MirrorMode
 import com.ujizin.camposer.state.properties.selector.CamLensType
 import com.ujizin.camposer.state.properties.selector.CamPosition
 import com.ujizin.camposer.state.properties.selector.CamSelector
@@ -17,6 +18,12 @@ data class CameraUiState(
   ),
   val captureMode: CaptureMode = CaptureMode.Image,
   val recordingDurationSeconds: Long = 0L,
+  val isSettingsVisible: Boolean = false,
+  val isVideoStabilizationEnabled: Boolean = false,
+  val is60FpsEnabled: Boolean = false,
+  val isTapToFocusEnabled: Boolean = true,
+  val aspectRatioOption: AspectRatioOption = AspectRatioOption.Ratio16x9,
+  val mirrorMode: MirrorMode = MirrorMode.OnlyInFront,
   val lastThumbnail: ByteArray? = null,
   val videoPath: String = "",
   val codeScanText: String = "",

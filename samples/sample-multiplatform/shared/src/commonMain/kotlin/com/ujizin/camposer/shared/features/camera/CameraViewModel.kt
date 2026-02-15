@@ -9,6 +9,7 @@ import com.ujizin.camposer.shared.utils.getFirstFrameVideo
 import com.ujizin.camposer.shared.utils.saveVideoToGallery
 import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.FlashMode
+import com.ujizin.camposer.state.properties.MirrorMode
 import com.ujizin.camposer.state.properties.OrientationStrategy
 import com.ujizin.camposer.state.properties.selector.inverse
 import io.github.vinceglb.filekit.FileKit
@@ -80,6 +81,49 @@ class CameraViewModel : ViewModel() {
     viewModelScope.launch {
       FileKit.openFilePicker(type = FileKitType.ImageAndVideo)
     }
+  }
+
+  fun openSettings() {
+    _uiState.update { state ->
+      state.copy(isSettingsVisible = true)
+    }
+  }
+
+  fun closeSettings() {
+    _uiState.update { state ->
+      state.copy(isSettingsVisible = false)
+    }
+  }
+
+  fun setVideoStabilizationEnabled(isEnabled: Boolean) {
+    _uiState.update { state ->
+      state.copy(isVideoStabilizationEnabled = isEnabled)
+    }
+  }
+
+  fun set60FpsEnabled(isEnabled: Boolean) {
+    _uiState.update { state ->
+      state.copy(is60FpsEnabled = isEnabled)
+    }
+  }
+
+  fun setTapToFocusEnabled(isEnabled: Boolean) {
+    _uiState.update { state ->
+      state.copy(isTapToFocusEnabled = isEnabled)
+    }
+  }
+
+  fun setAspectRatioOption(aspectRatioOption: AspectRatioOption) {
+    _uiState.update { state ->
+      state.copy(aspectRatioOption = aspectRatioOption)
+    }
+  }
+
+  fun setMirrorMode(mirrorMode: MirrorMode) {
+    _uiState.update { state ->
+      state.copy(mirrorMode = mirrorMode)
+    }
+    cameraController.setMirrorMode(mirrorMode)
   }
 
   fun capture() {
