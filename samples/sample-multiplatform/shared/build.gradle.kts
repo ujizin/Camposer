@@ -12,6 +12,8 @@ kotlin {
     compileSdk = 36
     minSdk = 23
 
+    androidResources { enable = true }
+
     withHostTestBuilder {
     }
 
@@ -48,7 +50,6 @@ kotlin {
       implementation(libs.compose.material3)
       implementation(libs.jetbrains.lifecycle.viewmodel)
       implementation(libs.jetbrains.navigation3.ui)
-      implementation(libs.compose.icons.tabler)
       implementation(libs.compose.coil3)
 
       // Camposer
@@ -67,6 +68,8 @@ kotlin {
 
       api(libs.filekit.core)
       api(libs.filekit.dialogs)
+
+      implementation(libs.compose.resources)
     }
 
     commonTest.dependencies {

@@ -3,7 +3,7 @@
 agp = "9.0.0-rc02"
 camposer = "1.0.0"
 kotlin = "2.3.0"
-compose-multiplatform = "1.10.0"
+compose-multiplatform = "1.10.1"
 compose-bom = "2026.01.00"
 exoplayer = "2.19.1"
 zxing = "3.5.4"
@@ -84,7 +84,7 @@ compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose-mu
 compose-ui-tooling = { module = "org.jetbrains.compose.ui:ui-tooling", version.ref = "compose-multiplatform" }
 compose-ui-preview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "compose-multiplatform" }
 compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "material3" }
-compose-icons-tabler = { module = "br.com.devsrsouza.compose.icons:tabler-icons", version.ref = "composeIcons" }
+compose-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose-multiplatform" }
 compose-coil3 = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil3" }
 
 [bundles]

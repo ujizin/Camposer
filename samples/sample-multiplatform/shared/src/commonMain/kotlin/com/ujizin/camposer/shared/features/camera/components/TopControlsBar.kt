@@ -18,17 +18,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ujizin.camposer.state.properties.FlashMode
-import compose.icons.TablerIcons
-import compose.icons.tablericons.BatteryAutomotive
-import compose.icons.tablericons.Bolt
-import compose.icons.tablericons.BoltOff
-import compose.icons.tablericons.Settings
+import org.jetbrains.compose.resources.painterResource
+import sample_android.sample_multiplatform.shared.generated.resources.Res
+import sample_android.sample_multiplatform.shared.generated.resources.flash_auto
+import sample_android.sample_multiplatform.shared.generated.resources.flash_off
+import sample_android.sample_multiplatform.shared.generated.resources.flash_on
+import sample_android.sample_multiplatform.shared.generated.resources.settings
 
 /**
  * Top controls bar with settings, flash, and resolution indicator.
@@ -63,7 +64,7 @@ fun TopControlsBar(
         verticalAlignment = Alignment.CenterVertically,
       ) {
         ControlButton(
-          icon = TablerIcons.Settings,
+          icon = painterResource(Res.drawable.settings),
           contentDescription = "Settings",
           onClick = onSettingsClick,
         )
@@ -94,7 +95,7 @@ fun TopControlsBar(
  */
 @Composable
 fun ControlButton(
-  icon: ImageVector,
+  icon: Painter,
   contentDescription: String,
   modifier: Modifier = Modifier,
   iconColor: Color = Color.White,
@@ -108,7 +109,7 @@ fun ControlButton(
     contentAlignment = Alignment.Center,
   ) {
     Icon(
-      imageVector = icon,
+      painter = icon,
       contentDescription = contentDescription,
       tint = iconColor,
       modifier = Modifier.size(24.dp),
@@ -126,11 +127,12 @@ fun FlashButton(
   onClick: () -> Unit = {},
 ) {
   val (icon, description) = when (flashMode) {
-    FlashMode.Off -> TablerIcons.BoltOff to "Flash Off"
-    FlashMode.On -> TablerIcons.Bolt to "Flash On"
-    FlashMode.Auto -> TablerIcons.BatteryAutomotive to "Flash Auto"
-    else -> TablerIcons.BoltOff to "Flash Off"
+    FlashMode.Off -> painterResource(Res.drawable.flash_off) to "Flash Off"
+    FlashMode.On -> painterResource(Res.drawable.flash_on) to "Flash On"
+    FlashMode.Auto -> painterResource(Res.drawable.flash_auto) to "Flash Auto"
+    else -> painterResource(Res.drawable.flash_off) to "Flash Off"
   }
+
 
   ControlButton(
     modifier = modifier,
@@ -224,7 +226,7 @@ private fun TopControlsBarFlashOnPreview() {
 @Composable
 private fun ControlButtonPreview() {
   ControlButton(
-    icon = TablerIcons.Settings,
+    icon = painterResource(Res.drawable.settings),
     contentDescription = "Settings",
   )
 }

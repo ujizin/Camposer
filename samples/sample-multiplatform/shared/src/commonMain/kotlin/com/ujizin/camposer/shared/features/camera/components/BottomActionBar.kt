@@ -22,8 +22,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.ujizin.camposer.state.properties.CaptureMode
-import compose.icons.TablerIcons
-import compose.icons.tablericons.CameraRotate
+import org.jetbrains.compose.resources.painterResource
+import sample_android.sample_multiplatform.shared.generated.resources.Res
+import sample_android.sample_multiplatform.shared.generated.resources.camera_switch
 
 /**
  * Unified bottom section containing the capture mode selector and action buttons.
@@ -123,7 +124,7 @@ private fun CameraSwitchButton(
     contentAlignment = Alignment.Center,
   ) {
     Icon(
-      imageVector = TablerIcons.CameraRotate,
+      painter = painterResource(Res.drawable.camera_switch),
       contentDescription = "Switch camera",
       tint = Color.White,
       modifier = Modifier.size(28.dp),
