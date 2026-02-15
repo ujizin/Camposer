@@ -15,6 +15,7 @@ import com.ujizin.camposer.internal.core.ios.IOSCameraController
 import com.ujizin.camposer.internal.utils.Logger
 import com.ujizin.camposer.manager.PreviewManager
 import com.ujizin.camposer.state.CameraState
+import com.ujizin.camposer.state.properties.output
 import com.ujizin.camposer.state.properties.selector.getCaptureDevice
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi

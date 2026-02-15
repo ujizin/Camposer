@@ -13,7 +13,7 @@ package com.ujizin.camposer.state.properties
  * Selecting higher-quality stabilization modes (like Cinematic or Extended) requires significant
  * processing power, which may result in increased latency, higher battery consumption, etc.
  */
-public expect enum class VideoStabilizationMode {
+public enum class VideoStabilizationMode {
   Off,
   Standard,
   Cinematic,

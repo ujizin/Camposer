@@ -24,6 +24,7 @@ import com.ujizin.camposer.state.properties.selector.CamLensType
 import com.ujizin.camposer.state.properties.selector.CamLensType.Telephoto
 import com.ujizin.camposer.state.properties.selector.CamLensType.UltraWide
 import com.ujizin.camposer.state.properties.selector.CamLensType.Wide
+import com.ujizin.camposer.state.properties.selector.minFov
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.hypot

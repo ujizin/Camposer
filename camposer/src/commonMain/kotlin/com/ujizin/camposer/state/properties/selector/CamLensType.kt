@@ -1,9 +1,5 @@
 package com.ujizin.camposer.state.properties.selector
 
-import com.ujizin.camposer.state.properties.selector.CamLensType.Telephoto
-import com.ujizin.camposer.state.properties.selector.CamLensType.UltraWide
-import com.ujizin.camposer.state.properties.selector.CamLensType.Wide
-
 /**
  * Represents the type of camera lens used for capturing images or video.
  *
@@ -14,8 +10,11 @@ import com.ujizin.camposer.state.properties.selector.CamLensType.Wide
  * @property UltraWide An ultra-wide-angle lens, providing a much broader field of view than the standard wide lens.
  * @property Telephoto A telephoto lens, providing optical zoom capabilities for capturing distant subjects.
  */
-public expect enum class CamLensType {
+public enum class CamLensType {
   Wide,
   UltraWide,
   Telephoto,
+  ;
+
+  public companion object
 }

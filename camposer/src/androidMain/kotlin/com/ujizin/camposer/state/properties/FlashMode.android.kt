@@ -2,30 +2,16 @@ package com.ujizin.camposer.state.properties
 
 import androidx.camera.core.ImageCapture
 
-/**
- * Camera Flash mode.
- *
- * @param mode internal flash mode from cameraX
- * @see ImageCapture.FlashMode
- * */
-public actual enum class FlashMode(
-  internal val mode: Int,
-) {
-  On(ImageCapture.FLASH_MODE_ON),
-  Auto(ImageCapture.FLASH_MODE_AUTO),
-  Off(ImageCapture.FLASH_MODE_OFF),
-  ;
-
-  /**
-   * Inverse flash mode. Works only with default Off & On flash modes.
-   * */
-  public val inverse: FlashMode
-    get() = when (this) {
-      On -> Off
-      else -> On
-    }
-
-  internal companion object {
-    internal fun find(mode: Int) = entries.firstOrNull { it.mode == mode } ?: Off
+internal val FlashMode.mode: Int
+  get() = when (this) {
+    FlashMode.On -> ImageCapture.FLASH_MODE_ON
+    FlashMode.Auto -> ImageCapture.FLASH_MODE_AUTO
+    FlashMode.Off -> ImageCapture.FLASH_MODE_OFF
   }
-}
+
+internal fun Int.toFlashMode(): FlashMode =
+  when (this) {
+    ImageCapture.FLASH_MODE_ON -> FlashMode.On
+    ImageCapture.FLASH_MODE_AUTO -> FlashMode.Auto
+    else -> FlashMode.Off
+  }

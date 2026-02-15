@@ -18,6 +18,7 @@ import com.ujizin.camposer.extensions.compatMainExecutor
 import com.ujizin.camposer.internal.utils.CameraUtils
 import com.ujizin.camposer.state.properties.selector.CamPosition
 import com.ujizin.camposer.state.properties.selector.CameraId
+import com.ujizin.camposer.state.properties.selector.findByLens
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope

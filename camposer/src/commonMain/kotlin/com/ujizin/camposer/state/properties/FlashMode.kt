@@ -1,9 +1,5 @@
 package com.ujizin.camposer.state.properties
 
-import com.ujizin.camposer.state.properties.FlashMode.Auto
-import com.ujizin.camposer.state.properties.FlashMode.Off
-import com.ujizin.camposer.state.properties.FlashMode.On
-
 /**
  * Flash modes for Camera.
  *
@@ -14,8 +10,15 @@ import com.ujizin.camposer.state.properties.FlashMode.On
  * @see com.ujizin.camposer.controller.camera.CameraController.setFlashMode
  * @see com.ujizin.camposer.controller.camera.CameraController.setTorchEnabled
  */
-public expect enum class FlashMode {
+public enum class FlashMode {
   On,
   Auto,
   Off,
+  ;
+
+  public val inverse: FlashMode
+    get() = when (this) {
+      On -> Off
+      else -> On
+    }
 }

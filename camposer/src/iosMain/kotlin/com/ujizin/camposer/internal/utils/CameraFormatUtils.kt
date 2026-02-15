@@ -4,6 +4,7 @@ import com.ujizin.camposer.internal.extensions.systemVersion
 import com.ujizin.camposer.state.properties.CameraData
 import com.ujizin.camposer.state.properties.CameraData.Companion.DEVICE_FORMAT
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
+import com.ujizin.camposer.state.properties.value
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.placeTo

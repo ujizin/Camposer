@@ -9,6 +9,7 @@ import com.ujizin.camposer.internal.extensions.toCaptureResult
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.FlashMode
+import com.ujizin.camposer.state.properties.mode
 
 internal actual class DefaultTakePictureCommand private constructor(
   private val cameraEngine: IOSCameraEngine,

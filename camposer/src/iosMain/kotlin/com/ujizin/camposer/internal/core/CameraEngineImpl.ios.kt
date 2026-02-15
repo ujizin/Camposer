@@ -14,6 +14,13 @@ import com.ujizin.camposer.state.properties.MirrorMode
 import com.ujizin.camposer.state.properties.OrientationStrategy
 import com.ujizin.camposer.state.properties.ScaleType
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
+import com.ujizin.camposer.state.properties.gravity
+import com.ujizin.camposer.state.properties.highResolutionEnabled
+import com.ujizin.camposer.state.properties.isMirrorEnabled
+import com.ujizin.camposer.state.properties.mode
+import com.ujizin.camposer.state.properties.output
+import com.ujizin.camposer.state.properties.quality
+import com.ujizin.camposer.state.properties.value
 import com.ujizin.camposer.state.properties.format.CamFormat
 import com.ujizin.camposer.state.properties.selector.CamSelector
 import com.ujizin.camposer.state.properties.selector.getCaptureDevice

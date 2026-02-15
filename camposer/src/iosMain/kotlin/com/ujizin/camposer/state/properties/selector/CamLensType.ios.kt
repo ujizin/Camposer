@@ -8,24 +8,27 @@ import platform.AVFoundation.AVCaptureDeviceTypeBuiltInTripleCamera
 import platform.AVFoundation.AVCaptureDeviceTypeBuiltInUltraWideCamera
 import platform.AVFoundation.AVCaptureDeviceTypeBuiltInWideAngleCamera
 
-public actual enum class CamLensType(
-  internal val type: AVCaptureDeviceType,
-) {
-  Wide(AVCaptureDeviceTypeBuiltInWideAngleCamera),
-  UltraWide(AVCaptureDeviceTypeBuiltInUltraWideCamera),
-  Telephoto(AVCaptureDeviceTypeBuiltInTelephotoCamera),
-  ;
-
-  internal companion object {
-    fun getPhysicalLensByVirtual(position: AVCaptureDeviceType): List<CamLensType> =
-      when (position) {
-        AVCaptureDeviceTypeBuiltInWideAngleCamera -> listOf(Wide)
-        AVCaptureDeviceTypeBuiltInUltraWideCamera -> listOf(UltraWide)
-        AVCaptureDeviceTypeBuiltInTelephotoCamera -> listOf(Telephoto)
-        AVCaptureDeviceTypeBuiltInDualWideCamera -> listOf(Wide, UltraWide)
-        AVCaptureDeviceTypeBuiltInDualCamera -> listOf(Wide, Telephoto)
-        AVCaptureDeviceTypeBuiltInTripleCamera -> listOf(Wide, UltraWide, Telephoto)
-        else -> emptyList()
-      }
+internal val CamLensType.type: AVCaptureDeviceType
+  get() = when (this) {
+    CamLensType.Wide -> AVCaptureDeviceTypeBuiltInWideAngleCamera
+    CamLensType.UltraWide -> AVCaptureDeviceTypeBuiltInUltraWideCamera
+    CamLensType.Telephoto -> AVCaptureDeviceTypeBuiltInTelephotoCamera
   }
-}
+
+internal fun CamLensType.Companion.getPhysicalLensByVirtual(
+  position: AVCaptureDeviceType,
+): List<CamLensType> =
+  when (position) {
+    AVCaptureDeviceTypeBuiltInWideAngleCamera -> listOf(CamLensType.Wide)
+    AVCaptureDeviceTypeBuiltInUltraWideCamera -> listOf(CamLensType.UltraWide)
+    AVCaptureDeviceTypeBuiltInTelephotoCamera -> listOf(CamLensType.Telephoto)
+    AVCaptureDeviceTypeBuiltInDualWideCamera -> listOf(CamLensType.Wide, CamLensType.UltraWide)
+    AVCaptureDeviceTypeBuiltInDualCamera -> listOf(CamLensType.Wide, CamLensType.Telephoto)
+    AVCaptureDeviceTypeBuiltInTripleCamera -> listOf(
+      CamLensType.Wide,
+      CamLensType.UltraWide,
+      CamLensType.Telephoto,
+    )
+
+    else -> emptyList()
+  }

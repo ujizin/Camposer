@@ -30,7 +30,9 @@ import com.ujizin.camposer.state.properties.ImplementationMode
 import com.ujizin.camposer.state.properties.ScaleType
 import com.ujizin.camposer.state.properties.format.CamFormat
 import com.ujizin.camposer.state.properties.selector.CamSelector
+import com.ujizin.camposer.state.properties.type
 import com.ujizin.camposer.state.update
+import com.ujizin.camposer.state.properties.value
 
 /**
  * Creates a Camera Preview's composable.

@@ -2,19 +2,12 @@ package com.ujizin.camposer.state.properties
 
 import androidx.camera.view.PreviewView.ScaleType as CameraScaleType
 
-/**
- * Camera scale type.
- *
- * @param type internal scale type from cameraX
- * @see CameraScaleType
- * */
-public actual enum class ScaleType(
-  public val type: CameraScaleType,
-) {
-  FitStart(CameraScaleType.FIT_START),
-  FitCenter(CameraScaleType.FIT_CENTER),
-  FitEnd(CameraScaleType.FIT_END),
-  FillStart(CameraScaleType.FILL_START),
-  FillCenter(CameraScaleType.FILL_CENTER),
-  FillEnd(CameraScaleType.FILL_END),
-}
+internal val ScaleType.type: CameraScaleType
+  get() = when (this) {
+    ScaleType.FitStart -> CameraScaleType.FIT_START
+    ScaleType.FitCenter -> CameraScaleType.FIT_CENTER
+    ScaleType.FitEnd -> CameraScaleType.FIT_END
+    ScaleType.FillStart -> CameraScaleType.FILL_START
+    ScaleType.FillCenter -> CameraScaleType.FILL_CENTER
+    ScaleType.FillEnd -> CameraScaleType.FILL_END
+  }

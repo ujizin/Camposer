@@ -1,9 +1,8 @@
 package com.ujizin.camposer.state.properties.selector
 
-public actual enum class CamLensType(
-  internal val minFov: Float,
-) {
-  Wide(61F),
-  UltraWide(94F),
-  Telephoto(0F),
-}
+internal val CamLensType.minFov: Float
+  get() = when (this) {
+    CamLensType.Wide -> 61F
+    CamLensType.UltraWide -> 94F
+    CamLensType.Telephoto -> 0F
+  }

@@ -1,10 +1,5 @@
 package com.ujizin.camposer.state.properties.selector
 
-import com.ujizin.camposer.state.properties.selector.CamPosition.Back
-import com.ujizin.camposer.state.properties.selector.CamPosition.External
-import com.ujizin.camposer.state.properties.selector.CamPosition.Front
-import com.ujizin.camposer.state.properties.selector.CamPosition.Unknown
-
 /**
  * Enum representing the position (lens facing) of the camera.
  *
@@ -16,9 +11,12 @@ import com.ujizin.camposer.state.properties.selector.CamPosition.Unknown
  * @property External Represents an external camera device (e.g., USB webcam).
  * @property Unknown Represents a camera position that could not be determined.
  */
-public expect enum class CamPosition {
+public enum class CamPosition {
   Back,
   Front,
   External,
   Unknown,
+  ;
+
+  public companion object
 }

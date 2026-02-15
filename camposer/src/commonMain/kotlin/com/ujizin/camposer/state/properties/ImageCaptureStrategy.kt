@@ -13,7 +13,7 @@ package com.ujizin.camposer.state.properties
  * @property Balanced A compromise between capture speed and image quality. On Android, this uses
  * the Minimize Latency mode.
  */
-public expect enum class ImageCaptureStrategy {
+public enum class ImageCaptureStrategy {
   MinLatency,
   MaxQuality,
   Balanced,

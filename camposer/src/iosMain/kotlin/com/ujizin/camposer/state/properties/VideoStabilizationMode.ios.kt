@@ -7,12 +7,11 @@ import platform.AVFoundation.AVCaptureVideoStabilizationModeCinematicExtendedEnh
 import platform.AVFoundation.AVCaptureVideoStabilizationModeOff
 import platform.AVFoundation.AVCaptureVideoStabilizationModeStandard
 
-public actual enum class VideoStabilizationMode(
-  internal val value: AVCaptureVideoStabilizationMode,
-) {
-  Off(AVCaptureVideoStabilizationModeOff),
-  Standard(AVCaptureVideoStabilizationModeStandard),
-  Cinematic(AVCaptureVideoStabilizationModeCinematic),
-  CinematicExtended(AVCaptureVideoStabilizationModeCinematicExtended),
-  CinematicExtendedEnhanced(AVCaptureVideoStabilizationModeCinematicExtendedEnhanced),
-}
+internal val VideoStabilizationMode.value: AVCaptureVideoStabilizationMode
+  get() = when (this) {
+    VideoStabilizationMode.Off -> AVCaptureVideoStabilizationModeOff
+    VideoStabilizationMode.Standard -> AVCaptureVideoStabilizationModeStandard
+    VideoStabilizationMode.Cinematic -> AVCaptureVideoStabilizationModeCinematic
+    VideoStabilizationMode.CinematicExtended -> AVCaptureVideoStabilizationModeCinematicExtended
+    VideoStabilizationMode.CinematicExtendedEnhanced -> AVCaptureVideoStabilizationModeCinematicExtendedEnhanced
+  }

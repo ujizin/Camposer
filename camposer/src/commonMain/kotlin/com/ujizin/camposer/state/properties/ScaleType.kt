@@ -1,12 +1,5 @@
 package com.ujizin.camposer.state.properties
 
-import com.ujizin.camposer.state.properties.ScaleType.FillCenter
-import com.ujizin.camposer.state.properties.ScaleType.FillEnd
-import com.ujizin.camposer.state.properties.ScaleType.FillStart
-import com.ujizin.camposer.state.properties.ScaleType.FitCenter
-import com.ujizin.camposer.state.properties.ScaleType.FitEnd
-import com.ujizin.camposer.state.properties.ScaleType.FitStart
-
 /**
  * Represents the scale type used to determine how the camera preview should be scaled
  * to fit within its container.
@@ -36,7 +29,7 @@ import com.ujizin.camposer.state.properties.ScaleType.FitStart
  * end (bottom/right). The content may be cropped if aspect ratios differ.
  * On iOS, this behaves the same as [FillCenter].
  */
-public expect enum class ScaleType {
+public enum class ScaleType {
   FitStart,
   FitCenter,
   FitEnd,

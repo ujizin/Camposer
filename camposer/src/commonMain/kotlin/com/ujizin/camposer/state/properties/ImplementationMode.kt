@@ -1,8 +1,5 @@
 package com.ujizin.camposer.state.properties
 
-import com.ujizin.camposer.state.properties.ImplementationMode.Compatible
-import com.ujizin.camposer.state.properties.ImplementationMode.Performance
-
 /**
  * The implementation mode of the Camera Preview. (Android Only!)
  *
@@ -14,7 +11,14 @@ import com.ujizin.camposer.state.properties.ImplementationMode.Performance
  * While this is generally more efficient and provides better battery life, it may have compatibility issues
  * with certain UI hierarchies or transformations (like transparency or rotation).
  */
-public expect enum class ImplementationMode {
+public enum class ImplementationMode {
   Compatible,
   Performance,
+  ;
+
+  public val inverse: ImplementationMode
+    get() = when (this) {
+      Compatible -> Performance
+      else -> Compatible
+    }
 }
