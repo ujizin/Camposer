@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -18,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,34 +43,49 @@ fun TopControlsBar(
   modifier: Modifier = Modifier,
   flashMode: FlashMode = FlashMode.Auto,
   isFlashSupported: Boolean = true,
+  isRecording: Boolean = false,
+  recordingDurationSeconds: Long = 0L,
   onSettingsClick: () -> Unit = {},
   onFlashClick: () -> Unit = {},
 ) {
-  Row(
+  Box(
     modifier = modifier
       .fillMaxWidth()
       .padding(horizontal = 16.dp, vertical = 12.dp),
-    horizontalArrangement = Arrangement.SpaceBetween,
-    verticalAlignment = Alignment.CenterVertically,
   ) {
     Row(
-      horizontalArrangement = Arrangement.spacedBy(8.dp),
+      modifier = Modifier.fillMaxWidth(),
+      horizontalArrangement = Arrangement.SpaceBetween,
       verticalAlignment = Alignment.CenterVertically,
     ) {
-      ControlButton(
-        icon = TablerIcons.Settings,
-        contentDescription = "Settings",
-        onClick = onSettingsClick,
-      )
-      if (isFlashSupported) {
-        FlashButton(
-          flashMode = flashMode,
-          onClick = onFlashClick,
+      Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+      ) {
+        ControlButton(
+          icon = TablerIcons.Settings,
+          contentDescription = "Settings",
+          onClick = onSettingsClick,
         )
+        if (isFlashSupported) {
+          FlashButton(
+            flashMode = flashMode,
+            onClick = onFlashClick,
+          )
+        }
       }
+
+      ResolutionIndicator()
     }
 
-    ResolutionIndicator()
+    if (isRecording) {
+      RecordingDurationBadge(
+        modifier = Modifier
+          .align(Alignment.TopCenter)
+          .padding(top = 6.dp),
+        durationInSeconds = recordingDurationSeconds,
+      )
+    }
   }
 }
 
@@ -112,6 +129,7 @@ fun FlashButton(
     FlashMode.Off -> TablerIcons.BoltOff to "Flash Off"
     FlashMode.On -> TablerIcons.Bolt to "Flash On"
     FlashMode.Auto -> TablerIcons.BatteryAutomotive to "Flash Auto"
+    else -> TablerIcons.BoltOff to "Flash Off"
   }
 
   ControlButton(
@@ -120,6 +138,28 @@ fun FlashButton(
     contentDescription = description,
     onClick = onClick,
   )
+}
+
+@Composable
+private fun RecordingDurationBadge(
+  durationInSeconds: Long,
+  modifier: Modifier = Modifier,
+) {
+  Box(
+    modifier = modifier
+      .clip(RoundedCornerShape(20.dp))
+      .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.25f))
+      .padding(horizontal = 24.dp, vertical = 10.dp),
+    contentAlignment = Alignment.Center,
+  ) {
+    Text(
+      text = durationInSeconds.toMinuteSecondFormat(),
+      color = MaterialTheme.colorScheme.primary,
+      fontSize = 15.sp,
+      fontWeight = FontWeight.Bold,
+      letterSpacing = 1.sp,
+    )
+  }
 }
 
 /**
@@ -142,6 +182,12 @@ fun ResolutionIndicator(
       fontSize = 12.sp,
     )
   }
+}
+
+private fun Long.toMinuteSecondFormat(): String {
+  val minutes = this / 60
+  val seconds = this % 60
+  return "${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}"
 }
 
 @Preview

@@ -16,7 +16,7 @@ data class CameraUiState(
     camLensTypes = listOf(CamLensType.UltraWide, CamLensType.Wide),
   ),
   val captureMode: CaptureMode = CaptureMode.Image,
-  val isRecording: Boolean = false,
+  val recordingDurationSeconds: Long = 0L,
   val lastThumbnail: ByteArray? = null,
   val videoPath: String = "",
   val codeScanText: String = "",

@@ -85,6 +85,8 @@ fun CameraScreen(
         modifier = Modifier.fillMaxWidth(),
         flashMode = flashMode,
         isFlashSupported = isFlashSupported,
+        isRecording = isRecording,
+        recordingDurationSeconds = uiState.recordingDurationSeconds,
         onSettingsClick = { /* TODO: Open settings */ },
         onFlashClick = cameraViewModel::cycleFlashMode,
       )
@@ -103,7 +105,7 @@ fun CameraScreen(
 
       BottomActionBar(
         modifier = Modifier.fillMaxWidth(),
-        isRecording = uiState.isRecording,
+        isRecording = isRecording,
         captureMode = uiState.captureMode,
         thumbnail = uiState.lastThumbnail,
         onGalleryClick = cameraViewModel::openGallery,
