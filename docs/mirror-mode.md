@@ -12,7 +12,7 @@ This mode applies when capturing a photo or recording a video.
 ```Kotlin
 val cameraController = remember { CameraController() }
 val cameraSession = rememberCameraSession(cameraController)
-val mirrorMode by rememberUpdatedState(cameraSession.state.mirrorMode)
+val mirrorMode by cameraSession.state.mirrorMode.collectAsStateWithLifecycle()
 
 CameraPreview(
     cameraSession = cameraSession,

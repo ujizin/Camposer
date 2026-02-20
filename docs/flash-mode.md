@@ -7,11 +7,13 @@ To configure flash mode, you need to use the `CameraController`. This ensures st
 It's also important to note that flash needs to be supported by the camera. To check this, you can access:
 
 ```kotlin
+val cameraInfoState by cameraSession.info.collectAsStateWithLifecycle()
+
 // Check if flash is supported
-val isFlashSupported by rememberUpdatedState(cameraSession.info.isFlashSupported)
+val isFlashSupported = cameraInfoState.isFlashSupported
 
 // Check if torch is supported
-val isTorchSupported by rememberUpdatedState(cameraSession.info.isTorchSupported)
+val isTorchSupported = cameraInfoState.isTorchSupported
 ```
 
 ## Usage Example
@@ -21,15 +23,14 @@ The following example demonstrates initializing flash mode and toggling it via a
 ```kotlin
 val cameraController = remember { CameraController() }
 val cameraSession = rememberCameraSession(cameraController)
-val flashMode by rememberUpdatedState(cameraSession.state.flashMode)
-val isTorchEnabled by rememberUpdatedState(cameraSession.state.isTorchEnabled)
+val flashMode by cameraSession.state.flashMode.collectAsStateWithLifecycle()
+val isTorchEnabled by cameraSession.state.isTorchEnabled.collectAsStateWithLifecycle()
 
 CameraPreview(
-    cameraSession = cameraSession,
-    flashMode = flashMode
+    cameraSession = cameraSession
 ) {
     Button(
-        onClick = { cameraController.setFlashMode(flashMode.reverse) } // Options: .Off, .On, .Auto (default: Off)
+        onClick = { cameraController.setFlashMode(flashMode.inverse) } // Options: .Off, .On, .Auto (default: Off)
     ) {
         Text("Flash $flashMode")
     }

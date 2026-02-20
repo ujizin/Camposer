@@ -34,7 +34,7 @@ actual class OCRImageAnalyzer(
 ```kotlin
 actual class OCRImageAnalyzer(
     private val listener: OCRListener
-): NSObject(), , AVCaptureVideoDataOutputSampleBufferDelegate {
+): NSObject(), AVCaptureVideoDataOutputSampleBufferDelegate {
      override fun captureOutput(
         output: AVCaptureOutput,
         didOutputMetadataObjects: List<*>,

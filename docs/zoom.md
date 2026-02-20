@@ -6,9 +6,10 @@ Zoom can be initialized and managed as state within Compose. The following examp
 
 ```kotlin
 val cameraSession = rememberCameraSession()
-val zoomRatio by rememberUpdatedState(cameraSession.state.zoomRatio)
-val minZoom by rememberUpdatedState(cameraSession.info.minZoom)
-val maxZoom by rememberUpdatedState(cameraSession.info.maxZoom)
+val zoomRatio by cameraSession.state.zoomRatio.collectAsStateWithLifecycle()
+val cameraInfoState by cameraSession.info.collectAsStateWithLifecycle()
+val minZoom = cameraInfoState.minZoom
+val maxZoom = cameraInfoState.maxZoom
 
 CameraPreview(
     cameraSession = cameraSession,
@@ -18,7 +19,7 @@ CameraPreview(
     Button(
         onClick = { 
             val zoom = (zoomRatio + 1F).coerceIn(minZoom, maxZoom)
-            controller.setZoomRatio(zoom)
+            cameraSession.controller.setZoomRatio(zoom)
         }
     ) {
         Text("Zoom ratio: $zoomRatio")
@@ -33,8 +34,8 @@ The `isPinchToZoomEnabled` property is enabled by default. Pinch gestures automa
 
 The `cameraSession` object exposes several properties that may be useful when implementing zoom functionality:
 
-`cameraSession.info.minZoom` – Returns the minimum zoom level for the current [CamSelector](./camera-selector.md).
+`cameraSession.info.state.value.minZoom` – Returns the minimum zoom level for the current [CamSelector](./camera-selector.md).
 
-`cameraSession.info.maxZoom` – Returns the maximum zoom level for the current [CamSelector](./camera-selector.md).
+`cameraSession.info.state.value.maxZoom` – Returns the maximum zoom level for the current [CamSelector](./camera-selector.md).
 
-`cameraSession.info.isZoomSupported` – Returns true if zoom is supported by the current [CamSelector](./camera-selector.md), false otherwise.
+`cameraSession.info.state.value.isZoomSupported` – Returns true if zoom is supported by the current [CamSelector](./camera-selector.md), false otherwise.

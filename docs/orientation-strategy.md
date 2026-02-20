@@ -21,7 +21,7 @@ It defines whether rotation is applied via metadata (e.g., EXIF tags) or by phys
 ```kotlin
 val cameraController = remember { CameraController() }
 val cameraSession = rememberCameraSession(cameraController)
-val orientationStrategy by rememberUpdatedState(cameraSession.state.orientationStrategy)
+val orientationStrategy by cameraSession.state.orientationStrategy.collectAsStateWithLifecycle()
 CameraPreview(
     cameraSession = cameraSession,
 ) {

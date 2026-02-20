@@ -46,13 +46,13 @@ The `state` holds all mutable camera configurations such as:
 **Example:**
 ```kotlin
 val cameraSession = rememberCameraSession()
-val flashMode by rememberUpdatedState(cameraSession.state.flashMode)
-val zoomRatio by rememberUpdatedState(cameraSession.state.zoomRatio)
+val flashMode by cameraSession.state.flashMode.collectAsStateWithLifecycle()
+val zoomRatio by cameraSession.state.zoomRatio.collectAsStateWithLifecycle()
 ```
 
 ### 2. Info (`cameraSession.info`)
 
-The `info` provides read-only hardware capabilities and limits:
+The `info` provides read-only hardware capabilities of the current camera and limits through `CameraInfoState`:
 
 - `minZoom` / `maxZoom`: Zoom range
 - `minExposure` / `maxExposure`: Exposure range
@@ -65,8 +65,9 @@ The `info` provides read-only hardware capabilities and limits:
 **Example:**
 ```kotlin
 val cameraSession = rememberCameraSession()
-val isFlashSupported by rememberUpdatedState(cameraSession.info.isFlashSupported)
-val maxZoom by rememberUpdatedState(cameraSession.info.maxZoom)
+val cameraInfoState by cameraSession.info.collectAsStateWithLifecycle()
+val isFlashSupported = cameraInfoState.isFlashSupported
+val maxZoom = cameraInfoState.maxZoom
 
 if (isFlashSupported) {
     // Show flash button
@@ -86,10 +87,11 @@ The `controller` provides methods to perform camera operations:
 
 **Example:**
 ```kotlin
-val cameraSession = rememberCameraSession()
+val controller = remember { CameraController() }
+val cameraSession = rememberCameraSession(controller)
 
 Button(onClick = {
-    cameraSession.controller.takePicture { result ->
+    controller.takePicture { result ->
         when(result) {
             is CaptureResult.Success -> { /* Handle success */ }
             is CaptureResult.Error -> { /* Handle error */ }
@@ -154,73 +156,3 @@ if (hasError) {
 ```
 
 **Retry Initialization**: Use `cameraSession.retryInitialization()` to attempt initialization again after a failure. The method returns `true` if successful, `false` if it still fails.
-
-**Note**: This property is only set to `true` when initialization fails. It remains `false` during normal operation.
-
-## Complete Example
-
-```kotlin
-@Composable
-fun CameraScreen() {
-    val cameraController = remember { CameraController() }
-    val cameraSession = rememberCameraSession(cameraController)
-    
-    // Access state
-    val flashMode by rememberUpdatedState(cameraSession.state.flashMode)
-    val zoomRatio by rememberUpdatedState(cameraSession.state.zoomRatio)
-    
-    // Access info
-    val maxZoom by rememberUpdatedState(cameraSession.info.maxZoom)
-    val isFlashSupported by rememberUpdatedState(cameraSession.info.isFlashSupported)
-    
-    // Access status
-    val isStreaming by rememberUpdatedState(cameraSession.isStreaming)
-    val hasError by rememberUpdatedState(cameraSession.hasInitializationError)
-    
-    if (hasError) {
-        // Show error UI
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text("Failed to initialize camera")
-            Button(onClick = {
-                // Attempt to retry initialization
-                cameraSession.retryInitialization()
-            }) {
-                Text("Retry")
-            }
-        }
-        return
-    }
-    
-    CameraPreview(cameraSession = cameraSession) {
-        Column {
-            Text("Streaming: $isStreaming")
-            Text("Zoom: $zoomRatio / $maxZoom")
-            
-            if (isFlashSupported) {
-                Button(onClick = {
-                    cameraSession.controller.setFlashMode(
-                        when (flashMode) {
-                            FlashMode.Off -> FlashMode.On
-                            FlashMode.On -> FlashMode.Auto
-                            FlashMode.Auto -> FlashMode.Off
-                        }
-                    )
-                }) {
-                    Text("Flash: $flashMode")
-                }
-            }
-            
-            Button(onClick = {
-                val newZoom = (zoomRatio + 1f).coerceIn(1f, maxZoom)
-                cameraSession.controller.setZoomRatio(newZoom)
-            }) {
-                Text("Zoom In")
-            }
-        }
-    }
-}
-```
