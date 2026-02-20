@@ -9,9 +9,23 @@ import platform.AVFoundation.AVCaptureVideoStabilizationModeStandard
 
 internal val VideoStabilizationMode.value: AVCaptureVideoStabilizationMode
   get() = when (this) {
-    VideoStabilizationMode.Off -> AVCaptureVideoStabilizationModeOff
-    VideoStabilizationMode.Standard -> AVCaptureVideoStabilizationModeStandard
-    VideoStabilizationMode.Cinematic -> AVCaptureVideoStabilizationModeCinematic
-    VideoStabilizationMode.CinematicExtended -> AVCaptureVideoStabilizationModeCinematicExtended
-    VideoStabilizationMode.CinematicExtendedEnhanced -> AVCaptureVideoStabilizationModeCinematicExtendedEnhanced
+    VideoStabilizationMode.Off -> {
+      AVCaptureVideoStabilizationModeOff
+    }
+
+    VideoStabilizationMode.Standard -> {
+      AVCaptureVideoStabilizationModeStandard
+    }
+
+    VideoStabilizationMode.Cinematic -> {
+      AVCaptureVideoStabilizationModeCinematic
+    }
+
+    VideoStabilizationMode.CinematicExtended -> {
+      AVCaptureVideoStabilizationModeCinematicExtended
+    }
+
+    VideoStabilizationMode.CinematicExtendedEnhanced -> {
+      AVCaptureVideoStabilizationModeCinematicExtendedEnhanced
+    }
   }

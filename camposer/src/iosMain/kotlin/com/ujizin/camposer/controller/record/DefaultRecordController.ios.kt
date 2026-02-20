@@ -41,7 +41,7 @@ internal actual class DefaultRecordController private constructor(
   )
 
   actual override fun resumeRecording(): Result<Boolean> {
-    if (cameraState.captureMode != CaptureMode.Video) {
+    if (cameraState.captureMode.value != CaptureMode.Video) {
       return Result.failure(CaptureModeException(CaptureMode.Video))
     }
 
@@ -49,7 +49,7 @@ internal actual class DefaultRecordController private constructor(
   }
 
   actual override fun pauseRecording(): Result<Boolean> {
-    if (cameraState.captureMode != CaptureMode.Video) {
+    if (cameraState.captureMode.value != CaptureMode.Video) {
       return Result.failure(CaptureModeException(CaptureMode.Video))
     }
 
@@ -57,7 +57,7 @@ internal actual class DefaultRecordController private constructor(
   }
 
   actual override fun stopRecording(): Result<Boolean> {
-    if (cameraState.captureMode != CaptureMode.Video) {
+    if (cameraState.captureMode.value != CaptureMode.Video) {
       return Result.failure(CaptureModeException(CaptureMode.Video))
     }
 

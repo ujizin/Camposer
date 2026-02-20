@@ -31,8 +31,8 @@ import com.ujizin.camposer.state.properties.ScaleType
 import com.ujizin.camposer.state.properties.format.CamFormat
 import com.ujizin.camposer.state.properties.selector.CamSelector
 import com.ujizin.camposer.state.properties.type
-import com.ujizin.camposer.state.update
 import com.ujizin.camposer.state.properties.value
+import com.ujizin.camposer.state.update
 
 /**
  * Creates a Camera Preview's composable.
@@ -92,7 +92,7 @@ internal actual fun CameraPreviewImpl(
       lifecycleOwner = lifecycleOwner,
       onTapFocus = {
         if (cameraSession.info.isFocusSupported &&
-          cameraSession.state.isFocusOnTapEnabled
+          cameraSession.state.isFocusOnTapEnabled.value
         ) {
           onTapFocus(it + cameraOffset)
         }
@@ -121,9 +121,18 @@ internal actual fun CameraPreviewImpl(
         }
 
         latestBitmap = when {
-          lifecycleEvent == Lifecycle.Event.ON_STOP -> null
-          !isCameraIdle && camSelector != cameraSession.state.camSelector -> bitmap?.asImageBitmap()
-          else -> latestBitmap
+          lifecycleEvent == Lifecycle.Event.ON_STOP -> {
+            null
+          }
+
+          !isCameraIdle && camSelector != cameraSession.state.camSelector.value -> {
+            bitmap
+              ?.asImageBitmap()
+          }
+
+          else -> {
+            latestBitmap
+          }
         }
 
         cameraSession.update(

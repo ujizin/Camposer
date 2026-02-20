@@ -5,13 +5,12 @@ package com.ujizin.camposer.internal.utils
  * Logs only in debug builds to prevent log pollution in production.
  */
 internal expect object Logger {
-
   /**
    * Log a debug message.
    *
    * @param message The debug message to log
    */
-  fun debug(message: String)
+  fun d(message: String)
 
   /**
    * Log an error message with optional throwable.

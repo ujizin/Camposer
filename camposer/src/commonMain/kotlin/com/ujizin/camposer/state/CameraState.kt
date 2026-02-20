@@ -2,9 +2,6 @@ package com.ujizin.camposer.state
 
 import androidx.compose.ui.util.fastCoerceIn
 import com.ujizin.camposer.info.CameraInfo
-import com.ujizin.camposer.internal.core.CameraEngineDelegate
-import com.ujizin.camposer.internal.utils.asyncDistinctConfig
-import com.ujizin.camposer.internal.utils.distinctConfig
 import com.ujizin.camposer.session.CameraSession
 import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.FlashMode
@@ -22,11 +19,16 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * A state holder for the Camera composition.
@@ -38,156 +40,148 @@ import kotlinx.coroutines.sync.withLock
  */
 public class CameraState internal constructor(
   private val cameraInfo: CameraInfo,
-  private val cameraDelegate: CameraEngineDelegate,
-  private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
+  dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
-  private val cameraMutex = Mutex()
   private val stateScope = CoroutineScope(dispatcher + SupervisorJob())
 
-  public var captureMode: CaptureMode by asyncDistinctConfig(
-    scope = stateScope,
-    mutex = cameraMutex,
-    dispatcher = dispatcher,
-    value = CaptureMode.Image,
-    onDispose = cameraDelegate::removeCaptureMode,
-    block = cameraDelegate::setCaptureMode,
-  )
-    internal set
+  private val _captureMode = MutableStateFlow(CaptureMode.Image)
+  public val captureMode: StateFlow<CaptureMode> = _captureMode.asStateFlow()
 
-  public var camSelector: CamSelector by asyncDistinctConfig(
-    scope = stateScope,
-    mutex = cameraMutex,
-    dispatcher = dispatcher,
-    value = CamSelector.Back,
-    block = cameraDelegate::setCamSelector,
-  )
-    internal set
+  private val _camSelector = MutableStateFlow(CamSelector.Back)
+  public val camSelector: StateFlow<CamSelector> = _camSelector.asStateFlow()
 
-  public var scaleType: ScaleType by distinctConfig(
-    value = ScaleType.FillCenter,
-    block = cameraDelegate::setScaleType,
-  )
-    internal set
+  private val _scaleType = MutableStateFlow(ScaleType.FillCenter)
+  public val scaleType: StateFlow<ScaleType> = _scaleType.asStateFlow()
 
-  public var flashMode: FlashMode by distinctConfig(
-    value = FlashMode.Off,
-    predicate = { old, new -> old != new },
-    check = { check(it.isFlashAvailable()) { "Flash must be supported to be enabled" } },
-    block = cameraDelegate::setFlashMode,
-  )
-    internal set
+  private val _flashMode = MutableStateFlow(FlashMode.Off)
+  public val flashMode: StateFlow<FlashMode> = _flashMode.asStateFlow()
 
-  public var mirrorMode: MirrorMode by distinctConfig(
-    value = MirrorMode.OnlyInFront,
-    block = cameraDelegate::setMirrorMode,
-  )
+  private val _mirrorMode = MutableStateFlow(MirrorMode.OnlyInFront)
+  public val mirrorMode: StateFlow<MirrorMode> = _mirrorMode.asStateFlow()
 
-  public var camFormat: CamFormat by distinctConfig(
-    value = CamFormat.Default,
-    block = cameraDelegate::setCamFormat,
-  )
-    internal set
+  private val _camFormat = MutableStateFlow(CamFormat.Default)
+  public val camFormat: StateFlow<CamFormat> = _camFormat.asStateFlow()
 
-  // No-op in iOS
-  public var implementationMode: ImplementationMode by distinctConfig(
-    value = ImplementationMode.Performance,
-    block = cameraDelegate::setImplementationMode,
-  )
-    internal set
+  private val _implementationMode = MutableStateFlow(ImplementationMode.Performance)
+  public val implementationMode: StateFlow<ImplementationMode> = _implementationMode.asStateFlow()
 
-  public var imageAnalyzer: ImageAnalyzer? by distinctConfig(
-    value = null,
-    onDispose = cameraDelegate::disposeImageAnalyzer,
-    block = cameraDelegate::setImageAnalyzer,
-  )
-    internal set
+  private val _imageAnalyzer = MutableStateFlow<ImageAnalyzer?>(null)
+  public val imageAnalyzer: StateFlow<ImageAnalyzer?> = _imageAnalyzer.asStateFlow()
 
-  public var isImageAnalyzerEnabled: Boolean by distinctConfig(
-    value = imageAnalyzer != null,
-    block = cameraDelegate::setImageAnalyzerEnabled,
-  )
-    internal set
+  private val _isImageAnalyzerEnabled = MutableStateFlow(_imageAnalyzer.value != null)
+  public val isImageAnalyzerEnabled: StateFlow<Boolean> = _isImageAnalyzerEnabled.asStateFlow()
 
-  public var isPinchToZoomEnabled: Boolean by distinctConfig(
-    value = true,
-    block = cameraDelegate::setPinchToZoomEnabled,
-  )
-    internal set
+  private val _isPinchToZoomEnabled = MutableStateFlow(true)
+  public val isPinchToZoomEnabled: StateFlow<Boolean> = _isPinchToZoomEnabled.asStateFlow()
 
-  public var exposureCompensation: Float by distinctConfig(
-    value = 0F,
-    check = {
-      check(cameraInfo.isExposureSupported) { "Exposure compensation must be supported to be set" }
-    },
-    onSet = { it.fastCoerceIn(cameraInfo.minExposure, cameraInfo.maxExposure) },
-    block = cameraDelegate::setExposureCompensation,
-  )
-    internal set
+  private val _exposureCompensation = MutableStateFlow(0F)
+  public val exposureCompensation: StateFlow<Float> = _exposureCompensation.asStateFlow()
 
-  public var imageCaptureStrategy: ImageCaptureStrategy by distinctConfig(
-    value = ImageCaptureStrategy.Balanced,
-    block = cameraDelegate::setImageCaptureStrategy,
-  )
-    internal set
+  private val _imageCaptureStrategy = MutableStateFlow(ImageCaptureStrategy.Balanced)
+  public val imageCaptureStrategy: StateFlow<ImageCaptureStrategy> =
+    _imageCaptureStrategy.asStateFlow()
 
-  public var zoomRatio: Float by distinctConfig(
-    value = cameraInfo.minZoom,
-    onSet = { it.fastCoerceIn(cameraInfo.minZoom, cameraInfo.maxZoom) },
-    block = cameraDelegate::setZoomRatio,
-  )
-    internal set
+  private val _zoomRatio = MutableStateFlow(cameraInfo.minZoom)
+  public val zoomRatio: StateFlow<Float> = _zoomRatio.asStateFlow()
 
-  public var isFocusOnTapEnabled: Boolean by distinctConfig(
-    value = true,
-    cameraDelegate::setFocusOnTapEnabled,
-  )
-    internal set
+  private val _isFocusOnTapEnabled = MutableStateFlow(true)
+  public val isFocusOnTapEnabled: StateFlow<Boolean> = _isFocusOnTapEnabled.asStateFlow()
 
-  public var isTorchEnabled: Boolean by distinctConfig(
-    value = false,
-    check = {
-      check((!it || cameraInfo.isTorchAvailable)) { "Torch must be supported to enable" }
-    },
-    predicate = { old, new -> old != new && (!new || cameraInfo.isTorchAvailable) },
-    block = cameraDelegate::setTorchEnabled,
-  )
-    internal set
+  private val _isTorchEnabled = MutableStateFlow(false)
+  public val isTorchEnabled: StateFlow<Boolean> = _isTorchEnabled.asStateFlow()
 
-  public var orientationStrategy: OrientationStrategy by distinctConfig(
-    value = OrientationStrategy.Device,
-    block = cameraDelegate::setOrientationStrategy,
-  )
-    internal set
+  private val _orientationStrategy = MutableStateFlow(OrientationStrategy.Device)
+  public val orientationStrategy: StateFlow<OrientationStrategy> =
+    _orientationStrategy.asStateFlow()
 
-  public var frameRate: Int by distinctConfig(
-    value = -1,
-    check = {
-      check(it in cameraInfo.minFPS..cameraInfo.maxFPS) {
-        "FPS $it must be in range ${cameraInfo.minFPS..cameraInfo.maxFPS}"
-      }
-    },
-    block = { cameraDelegate.setFrameRate(it, it) },
-  )
-    internal set
+  private val _frameRate = MutableStateFlow(-1)
+  public val frameRate: StateFlow<Int> = _frameRate.asStateFlow()
 
-  public var videoStabilizationMode: VideoStabilizationMode by distinctConfig(
-    value = VideoStabilizationMode.Off,
-    check = {
-      check(cameraDelegate.isVideoStabilizationSupported(it)) {
-        "Video stabilization mode must be supported to enable"
-      }
-    },
-    block = cameraDelegate::setVideoStabilizationMode,
-  )
-    internal set
+  private val _videoStabilizationMode = MutableStateFlow(VideoStabilizationMode.Off)
+  public val videoStabilizationMode: StateFlow<VideoStabilizationMode> =
+    _videoStabilizationMode.asStateFlow()
 
-  private fun FlashMode.isFlashAvailable() =
-    this == FlashMode.Off || (cameraInfo.isFlashSupported && cameraInfo.isFlashAvailable)
+  internal fun launch(
+    context: CoroutineContext = EmptyCoroutineContext,
+    block: suspend CoroutineScope.() -> Unit,
+  ): Job =
+    stateScope.launch(
+      context = context,
+      block = block,
+    )
 
-  internal fun invokeWhenCompleted(block: () -> Unit) {
-    stateScope.launch {
-      cameraMutex.withLock { block() }
+  internal fun updateCaptureMode(captureMode: CaptureMode) {
+    _captureMode.update { captureMode }
+  }
+
+  internal fun updateCamSelector(camSelector: CamSelector) {
+    _camSelector.update { camSelector }
+  }
+
+  internal fun updateScaleType(scaleType: ScaleType) {
+    _scaleType.update { scaleType }
+  }
+
+  internal fun updateFlashMode(flashMode: FlashMode) {
+    _flashMode.update { flashMode }
+  }
+
+  public fun updateMirrorMode(mirrorMode: MirrorMode) {
+    _mirrorMode.update { mirrorMode }
+  }
+
+  internal fun updateCamFormat(camFormat: CamFormat) {
+    _camFormat.update { camFormat }
+  }
+
+  internal fun updateImplementationMode(implementationMode: ImplementationMode) {
+    _implementationMode.update { implementationMode }
+  }
+
+  internal fun updateImageAnalyzer(imageAnalyzer: ImageAnalyzer?) {
+    _imageAnalyzer.update { imageAnalyzer }
+  }
+
+  internal fun updateImageAnalyzerEnabled(isImageAnalyzerEnabled: Boolean) {
+    _isImageAnalyzerEnabled.update { isImageAnalyzerEnabled }
+  }
+
+  internal fun updatePinchToZoomEnabled(isPinchToZoomEnabled: Boolean) {
+    _isPinchToZoomEnabled.update { isPinchToZoomEnabled }
+  }
+
+  internal fun updateExposureCompensation(exposureCompensation: Float) {
+    _exposureCompensation.update {
+      exposureCompensation.fastCoerceIn(cameraInfo.minExposure, cameraInfo.maxExposure)
     }
+  }
+
+  internal fun updateImageCaptureStrategy(imageCaptureStrategy: ImageCaptureStrategy) {
+    _imageCaptureStrategy.update { imageCaptureStrategy }
+  }
+
+  internal fun updateZoomRatio(zoomRatio: Float) {
+    _zoomRatio.update { zoomRatio.fastCoerceIn(cameraInfo.minZoom, cameraInfo.maxZoom) }
+  }
+
+  internal fun updateFocusOnTapEnabled(isFocusOnTapEnabled: Boolean) {
+    _isFocusOnTapEnabled.update { isFocusOnTapEnabled }
+  }
+
+  internal fun updateTorchEnabled(isTorchEnabled: Boolean) {
+    _isTorchEnabled.update { isTorchEnabled }
+  }
+
+  internal fun updateOrientationStrategy(orientationStrategy: OrientationStrategy) {
+    _orientationStrategy.update { orientationStrategy }
+  }
+
+  internal fun updateFrameRate(frameRate: Int) {
+    _frameRate.update { frameRate }
+  }
+
+  internal fun updateVideoStabilizationMode(videoStabilizationMode: VideoStabilizationMode) {
+    _videoStabilizationMode.update { videoStabilizationMode }
   }
 
   /**
@@ -196,7 +190,6 @@ public class CameraState internal constructor(
    */
   internal fun dispose() {
     stateScope.cancel()
-    imageAnalyzer?.let { cameraDelegate.disposeImageAnalyzer(it) }
   }
 }
 
@@ -212,18 +205,18 @@ internal fun CameraSession.update(
   camFormat: CamFormat,
   isPinchToZoomEnabled: Boolean,
 ) {
-  with(state) {
-    this.captureMode = captureMode
-    this.camSelector = camSelector
-    this.camFormat = camFormat
-    this.scaleType = scaleType
-    this.imageAnalyzer = imageAnalyzer
-    this.isImageAnalyzerEnabled = isImageAnalysisEnabled
-    this.implementationMode = implementationMode
-    this.isFocusOnTapEnabled = isFocusOnTapEnabled
-    this.imageCaptureStrategy = imageCaptureStrategy
-    this.isPinchToZoomEnabled = isPinchToZoomEnabled
+  with(cameraEngine) {
+    updateCaptureMode(captureMode)
+    updateCamSelector(camSelector)
+    updateCamFormat(camFormat)
+    updateScaleType(scaleType)
+    updateImageAnalyzer(imageAnalyzer)
+    updateImageAnalyzerEnabled(isImageAnalysisEnabled)
+    updateImplementationMode(implementationMode)
+    updateFocusOnTapEnabled(isFocusOnTapEnabled)
+    updateImageCaptureStrategy(imageCaptureStrategy)
+    updatePinchToZoomEnabled(isPinchToZoomEnabled)
 
-    state.invokeWhenCompleted(::onSessionStarted)
+    state.launch { onSessionStarted() }
   }
 }

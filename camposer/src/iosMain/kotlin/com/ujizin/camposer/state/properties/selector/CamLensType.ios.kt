@@ -20,10 +20,15 @@ internal fun CamLensType.Companion.getPhysicalLensByVirtual(
 ): List<CamLensType> =
   when (position) {
     AVCaptureDeviceTypeBuiltInWideAngleCamera -> listOf(CamLensType.Wide)
+
     AVCaptureDeviceTypeBuiltInUltraWideCamera -> listOf(CamLensType.UltraWide)
+
     AVCaptureDeviceTypeBuiltInTelephotoCamera -> listOf(CamLensType.Telephoto)
+
     AVCaptureDeviceTypeBuiltInDualWideCamera -> listOf(CamLensType.Wide, CamLensType.UltraWide)
+
     AVCaptureDeviceTypeBuiltInDualCamera -> listOf(CamLensType.Wide, CamLensType.Telephoto)
+
     AVCaptureDeviceTypeBuiltInTripleCamera -> listOf(
       CamLensType.Wide,
       CamLensType.UltraWide,

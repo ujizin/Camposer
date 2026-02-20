@@ -40,7 +40,7 @@ internal class CaptureModeTest : CameraTest() {
 
             is CaptureResult.Success -> {
               assertEquals(Uri.fromFile(imageFile), result.data)
-              assertEquals(CaptureMode.Image, cameraSession.state.captureMode)
+              assertEquals(CaptureMode.Image, cameraSession.state.captureMode.value)
               isFinalized = true
             }
           }
@@ -76,7 +76,7 @@ internal class CaptureModeTest : CameraTest() {
 
             is CaptureResult.Success -> {
               assertEquals(Uri.fromFile(videoFile), result.data)
-              assertEquals(CaptureMode.Video, cameraSession.state.captureMode)
+              assertEquals(CaptureMode.Video, cameraSession.state.captureMode.value)
               isFinished = true
             }
           }

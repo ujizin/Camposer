@@ -99,6 +99,6 @@ internal class CameraFlashModeTest : CameraSessionTest() {
 
   private fun assertFlashMode(expectedFlashMode: FlashMode) {
     cameraTest.assertFlashMode(expectedFlashMode)
-    assertEquals(expectedFlashMode, cameraSession.state.flashMode)
+    assertEquals(expectedFlashMode, cameraSession.state.flashMode.value)
   }
 }

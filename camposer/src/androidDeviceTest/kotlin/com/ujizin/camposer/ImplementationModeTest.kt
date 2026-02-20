@@ -19,11 +19,11 @@ internal class ImplementationModeTest : CameraTest() {
     with(composeTestRule) {
       initImplementationModeCamera(ImplementationMode.Performance)
 
-      assertEquals(cameraSession.state.implementationMode, ImplementationMode.Performance)
+      assertEquals(cameraSession.state.implementationMode.value, ImplementationMode.Performance)
       implementationMode.value = ImplementationMode.Compatible
 
       runOnIdle {
-        assertEquals(cameraSession.state.implementationMode, ImplementationMode.Compatible)
+        assertEquals(cameraSession.state.implementationMode.value, ImplementationMode.Compatible)
       }
     }
 

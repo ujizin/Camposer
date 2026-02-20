@@ -9,7 +9,7 @@ import android.util.Log
 internal actual object Logger {
   private const val TAG = "Camposer"
 
-  actual fun debug(message: String) {
+  actual fun d(message: String) {
     Log.d(TAG, message)
   }
 

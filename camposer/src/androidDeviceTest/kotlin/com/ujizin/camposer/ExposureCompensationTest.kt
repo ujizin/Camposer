@@ -3,8 +3,8 @@ package com.ujizin.camposer
 import androidx.camera.core.CameraInfo
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import junit.framework.TestCase.assertEquals
@@ -57,7 +57,7 @@ internal class ExposureCompensationTest : CameraTest() {
 
   private fun ComposeContentTestRule.initCameraWithExposure(exposure: Float) =
     initCameraSession { state ->
-      exposureCompensation = rememberUpdatedState(cameraSession.state.exposureCompensation)
+      exposureCompensation = cameraSession.state.exposureCompensation.collectAsStateWithLifecycle()
 
       LaunchedEffect(exposure) {
         state.controller.setExposureCompensation(exposure)

@@ -4,6 +4,7 @@ import com.ujizin.camposer.CaptureResult
 import com.ujizin.camposer.controller.record.RecordController
 import com.ujizin.camposer.controller.takepicture.TakePictureCommand
 import com.ujizin.camposer.info.CameraInfo
+import com.ujizin.camposer.internal.core.CameraEngine
 import com.ujizin.camposer.internal.utils.Bundle
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.properties.FlashMode
@@ -27,20 +28,20 @@ import kotlinx.coroutines.flow.update
 public abstract class CommonCameraController<
   RC : RecordController,
   TPC : TakePictureCommand,
-> internal constructor() : CameraControllerContract {
+  > internal constructor() : CameraControllerContract {
   protected var recordController: RC? = null
     private set
 
   protected var takePictureCommand: TPC? = null
     private set
 
-  private var cameraState: CameraState? = null
-  override val state: CameraState?
-    get() = cameraState
+  private var cameraEngine: CameraEngine? = null
 
-  private var cameraInfo: CameraInfo? = null
+  override val state: CameraState?
+    get() = cameraEngine?.cameraState
+
   override val info: CameraInfo?
-    get() = cameraInfo
+    get() = cameraEngine?.cameraInfo
 
   private val _isRunning = MutableStateFlow(false)
   public override val isRunning: StateFlow<Boolean> = _isRunning.asStateFlow()
@@ -77,95 +78,104 @@ public abstract class CommonCameraController<
     onImageCaptured: (CaptureResult<String>) -> Unit,
   ): Unit = takePictureCommand.runBind { takePicture(filename, onImageCaptured) }
 
-  override fun setZoomRatio(zoomRatio: Float): Unit =
-    state.runBind {
-      if (!isRunning.value) {
-        pendingBundle[ZOOM_KEY] = zoomRatio
-        return@runBind
-      }
-
-      this.zoomRatio = zoomRatio
+  override fun setZoomRatio(zoomRatio: Float) {
+    if (!isRunning.value) {
+      pendingBundle[ZOOM_KEY] = zoomRatio
+      return
     }
 
-  override fun setExposureCompensation(exposureCompensation: Float): Unit =
-    state.runBind {
-      if (!isRunning.value) {
-        pendingBundle[EXPOSURE_COMPENSATION_KEY] = exposureCompensation
-        return@runBind
-      }
-      this.exposureCompensation = exposureCompensation
+    cameraEngine.runBind { updateZoomRatio(zoomRatio) }
+  }
+
+  override fun setExposureCompensation(exposureCompensation: Float) {
+    if (!isRunning.value) {
+      pendingBundle[EXPOSURE_COMPENSATION_KEY] = exposureCompensation
+      return
     }
+    cameraEngine.runBind { updateExposureCompensation(exposureCompensation) }
+  }
 
   override fun setMirrorMode(mirrorMode: MirrorMode) {
-    state.runBind {
-      if (!isRunning.value) {
-        pendingBundle[MIRROR_MODE_KEY] = mirrorMode
-        return@runBind
-      }
-      this.mirrorMode = mirrorMode
+    if (!isRunning.value) {
+      pendingBundle[MIRROR_MODE_KEY] = mirrorMode
+      return
     }
+
+    check(info?.isExposureSupported == true) {
+      "Exposure compensation must be supported to be set"
+    }
+
+    cameraEngine.runBind { updateMirrorMode(mirrorMode) }
   }
 
   override fun setFlashMode(flashMode: FlashMode): Result<Unit> =
     runCatching {
-      state.runBind {
-        if (!isRunning.value) {
-          pendingBundle[FLASH_MODE_KEY] = flashMode
-          return@runBind
-        }
-        this.flashMode = flashMode
+      if (!isRunning.value) {
+        pendingBundle[FLASH_MODE_KEY] = flashMode
+        return@runCatching
       }
+
+      check(flashMode.isFlashAvailable()) { "Flash must be supported to be enabled" }
+
+      cameraEngine.runBind { updateFlashMode(flashMode) }
     }
 
   override fun setTorchEnabled(isTorchEnabled: Boolean): Result<Unit> =
     runCatching {
-      state.runBind {
-        if (!isRunning.value) {
-          pendingBundle[TORCH_KEY] = isTorchEnabled
-          return@runBind
-        }
-        this.isTorchEnabled = isTorchEnabled
+      if (!isRunning.value) {
+        pendingBundle[TORCH_KEY] = isTorchEnabled
+        return@runCatching
       }
+
+      check(!isTorchEnabled || info?.isTorchAvailable == true) {
+        "Torch must be supported to enable"
+      }
+      cameraEngine.runBind { updateTorchEnabled(isTorchEnabled) }
     }
 
   override fun setVideoFrameRate(frameRate: Int): Result<Unit> =
     runCatching {
-      state.runBind {
-        if (!isRunning.value) {
-          pendingBundle[FRAME_RATE_KEY] = frameRate
-          return@runBind
-        }
-
-        this.frameRate = frameRate
+      if (!isRunning.value) {
+        pendingBundle[FRAME_RATE_KEY] = frameRate
+        return@runCatching
       }
+
+      val cameraInfo = checkNotNull(info)
+      check(frameRate in cameraInfo.minFPS..cameraInfo.maxFPS) {
+        "FPS $frameRate must be in range ${cameraInfo.minFPS..cameraInfo.maxFPS}"
+      }
+      cameraEngine.runBind { updateFrameRate(frameRate) }
     }
 
   override fun setVideoStabilizationEnabled(mode: VideoStabilizationMode): Result<Unit> =
     runCatching {
-      state.runBind {
-        if (!isRunning.value) {
-          pendingBundle[VIDEO_STABILIZATION_KEY] = mode
-          return@runBind
-        }
-
-        this.videoStabilizationMode = mode
+      if (!isRunning.value) {
+        pendingBundle[VIDEO_STABILIZATION_KEY] = mode
+        return@runCatching
       }
+
+      val cameraInfo = checkNotNull(info)
+      check(cameraInfo.isVideoStabilizationSupported) {
+        "Video stabilization mode must be supported to enable"
+      }
+
+      cameraEngine.runBind { updateVideoStabilizationMode(mode) }
     }
 
   override fun setOrientationStrategy(strategy: OrientationStrategy) {
-    state.runBind { orientationStrategy = strategy }
+    cameraEngine.runBind { updateOrientationStrategy(strategy) }
   }
 
   internal fun initialize(
     recordController: RC,
     takePictureCommand: TPC,
+    cameraEngine: CameraEngine,
     cameraState: CameraState,
     cameraInfo: CameraInfo,
   ) {
     this.recordController = recordController
     this.takePictureCommand = takePictureCommand
-    this.cameraState = cameraState
-    this.cameraInfo = cameraInfo
+    this.cameraEngine = cameraEngine
   }
 
   internal fun onSessionStarted() {
@@ -184,6 +194,12 @@ public abstract class CommonCameraController<
       ?.let(::setVideoStabilizationEnabled)
 
     pendingBundle.clear()
+  }
+
+  private fun FlashMode.isFlashAvailable(): Boolean {
+    if (this == FlashMode.Off) return true
+    val cameraInfo = info ?: return false
+    return cameraInfo.isFlashSupported && cameraInfo.isFlashAvailable
   }
 
   protected fun <T, R> T?.runBind(block: T.() -> R): R {

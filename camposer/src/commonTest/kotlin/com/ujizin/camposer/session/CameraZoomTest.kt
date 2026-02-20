@@ -17,7 +17,7 @@ internal class CameraZoomTest : CameraSessionTest() {
 
       cameraTest.assertZoomRatio(expectedZoom)
       assertNotEquals(cameraSession.info.minZoom, cameraSession.info.maxZoom)
-      assertEquals(cameraSession.state.zoomRatio, expectedZoom)
+      assertEquals(cameraSession.state.zoomRatio.value, expectedZoom)
     }
 
   @Test
@@ -32,7 +32,7 @@ internal class CameraZoomTest : CameraSessionTest() {
       cameraTest.assertZoomRatio(expectedZoom)
       assertNotEquals(cameraSession.info.minZoom, cameraSession.info.maxZoom)
       assertEquals(cameraSession.info.maxZoom, expectedZoom)
-      assertEquals(cameraSession.state.zoomRatio, expectedZoom)
+      assertEquals(cameraSession.state.zoomRatio.value, expectedZoom)
     }
 
   @Test
@@ -47,6 +47,6 @@ internal class CameraZoomTest : CameraSessionTest() {
       cameraTest.assertZoomRatio(expectedZoom)
       assertNotEquals(cameraSession.info.minZoom, cameraSession.info.maxZoom)
       assertEquals(cameraSession.info.minZoom, expectedZoom)
-      assertEquals(cameraSession.state.zoomRatio, expectedZoom)
+      assertEquals(cameraSession.state.zoomRatio.value, expectedZoom)
     }
 }

@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.ujizin.camposer.state.properties.CameraData
+import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import java.util.concurrent.Executor
 
 public actual class CameraInfo internal constructor(
@@ -23,6 +24,7 @@ public actual class CameraInfo internal constructor(
     private set
 
   public actual var isExposureSupported: Boolean by mutableStateOf(cameraInfo.isExposureSupported)
+    private set
   public actual var minExposure: Float by mutableFloatStateOf(cameraInfo.minExposure)
     private set
   public actual var maxExposure: Float by mutableFloatStateOf(cameraInfo.maxExposure)
@@ -39,12 +41,20 @@ public actual class CameraInfo internal constructor(
     cameraInfo.isZeroShutterLagSupported,
   )
     private set
+  public actual var isVideoStabilizationSupported: Boolean by mutableStateOf(
+    cameraInfo.videoFormats.any { format ->
+      format.videoStabilizationModes?.any { mode ->
+        mode != VideoStabilizationMode.Off
+      } == true
+    },
+  )
+    private set
   public actual var isFocusSupported: Boolean by mutableStateOf(cameraInfo.isFocusSupported)
     private set
   public actual var minFPS: Int by mutableIntStateOf(cameraInfo.minFPS)
-    internal set
+    private set
   public actual var maxFPS: Int by mutableIntStateOf(cameraInfo.maxFPS)
-    internal set
+    private set
 
   public actual var photoFormats: List<CameraData> = emptyList()
     get() = cameraInfo.photoFormats
@@ -66,6 +76,7 @@ public actual class CameraInfo internal constructor(
     isTorchAvailable = cameraInfo.isFlashSupported
     isFocusSupported = cameraInfo.isFocusSupported
     isZeroShutterLagSupported = cameraInfo.isZeroShutterLagSupported
+    isVideoStabilizationSupported = isVideoStabilizationSupported()
     minFPS = cameraInfo.minFPS
     maxFPS = cameraInfo.maxFPS
   }

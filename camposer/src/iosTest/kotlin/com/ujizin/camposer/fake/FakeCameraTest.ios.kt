@@ -6,11 +6,11 @@ import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.FlashMode
 import com.ujizin.camposer.state.properties.ImageAnalyzer
 import com.ujizin.camposer.state.properties.ImageCaptureStrategy
+import com.ujizin.camposer.state.properties.format.CamFormat
 import com.ujizin.camposer.state.properties.highResolutionEnabled
 import com.ujizin.camposer.state.properties.mode
 import com.ujizin.camposer.state.properties.output
 import com.ujizin.camposer.state.properties.quality
-import com.ujizin.camposer.state.properties.format.CamFormat
 import com.ujizin.camposer.state.properties.selector.CamSelector
 import com.ujizin.camposer.state.properties.selector.value
 import kotlin.test.assertEquals

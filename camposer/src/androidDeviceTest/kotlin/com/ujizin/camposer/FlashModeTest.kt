@@ -2,12 +2,12 @@ package com.ujizin.camposer
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.ujizin.camposer.state.properties.FlashMode
@@ -35,7 +35,7 @@ internal class FlashModeTest : CameraTest() {
         waitUntil { flashMode.value != oldMode }
 
         onNodeWithTag("${flashMode.value}").assertIsDisplayed()
-        runOnIdle { assertEquals(mode, cameraSession.state.flashMode) }
+        runOnIdle { assertEquals(mode, cameraSession.state.flashMode.value) }
       }
     }
 
@@ -51,7 +51,7 @@ internal class FlashModeTest : CameraTest() {
       }
 
       onNodeWithTag("${FlashMode.On}").assertExists()
-      runOnIdle { assertEquals(FlashMode.On, cameraSession.state.flashMode) }
+      runOnIdle { assertEquals(FlashMode.On, cameraSession.state.flashMode.value) }
     }
 
   @Test
@@ -64,14 +64,14 @@ internal class FlashModeTest : CameraTest() {
 
       cameraController.setFlashMode(FlashMode.On)
       onNodeWithTag("${FlashMode.On}").assertDoesNotExist()
-      runOnIdle { assertEquals(FlashMode.Off, cameraSession.state.flashMode) }
+      runOnIdle { assertEquals(FlashMode.Off, cameraSession.state.flashMode.value) }
     }
 
   private fun ComposeContentTestRule.initFlashCamera(
     camSelector: CamSelector,
     mode: FlashMode = FlashMode.Off,
   ) = initCameraSession { state ->
-    flashMode = rememberUpdatedState(cameraSession.state.flashMode)
+    flashMode = cameraSession.state.flashMode.collectAsStateWithLifecycle()
 
     LaunchedEffect(mode) {
       cameraController.setFlashMode(mode)

@@ -2,6 +2,12 @@ package com.ujizin.camposer.internal.core
 
 import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.info.CameraInfo
+import com.ujizin.camposer.internal.core.applier.AnalyzerApplier
+import com.ujizin.camposer.internal.core.applier.CameraStateApplier
+import com.ujizin.camposer.internal.core.applier.ExposureZoomApplier
+import com.ujizin.camposer.internal.core.applier.PreviewApplier
+import com.ujizin.camposer.internal.core.applier.SessionTopologyApplier
+import com.ujizin.camposer.internal.core.applier.VideoApplier
 import com.ujizin.camposer.internal.core.ios.IOSCameraController
 import com.ujizin.camposer.internal.extensions.toVideoOrientation
 import com.ujizin.camposer.state.CameraState
@@ -14,16 +20,9 @@ import com.ujizin.camposer.state.properties.MirrorMode
 import com.ujizin.camposer.state.properties.OrientationStrategy
 import com.ujizin.camposer.state.properties.ScaleType
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
-import com.ujizin.camposer.state.properties.gravity
-import com.ujizin.camposer.state.properties.highResolutionEnabled
-import com.ujizin.camposer.state.properties.isMirrorEnabled
-import com.ujizin.camposer.state.properties.mode
-import com.ujizin.camposer.state.properties.output
-import com.ujizin.camposer.state.properties.quality
-import com.ujizin.camposer.state.properties.value
 import com.ujizin.camposer.state.properties.format.CamFormat
+import com.ujizin.camposer.state.properties.isMirrorEnabled
 import com.ujizin.camposer.state.properties.selector.CamSelector
-import com.ujizin.camposer.state.properties.selector.getCaptureDevice
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -40,155 +39,147 @@ internal actual class CameraEngineImpl(
   actual override val cameraState = CameraState(
     cameraInfo = cameraInfo,
     dispatcher = dispatcher,
-    cameraDelegate = this,
+  )
+
+  private val sessionTopologyApplier = SessionTopologyApplier(
+    cameraState = cameraState,
+    cameraInfo = cameraInfo,
+    iOSCameraController = iOSCameraController,
+  )
+
+  private val previewApplier = PreviewApplier(
+    cameraState = cameraState,
+    iOSCameraController = iOSCameraController,
+  )
+
+  private val analyzerApplier = AnalyzerApplier(
+    cameraState = cameraState,
+  )
+
+  private val exposureZoomApplier = ExposureZoomApplier(
+    cameraState = cameraState,
+    iOSCameraController = iOSCameraController,
+  )
+
+  private val videoApplier = VideoApplier(
+    cameraState = cameraState,
+    iOSCameraController = iOSCameraController,
+  )
+
+  private val appliers: List<CameraStateApplier> = listOf(
+    sessionTopologyApplier,
+    previewApplier,
+    analyzerApplier,
+    exposureZoomApplier,
+    videoApplier,
   )
 
   init {
-    iOSCameraController.setPreviewGravity(cameraState.scaleType.gravity)
+    appliers.forEach(CameraStateApplier::onCameraInitialized)
+  }
+
+  actual override fun updateCaptureMode(captureMode: CaptureMode) {
+    sessionTopologyApplier.applyCaptureMode(captureMode)
+  }
+
+  actual override fun updateCamSelector(camSelector: CamSelector) {
+    sessionTopologyApplier.applyCamSelector(camSelector = camSelector)
+  }
+
+  actual override fun updateScaleType(scaleType: ScaleType) {
+    if (cameraState.scaleType.value == scaleType) return
+    previewApplier.applyScaleType(scaleType)
+  }
+
+  actual override fun updateFlashMode(flashMode: FlashMode) {
+    if (cameraState.flashMode.value == flashMode) return
+    exposureZoomApplier.applyFlashMode(flashMode)
+  }
+
+  actual override fun updateMirrorMode(mirrorMode: MirrorMode) {
+    if (cameraState.mirrorMode.value == mirrorMode) return
+    cameraState.updateMirrorMode(mirrorMode)
+  }
+
+  actual override fun updateCamFormat(camFormat: CamFormat) {
+    if (cameraState.camFormat.value == camFormat) return
+    sessionTopologyApplier.applyCamFormat(camFormat = camFormat)
+  }
+
+  actual override fun updateImplementationMode(implementationMode: ImplementationMode) {
+    if (cameraState.implementationMode.value == implementationMode) return
+    cameraState.updateImplementationMode(implementationMode)
+  }
+
+  actual override fun updateImageAnalyzer(imageAnalyzer: ImageAnalyzer?) {
+    if (cameraState.imageAnalyzer.value == imageAnalyzer) return
+    analyzerApplier.applyImageAnalyzer(imageAnalyzer)
+  }
+
+  actual override fun updateImageAnalyzerEnabled(isImageAnalyzerEnabled: Boolean) {
+    if (cameraState.isImageAnalyzerEnabled.value == isImageAnalyzerEnabled) return
+    analyzerApplier.applyImageAnalyzerEnabled(isImageAnalyzerEnabled)
+  }
+
+  actual override fun updatePinchToZoomEnabled(isPinchToZoomEnabled: Boolean) {
+    if (cameraState.isPinchToZoomEnabled.value == isPinchToZoomEnabled) return
+    cameraState.updatePinchToZoomEnabled(isPinchToZoomEnabled)
+  }
+
+  actual override fun updateExposureCompensation(exposureCompensation: Float) {
+    val clampedExposureCompensation = exposureCompensation.coerceIn(
+      minimumValue = cameraInfo.minExposure,
+      maximumValue = cameraInfo.maxExposure,
+    )
+    if (cameraState.exposureCompensation.value == clampedExposureCompensation) return
+    exposureZoomApplier.applyExposureCompensation(clampedExposureCompensation)
+  }
+
+  actual override fun updateImageCaptureStrategy(imageCaptureStrategy: ImageCaptureStrategy) {
+    if (cameraState.imageCaptureStrategy.value == imageCaptureStrategy) return
+    videoApplier.applyImageCaptureStrategy(imageCaptureStrategy)
+  }
+
+  actual override fun updateZoomRatio(zoomRatio: Float) {
+    val clampedZoomRatio = zoomRatio.coerceIn(
+      minimumValue = cameraInfo.minZoom,
+      maximumValue = cameraInfo.maxZoom,
+    )
+    if (cameraState.zoomRatio.value == clampedZoomRatio) return
+    exposureZoomApplier.applyZoomRatio(clampedZoomRatio)
+  }
+
+  actual override fun updateFocusOnTapEnabled(isFocusOnTapEnabled: Boolean) {
+    if (cameraState.isFocusOnTapEnabled.value == isFocusOnTapEnabled) return
+    cameraState.updateFocusOnTapEnabled(isFocusOnTapEnabled)
+  }
+
+  actual override fun updateTorchEnabled(isTorchEnabled: Boolean) {
+    if (cameraState.isTorchEnabled.value == isTorchEnabled) return
+    exposureZoomApplier.applyTorchEnabled(isTorchEnabled)
+  }
+
+  actual override fun updateOrientationStrategy(orientationStrategy: OrientationStrategy) {
+    if (cameraState.orientationStrategy.value == orientationStrategy) return
+    cameraState.updateOrientationStrategy(orientationStrategy)
+  }
+
+  actual override fun updateFrameRate(frameRate: Int) {
+    if (cameraState.frameRate.value == frameRate) return
+    videoApplier.applyFrameRate(frameRate)
+  }
+
+  actual override fun updateVideoStabilizationMode(videoStabilizationMode: VideoStabilizationMode) {
+    if (cameraState.videoStabilizationMode.value == videoStabilizationMode) return
+    videoApplier.applyVideoStabilizationMode(videoStabilizationMode)
   }
 
   actual override fun isMirrorEnabled(): Boolean =
-    cameraState.mirrorMode.isMirrorEnabled(iOSCameraController.getCurrentPosition())
-
-  actual override fun setCaptureMode(captureMode: CaptureMode) {
-    resetConfig()
-    iOSCameraController.addOutput(captureMode.output)
-    updateConfig(captureModeChanged = true)
-  }
-
-  actual override fun removeCaptureMode(captureMode: CaptureMode) {
-    iOSCameraController.removeOutput(captureMode.output)
-  }
-
-  actual override fun setCamSelector(camSelector: CamSelector) {
-    resetConfig()
-    iOSCameraController.setCaptureDevice(iOSCameraController.getCaptureDevice(camSelector))
-    updateConfig(camSelectorChanged = true)
-  }
-
-  actual override fun setCamFormat(camFormat: CamFormat) {
-    camFormat.applyConfigs(
-      cameraInfo = cameraInfo,
-      iosCameraController = iOSCameraController,
-      onDeviceFormatUpdated = { cameraInfo.rebind(output = cameraState.captureMode.output) },
-      onStabilizationModeChanged = ::setVideoStabilizationMode,
-      onFrameRateChanged = ::setFrameRate,
-    )
-  }
-
-  actual override fun setScaleType(scaleType: ScaleType) {
-    iOSCameraController.setPreviewGravity(scaleType.gravity)
-  }
-
-  actual override fun setImageAnalyzer(imageAnalyzer: ImageAnalyzer?) {
-    imageAnalyzer?.isEnabled = cameraState.isImageAnalyzerEnabled
-  }
-
-  actual override fun setImageAnalyzerEnabled(isImageAnalyzerEnabled: Boolean) {
-    cameraState.imageAnalyzer?.isEnabled = isImageAnalyzerEnabled
-  }
-
-  actual override fun disposeImageAnalyzer(imageAnalyzer: ImageAnalyzer?) {
-    imageAnalyzer?.dispose()
-  }
-
-  actual override fun setFrameRate(
-    minFps: Int,
-    maxFps: Int,
-  ) {
-    when {
-      cameraState.frameRate != minFps -> cameraState.frameRate = minFps
-      else -> iOSCameraController.setFrameRate(minFps)
-    }
-  }
-
-  actual override fun setFlashMode(flashMode: FlashMode) {
-    iOSCameraController.setFlashMode(flashMode.mode)
-  }
-
-  actual override fun setTorchEnabled(isTorchEnabled: Boolean) {
-    iOSCameraController.setTorchEnabled(isTorchEnabled)
-  }
-
-  actual override fun setExposureCompensation(exposureCompensation: Float) {
-    iOSCameraController.setExposureCompensation(exposureCompensation)
-  }
-
-  actual override fun setImageCaptureStrategy(imageCaptureStrategy: ImageCaptureStrategy) {
-    iOSCameraController.setCameraOutputQuality(
-      quality = imageCaptureStrategy.quality,
-      highResolutionEnabled = imageCaptureStrategy.highResolutionEnabled,
-    )
-  }
-
-  actual override fun isVideoStabilizationSupported(
-    videoStabilizationMode: VideoStabilizationMode,
-  ): Boolean = iOSCameraController.isVideoStabilizationSupported(videoStabilizationMode.value)
-
-  actual override fun setVideoStabilizationMode(videoStabilizationMode: VideoStabilizationMode) {
-    when {
-      videoStabilizationMode != cameraState.videoStabilizationMode -> {
-        cameraState.videoStabilizationMode = videoStabilizationMode
-      }
-
-      else -> {
-        iOSCameraController.setVideoStabilization(videoStabilizationMode.value)
-      }
-    }
-  }
-
-  actual override fun setZoomRatio(zoomRatio: Float) {
-    iOSCameraController.setZoomRatio(zoomRatio)
-  }
-
-  actual override fun resetConfig() =
-    with(cameraState) {
-      cameraInfo.rebind(output = captureMode.output)
-
-      zoomRatio = cameraInfo.minZoom
-      exposureCompensation = 0F
-      flashMode = FlashMode.Off
-      isTorchEnabled = false
-      iOSCameraController.setCameraOutputQuality(
-        quality = imageCaptureStrategy.quality,
-        highResolutionEnabled = imageCaptureStrategy.highResolutionEnabled,
-      )
-    }
-
-  actual override fun setImplementationMode(implementationMode: ImplementationMode) {
-    // no-op
-  }
-
-  actual override fun setMirrorMode(mirrorMode: MirrorMode) {
-    // no-op
-  }
-
-  actual override fun setFocusOnTapEnabled(isFocusOnTapEnabled: Boolean) {
-    // no-op
-  }
-
-  actual override fun setPinchToZoomEnabled(isPinchToZoomEnabled: Boolean) {
-    // no-op
-  }
-
-  actual override fun setOrientationStrategy(orientationStrategy: OrientationStrategy) {
-    // no-op
-  }
+    cameraState.mirrorMode.value.isMirrorEnabled(iOSCameraController.getCurrentPosition())
 
   override fun getCurrentVideoOrientation() =
-    when (cameraState.orientationStrategy) {
+    when (cameraState.orientationStrategy.value) {
       OrientationStrategy.Device -> iOSCameraController.getCurrentDeviceOrientation()
       OrientationStrategy.Preview -> UIApplication.sharedApplication.statusBarOrientation
     }.toVideoOrientation()
-
-  private fun updateConfig(
-    captureModeChanged: Boolean = false,
-    camSelectorChanged: Boolean = false,
-  ) {
-    resetConfig()
-
-    if (captureModeChanged || camSelectorChanged) {
-      setCamFormat(cameraState.camFormat)
-    }
-  }
 }

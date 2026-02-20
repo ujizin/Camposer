@@ -21,13 +21,16 @@ internal class ImageCaptureStrategyTest : CameraTest() {
     with(composeTestRule) {
       initImageCaptureModeCamera(ImageCaptureStrategy.Balanced)
 
-      Assert.assertEquals(cameraSession.state.imageCaptureStrategy, ImageCaptureStrategy.Balanced)
+      Assert.assertEquals(
+        cameraSession.state.imageCaptureStrategy.value,
+        ImageCaptureStrategy.Balanced,
+      )
       imageCaptureMode.value = ImageCaptureStrategy.MaxQuality
 
       runOnIdle {
         Assert.assertEquals(
           ImageCaptureStrategy.MaxQuality,
-          cameraSession.state.imageCaptureStrategy,
+          cameraSession.state.imageCaptureStrategy.value,
         )
       }
     }

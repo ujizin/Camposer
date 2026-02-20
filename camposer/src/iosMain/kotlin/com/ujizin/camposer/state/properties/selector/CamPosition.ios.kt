@@ -8,7 +8,9 @@ import platform.AVFoundation.AVCaptureDevicePositionUnspecified
 internal val CamPosition.value: AVCaptureDevicePosition
   get() = when (this) {
     CamPosition.Back -> AVCaptureDevicePositionBack
+
     CamPosition.Front -> AVCaptureDevicePositionFront
+
     CamPosition.External,
     CamPosition.Unknown,
     -> AVCaptureDevicePositionUnspecified

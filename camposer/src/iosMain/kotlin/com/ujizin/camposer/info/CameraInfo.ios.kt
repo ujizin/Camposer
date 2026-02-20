@@ -47,6 +47,9 @@ public actual class CameraInfo internal constructor(
   public actual var isZeroShutterLagSupported: Boolean by mutableStateOf(false)
     private set
 
+  public actual var isVideoStabilizationSupported: Boolean by mutableStateOf(false)
+    private set
+
   public actual var isFocusSupported: Boolean by mutableStateOf(false)
     private set
 
@@ -88,5 +91,6 @@ public actual class CameraInfo internal constructor(
     isTorchSupported = controller.hasTorch
     isTorchAvailable = controller.isFlashAvailable
     isZeroShutterLagSupported = controller.isZeroShutterLagSupported(output)
+    isVideoStabilizationSupported = isVideoStabilizationSupported()
   }
 }

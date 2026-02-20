@@ -1,39 +1,35 @@
 package com.ujizin.camposer.internal.core
 
 import android.content.ContentResolver
-import android.util.Range
-import androidx.annotation.OptIn
-import androidx.camera.core.ExperimentalZeroShutterLag
 import androidx.camera.core.MirrorMode.MIRROR_MODE_OFF
 import androidx.camera.core.MirrorMode.MIRROR_MODE_ON
-import androidx.camera.view.CameraController.IMAGE_ANALYSIS
-import androidx.compose.ui.util.fastCoerceIn
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.info.CameraInfo
+import com.ujizin.camposer.internal.core.applier.AnalyzerApplier
+import com.ujizin.camposer.internal.core.applier.CameraStateApplier
+import com.ujizin.camposer.internal.core.applier.ExposureZoomApplier
+import com.ujizin.camposer.internal.core.applier.PreviewApplier
+import com.ujizin.camposer.internal.core.applier.SessionTopologyApplier
+import com.ujizin.camposer.internal.core.applier.VideoApplier
 import com.ujizin.camposer.internal.core.camerax.CameraXController
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.FlashMode
 import com.ujizin.camposer.state.properties.ImageAnalyzer
 import com.ujizin.camposer.state.properties.ImageCaptureStrategy
-import com.ujizin.camposer.state.properties.ImageCaptureStrategy.MinLatency
 import com.ujizin.camposer.state.properties.ImplementationMode
 import com.ujizin.camposer.state.properties.MirrorMode
 import com.ujizin.camposer.state.properties.OrientationStrategy
 import com.ujizin.camposer.state.properties.ScaleType
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
-import com.ujizin.camposer.state.properties.fallback
 import com.ujizin.camposer.state.properties.format.CamFormat
-import com.ujizin.camposer.state.properties.mode
 import com.ujizin.camposer.state.properties.selector.CamPosition
 import com.ujizin.camposer.state.properties.selector.CamSelector
-import com.ujizin.camposer.state.properties.value
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import java.util.concurrent.Executor
-import kotlin.math.roundToInt
 
 internal actual class CameraEngineImpl(
   actual override val cameraController: CameraController,
@@ -49,201 +45,162 @@ internal actual class CameraEngineImpl(
 
   actual override val cameraState: CameraState = CameraState(
     cameraInfo = cameraInfo,
-    cameraDelegate = this,
     dispatcher = dispatcher,
   )
+
+  private val sessionTopologyApplier = SessionTopologyApplier(
+    cameraState = cameraState,
+    cameraInfo = cameraInfo,
+    cameraXController = cameraXController,
+  )
+
+  private val previewApplier = PreviewApplier(
+    cameraState = cameraState,
+    cameraXController = cameraXController,
+  )
+
+  private val analyzerApplier = AnalyzerApplier(
+    cameraState = cameraState,
+    cameraXController = cameraXController,
+  )
+
+  private val exposureZoomApplier = ExposureZoomApplier(
+    cameraState = cameraState,
+    cameraXController = cameraXController,
+  )
+
+  private val videoApplier = VideoApplier(
+    cameraInfo = cameraInfo,
+    cameraState = cameraState,
+    cameraXController = cameraXController,
+  )
+
+  private val appliers: List<CameraStateApplier> = listOf(
+    sessionTopologyApplier,
+    previewApplier,
+    analyzerApplier,
+    exposureZoomApplier,
+    videoApplier,
+  )
+
+  actual override fun updateCaptureMode(captureMode: CaptureMode) {
+    if (cameraState.captureMode.value == captureMode) return
+    sessionTopologyApplier.applyCaptureMode(captureMode = captureMode)
+  }
+
+  actual override fun updateCamSelector(camSelector: CamSelector) {
+    if (cameraState.camSelector.value == camSelector) return
+    sessionTopologyApplier.applyCamSelector(camSelector)
+  }
+
+  actual override fun updateScaleType(scaleType: ScaleType) {
+    if (cameraState.scaleType.value == scaleType) return
+    cameraState.updateScaleType(scaleType)
+  }
+
+  actual override fun updateFlashMode(flashMode: FlashMode) {
+    if (cameraState.flashMode.value == flashMode) return
+    exposureZoomApplier.applyFlashMode(flashMode)
+  }
+
+  actual override fun updateMirrorMode(mirrorMode: MirrorMode) {
+    if (cameraState.mirrorMode.value == mirrorMode) return
+    previewApplier.applyMirrorMode(mirrorMode)
+  }
+
+  actual override fun updateCamFormat(camFormat: CamFormat) {
+    if (cameraState.camFormat.value == camFormat) return
+    sessionTopologyApplier.applyCamFormat(camFormat = camFormat)
+  }
+
+  actual override fun updateImplementationMode(implementationMode: ImplementationMode) {
+    if (cameraState.implementationMode.value == implementationMode) return
+    cameraState.updateImplementationMode(implementationMode)
+  }
+
+  actual override fun updateImageAnalyzer(imageAnalyzer: ImageAnalyzer?) {
+    if (cameraState.imageAnalyzer.value == imageAnalyzer) return
+    analyzerApplier.applyImageAnalyzer(imageAnalyzer)
+  }
+
+  actual override fun updateImageAnalyzerEnabled(isImageAnalyzerEnabled: Boolean) {
+    if (cameraState.isImageAnalyzerEnabled.value == isImageAnalyzerEnabled) return
+    analyzerApplier.applyImageAnalyzerEnabled(isImageAnalyzerEnabled = isImageAnalyzerEnabled)
+  }
+
+  actual override fun updatePinchToZoomEnabled(isPinchToZoomEnabled: Boolean) {
+    if (cameraState.isPinchToZoomEnabled.value == isPinchToZoomEnabled) return
+    cameraState.updatePinchToZoomEnabled(isPinchToZoomEnabled)
+  }
+
+  actual override fun updateExposureCompensation(exposureCompensation: Float) {
+    val clampedExposureCompensation = exposureCompensation.coerceIn(
+      minimumValue = cameraInfo.minExposure,
+      maximumValue = cameraInfo.maxExposure,
+    )
+    if (cameraState.exposureCompensation.value == clampedExposureCompensation) return
+    exposureZoomApplier.applyExposureCompensation(clampedExposureCompensation)
+  }
+
+  actual override fun updateImageCaptureStrategy(imageCaptureStrategy: ImageCaptureStrategy) {
+    if (cameraState.imageCaptureStrategy.value == imageCaptureStrategy) return
+    videoApplier.applyImageCaptureStrategy(imageCaptureStrategy)
+  }
+
+  actual override fun updateZoomRatio(zoomRatio: Float) {
+    val clampedZoomRatio = zoomRatio.coerceIn(
+      minimumValue = cameraInfo.minZoom,
+      maximumValue = cameraInfo.maxZoom,
+    )
+    if (cameraState.zoomRatio.value == clampedZoomRatio) return
+    exposureZoomApplier.applyZoomRatio(clampedZoomRatio)
+  }
+
+  actual override fun updateFocusOnTapEnabled(isFocusOnTapEnabled: Boolean) {
+    if (cameraState.isFocusOnTapEnabled.value == isFocusOnTapEnabled) return
+    previewApplier.applyFocusOnTapEnabled(isFocusOnTapEnabled)
+  }
+
+  actual override fun updateTorchEnabled(isTorchEnabled: Boolean) {
+    if (cameraState.isTorchEnabled.value == isTorchEnabled) return
+    exposureZoomApplier.applyTorchEnabled(isTorchEnabled)
+  }
+
+  actual override fun updateOrientationStrategy(orientationStrategy: OrientationStrategy) {
+    if (cameraState.orientationStrategy.value == orientationStrategy) return
+    cameraState.updateOrientationStrategy(orientationStrategy)
+  }
+
+  actual override fun updateFrameRate(frameRate: Int) {
+    if (cameraState.frameRate.value == frameRate) return
+    videoApplier.applyFrameRate(frameRate)
+  }
+
+  actual override fun updateVideoStabilizationMode(videoStabilizationMode: VideoStabilizationMode) {
+    if (cameraState.videoStabilizationMode.value == videoStabilizationMode) return
+    videoApplier.applyVideoStabilizationMode(videoStabilizationMode)
+  }
 
   actual override fun isMirrorEnabled(): Boolean =
     when (cameraXController.videoCaptureMirrorMode) {
       MIRROR_MODE_ON -> true
       MIRROR_MODE_OFF -> false
-      else -> cameraState.camSelector.camPosition == CamPosition.Front
+      else -> cameraState.camSelector.value.camPosition == CamPosition.Front
     }
 
   override fun onCameraInitialized() {
-    cameraXController.lifecycleOwner.lifecycle.addObserver(CameraConfigSaver())
-    with(cameraXController) {
-      setEnabledUseCases(getUseCases())
-      setZoomRatio(cameraState.zoomRatio)
-      isTapToFocusEnabled = cameraState.isFocusOnTapEnabled
-      videoCaptureMirrorMode = cameraState.mirrorMode.mode
-      setCamSelector(cameraState.camSelector)
-    }
+    cameraXController.lifecycleOwner.lifecycle.addObserver(CameraLifecycleObserver())
+    appliers.forEach(CameraStateApplier::onCameraInitialized)
   }
 
-  actual override fun setCaptureMode(captureMode: CaptureMode) {
-    mainExecutor.execute {
-      cameraXController.setEnabledUseCases(getUseCases(captureMode))
-      resetPartialConfig()
-    }
-  }
-
-  actual override fun setCamSelector(camSelector: CamSelector) {
-    mainExecutor.execute {
-      cameraXController.cameraSelector = camSelector.selector
-      cameraInfo.rebind()
-      resetConfig()
-    }
-  }
-
-  actual override fun setCamFormat(camFormat: CamFormat) {
-    camFormat.applyConfigs(
-      cameraInfo = cameraInfo,
-      controller = cameraXController,
-      onFrameRateChanged = ::setFrameRate,
-      onStabilizationModeChanged = ::setVideoStabilizationMode,
-    )
-
-    resetPartialConfig()
-  }
-
-  actual override fun setMirrorMode(mirrorMode: MirrorMode) {
-    cameraXController.videoCaptureMirrorMode = mirrorMode.mode
-  }
-
-  actual override fun setImageAnalyzer(imageAnalyzer: ImageAnalyzer?) {
-    cameraXController.setImageAnalysisAnalyzer(
-      cameraXController.mainExecutor,
-      imageAnalyzer?.analyzer ?: return,
-    )
-  }
-
-  actual override fun setImageAnalyzerEnabled(isImageAnalyzerEnabled: Boolean) {
-    cameraXController.setEnabledUseCases(
-      getUseCases(isImageAnalyzerEnabled = isImageAnalyzerEnabled),
-    )
-  }
-
-  actual override fun setFrameRate(
-    minFps: Int,
-    maxFps: Int,
-  ) {
-    when {
-      cameraState.frameRate != minFps -> cameraState.frameRate = minFps
-      else -> cameraXController.videoCaptureTargetFrameRate = Range(minFps, maxFps)
-    }
-  }
-
-  actual override fun setFlashMode(flashMode: FlashMode) {
-    if (cameraState.flashMode != flashMode) {
-      cameraState.flashMode = flashMode
-      return
-    }
-    cameraXController.imageCaptureFlashMode = flashMode.mode
-  }
-
-  actual override fun setTorchEnabled(isTorchEnabled: Boolean) {
-    if (cameraState.isTorchEnabled != isTorchEnabled) {
-      cameraState.isTorchEnabled = isTorchEnabled
-      return
-    }
-
-    cameraXController.enableTorch(isTorchEnabled)
-  }
-
-  actual override fun setExposureCompensation(exposureCompensation: Float) {
-    if (cameraState.exposureCompensation != exposureCompensation) {
-      cameraState.exposureCompensation = exposureCompensation
-      return
-    }
-
-    cameraXController.setExposureCompensationIndex(
-      exposureCompensation.roundToInt(),
-    )
-  }
-
-  actual override fun setFocusOnTapEnabled(isFocusOnTapEnabled: Boolean) {
-    cameraXController.isTapToFocusEnabled = isFocusOnTapEnabled
-  }
-
-  @OptIn(ExperimentalZeroShutterLag::class)
-  actual override fun setImageCaptureStrategy(imageCaptureStrategy: ImageCaptureStrategy) {
-    val isZSLSupported = cameraInfo.isZeroShutterLagSupported
-    val mode = when {
-      imageCaptureStrategy == MinLatency && !isZSLSupported -> imageCaptureStrategy.fallback
-      else -> imageCaptureStrategy.mode
-    }
-    cameraXController.imageCaptureMode = mode
-  }
-
-  actual override fun isVideoStabilizationSupported(
-    videoStabilizationMode: VideoStabilizationMode,
-  ): Boolean = false // TODO CameraX controller does not support yet :(
-
-  actual override fun setVideoStabilizationMode(videoStabilizationMode: VideoStabilizationMode) {
-    if (cameraState.videoStabilizationMode != videoStabilizationMode) {
-      cameraState.videoStabilizationMode = videoStabilizationMode
-      return
-    }
-
-    // TODO CameraX controller does not support yet :(
-  }
-
-  actual override fun setZoomRatio(zoomRatio: Float) {
-    if (cameraState.zoomRatio != zoomRatio) {
-      cameraState.zoomRatio = zoomRatio
-      return
-    }
-
-    cameraXController.setZoomRatio(zoomRatio)
-  }
-
-  actual override fun setPinchToZoomEnabled(isPinchToZoomEnabled: Boolean) {
-    // no-op
-  }
-
-  actual override fun setScaleType(scaleType: ScaleType) {
-    // no-op
-  }
-
-  actual override fun setImplementationMode(implementationMode: ImplementationMode) {
-    // no-op
-  }
-
-  actual override fun disposeImageAnalyzer(imageAnalyzer: ImageAnalyzer?) {
-    // no-op
-  }
-
-  actual override fun removeCaptureMode(captureMode: CaptureMode) {
-    // no-op
-  }
-
-  actual override fun setOrientationStrategy(orientationStrategy: OrientationStrategy) {
-    // no-op
-  }
-
-  actual override fun resetConfig() {
-    resetPartialConfig()
-    setFlashMode(FlashMode.Off)
-  }
-
-  private fun resetPartialConfig() {
-    setZoomRatio(cameraInfo.minZoom)
-    setExposureCompensation(0F)
-    setTorchEnabled(false)
-  }
-
-  private fun getUseCases(
-    mode: CaptureMode = cameraState.captureMode,
-    isImageAnalyzerEnabled: Boolean = cameraState.isImageAnalyzerEnabled,
-  ): Int =
-    when {
-      isImageAnalyzerEnabled && mode != CaptureMode.Video -> mode.value or IMAGE_ANALYSIS
-      else -> mode.value
-    }
-
-  internal inner class CameraConfigSaver : DefaultLifecycleObserver {
-    private var hasPaused: Boolean = false
-
+  internal inner class CameraLifecycleObserver : DefaultLifecycleObserver {
     override fun onResume(owner: LifecycleOwner) {
       super.onResume(owner)
-      if (!hasPaused) return
-      setZoomRatio(cameraState.zoomRatio.fastCoerceIn(cameraInfo.minZoom, cameraInfo.maxZoom))
-      setExposureCompensation(cameraState.exposureCompensation)
+      appliers.forEach(CameraStateApplier::onCameraResumed)
     }
 
     override fun onPause(owner: LifecycleOwner) {
-      hasPaused = true
+      appliers.forEach(CameraStateApplier::onCameraPaused)
       super.onPause(owner)
     }
   }

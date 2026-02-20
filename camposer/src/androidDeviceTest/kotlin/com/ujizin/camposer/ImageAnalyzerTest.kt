@@ -27,7 +27,7 @@ internal class ImageAnalyzerTest : CameraTest() {
       waitUntil(ANALYZER_TIME_OUT) { isAnalyzeCalled }
 
       runOnIdle {
-        assertEquals(true, cameraSession.state.isImageAnalyzerEnabled)
+        assertEquals(true, cameraSession.state.isImageAnalyzerEnabled.value)
         assertEquals(true, isAnalyzeCalled)
       }
     }
@@ -39,7 +39,7 @@ internal class ImageAnalyzerTest : CameraTest() {
       initImageAnalyzerCamera(isImageAnalyzeEnabled = false) { isAnalyzeCalled = true }
 
       runOnIdle {
-        assertEquals(false, cameraSession.state.isImageAnalyzerEnabled)
+        assertEquals(false, cameraSession.state.isImageAnalyzerEnabled.value)
         assertEquals(false, isAnalyzeCalled)
       }
     }

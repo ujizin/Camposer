@@ -11,7 +11,7 @@ internal actual object Logger {
   private const val TAG = "Camposer"
 
   @OptIn(ExperimentalNativeApi::class)
-  actual fun debug(message: String) {
+  actual fun d(message: String) {
     if (!Platform.isDebugBinary) return
     NSLog("[$TAG] DEBUG: $message")
   }

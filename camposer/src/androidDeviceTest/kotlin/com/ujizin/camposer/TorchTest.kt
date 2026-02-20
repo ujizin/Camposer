@@ -3,8 +3,8 @@ package com.ujizin.camposer
 import androidx.camera.core.TorchState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -35,7 +35,7 @@ internal class TorchTest : CameraTest() {
       initTorchCamera()
 
       runOnIdle {
-        assertEquals(false, cameraSession.state.isTorchEnabled)
+        assertEquals(false, cameraSession.state.isTorchEnabled.value)
         assertEquals(false, cameraXEnableTorch)
       }
 
@@ -43,7 +43,7 @@ internal class TorchTest : CameraTest() {
 
       runOnIdle {
         if (isCameraXFlashSupported) {
-          assertEquals(true, cameraSession.state.isTorchEnabled)
+          assertEquals(true, cameraSession.state.isTorchEnabled.value)
           assertEquals(true, cameraXEnableTorch)
         }
       }
@@ -51,7 +51,7 @@ internal class TorchTest : CameraTest() {
 
   private fun ComposeContentTestRule.initTorchCamera(initialValue: Boolean = false) =
     initCameraSession { state ->
-      torchState = rememberUpdatedState(cameraSession.state.isTorchEnabled)
+      torchState = cameraSession.state.isTorchEnabled.collectAsStateWithLifecycle()
 
       LaunchedEffect(Unit) {
         cameraController.setTorchEnabled(initialValue)

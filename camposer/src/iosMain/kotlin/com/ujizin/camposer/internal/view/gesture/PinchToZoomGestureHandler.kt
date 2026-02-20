@@ -22,14 +22,14 @@ internal class PinchToZoomGestureHandler(
   @OptIn(BetaInteropApi::class)
   @ObjCAction
   internal fun onPinch(sender: UIPinchGestureRecognizer) {
-    if (!cameraSession.state.isPinchToZoomEnabled ||
+    if (!cameraSession.state.isPinchToZoomEnabled.value ||
       sender.state != UIGestureRecognizerStateChanged
     ) {
       return
     }
     memScoped {
       val scale = sender.scale.toFloat()
-      val clampedZoom = (cameraSession.state.zoomRatio * scale).coerceIn(
+      val clampedZoom = (cameraSession.state.zoomRatio.value * scale).coerceIn(
         minimumValue = cameraSession.info.minZoom,
         maximumValue = cameraSession.info.maxZoom,
       )

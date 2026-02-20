@@ -50,6 +50,6 @@ internal class CameraExposureCompensationTest : CameraSessionTest() {
 
   private fun assertExposureCompensation(exposureCompensation: Float) {
     cameraTest.assertExposureCompensation(exposureCompensation)
-    assertEquals(cameraSession.state.exposureCompensation, exposureCompensation)
+    assertEquals(cameraSession.state.exposureCompensation.value, exposureCompensation)
   }
 }

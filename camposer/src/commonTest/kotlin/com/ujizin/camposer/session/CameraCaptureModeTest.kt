@@ -28,6 +28,6 @@ internal class CameraCaptureModeTest : CameraSessionTest() {
 
   private fun assertCaptureMode(expected: CaptureMode) {
     cameraTest.assertCaptureMode(expected)
-    assertEquals(expected, cameraSession.state.captureMode)
+    assertEquals(expected, cameraSession.state.captureMode.value)
   }
 }

@@ -20,54 +20,41 @@ internal expect class CameraEngineImpl : CameraEngine {
   override val cameraState: CameraState
   override val cameraInfo: CameraInfo
 
-  override fun resetConfig()
+  override fun updateCaptureMode(captureMode: CaptureMode)
 
-  override fun setCaptureMode(captureMode: CaptureMode)
+  override fun updateCamSelector(camSelector: CamSelector)
 
-  override fun removeCaptureMode(captureMode: CaptureMode)
+  override fun updateScaleType(scaleType: ScaleType)
 
-  override fun setCamSelector(camSelector: CamSelector)
+  override fun updateFlashMode(flashMode: FlashMode)
 
-  override fun setCamFormat(camFormat: CamFormat)
+  override fun updateMirrorMode(mirrorMode: MirrorMode)
 
-  override fun setScaleType(scaleType: ScaleType)
+  override fun updateCamFormat(camFormat: CamFormat)
 
-  override fun setImplementationMode(implementationMode: ImplementationMode)
+  override fun updateImplementationMode(implementationMode: ImplementationMode)
 
-  override fun setMirrorMode(mirrorMode: MirrorMode)
+  override fun updateImageAnalyzer(imageAnalyzer: ImageAnalyzer?)
 
-  override fun disposeImageAnalyzer(imageAnalyzer: ImageAnalyzer?)
+  override fun updateImageAnalyzerEnabled(isImageAnalyzerEnabled: Boolean)
 
-  override fun setImageAnalyzerEnabled(isImageAnalyzerEnabled: Boolean)
+  override fun updatePinchToZoomEnabled(isPinchToZoomEnabled: Boolean)
 
-  override fun setImageAnalyzer(imageAnalyzer: ImageAnalyzer?)
+  override fun updateExposureCompensation(exposureCompensation: Float)
 
-  override fun setFrameRate(
-    minFps: Int,
-    maxFps: Int,
-  )
+  override fun updateImageCaptureStrategy(imageCaptureStrategy: ImageCaptureStrategy)
 
-  override fun setPinchToZoomEnabled(isPinchToZoomEnabled: Boolean)
+  override fun updateZoomRatio(zoomRatio: Float)
 
-  override fun setOrientationStrategy(orientationStrategy: OrientationStrategy)
+  override fun updateFocusOnTapEnabled(isFocusOnTapEnabled: Boolean)
 
-  override fun setFlashMode(flashMode: FlashMode)
+  override fun updateTorchEnabled(isTorchEnabled: Boolean)
 
-  override fun setTorchEnabled(isTorchEnabled: Boolean)
+  override fun updateOrientationStrategy(orientationStrategy: OrientationStrategy)
 
-  override fun setExposureCompensation(exposureCompensation: Float)
+  override fun updateFrameRate(frameRate: Int)
 
-  override fun setFocusOnTapEnabled(isFocusOnTapEnabled: Boolean)
-
-  override fun setImageCaptureStrategy(imageCaptureStrategy: ImageCaptureStrategy)
-
-  override fun isVideoStabilizationSupported(
-    videoStabilizationMode: VideoStabilizationMode,
-  ): Boolean
-
-  override fun setVideoStabilizationMode(videoStabilizationMode: VideoStabilizationMode)
-
-  override fun setZoomRatio(zoomRatio: Float)
+  override fun updateVideoStabilizationMode(videoStabilizationMode: VideoStabilizationMode)
 
   override fun isMirrorEnabled(): Boolean
 }

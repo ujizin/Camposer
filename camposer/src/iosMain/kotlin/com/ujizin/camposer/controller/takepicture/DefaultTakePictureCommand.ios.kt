@@ -25,7 +25,7 @@ internal actual class DefaultTakePictureCommand private constructor(
   )
 
   actual override fun takePicture(onImageCaptured: (CaptureResult<ByteArray>) -> Unit) {
-    if (cameraState.captureMode != CaptureMode.Image) {
+    if (cameraState.captureMode.value != CaptureMode.Image) {
       onImageCaptured(
         CaptureResult.Error(CaptureModeException(CaptureMode.Image)),
       )
@@ -34,7 +34,7 @@ internal actual class DefaultTakePictureCommand private constructor(
 
     controller.takePicture(
       isMirrorEnabled = cameraEngine.isMirrorEnabled(),
-      flashMode = cameraState.flashMode.mode,
+      flashMode = cameraState.flashMode.value.mode,
       videoOrientation = cameraEngine.getCurrentVideoOrientation(),
       onPictureCaptured = onPictureCaptured(onImageCaptured),
     )
@@ -44,7 +44,7 @@ internal actual class DefaultTakePictureCommand private constructor(
     filename: String,
     onImageCaptured: (CaptureResult<String>) -> Unit,
   ) {
-    if (cameraState.captureMode != CaptureMode.Image) {
+    if (cameraState.captureMode.value != CaptureMode.Image) {
       onImageCaptured(
         CaptureResult.Error(CaptureModeException(CaptureMode.Image)),
       )
@@ -54,7 +54,7 @@ internal actual class DefaultTakePictureCommand private constructor(
     controller.takePicture(
       filename = filename,
       isMirrorEnabled = cameraEngine.isMirrorEnabled(),
-      flashMode = cameraState.flashMode.mode,
+      flashMode = cameraState.flashMode.value.mode,
       videoOrientation = cameraEngine.getCurrentVideoOrientation(),
       onPictureCaptured = onPictureCaptured(onImageCaptured),
     )
@@ -67,8 +67,8 @@ internal actual class DefaultTakePictureCommand private constructor(
       onImageCaptured(result.toCaptureResult())
 
       // iOS disables the torch when flash mode is on, so the torch must be re-enabled.
-      if (cameraState.isTorchEnabled && cameraState.flashMode == FlashMode.On) {
-        cameraEngine.setTorchEnabled(true)
+      if (cameraState.isTorchEnabled.value && cameraState.flashMode.value == FlashMode.On) {
+        controller.setTorchEnabled(true)
       }
     }
 }

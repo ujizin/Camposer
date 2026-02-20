@@ -19,7 +19,7 @@ internal class CameraImageAnalyzerTest : CameraSessionTest() {
 
     cameraTest.assertImageAnalyzer(imageAnalyzer)
     assertTrue(isImageAnalyzedCalled)
-    assertNotNull(cameraSession.state.imageAnalyzer)
-    assertEquals(imageAnalyzer, cameraSession.state.imageAnalyzer)
+    assertNotNull(cameraSession.state.imageAnalyzer.value)
+    assertEquals(imageAnalyzer, cameraSession.state.imageAnalyzer.value)
   }
 }

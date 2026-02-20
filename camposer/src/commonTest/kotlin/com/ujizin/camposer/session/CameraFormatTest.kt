@@ -16,7 +16,7 @@ internal class CameraFormatTest : CameraSessionTest() {
     updateSession(camFormat = camFormat)
 
     cameraTest.assertCamFormat(camFormat)
-    assertEquals(cameraSession.state.camFormat, camFormat)
+    assertEquals(cameraSession.state.camFormat.value, camFormat)
   }
 
   @Test
@@ -28,7 +28,7 @@ internal class CameraFormatTest : CameraSessionTest() {
     updateSession(camFormat = camFormat)
 
     cameraTest.assertCamFormat(camFormat)
-    assertEquals(cameraSession.state.camFormat, camFormat)
+    assertEquals(cameraSession.state.camFormat.value, camFormat)
   }
 
   @Test
@@ -40,6 +40,6 @@ internal class CameraFormatTest : CameraSessionTest() {
     updateSession(camFormat = camFormat)
 
     cameraTest.assertCamFormat(camFormat)
-    assertEquals(cameraSession.state.camFormat, camFormat)
+    assertEquals(cameraSession.state.camFormat.value, camFormat)
   }
 }

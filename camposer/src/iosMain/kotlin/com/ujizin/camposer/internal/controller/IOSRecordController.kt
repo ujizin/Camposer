@@ -45,9 +45,7 @@ internal class IOSRecordController(
     }
 
     val videoRecordOutput = videoRecordOutput
-    if (videoRecordOutput == null) {
-      return onVideoCaptured(Result.failure(VideoOutputNotFoundException()))
-    }
+      ?: return onVideoCaptured(Result.failure(VideoOutputNotFoundException()))
 
     videoRecordOutput.setMirrorEnabled(isMirrorEnabled)
 
@@ -66,14 +64,17 @@ internal class IOSRecordController(
           else -> Result.success(filename)
         }
         onVideoCaptured(result)
+        isRecording = false
         videoDelegate = null
       }
     }.apply { videoDelegate = this }
 
     videoRecordOutput.startRecordingToOutputFileURL(
-      outputFileURL = NSURL.Companion.fileURLWithPath(filename),
+      outputFileURL = NSURL.fileURLWithPath(filename),
       recordingDelegate = videoDelegate,
     )
+
+    isRecording = true
   }
 
   fun resume(): Result<Boolean> {

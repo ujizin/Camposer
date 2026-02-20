@@ -44,6 +44,6 @@ internal class CameraSelectorTest : CameraSessionTest() {
 
   private fun assertCamSelector(camSelector: CamSelector) {
     cameraTest.assertCamSelector(camSelector)
-    assertEquals(camSelector, cameraSession.state.camSelector)
+    assertEquals(camSelector, cameraSession.state.camSelector.value)
   }
 }

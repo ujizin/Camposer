@@ -3,7 +3,6 @@ package com.ujizin.camposer
 import android.content.res.Configuration
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalConfiguration
@@ -12,6 +11,7 @@ import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.pinch
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import org.junit.Assert.assertEquals
@@ -130,7 +130,7 @@ internal class ZoomRatioTest : CameraTest() {
     isPinchToZoomEnabled: Boolean = true,
   ) = initCameraSession { state ->
     configurationScreen = LocalConfiguration.current
-    zoomRatio = rememberUpdatedState(cameraSession.state.zoomRatio)
+    zoomRatio = cameraSession.state.zoomRatio.collectAsStateWithLifecycle()
 
     LaunchedEffect(initialValue) {
       cameraController.setZoomRatio(initialValue)

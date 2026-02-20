@@ -1,6 +1,7 @@
 package com.ujizin.camposer.info
 
 import com.ujizin.camposer.state.properties.CameraData
+import com.ujizin.camposer.state.properties.VideoStabilizationMode
 
 /**
  * A class containing detailed information about the device's camera capabilities.
@@ -21,7 +22,7 @@ import com.ujizin.camposer.state.properties.CameraData
  * @property isTorchSupported Indicates if the camera supports torch mode (continuous flash).
  * @property isTorchAvailable Indicates if the torch mode is currently available for use.
  * @property isZeroShutterLagSupported Indicates if the camera supports Zero Shutter Lag (ZSL) to minimize capture delay.
- * @property isFocusSupported Indicates if the camera supports auto-focus or manual focus operations.
+ * @property isFocusSupported Indicates if the camera supports autofocus or manual focus operations.
  * @property minFPS The minimum frames per second supported by the camera preview/recording.
  * @property maxFPS The maximum frames per second supported by the camera preview/recording.
  * @property photoFormats A list of supported resolutions and formats for capturing photos in current camera.
@@ -50,7 +51,8 @@ public expect class CameraInfo {
     private set
   public var isZeroShutterLagSupported: Boolean
     private set
-
+  public var isVideoStabilizationSupported: Boolean
+    private set
   public var isFocusSupported: Boolean
     private set
   public var minFPS: Int
@@ -62,3 +64,10 @@ public expect class CameraInfo {
   public var videoFormats: List<CameraData>
     private set
 }
+
+internal fun CameraInfo.isVideoStabilizationSupported(): Boolean =
+  videoFormats.any { format ->
+    format.videoStabilizationModes?.any { mode ->
+      mode != VideoStabilizationMode.Off
+    } == true
+  }

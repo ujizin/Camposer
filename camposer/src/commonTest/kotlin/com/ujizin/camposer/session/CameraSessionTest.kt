@@ -38,16 +38,16 @@ internal abstract class CameraSessionTest {
   }
 
   protected fun updateSession(
-    camSelector: CamSelector = cameraSession.state.camSelector,
-    captureMode: CaptureMode = cameraSession.state.captureMode,
-    scaleType: ScaleType = cameraSession.state.scaleType,
-    imageAnalyzer: ImageAnalyzer? = cameraSession.state.imageAnalyzer,
+    camSelector: CamSelector = cameraSession.state.camSelector.value,
+    captureMode: CaptureMode = cameraSession.state.captureMode.value,
+    scaleType: ScaleType = cameraSession.state.scaleType.value,
+    imageAnalyzer: ImageAnalyzer? = cameraSession.state.imageAnalyzer.value,
     isImageAnalysisEnabled: Boolean = imageAnalyzer != null,
-    implementationMode: ImplementationMode = cameraSession.state.implementationMode,
-    isFocusOnTapEnabled: Boolean = cameraSession.state.isFocusOnTapEnabled,
-    imageCaptureStrategy: ImageCaptureStrategy = cameraSession.state.imageCaptureStrategy,
-    camFormat: CamFormat = cameraSession.state.camFormat,
-    isPinchToZoomEnabled: Boolean = cameraSession.state.isPinchToZoomEnabled,
+    implementationMode: ImplementationMode = cameraSession.state.implementationMode.value,
+    isFocusOnTapEnabled: Boolean = cameraSession.state.isFocusOnTapEnabled.value,
+    imageCaptureStrategy: ImageCaptureStrategy = cameraSession.state.imageCaptureStrategy.value,
+    camFormat: CamFormat = cameraSession.state.camFormat.value,
+    isPinchToZoomEnabled: Boolean = cameraSession.state.isPinchToZoomEnabled.value,
   ) = cameraSession.update(
     camSelector = camSelector,
     captureMode = captureMode,

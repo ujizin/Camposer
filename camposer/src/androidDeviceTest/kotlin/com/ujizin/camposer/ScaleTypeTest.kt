@@ -20,7 +20,7 @@ internal class ScaleTypeTest : CameraTest() {
       initScaleTypeCamera()
       ScaleType.entries.forEach { scale ->
         scaleType.value = scale
-        runOnIdle { assertEquals(cameraSession.state.scaleType, scaleType.value) }
+        runOnIdle { assertEquals(cameraSession.state.scaleType.value, scaleType.value) }
       }
     }
 

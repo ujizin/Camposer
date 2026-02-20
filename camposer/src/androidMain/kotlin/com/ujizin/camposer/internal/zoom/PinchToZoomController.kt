@@ -8,9 +8,13 @@ internal class PinchToZoomController(
   private val cameraSession: CameraSession,
 ) {
   internal fun onPinchToZoom(scaleFactor: Float): Boolean {
-    if (!cameraSession.state.isPinchToZoomEnabled || !cameraSession.isInitialized) return false
+    if (!cameraSession.state.isPinchToZoomEnabled.value ||
+      !cameraSession.isInitialized
+    ) {
+      return false
+    }
 
-    val zoomRatio = (cameraSession.state.zoomRatio * scaleFactor).fastCoerceIn(
+    val zoomRatio = (cameraSession.state.zoomRatio.value * scaleFactor).fastCoerceIn(
       minimumValue = cameraSession.info.minZoom,
       maximumValue = cameraSession.info.maxZoom,
     )

@@ -12,7 +12,7 @@ internal class CameraScaleTypeTest : CameraSessionTest() {
     ScaleType.entries.forEach { scaleType ->
       updateSession(scaleType = scaleType)
 
-      assertEquals(cameraSession.state.scaleType, scaleType)
+      assertEquals(cameraSession.state.scaleType.value, scaleType)
     }
   }
 }

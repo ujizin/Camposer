@@ -12,7 +12,7 @@ internal class CameraMirrorModeTest : CameraSessionTest() {
     MirrorMode.entries.forEach { mode ->
       controller.setMirrorMode(mode)
 
-      assertEquals(mode, cameraSession.state.mirrorMode)
+      assertEquals(mode, cameraSession.state.mirrorMode.value)
     }
   }
 }

@@ -11,7 +11,7 @@ internal class CameraCaptureModeStrategyTest : CameraSessionTest() {
       updateSession(imageCaptureStrategy = strategy)
 
       cameraTest.assertImageCaptureStrategy(strategy)
-      assertEquals(strategy, cameraSession.state.imageCaptureStrategy)
+      assertEquals(strategy, cameraSession.state.imageCaptureStrategy.value)
     }
   }
 
@@ -21,7 +21,7 @@ internal class CameraCaptureModeStrategyTest : CameraSessionTest() {
     updateSession(imageCaptureStrategy = strategy)
 
     cameraTest.assertImageCaptureStrategy(strategy)
-    assertEquals(strategy, cameraSession.state.imageCaptureStrategy)
+    assertEquals(strategy, cameraSession.state.imageCaptureStrategy.value)
   }
 
   @Test
@@ -30,6 +30,6 @@ internal class CameraCaptureModeStrategyTest : CameraSessionTest() {
     updateSession(imageCaptureStrategy = ImageCaptureStrategy.MinLatency)
 
     cameraTest.assertImageCaptureStrategy(ImageCaptureStrategy.MinLatency)
-    assertEquals(ImageCaptureStrategy.MinLatency, cameraSession.state.imageCaptureStrategy)
+    assertEquals(ImageCaptureStrategy.MinLatency, cameraSession.state.imageCaptureStrategy.value)
   }
 }

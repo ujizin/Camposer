@@ -25,7 +25,7 @@ import platform.UIKit.UIView
 
 @OptIn(ExperimentalForeignApi::class)
 public actual class CameraSession internal constructor(
-  internal val cameraEngine: CameraEngine,
+  internal actual val cameraEngine: CameraEngine,
   internal val iosCameraController: IOSCameraController = (cameraEngine as IOSCameraEngine)
     .iOSCameraController,
   public actual val controller: CameraController = cameraEngine.cameraController,
@@ -69,14 +69,15 @@ public actual class CameraSession internal constructor(
         controller.initialize(
           recordController = DefaultRecordController(cameraEngine),
           takePictureCommand = DefaultTakePictureCommand(cameraEngine),
+          cameraEngine = cameraEngine,
           cameraState = state,
           cameraInfo = info,
         )
 
         setCaptureDevice(
-          device = iosCameraController.getCaptureDevice(state.camSelector),
+          device = iosCameraController.getCaptureDevice(state.camSelector.value),
         )
-        info.rebind(state.captureMode.output)
+        info.rebind(state.captureMode.value.output)
         isInitialized = true
       }
     }.onFailure { error ->
@@ -87,11 +88,9 @@ public actual class CameraSession internal constructor(
 
   public actual fun retryInitialization(): Boolean {
     if (!hasInitializationError) {
-      Logger.debug("Retry skipped: no initialization error present")
       return isInitialized
     }
 
-    Logger.debug("Retrying camera initialization")
     hasInitializationError = false
     isInitialized = false
 
@@ -107,8 +106,8 @@ public actual class CameraSession internal constructor(
   @OptIn(ExperimentalForeignApi::class)
   internal fun startCamera() =
     iosCameraController.start(
-      captureOutput = state.captureMode.output,
-      device = iosCameraController.getCaptureDevice(state.camSelector),
+      captureOutput = state.captureMode.value.output,
+      device = iosCameraController.getCaptureDevice(state.camSelector.value),
       isMuted = controller.isMuted,
       onRunningChanged = { isStreaming = it },
     )
@@ -121,7 +120,7 @@ public actual class CameraSession internal constructor(
     iosCameraController.setFocusPoint(focusPoint)
 
   internal fun recoveryState() {
-    iosCameraController.setTorchEnabled(state.isTorchEnabled)
+    iosCameraController.setTorchEnabled(state.isTorchEnabled.value)
   }
 
   internal fun dispose() {

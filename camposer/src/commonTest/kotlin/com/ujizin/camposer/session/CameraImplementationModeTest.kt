@@ -12,7 +12,7 @@ internal class CameraImplementationModeTest : CameraSessionTest() {
     ImplementationMode.entries.forEach { mode ->
       updateSession(implementationMode = mode)
 
-      assertEquals(cameraSession.state.implementationMode, mode)
+      assertEquals(cameraSession.state.implementationMode.value, mode)
     }
   }
 }

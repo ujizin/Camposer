@@ -2,6 +2,7 @@ package com.ujizin.camposer.session
 
 import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.info.CameraInfo
+import com.ujizin.camposer.internal.core.CameraEngine
 import com.ujizin.camposer.state.CameraState
 
 /**
@@ -46,6 +47,8 @@ public expect class CameraSession {
    * */
   public var hasInitializationError: Boolean
     internal set
+
+  internal val cameraEngine: CameraEngine
 
   /**
    * Retry camera initialization after a failure.

@@ -30,7 +30,7 @@ import com.ujizin.camposer.state.CameraState
  * */
 @Stable
 public actual class CameraSession internal constructor(
-  internal val cameraEngine: CameraEngine,
+  internal actual val cameraEngine: CameraEngine,
   public actual val controller: CameraController = cameraEngine.cameraController,
   public actual val info: CameraInfo = cameraEngine.cameraInfo,
   public actual val state: CameraState = cameraEngine.cameraState,
@@ -109,13 +109,13 @@ public actual class CameraSession internal constructor(
       controller.initialize(
         recordController = DefaultRecordController(cameraEngine = cameraEngine),
         takePictureCommand = DefaultTakePictureCommand(cameraEngine = cameraEngine),
+        cameraEngine = cameraEngine,
         cameraState = state,
         cameraInfo = info,
       )
 
       cameraXControllerWrapper.onInitialize {
         info.rebind()
-        cameraXControllerWrapper.isPinchToZoomEnabled = false
         androidCameraEngine.onCameraInitialized()
         isInitialized = true
       }
@@ -128,11 +128,9 @@ public actual class CameraSession internal constructor(
 
   public actual fun retryInitialization(): Boolean {
     if (!hasInitializationError) {
-      Logger.debug("Retry skipped: no initialization error present")
       return isInitialized
     }
 
-    Logger.debug("Retrying camera initialization")
     hasInitializationError = false
     isInitialized = false
 
