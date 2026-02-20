@@ -75,8 +75,6 @@ fun TopControlsBar(
           )
         }
       }
-
-      ResolutionIndicator()
     }
 
     if (isRecording) {
@@ -236,14 +234,5 @@ private fun ControlButtonPreview() {
 private fun FlashButtonAutoPreview() {
   FlashButton(
     flashMode = FlashMode.Auto,
-  )
-}
-
-@Preview
-@Composable
-private fun ResolutionIndicatorPreview() {
-  ResolutionIndicator(
-    modifier = Modifier.background(Color.Black),
-    aspectRatio = "4:3",
   )
 }
