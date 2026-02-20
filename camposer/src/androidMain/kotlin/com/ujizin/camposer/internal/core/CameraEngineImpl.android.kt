@@ -134,9 +134,10 @@ internal actual class CameraEngineImpl(
   }
 
   actual override fun updateExposureCompensation(exposureCompensation: Float) {
+    val cameraInfoState = cameraInfo.state.value
     val clampedExposureCompensation = exposureCompensation.coerceIn(
-      minimumValue = cameraInfo.minExposure,
-      maximumValue = cameraInfo.maxExposure,
+      minimumValue = cameraInfoState.minExposure,
+      maximumValue = cameraInfoState.maxExposure,
     )
     if (cameraState.exposureCompensation.value == clampedExposureCompensation) return
     exposureZoomApplier.applyExposureCompensation(clampedExposureCompensation)
@@ -148,9 +149,10 @@ internal actual class CameraEngineImpl(
   }
 
   actual override fun updateZoomRatio(zoomRatio: Float) {
+    val cameraInfoState = cameraInfo.state.value
     val clampedZoomRatio = zoomRatio.coerceIn(
-      minimumValue = cameraInfo.minZoom,
-      maximumValue = cameraInfo.maxZoom,
+      minimumValue = cameraInfoState.minZoom,
+      maximumValue = cameraInfoState.maxZoom,
     )
     if (cameraState.zoomRatio.value == clampedZoomRatio) return
     exposureZoomApplier.applyZoomRatio(clampedZoomRatio)

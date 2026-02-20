@@ -12,7 +12,6 @@ import androidx.lifecycle.LifecycleOwner
 import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.controller.record.DefaultRecordController
 import com.ujizin.camposer.controller.takepicture.DefaultTakePictureCommand
-import com.ujizin.camposer.extensions.compatMainExecutor
 import com.ujizin.camposer.info.AndroidCameraInfo
 import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.internal.core.AndroidCameraEngine
@@ -80,7 +79,6 @@ public actual class CameraSession internal constructor(
     cameraController = cameraController,
     cameraXController = cameraXController,
     info = CameraInfo(
-      mainExecutor = context.compatMainExecutor,
       cameraInfo = AndroidCameraInfo(cameraXController),
     ),
   )

@@ -81,7 +81,7 @@ public class CameraState internal constructor(
   public val imageCaptureStrategy: StateFlow<ImageCaptureStrategy> =
     _imageCaptureStrategy.asStateFlow()
 
-  private val _zoomRatio = MutableStateFlow(cameraInfo.minZoom)
+  private val _zoomRatio = MutableStateFlow(cameraInfo.state.value.minZoom)
   public val zoomRatio: StateFlow<Float> = _zoomRatio.asStateFlow()
 
   private val _isFocusOnTapEnabled = MutableStateFlow(true)
@@ -151,8 +151,9 @@ public class CameraState internal constructor(
   }
 
   internal fun updateExposureCompensation(exposureCompensation: Float) {
+    val cameraInfoState = cameraInfo.state.value
     _exposureCompensation.update {
-      exposureCompensation.fastCoerceIn(cameraInfo.minExposure, cameraInfo.maxExposure)
+      exposureCompensation.fastCoerceIn(cameraInfoState.minExposure, cameraInfoState.maxExposure)
     }
   }
 
@@ -161,7 +162,10 @@ public class CameraState internal constructor(
   }
 
   internal fun updateZoomRatio(zoomRatio: Float) {
-    _zoomRatio.update { zoomRatio.fastCoerceIn(cameraInfo.minZoom, cameraInfo.maxZoom) }
+    val cameraInfoState = cameraInfo.state.value
+    _zoomRatio.update {
+      zoomRatio.fastCoerceIn(cameraInfoState.minZoom, cameraInfoState.maxZoom)
+    }
   }
 
   internal fun updateFocusOnTapEnabled(isFocusOnTapEnabled: Boolean) {

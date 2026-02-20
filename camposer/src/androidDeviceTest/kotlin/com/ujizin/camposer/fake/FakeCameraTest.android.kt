@@ -26,7 +26,6 @@ internal actual class FakeCameraTest(
 
   actual val cameraInfo: CameraInfo by lazy {
     CameraInfo(
-      cameraXController.mainExecutor,
       AndroidCameraInfo(cameraXController),
     )
   }

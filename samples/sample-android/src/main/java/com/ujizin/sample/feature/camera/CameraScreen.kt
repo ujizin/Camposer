@@ -14,7 +14,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -131,8 +130,8 @@ fun CameraSection(
   }
   val zoomRatio by cameraSession.state.zoomRatio.collectAsStateWithLifecycle()
   var zoomHasChanged by remember { mutableStateOf(false) }
-
-  val hasFlashUnit by rememberUpdatedState(cameraSession.info.isFlashSupported)
+  val cameraInfoState by cameraSession.info.collectAsStateWithLifecycle()
+  val hasFlashUnit = cameraInfoState.isFlashSupported
   var cameraOption by rememberSaveable { mutableStateOf(CameraOption.Photo) }
   val flashMode by cameraSession.state.flashMode.collectAsStateWithLifecycle()
   val enableTorch by cameraSession.state.isTorchEnabled.collectAsStateWithLifecycle()

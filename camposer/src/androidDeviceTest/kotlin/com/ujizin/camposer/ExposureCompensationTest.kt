@@ -26,15 +26,16 @@ internal class ExposureCompensationTest : CameraTest() {
   fun test_minExposureCompensation() =
     with(composeTestRule) {
       initCameraWithExposure(0F)
+      val cameraInfoState = cameraSession.info.state.value
 
       runOnUiThread {
-        cameraController.setExposureCompensation(cameraSession.info.minExposure)
+        cameraController.setExposureCompensation(cameraInfoState.minExposure)
       }
 
       runOnIdle {
-        if (!cameraSession.info.isExposureSupported) return@runOnIdle
+        if (!cameraInfoState.isExposureSupported) return@runOnIdle
 
-        assertEquals(cameraSession.info.minExposure, currentExposure)
+        assertEquals(cameraInfoState.minExposure, currentExposure)
         assertEquals(exposureCompensation.value, currentExposure)
       }
     }
@@ -43,14 +44,15 @@ internal class ExposureCompensationTest : CameraTest() {
   fun test_maxExposureCompensation() =
     with(composeTestRule) {
       initCameraWithExposure(0F)
+      val cameraInfoState = cameraSession.info.state.value
 
       runOnUiThread {
-        cameraController.setExposureCompensation(cameraSession.info.maxExposure)
+        cameraController.setExposureCompensation(cameraInfoState.maxExposure)
       }
       runOnIdle {
-        if (!cameraSession.info.isExposureSupported) return@runOnIdle
+        if (!cameraInfoState.isExposureSupported) return@runOnIdle
 
-        assertEquals(cameraSession.info.maxExposure, currentExposure)
+        assertEquals(cameraInfoState.maxExposure, currentExposure)
         assertEquals(exposureCompensation.value, currentExposure)
       }
     }

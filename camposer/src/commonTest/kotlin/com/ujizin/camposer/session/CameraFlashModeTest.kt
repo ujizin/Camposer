@@ -16,7 +16,7 @@ internal class CameraFlashModeTest : CameraSessionTest() {
     controller.setFlashMode(expectedFlashMode)
 
     assertFlashMode(expectedFlashMode)
-    assertTrue(cameraSession.info.isFlashSupported)
+    assertTrue(cameraSession.info.state.value.isFlashSupported)
   }
 
   @Test
@@ -31,7 +31,7 @@ internal class CameraFlashModeTest : CameraSessionTest() {
     controller.setFlashMode(expectedFlashMode)
 
     assertFlashMode(FlashMode.Off)
-    assertTrue(cameraSession.info.isFlashSupported)
+    assertTrue(cameraSession.info.state.value.isFlashSupported)
   }
 
   @Test
@@ -43,7 +43,7 @@ internal class CameraFlashModeTest : CameraSessionTest() {
     controller.setFlashMode(expectedFlashMode)
 
     assertFlashMode(expectedFlashMode)
-    assertTrue(cameraSession.info.isFlashSupported)
+    assertTrue(cameraSession.info.state.value.isFlashSupported)
   }
 
   @Test
@@ -54,7 +54,7 @@ internal class CameraFlashModeTest : CameraSessionTest() {
       controller.setFlashMode(expected)
 
       assertFlashMode(expected)
-      assertTrue(cameraSession.info.isFlashSupported)
+      assertTrue(cameraSession.info.state.value.isFlashSupported)
     }
   }
 
@@ -67,7 +67,7 @@ internal class CameraFlashModeTest : CameraSessionTest() {
     val result = controller.setFlashMode(FlashMode.On)
 
     assertTrue(result.isFailure)
-    assertFalse(cameraSession.info.isFlashSupported)
+    assertFalse(cameraSession.info.state.value.isFlashSupported)
     assertFlashMode(FlashMode.Off)
   }
 
@@ -80,7 +80,7 @@ internal class CameraFlashModeTest : CameraSessionTest() {
     val result = controller.setFlashMode(FlashMode.Auto)
 
     assertTrue(result.isFailure)
-    assertFalse(cameraSession.info.isFlashSupported)
+    assertFalse(cameraSession.info.state.value.isFlashSupported)
     assertFlashMode(FlashMode.Off)
   }
 
@@ -93,7 +93,7 @@ internal class CameraFlashModeTest : CameraSessionTest() {
     val result = controller.setFlashMode(FlashMode.Off)
 
     assertTrue(result.isSuccess)
-    assertFalse(cameraSession.info.isFlashSupported)
+    assertFalse(cameraSession.info.state.value.isFlashSupported)
     assertFlashMode(FlashMode.Off)
   }
 

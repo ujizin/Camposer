@@ -32,7 +32,6 @@ internal class ExposureZoomApplier(
   override fun onCameraResumed() {
     if (!hasPaused) return
 
-    cameraXController.setZoomRatio(cameraState.zoomRatio.value)
     cameraXController.setExposureCompensationIndex(
       cameraState.exposureCompensation.value.roundToInt(),
     )

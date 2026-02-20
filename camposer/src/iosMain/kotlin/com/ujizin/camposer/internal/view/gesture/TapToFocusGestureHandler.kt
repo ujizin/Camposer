@@ -25,9 +25,8 @@ internal class TapToFocusGestureHandler(
 
   @ObjCAction
   internal fun onTap(sender: UITapGestureRecognizer) {
-    if (!cameraSession.info.isFocusSupported ||
-      !cameraSession.state.isFocusOnTapEnabled.value
-    ) {
+    val cameraInfo = cameraSession.info.state.value
+    if (!cameraInfo.isFocusSupported || !cameraSession.state.isFocusOnTapEnabled.value) {
       return
     }
     memScoped {

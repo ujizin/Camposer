@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.update
 public abstract class CommonCameraController<
   RC : RecordController,
   TPC : TakePictureCommand,
-  > internal constructor() : CameraControllerContract {
+> internal constructor() : CameraControllerContract {
   protected var recordController: RC? = null
     private set
 
@@ -101,7 +101,7 @@ public abstract class CommonCameraController<
       return
     }
 
-    check(info?.isExposureSupported == true) {
+    check(info?.state?.value?.isExposureSupported == true) {
       "Exposure compensation must be supported to be set"
     }
 
@@ -127,7 +127,7 @@ public abstract class CommonCameraController<
         return@runCatching
       }
 
-      check(!isTorchEnabled || info?.isTorchAvailable == true) {
+      check(!isTorchEnabled || info?.state?.value?.isTorchAvailable == true) {
         "Torch must be supported to enable"
       }
       cameraEngine.runBind { updateTorchEnabled(isTorchEnabled) }
@@ -141,8 +141,9 @@ public abstract class CommonCameraController<
       }
 
       val cameraInfo = checkNotNull(info)
-      check(frameRate in cameraInfo.minFPS..cameraInfo.maxFPS) {
-        "FPS $frameRate must be in range ${cameraInfo.minFPS..cameraInfo.maxFPS}"
+      val cameraInfoState = cameraInfo.state.value
+      check(frameRate in cameraInfoState.minFPS..cameraInfoState.maxFPS) {
+        "FPS $frameRate must be in range ${cameraInfoState.minFPS..cameraInfoState.maxFPS}"
       }
       cameraEngine.runBind { updateFrameRate(frameRate) }
     }
@@ -155,7 +156,7 @@ public abstract class CommonCameraController<
       }
 
       val cameraInfo = checkNotNull(info)
-      check(cameraInfo.isVideoStabilizationSupported) {
+      check(cameraInfo.state.value.isVideoStabilizationSupported) {
         "Video stabilization mode must be supported to enable"
       }
 
@@ -199,7 +200,8 @@ public abstract class CommonCameraController<
   private fun FlashMode.isFlashAvailable(): Boolean {
     if (this == FlashMode.Off) return true
     val cameraInfo = info ?: return false
-    return cameraInfo.isFlashSupported && cameraInfo.isFlashAvailable
+    val cameraInfoState = cameraInfo.state.value
+    return cameraInfoState.isFlashSupported && cameraInfoState.isFlashAvailable
   }
 
   protected fun <T, R> T?.runBind(block: T.() -> R): R {

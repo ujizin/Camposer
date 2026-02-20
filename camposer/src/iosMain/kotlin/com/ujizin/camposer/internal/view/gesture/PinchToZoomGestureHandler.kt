@@ -29,9 +29,10 @@ internal class PinchToZoomGestureHandler(
     }
     memScoped {
       val scale = sender.scale.toFloat()
+      val cameraInfoState = cameraSession.info.state.value
       val clampedZoom = (cameraSession.state.zoomRatio.value * scale).coerceIn(
-        minimumValue = cameraSession.info.minZoom,
-        maximumValue = cameraSession.info.maxZoom,
+        minimumValue = cameraInfoState.minZoom,
+        maximumValue = cameraInfoState.maxZoom,
       )
 
       cameraSession.controller.setZoomRatio(clampedZoom)

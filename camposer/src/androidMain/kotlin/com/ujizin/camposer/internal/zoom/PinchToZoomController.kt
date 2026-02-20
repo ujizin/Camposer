@@ -15,8 +15,8 @@ internal class PinchToZoomController(
     }
 
     val zoomRatio = (cameraSession.state.zoomRatio.value * scaleFactor).fastCoerceIn(
-      minimumValue = cameraSession.info.minZoom,
-      maximumValue = cameraSession.info.maxZoom,
+      minimumValue = cameraSession.info.state.value.minZoom,
+      maximumValue = cameraSession.info.state.value.maxZoom,
     )
 
     cameraSession.controller.setZoomRatio(zoomRatio)

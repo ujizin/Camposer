@@ -14,29 +14,31 @@ internal class CameraExposureCompensationTest : CameraSessionTest() {
     controller.setExposureCompensation(expected)
 
     assertExposureCompensation(expected)
-    assertTrue(cameraSession.info.isExposureSupported)
+    assertTrue(cameraSession.info.state.value.isExposureSupported)
   }
 
   @Test
   fun test_preview_exposure_changed_to_max() {
     initCameraSession()
+    val cameraInfoState = cameraSession.info.state.value
 
-    val expected = cameraSession.info.maxExposure
+    val expected = cameraInfoState.maxExposure
     controller.setExposureCompensation(expected)
 
     assertExposureCompensation(expected)
-    assertTrue(cameraSession.info.isExposureSupported)
+    assertTrue(cameraInfoState.isExposureSupported)
   }
 
   @Test
   fun test_preview_exposure_changed_to_min() {
     initCameraSession()
+    val cameraInfoState = cameraSession.info.state.value
 
-    val expected = cameraSession.info.minExposure
+    val expected = cameraInfoState.minExposure
     controller.setExposureCompensation(expected)
 
     assertExposureCompensation(expected)
-    assertTrue(cameraSession.info.isExposureSupported)
+    assertTrue(cameraInfoState.isExposureSupported)
   }
 
   @Test
@@ -45,7 +47,7 @@ internal class CameraExposureCompensationTest : CameraSessionTest() {
 
     initCameraSession()
 
-    assertFalse(cameraSession.info.isExposureSupported)
+    assertFalse(cameraSession.info.state.value.isExposureSupported)
   }
 
   private fun assertExposureCompensation(exposureCompensation: Float) {

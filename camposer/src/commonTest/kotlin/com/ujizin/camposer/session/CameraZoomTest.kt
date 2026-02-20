@@ -10,13 +10,14 @@ internal class CameraZoomTest : CameraSessionTest() {
   fun test_preview_zoom_change() =
     runTest {
       initCameraSession()
+      val cameraInfoState = cameraSession.info.state.value
 
       val expectedZoom = 4F
 
       cameraSession.controller.setZoomRatio(expectedZoom)
 
       cameraTest.assertZoomRatio(expectedZoom)
-      assertNotEquals(cameraSession.info.minZoom, cameraSession.info.maxZoom)
+      assertNotEquals(cameraInfoState.minZoom, cameraInfoState.maxZoom)
       assertEquals(cameraSession.state.zoomRatio.value, expectedZoom)
     }
 
@@ -24,14 +25,15 @@ internal class CameraZoomTest : CameraSessionTest() {
   fun test_preview_zoom_change_to_max() =
     runTest {
       initCameraSession()
+      val cameraInfoState = cameraSession.info.state.value
 
-      val expectedZoom = cameraSession.info.maxZoom
+      val expectedZoom = cameraInfoState.maxZoom
 
       cameraSession.controller.setZoomRatio(expectedZoom)
 
       cameraTest.assertZoomRatio(expectedZoom)
-      assertNotEquals(cameraSession.info.minZoom, cameraSession.info.maxZoom)
-      assertEquals(cameraSession.info.maxZoom, expectedZoom)
+      assertNotEquals(cameraInfoState.minZoom, cameraInfoState.maxZoom)
+      assertEquals(cameraInfoState.maxZoom, expectedZoom)
       assertEquals(cameraSession.state.zoomRatio.value, expectedZoom)
     }
 
@@ -39,14 +41,15 @@ internal class CameraZoomTest : CameraSessionTest() {
   fun test_preview_zoom_change_to_min() =
     runTest {
       initCameraSession()
+      val cameraInfoState = cameraSession.info.state.value
 
-      val expectedZoom = cameraSession.info.minZoom
+      val expectedZoom = cameraInfoState.minZoom
 
       cameraSession.controller.setZoomRatio(expectedZoom)
 
       cameraTest.assertZoomRatio(expectedZoom)
-      assertNotEquals(cameraSession.info.minZoom, cameraSession.info.maxZoom)
-      assertEquals(cameraSession.info.minZoom, expectedZoom)
+      assertNotEquals(cameraInfoState.minZoom, cameraInfoState.maxZoom)
+      assertEquals(cameraInfoState.minZoom, expectedZoom)
       assertEquals(cameraSession.state.zoomRatio.value, expectedZoom)
     }
 }

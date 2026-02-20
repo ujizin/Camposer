@@ -91,7 +91,8 @@ internal actual fun CameraPreviewImpl(
       cameraSession = cameraSession,
       lifecycleOwner = lifecycleOwner,
       onTapFocus = {
-        if (cameraSession.info.isFocusSupported &&
+        val cameraInfoState = cameraSession.info.state.value
+        if (cameraInfoState.isFocusSupported &&
           cameraSession.state.isFocusOnTapEnabled.value
         ) {
           onTapFocus(it + cameraOffset)

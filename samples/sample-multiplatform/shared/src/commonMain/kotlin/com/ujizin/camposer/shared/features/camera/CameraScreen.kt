@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.keepScreenOn
@@ -47,14 +46,14 @@ fun CameraScreen(
   // Camera state from session
   val flashMode by cameraSession.state.flashMode.collectAsStateWithLifecycle()
   val zoomRatio by cameraSession.state.zoomRatio.collectAsStateWithLifecycle()
-  val isRecording by rememberUpdatedState(cameraViewModel.cameraController.isRecording)
+  val isRecording = cameraViewModel.cameraController.isRecording
 
-  val isFlashSupported by rememberUpdatedState(cameraSession.info.isFlashSupported)
-  val isTapToFocusSupported by rememberUpdatedState(cameraSession.info.isFocusSupported)
-  val isVideoStabilizationSupported by rememberUpdatedState(cameraSession.info.isVideoStabilizationSupported)
-
-  val minZoom by rememberUpdatedState(cameraSession.info.minZoom)
-  val maxZoom by rememberUpdatedState(cameraSession.info.maxZoom)
+  val cameraInfoState by cameraSession.info.collectAsStateWithLifecycle()
+  val isFlashSupported = cameraInfoState.isFlashSupported
+  val isTapToFocusSupported = cameraInfoState.isFocusSupported
+  val isVideoStabilizationSupported = cameraInfoState.isVideoStabilizationSupported
+  val minZoom = cameraInfoState.minZoom
+  val maxZoom = cameraInfoState.maxZoom
 
   val codeImageAnalyzer = cameraSession.rememberCodeImageAnalyzer(
     codeTypes = listOf(CodeType.QRCode),

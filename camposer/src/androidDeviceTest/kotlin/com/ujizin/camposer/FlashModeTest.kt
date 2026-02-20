@@ -22,10 +22,12 @@ internal class FlashModeTest : CameraTest() {
   private lateinit var flashMode: State<FlashMode>
 
   @Test
-  fun test_flashModes() =
+  fun test_flashModes() {
     with(composeTestRule) {
       initFlashCamera(camSelector = CamSelector.Back)
-      if (!cameraSession.info.isFlashSupported) return
+      if (!cameraSession.info.state.value.isFlashSupported) {
+        return@with
+      }
 
       FlashMode.entries.forEach { mode ->
         val oldMode = flashMode.value
@@ -38,15 +40,18 @@ internal class FlashModeTest : CameraTest() {
         runOnIdle { assertEquals(mode, cameraSession.state.flashMode.value) }
       }
     }
+  }
 
   @Test
   fun test_startFlashModeAsOn() =
     with(composeTestRule) {
       initFlashCamera(camSelector = CamSelector.Back, mode = FlashMode.On)
 
-      waitUntil(10000) { flashMode.value == FlashMode.On || !cameraSession.info.isFlashSupported }
+      waitUntil(10000) {
+        flashMode.value == FlashMode.On || !cameraSession.info.state.value.isFlashSupported
+      }
 
-      if (!cameraSession.info.isFlashSupported) {
+      if (!cameraSession.info.state.value.isFlashSupported) {
         return@with // Not supported, skipping test
       }
 
@@ -59,8 +64,12 @@ internal class FlashModeTest : CameraTest() {
     with(composeTestRule) {
       initFlashCamera(camSelector = CamSelector.Front)
       // Ensure that there's no flash unit on device
-      cameraSession.info.isFlashSupported = false
-      cameraSession.info.isFlashAvailable = false
+      cameraSession.info.updateStateForTesting {
+        it.copy(
+          isFlashSupported = false,
+          isFlashAvailable = false,
+        )
+      }
 
       cameraController.setFlashMode(FlashMode.On)
       onNodeWithTag("${FlashMode.On}").assertDoesNotExist()

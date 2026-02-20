@@ -63,7 +63,7 @@ public actual class CamFormat
         imageAnalysisResolutionSelector = resolutionSelector
 
         applyBestVideoCamFormat(
-          videoFormats = cameraInfo.videoFormats,
+          videoFormats = cameraInfo.state.value.videoFormats,
           onFrameRateChanged = onFrameRateChanged,
           onStabilizationModeChanged = onStabilizationModeChanged,
         )

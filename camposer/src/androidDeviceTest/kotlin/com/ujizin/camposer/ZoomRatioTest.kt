@@ -44,18 +44,19 @@ internal class ZoomRatioTest : CameraTest() {
   fun test_limitToMaxZoomRatio() =
     with(composeTestRule) {
       initZoomCamera()
+      val cameraInfoState = cameraSession.info.state.value
 
       cameraController.setZoomRatio(UNREACHABLE_MAX_ZOOM_VALUE)
 
       runOnIdle {
         waitUntil(
-          "expected ${cameraSession.info.maxZoom} actual: $actualCameraXZoom",
+          "expected ${cameraInfoState.maxZoom} actual: $actualCameraXZoom",
           timeoutMillis = ZOOM_RATIO_TIMEOUT,
-          condition = { actualCameraXZoom == cameraSession.info.maxZoom },
+          condition = { actualCameraXZoom == cameraInfoState.maxZoom },
         )
         assertNotEquals(UNREACHABLE_MAX_ZOOM_VALUE, actualCameraXZoom)
-        assertEquals(cameraSession.info.maxZoom, zoomRatio.value)
-        assertEquals(cameraSession.info.maxZoom, actualCameraXZoom)
+        assertEquals(cameraInfoState.maxZoom, zoomRatio.value)
+        assertEquals(cameraInfoState.maxZoom, actualCameraXZoom)
       }
     }
 
@@ -63,17 +64,18 @@ internal class ZoomRatioTest : CameraTest() {
   fun test_limitToMinZoomRatio() =
     with(composeTestRule) {
       initZoomCamera()
+      val cameraInfoState = cameraSession.info.state.value
 
       cameraController.setZoomRatio(UNREACHABLE_MIN_ZOOM_VALUE)
 
       runOnIdle {
         waitUntil(
-          "expected ${cameraSession.info.minZoom}, actual $actualCameraXZoom",
+          "expected ${cameraInfoState.minZoom}, actual $actualCameraXZoom",
           timeoutMillis = ZOOM_RATIO_TIMEOUT,
-          condition = { actualCameraXZoom == cameraSession.info.minZoom },
+          condition = { actualCameraXZoom == cameraInfoState.minZoom },
         )
         assertNotEquals(UNREACHABLE_MIN_ZOOM_VALUE, actualCameraXZoom)
-        assertEquals(cameraSession.info.minZoom, actualCameraXZoom)
+        assertEquals(cameraInfoState.minZoom, actualCameraXZoom)
       }
     }
 
@@ -81,10 +83,11 @@ internal class ZoomRatioTest : CameraTest() {
   fun test_zoomChangeValueToMax() =
     with(composeTestRule) {
       initZoomCamera(DEFAULT_ZOOM_VALUE)
+      val cameraInfoState = cameraSession.info.state.value
 
-      cameraController.setZoomRatio(cameraSession.info.maxZoom)
+      cameraController.setZoomRatio(cameraInfoState.maxZoom)
       runOnIdle {
-        assertEquals(cameraSession.info.maxZoom, zoomRatio.value)
+        assertEquals(cameraInfoState.maxZoom, zoomRatio.value)
         assertEquals(actualCameraXZoom, zoomRatio.value)
       }
     }
@@ -101,7 +104,7 @@ internal class ZoomRatioTest : CameraTest() {
         }
 
       runOnIdle {
-        if (cameraSession.info.isZoomSupported) {
+        if (cameraSession.info.state.value.isZoomSupported) {
           assertNotEquals(DEFAULT_ZOOM_VALUE, zoomRatio.value)
         }
         assertEquals(actualCameraXZoom, zoomRatio.value)

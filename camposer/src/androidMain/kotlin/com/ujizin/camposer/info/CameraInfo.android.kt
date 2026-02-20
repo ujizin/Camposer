@@ -1,83 +1,49 @@
 package com.ujizin.camposer.info
 
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import com.ujizin.camposer.state.properties.CameraData
-import com.ujizin.camposer.state.properties.VideoStabilizationMode
-import java.util.concurrent.Executor
+import androidx.annotation.VisibleForTesting
+import androidx.annotation.VisibleForTesting.Companion.NONE
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 public actual class CameraInfo internal constructor(
-  private val mainExecutor: Executor,
   private val cameraInfo: AndroidCameraInfo,
 ) {
-  public actual val isZoomSupported: Boolean by derivedStateOf {
-    maxZoom != cameraInfo.initialZoom
-  }
-
-  public actual var minZoom: Float by mutableFloatStateOf(cameraInfo.minZoom)
-    private set
-  public actual var maxZoom: Float by mutableFloatStateOf(cameraInfo.maxZoom)
-    private set
-
-  public actual var isExposureSupported: Boolean by mutableStateOf(cameraInfo.isExposureSupported)
-    private set
-  public actual var minExposure: Float by mutableFloatStateOf(cameraInfo.minExposure)
-    private set
-  public actual var maxExposure: Float by mutableFloatStateOf(cameraInfo.maxExposure)
-    private set
-  public actual var isFlashSupported: Boolean by mutableStateOf(cameraInfo.isFlashSupported)
-    internal set
-  public actual var isFlashAvailable: Boolean by mutableStateOf(cameraInfo.isFlashSupported)
-    internal set
-  public actual var isTorchSupported: Boolean by mutableStateOf(cameraInfo.isFlashSupported)
-    private set
-  public actual var isTorchAvailable: Boolean by mutableStateOf(cameraInfo.isFlashSupported)
-    private set
-  public actual var isZeroShutterLagSupported: Boolean by mutableStateOf(
-    cameraInfo.isZeroShutterLagSupported,
-  )
-    private set
-  public actual var isVideoStabilizationSupported: Boolean by mutableStateOf(
-    cameraInfo.videoFormats.any { format ->
-      format.videoStabilizationModes?.any { mode ->
-        mode != VideoStabilizationMode.Off
-      } == true
-    },
-  )
-    private set
-  public actual var isFocusSupported: Boolean by mutableStateOf(cameraInfo.isFocusSupported)
-    private set
-  public actual var minFPS: Int by mutableIntStateOf(cameraInfo.minFPS)
-    private set
-  public actual var maxFPS: Int by mutableIntStateOf(cameraInfo.maxFPS)
-    private set
-
-  public actual var photoFormats: List<CameraData> = emptyList()
-    get() = cameraInfo.photoFormats
-    private set
-
-  public actual var videoFormats: List<CameraData> = emptyList()
-    get() = cameraInfo.videoFormats
-    private set
+  private val _state = MutableStateFlow(getCurrentState())
+  public actual val state: StateFlow<CameraInfoState> = _state.asStateFlow()
 
   internal fun rebind() {
-    minZoom = cameraInfo.minZoom
-    maxZoom = cameraInfo.maxZoom
-    minExposure = cameraInfo.minExposure
-    maxExposure = cameraInfo.maxExposure
-    isExposureSupported = cameraInfo.isExposureSupported
-    isFlashSupported = cameraInfo.isFlashSupported
-    isFlashAvailable = cameraInfo.isFlashSupported
-    isTorchSupported = cameraInfo.isFlashSupported
-    isTorchAvailable = cameraInfo.isFlashSupported
-    isFocusSupported = cameraInfo.isFocusSupported
-    isZeroShutterLagSupported = cameraInfo.isZeroShutterLagSupported
-    isVideoStabilizationSupported = isVideoStabilizationSupported()
-    minFPS = cameraInfo.minFPS
-    maxFPS = cameraInfo.maxFPS
+    _state.update { getCurrentState() }
+  }
+
+  private fun getCurrentState(): CameraInfoState {
+    val isFlashSupported = cameraInfo.isFlashSupported
+    val photoFormats = cameraInfo.photoFormats
+    val videoFormats = cameraInfo.videoFormats
+    return CameraInfoState(
+      isZoomSupported = cameraInfo.maxZoom != cameraInfo.initialZoom,
+      isExposureSupported = cameraInfo.isExposureSupported,
+      minZoom = cameraInfo.minZoom,
+      maxZoom = cameraInfo.maxZoom,
+      minExposure = cameraInfo.minExposure,
+      maxExposure = cameraInfo.maxExposure,
+      isFlashSupported = isFlashSupported,
+      isFlashAvailable = isFlashSupported,
+      isTorchSupported = isFlashSupported,
+      isTorchAvailable = isFlashSupported,
+      isZeroShutterLagSupported = cameraInfo.isZeroShutterLagSupported,
+      isVideoStabilizationSupported = videoFormats.isVideoStabilizationSupported(),
+      isFocusSupported = cameraInfo.isFocusSupported,
+      minFPS = cameraInfo.minFPS,
+      maxFPS = cameraInfo.maxFPS,
+      photoFormats = photoFormats,
+      videoFormats = videoFormats,
+    )
+  }
+
+  @VisibleForTesting(NONE)
+  internal fun updateStateForTesting(updater: (CameraInfoState) -> CameraInfoState) {
+    _state.update(updater)
   }
 }

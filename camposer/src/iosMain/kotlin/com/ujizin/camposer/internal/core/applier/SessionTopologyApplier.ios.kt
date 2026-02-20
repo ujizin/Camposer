@@ -137,9 +137,10 @@ internal class SessionTopologyApplier(
 
   private fun resetConfig(captureOutput: AVCaptureOutput) {
     cameraInfo.rebind(output = captureOutput)
+    val cameraInfoState = cameraInfo.state.value
 
-    setZoomRatio(cameraInfo.minZoom)
-    cameraState.updateZoomRatio(cameraInfo.minZoom)
+    setZoomRatio(cameraInfoState.minZoom)
+    cameraState.updateZoomRatio(cameraInfoState.minZoom)
 
     setExposureCompensation(0F)
     cameraState.updateExposureCompensation(0F)
@@ -168,10 +169,10 @@ internal class SessionTopologyApplier(
     }
   }
 
-
-  private fun lockedLaunch(block: suspend CoroutineScope.() -> Unit): Job = cameraState.launch {
-    sessionTopologyMutex.withLock {
-      withContext(NonCancellable, block)
+  private fun lockedLaunch(block: suspend CoroutineScope.() -> Unit): Job =
+    cameraState.launch {
+      sessionTopologyMutex.withLock {
+        withContext(NonCancellable, block)
+      }
     }
-  }
 }

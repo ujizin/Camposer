@@ -34,7 +34,7 @@ internal class VideoApplier(
 
   @OptIn(ExperimentalZeroShutterLag::class)
   private fun setImageCaptureStrategy(imageCaptureStrategy: ImageCaptureStrategy) {
-    val isZSLSupported = cameraInfo.isZeroShutterLagSupported
+    val isZSLSupported = cameraInfo.state.value.isZeroShutterLagSupported
     val mode = when {
       imageCaptureStrategy == MinLatency && !isZSLSupported -> imageCaptureStrategy.fallback
       else -> imageCaptureStrategy.mode
