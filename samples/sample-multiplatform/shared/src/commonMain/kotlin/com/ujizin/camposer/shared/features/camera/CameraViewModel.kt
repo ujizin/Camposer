@@ -73,6 +73,8 @@ class CameraViewModel : ViewModel() {
           updateLastBitmapCaptured(getFirstFrameVideo(videoPath))
           FileKit.saveVideoToGallery(file = PlatformFile(videoPath))
         }
+      } else if (result is CaptureResult.Error) {
+        throw result.throwable
       }
     }
   }
@@ -157,7 +159,7 @@ class CameraViewModel : ViewModel() {
    * Cycle flash mode: Off -> Auto -> On -> Off
    */
   fun cycleFlashMode() {
-    val flashMode = cameraController.state?.flashMode ?: return
+    val flashMode = cameraController.state?.flashMode?.value ?: return
     val nextMode = when (flashMode) {
       FlashMode.Off -> FlashMode.Auto
       FlashMode.Auto -> FlashMode.On

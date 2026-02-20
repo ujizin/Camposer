@@ -8,13 +8,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.keepScreenOn
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationEventHandler
@@ -40,24 +41,18 @@ import com.ujizin.camposer.state.properties.format.config.VideoStabilizationConf
 fun CameraScreen(
   cameraViewModel: CameraViewModel = viewModel { CameraViewModel() },
 ) {
-  val uiState by cameraViewModel.uiState.collectAsState()
+  val uiState by cameraViewModel.uiState.collectAsStateWithLifecycle()
   val cameraSession = rememberCameraSession(cameraViewModel.cameraController)
 
   // Camera state from session
-  val flashMode by rememberUpdatedState(cameraSession.state.flashMode)
-  val zoomRatio by rememberUpdatedState(cameraSession.state.zoomRatio)
+  val flashMode by cameraSession.state.flashMode.collectAsStateWithLifecycle()
+  val zoomRatio by cameraSession.state.zoomRatio.collectAsStateWithLifecycle()
   val isRecording by rememberUpdatedState(cameraViewModel.cameraController.isRecording)
 
   val isFlashSupported by rememberUpdatedState(cameraSession.info.isFlashSupported)
   val isTapToFocusSupported by rememberUpdatedState(cameraSession.info.isFocusSupported)
-  val isVideoStabilizationSupported by rememberUpdatedState(
-    cameraSession.info.videoFormats.any { cameraData ->
-      cameraData.videoStabilizationModes?.any { mode ->
-        mode != VideoStabilizationMode.Off
-      } == true
-    },
-  )
-  val is60FpsSupported by rememberUpdatedState(cameraSession.info.maxFPS >= 60)
+  val isVideoStabilizationSupported by rememberUpdatedState(cameraSession.info.isVideoStabilizationSupported)
+
   val minZoom by rememberUpdatedState(cameraSession.info.minZoom)
   val maxZoom by rememberUpdatedState(cameraSession.info.maxZoom)
 
@@ -71,13 +66,12 @@ fun CameraScreen(
     uiState.aspectRatioOption,
     uiState.is60FpsEnabled,
     uiState.isVideoStabilizationEnabled,
-    is60FpsSupported,
     isVideoStabilizationSupported,
   ) {
     CamFormat(
+      FrameRateConfig(if (uiState.is60FpsEnabled) 60 else 30),
       AspectRatioConfig(uiState.aspectRatioOption.ratio),
       ResolutionConfig.UltraHigh,
-      FrameRateConfig(if (uiState.is60FpsEnabled && is60FpsSupported) 60 else 30),
       VideoStabilizationConfig(
         if (uiState.isVideoStabilizationEnabled && isVideoStabilizationSupported) {
           VideoStabilizationMode.Standard
@@ -88,12 +82,18 @@ fun CameraScreen(
     )
   }
 
-  LaunchedEffect(Unit) {
+  LaunchedEffect(Unit, uiState.camSelector) {
     cameraViewModel.initializeOrientationStrategy()
+    with(cameraViewModel.cameraController) {
+//      setZoomRatio(10F)
+//      setFlashMode(FlashMode.On)
+//      setTorchEnabled(true)
+    }
   }
 
   CameraPreview(
-    modifier = Modifier.fillMaxSize(),
+    modifier = Modifier.fillMaxSize()
+      .keepScreenOn(),
     cameraSession = cameraSession,
     camFormat = camFormat,
     scaleType = ScaleType.FitCenter,
@@ -153,7 +153,6 @@ fun CameraScreen(
 
       CameraSettingsOverlay(
         isVideoStabilizationSupported = isVideoStabilizationSupported,
-        is60FpsSupported = is60FpsSupported,
         isTapToFocusSupported = isTapToFocusSupported,
         isVideoStabilizationEnabled = uiState.isVideoStabilizationEnabled,
         is60FpsEnabled = uiState.is60FpsEnabled,

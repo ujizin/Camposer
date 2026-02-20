@@ -33,7 +33,6 @@ import com.ujizin.camposer.state.properties.MirrorMode
 fun CameraSettingsOverlay(
   modifier: Modifier = Modifier,
   isVideoStabilizationSupported: Boolean,
-  is60FpsSupported: Boolean,
   isTapToFocusSupported: Boolean,
   isVideoStabilizationEnabled: Boolean,
   is60FpsEnabled: Boolean,
@@ -96,9 +95,6 @@ fun CameraSettingsOverlay(
         DisclaimerText(
           text = "60 FPS will be applied only if supported.",
         )
-        if (!is60FpsSupported) {
-          DisclaimerText(text = "Current camera does not support 60 FPS.")
-        }
 
         if (isTapToFocusSupported) {
           ToggleSetting(

@@ -129,13 +129,13 @@ fun CameraSection(
       ),
     )
   }
-  val zoomRatio by rememberUpdatedState(cameraSession.state.zoomRatio)
+  val zoomRatio by cameraSession.state.zoomRatio.collectAsStateWithLifecycle()
   var zoomHasChanged by remember { mutableStateOf(false) }
 
   val hasFlashUnit by rememberUpdatedState(cameraSession.info.isFlashSupported)
   var cameraOption by rememberSaveable { mutableStateOf(CameraOption.Photo) }
-  val flashMode by rememberUpdatedState(cameraSession.state.flashMode)
-  val enableTorch by rememberUpdatedState(cameraSession.state.isTorchEnabled)
+  val flashMode by cameraSession.state.flashMode.collectAsStateWithLifecycle()
+  val enableTorch by cameraSession.state.isTorchEnabled.collectAsStateWithLifecycle()
   val imageAnalyzer = cameraSession.rememberImageAnalyzer(analyze = onAnalyzeImage)
 
   LaunchedEffect(zoomRatio) {
