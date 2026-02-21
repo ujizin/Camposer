@@ -25,8 +25,7 @@ data class CameraUiState(
   val aspectRatioOption: AspectRatioOption = AspectRatioOption.Ratio16x9,
   val mirrorMode: MirrorMode = MirrorMode.OnlyInFront,
   val lastThumbnail: ByteArray? = null,
-  val videoPath: String = "",
-  val codeScanText: String = "",
-  val frameRect: FrameRect? = null,
-  val corners: List<CornerPointer> = emptyList(),
+  val qrCodeText: String? = null,
+  val qrCodeFrameRect: FrameRect? = null,
+  val qrCodeCorners: List<CornerPointer> = emptyList(),
 )

@@ -25,8 +25,11 @@ import com.ujizin.camposer.codescanner.rememberCodeImageAnalyzer
 import com.ujizin.camposer.session.rememberCameraSession
 import com.ujizin.camposer.shared.features.camera.components.BottomActionBar
 import com.ujizin.camposer.shared.features.camera.components.CameraSettingsOverlay
+import com.ujizin.camposer.shared.features.camera.components.QrCodeLinkPopup
+import com.ujizin.camposer.shared.features.camera.components.QrCodeOverlay
 import com.ujizin.camposer.shared.features.camera.components.TopControlsBar
 import com.ujizin.camposer.shared.features.camera.components.ZoomSelector
+import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.ImplementationMode
 import com.ujizin.camposer.state.properties.ScaleType
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
@@ -100,7 +103,7 @@ fun CameraScreen(
     captureMode = uiState.captureMode,
     implementationMode = ImplementationMode.Compatible,
     imageAnalyzer = codeImageAnalyzer,
-    isImageAnalysisEnabled = true,
+    isImageAnalysisEnabled = uiState.captureMode == CaptureMode.Image,
     isFocusOnTapEnabled = uiState.isTapToFocusEnabled && isTapToFocusSupported,
   ) {
     Column(
@@ -138,6 +141,20 @@ fun CameraScreen(
         onShutterClick = cameraViewModel::capture,
         onCameraSwitchClick = cameraViewModel::toggleCamSelector,
         onCaptureModeSelected = cameraViewModel::setCaptureMode,
+      )
+    }
+
+    if (uiState.captureMode == CaptureMode.Image) {
+      QrCodeOverlay(
+        modifier = Modifier.fillMaxSize(),
+        frameRect = uiState.qrCodeFrameRect,
+        corners = uiState.qrCodeCorners,
+      )
+      QrCodeLinkPopup(
+        modifier = Modifier
+          .align(Alignment.TopCenter)
+          .padding(top = 72.dp),
+        text = uiState.qrCodeText,
       )
     }
 

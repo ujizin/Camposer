@@ -38,6 +38,7 @@ class CameraViewModel : ViewModel() {
   private val _uiState = MutableStateFlow(CameraUiState())
   val uiState: StateFlow<CameraUiState> = _uiState.asStateFlow()
   private var recordingTimerJob: Job? = null
+  private var clearQrFeedbackJob: Job? = null
 
   fun initializeOrientationStrategy() {
     cameraController.setOrientationStrategy(OrientationStrategy.Preview)
@@ -146,6 +147,9 @@ class CameraViewModel : ViewModel() {
     _uiState.update { state ->
       state.copy(captureMode = mode)
     }
+    if (mode != CaptureMode.Image) {
+      clearQrFeedback()
+    }
   }
 
   /**
@@ -170,13 +174,16 @@ class CameraViewModel : ViewModel() {
   }
 
   fun onCodeAnalyzed(code: CodeResult) {
+    if (_uiState.value.captureMode != CaptureMode.Image) return
+
     _uiState.update { state ->
       state.copy(
-        codeScanText = "${code.type}: ${code.text}",
-        frameRect = code.frameRect,
-        corners = code.corners,
+        qrCodeText = code.text,
+        qrCodeFrameRect = code.frameRect,
+        qrCodeCorners = code.corners,
       )
     }
+    scheduleQrFeedbackClear()
   }
 
   @OptIn(ExperimentalUuidApi::class)
@@ -215,8 +222,33 @@ class CameraViewModel : ViewModel() {
     recordingTimerJob = null
   }
 
+  private fun scheduleQrFeedbackClear() {
+    clearQrFeedbackJob?.cancel()
+    clearQrFeedbackJob = viewModelScope.launch {
+      delay(2.seconds)
+      clearQrFeedback()
+    }
+  }
+
+  private fun clearQrFeedback() {
+    stopQrFeedback()
+    _uiState.update { state ->
+      state.copy(
+        qrCodeText = null,
+        qrCodeFrameRect = null,
+        qrCodeCorners = emptyList(),
+      )
+    }
+  }
+
+  private fun stopQrFeedback() {
+    clearQrFeedbackJob?.cancel()
+    clearQrFeedbackJob = null
+  }
+
   override fun onCleared() {
     stopRecordingCounter()
+    stopQrFeedback()
     super.onCleared()
   }
 }
