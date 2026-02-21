@@ -1,6 +1,5 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class, ExperimentalAbiValidation::class)
 
-import com.android.build.api.dsl.androidLibrary
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
@@ -25,7 +24,11 @@ apply(from = "$rootDir/scripts/publish-module.gradle")
 kotlin {
   targets.configureEach {
     compilations.configureEach {
-      compilerOptions.configure { freeCompilerArgs.add("-Xexpect-actual-classes") }
+      compileTaskProvider.configure {
+        compilerOptions {
+          freeCompilerArgs.add("-Xexpect-actual-classes")
+        }
+      }
     }
   }
 
