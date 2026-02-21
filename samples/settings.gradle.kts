@@ -7,7 +7,6 @@ pluginManagement {
                 includeGroupByRegex("androidx.*")
             }
         }
-        mavenLocal()
         mavenCentral()
         gradlePluginPortal()
     }
@@ -16,12 +15,13 @@ dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
-        mavenLocal()
         mavenCentral()
     }
 }
 
 rootProject.name = "sample-android"
+
+includeBuild("..")
 include(
   ":sample-android",
   ":sample-multiplatform:sample-kmp-android",

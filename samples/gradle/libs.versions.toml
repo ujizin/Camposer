@@ -30,8 +30,8 @@ filekit = "0.12.0"
 
 [libraries]
 
-camposer = { module = "io.github.ujizin:camposer", version.ref = "camposer" }
-camposer-code-scanner = { module = "io.github.ujizin:camposer-code-scanner", version.ref = "camposer" }
+camposer = { module = "io.github.ujizin:camposer" }
+camposer-code-scanner = { module = "io.github.ujizin:camposer-code-scanner" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
 koin = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }

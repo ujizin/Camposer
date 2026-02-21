@@ -2,19 +2,6 @@
 
 We’re really happy to have you here! Here are some guidelines to help you get started.
 
-## Development
-
-When something is changed in the library project, you need to publish the artifact locally for the 
-changes to take effect in the sample projects. 
-
-After modifying the library source code, run the following command:
-
-```Bash
-./gradlew publishToMavenLocal -Pskip.signing
-```
-
-After this, sync the sample project so it reflects the latest changes.
-
 ## Pull Requests
 
 Before opening a pull request, make sure all contribution guidelines are followed.
