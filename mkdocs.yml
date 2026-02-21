@@ -2,8 +2,8 @@ site_name: Camposer
 
 repo_name: Camposer
 site_url: https://github.com/ujizin/camposer
-repo_url: https://github.com/ujizin/camposer"
-site_description: Camera library for Jetpack Compose 📸✨"
+repo_url: https://github.com/ujizin/camposer
+site_description: Camera library for Jetpack Compose 📸✨
 remote_branch: gh-pages
 
 theme:
