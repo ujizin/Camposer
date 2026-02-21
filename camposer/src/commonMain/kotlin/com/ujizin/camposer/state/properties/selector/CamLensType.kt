@@ -15,6 +15,4 @@ public enum class CamLensType {
   UltraWide,
   Telephoto,
   ;
-
-  public companion object
 }

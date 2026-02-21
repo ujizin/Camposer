@@ -82,7 +82,7 @@ internal actual class CameraDevicesManager {
       name = localizedName,
       position = getCamPosition(),
       fov = activeFormat.videoFieldOfView,
-      lensType = CamLensType.getPhysicalLensByVirtual(deviceType),
+      lensType = getPhysicalLensByVirtual(deviceType),
       photoData = CameraFormatUtils.getPhotoFormats(formats),
       videoData = CameraFormatUtils.getVideoFormats(formats),
     )

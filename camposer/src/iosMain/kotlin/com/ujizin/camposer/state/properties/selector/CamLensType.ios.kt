@@ -15,7 +15,7 @@ internal val CamLensType.type: AVCaptureDeviceType
     CamLensType.Telephoto -> AVCaptureDeviceTypeBuiltInTelephotoCamera
   }
 
-internal fun CamLensType.Companion.getPhysicalLensByVirtual(
+internal fun getPhysicalLensByVirtual(
   position: AVCaptureDeviceType,
 ): List<CamLensType> =
   when (position) {
