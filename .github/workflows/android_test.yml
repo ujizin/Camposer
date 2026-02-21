@@ -15,9 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        api-level: [21, 26, 31, 34]
+        api-level: [23, 26, 31, 34]
         include:
-          - api-level: 21
+          - api-level: 23
             arch: 'x86'
             target: default
           - api-level: 26
