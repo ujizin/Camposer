@@ -63,7 +63,6 @@ kotlin {
       implementation(libs.moko.permissions.camera)
       implementation(libs.moko.permissions.microphone)
 
-      implementation(libs.media.kmp)
       implementation(libs.kotlinx.io)
 
       api(libs.filekit.core)

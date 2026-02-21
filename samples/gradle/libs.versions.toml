@@ -19,10 +19,8 @@ accompanist = "0.37.3"
 coil = "2.7.0"
 koin = "4.1.1"
 datastore = "1.2.0"
-composeIcons = "1.1.1"
 
 # kmp
-media-kmp = "2.0.6"
 kotlinx-io = "0.8.2"
 core-ktx = "1.17.0"
 multiplatform-nav3-ui = "1.0.0-alpha06"
@@ -73,7 +71,6 @@ coil-video = { module = "io.coil-kt:coil-video", version.ref = "coil" }
 
 
 kotlinx-io = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kotlinx-io" }
-media-kmp = { module = "io.github.khubaibkhan4:mediaplayer-kmp", version.ref = "media-kmp" }
 filekit-core = { module = "io.github.vinceglb:filekit-core", version.ref = "filekit" }
 filekit-dialogs = { module = "io.github.vinceglb:filekit-dialogs", version.ref = "filekit" }
 
