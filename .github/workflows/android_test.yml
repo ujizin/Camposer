@@ -14,6 +14,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         api-level: [23, 26, 31, 34]
         include:
@@ -59,7 +60,7 @@ jobs:
             ~/.android/adb*
           key: avd-${{ matrix.api-level }}
 
-      - name: create AVD and generate snapshot for caching
+      - name: Create AVD and generate snapshot for caching
         if: steps.avd-cache.outputs.cache-hit != 'true'
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -67,11 +68,11 @@ jobs:
           arch: ${{ matrix.arch }}
           target: ${{ matrix.target }}
           force-avd-creation: false
-          emulator-options: -no-window -no-boot-anim -camera-back emulated -camera-front emulated -gpu swiftshader_indirect
+          emulator-options: -no-window -no-boot-anim -camera-back emulated -camera-front emulated -gpu swiftshader_indirect -metrics-collection
           disable-animations: false
           script: echo "Generated AVD snapshot for caching."
 
-      - name: run android tests
+      - name: Run android tests
         uses: reactivecircus/android-emulator-runner@v2
         env:
           ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL: 60

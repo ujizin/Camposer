@@ -45,6 +45,7 @@ kotlin {
 
     withDeviceTestBuilder {
       sourceSetTreeName = "test"
+      androidResources.enable = true
     }.configure { instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner" }
 
     compilerOptions { jvmTarget.set(JvmTarget.JVM_17) }

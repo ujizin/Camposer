@@ -36,6 +36,7 @@ kotlin {
 
     withDeviceTestBuilder {
       sourceSetTreeName = "test"
+      androidResources.enable = true
     }.configure {
       instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -77,4 +78,18 @@ kotlin {
 
 dokka {
   moduleName.set("Camposer Code Scanner")
+}
+
+// Workaround for Compose plugin task config on androidDeviceTest where outputDirectory can be unset.
+tasks.configureEach {
+  if (!javaClass.name.startsWith("org.jetbrains.compose.resources.CopyResourcesToAndroidAssetsTask")) return@configureEach
+  if (!name.contains("AndroidDeviceTestComposeResourcesToAndroidAssets")) return@configureEach
+
+  @Suppress("UNCHECKED_CAST")
+  val outputDirectory =
+    javaClass.methods
+      .firstOrNull { it.name == "getOutputDirectory" }
+      ?.invoke(this) as? DirectoryProperty
+
+  outputDirectory?.set(layout.buildDirectory.dir("generated/compose/resource-assets/$name"))
 }
