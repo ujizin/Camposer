@@ -33,7 +33,7 @@ jobs:
 
   abi_check:
     name: API check
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - name: Check out code
         uses: actions/checkout@v6.0.1
@@ -53,7 +53,7 @@ jobs:
         run: ./gradlew checkLegacyAbi
 
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - name: Check out code
         uses: actions/checkout@v6.0.1
