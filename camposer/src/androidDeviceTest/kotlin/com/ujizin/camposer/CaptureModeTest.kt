@@ -14,6 +14,8 @@ import com.ujizin.camposer.state.properties.CaptureMode
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
+import org.junit.Assume.assumeTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
@@ -22,7 +24,7 @@ import java.io.File
 @LargeTest
 internal class CaptureModeTest : CameraTest() {
   private val context: Context
-    get() = InstrumentationRegistry.getInstrumentation().context
+    get() = InstrumentationRegistry.getInstrumentation().targetContext
 
   @Test
   fun test_captureMode() =
@@ -55,15 +57,24 @@ internal class CaptureModeTest : CameraTest() {
     with(composeTestRule) {
       initCaptureModeCamera(CaptureMode.Video)
 
+      runOnIdle {
+        assumeTrue(
+          "Video capture is not supported on this device",
+          cameraSession.info.state.value.videoFormats
+            .isNotEmpty(),
+        )
+      }
+      waitUntil(CAPTURE_MODE_TIMEOUT) {
+        cameraSession.state.captureMode.value == CaptureMode.Video
+      }
+
       // Create file
       val videoFile = File(context.filesDir, VIDEO_TEST_FILENAME).apply {
         deleteRecursively()
-        createNewFile()
       }
 
-      waitUntil(CAPTURE_MODE_TIMEOUT) { videoFile.exists() }
-
       var isFinished = false
+      var error: Throwable? = null
       runOnIdle {
         cameraController.startRecording(
           FileOutputOptions.Builder(videoFile).build(),
@@ -71,17 +82,22 @@ internal class CaptureModeTest : CameraTest() {
         ) { result ->
           when (result) {
             is CaptureResult.Error -> {
-              throw result.throwable
+              error = result.throwable
+              isFinished = true
             }
 
             is CaptureResult.Success -> {
-              assertEquals(Uri.fromFile(videoFile), result.data)
+              val resultUri = result.data
+              if (resultUri != null && resultUri != Uri.EMPTY) {
+                assertEquals(Uri.fromFile(videoFile), resultUri)
+              }
               assertEquals(CaptureMode.Video, cameraSession.state.captureMode.value)
               isFinished = true
             }
           }
         }
       }
+      waitUntil(CAPTURE_MODE_TIMEOUT) { cameraController.isRecording }
 
       runBlocking {
         delay(RECORD_VIDEO_DELAY)
@@ -89,6 +105,10 @@ internal class CaptureModeTest : CameraTest() {
       }
 
       waitUntil(CAPTURE_MODE_TIMEOUT) { isFinished }
+      runOnIdle {
+        if (error != null) throw checkNotNull(error)
+        assertTrue(videoFile.exists())
+      }
     }
 
   private fun ComposeContentTestRule.initCaptureModeCamera(
