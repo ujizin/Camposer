@@ -101,10 +101,6 @@ public abstract class CommonCameraController<
       return
     }
 
-    check(info?.state?.value?.isExposureSupported == true) {
-      "Exposure compensation must be supported to be set"
-    }
-
     cameraEngine.runBind { updateMirrorMode(mirrorMode) }
   }
 
