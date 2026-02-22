@@ -2,6 +2,7 @@ package com.ujizin.camposer.shared.features.camera.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,24 +31,32 @@ import sample_android.sample_multiplatform.shared.generated.resources.flash_auto
 import sample_android.sample_multiplatform.shared.generated.resources.flash_off
 import sample_android.sample_multiplatform.shared.generated.resources.flash_on
 import sample_android.sample_multiplatform.shared.generated.resources.settings
+import sample_android.sample_multiplatform.shared.generated.resources.torch_off
+import sample_android.sample_multiplatform.shared.generated.resources.torch_on
 
 /**
  * Top controls bar with settings, flash, and resolution indicator.
  *
  * @param modifier Modifier to be applied to the bar
  * @param flashMode Current flash mode
+ * @param isTorchSupported Whether torch is supported by the current camera
+ * @param isTorchEnabled Whether torch is currently enabled
  * @param onSettingsClick Callback when settings button is clicked
  * @param onFlashClick Callback when flash button is clicked
+ * @param onTorchClick Callback when torch button is clicked
  */
 @Composable
 fun TopControlsBar(
   modifier: Modifier = Modifier,
   flashMode: FlashMode = FlashMode.Auto,
   isFlashSupported: Boolean = true,
+  isTorchSupported: Boolean = false,
+  isTorchEnabled: Boolean = false,
   isRecording: Boolean = false,
   recordingDurationSeconds: Long = 0L,
   onSettingsClick: () -> Unit = {},
   onFlashClick: () -> Unit = {},
+  onTorchClick: () -> Unit = {},
 ) {
   Box(
     modifier = modifier
@@ -58,11 +67,23 @@ fun TopControlsBar(
       modifier = Modifier.fillMaxWidth(),
       verticalAlignment = Alignment.CenterVertically,
     ) {
-      if (isFlashSupported) {
-        FlashButton(
-          flashMode = flashMode,
-          onClick = onFlashClick,
-        )
+      Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+      ) {
+        if (isFlashSupported) {
+          FlashButton(
+            flashMode = flashMode,
+            onClick = onFlashClick,
+          )
+        }
+
+        if (isTorchSupported) {
+          TorchButton(
+            isEnabled = isTorchEnabled,
+            onClick = onTorchClick,
+          )
+        }
       }
 
       Spacer(Modifier.weight(1F))
@@ -126,6 +147,29 @@ fun FlashButton(
     FlashMode.Auto -> painterResource(Res.drawable.flash_auto) to "Flash Auto"
   }
 
+
+  ControlButton(
+    modifier = modifier,
+    icon = icon,
+    contentDescription = description,
+    onClick = onClick,
+  )
+}
+
+/**
+ * Torch button that shows appropriate icon based on torch state.
+ */
+@Composable
+fun TorchButton(
+  isEnabled: Boolean,
+  modifier: Modifier = Modifier,
+  onClick: () -> Unit = {},
+) {
+  val (icon, description) = if (isEnabled) {
+    painterResource(Res.drawable.torch_on) to "Torch On"
+  } else {
+    painterResource(Res.drawable.torch_off) to "Torch Off"
+  }
 
   ControlButton(
     modifier = modifier,

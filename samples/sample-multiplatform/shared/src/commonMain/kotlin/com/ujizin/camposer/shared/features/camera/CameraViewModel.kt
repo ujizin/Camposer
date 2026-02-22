@@ -171,6 +171,10 @@ class CameraViewModel : ViewModel() {
     cameraController.setFlashMode(nextMode)
   }
 
+  fun toggleTorch(isCurrentlyEnabled: Boolean) {
+    cameraController.setTorchEnabled(!isCurrentlyEnabled)
+  }
+
   fun onCodeAnalyzed(code: CodeResult) {
     if (_uiState.value.captureMode != CaptureMode.Image) return
 

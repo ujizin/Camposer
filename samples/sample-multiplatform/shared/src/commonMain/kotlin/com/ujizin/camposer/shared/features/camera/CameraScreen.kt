@@ -50,11 +50,13 @@ fun CameraScreen(
 
   // Camera state from session
   val flashMode by cameraSession.state.flashMode.collectAsStateWithLifecycle()
+  val isTorchEnabled by cameraSession.state.isTorchEnabled.collectAsStateWithLifecycle()
   val zoomRatio by cameraSession.state.zoomRatio.collectAsStateWithLifecycle()
   val isRecording = cameraViewModel.cameraController.isRecording
 
   val cameraInfoState by cameraSession.info.collectAsStateWithLifecycle()
   val isFlashSupported = cameraInfoState.isFlashSupported
+  val isTorchSupported = cameraInfoState.isTorchSupported
   val isTapToFocusSupported = cameraInfoState.isFocusSupported
   val isVideoStabilizationSupported = cameraInfoState.isVideoStabilizationSupported
   val minZoom = cameraInfoState.minZoom
@@ -131,10 +133,13 @@ fun CameraScreen(
         modifier = Modifier.fillMaxWidth(),
         flashMode = flashMode,
         isFlashSupported = isFlashSupported,
+        isTorchSupported = isTorchSupported,
+        isTorchEnabled = isTorchEnabled,
         isRecording = isRecording,
         recordingDurationSeconds = uiState.recordingDurationSeconds,
         onSettingsClick = cameraViewModel::openSettings,
         onFlashClick = cameraViewModel::cycleFlashMode,
+        onTorchClick = { cameraViewModel.toggleTorch(isTorchEnabled) },
       )
 
       Spacer(Modifier.weight(1F))
