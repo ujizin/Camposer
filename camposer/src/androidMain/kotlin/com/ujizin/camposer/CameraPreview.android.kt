@@ -118,7 +118,9 @@ internal actual fun CameraPreviewImpl(
     update = { previewView ->
       if (!cameraIsInitialized) return@AndroidView
       with(previewView) {
-        if (this.scaleType != scaleType.type || this.implementationMode != implementationMode.value) {
+        if (this.scaleType != scaleType.type ||
+          this.implementationMode != implementationMode.value
+        ) {
           this.scaleType = scaleType.type
           this.implementationMode = implementationMode.value
           cameraSession.rebind(lifecycleOwner)
@@ -159,19 +161,20 @@ private fun PreviewView.getLastBitmapOnSwitch(
   isCameraIdle: Boolean,
   lifecycleEvent: Lifecycle.Event,
   latestBitmap: ImageBitmap?,
-): ImageBitmap? = when {
-  lifecycleEvent == Lifecycle.Event.ON_STOP -> {
-    null
-  }
+): ImageBitmap? =
+  when {
+    lifecycleEvent == Lifecycle.Event.ON_STOP -> {
+      null
+    }
 
-  !isCameraIdle && camSelector != cameraSession.state.camSelector.value -> {
-    bitmap?.asImageBitmap()
-  }
+    !isCameraIdle && camSelector != cameraSession.state.camSelector.value -> {
+      bitmap?.asImageBitmap()
+    }
 
-  else -> {
-    latestBitmap
+    else -> {
+      latestBitmap
+    }
   }
-}
 
 private fun PreviewView.updateBackgroundColor(backgroundColor: Int) {
   val previewBackground = background

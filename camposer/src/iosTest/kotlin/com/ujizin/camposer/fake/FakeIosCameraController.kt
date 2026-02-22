@@ -159,7 +159,6 @@ class FakeIosCameraController : IOSCameraController {
   }
 
   override fun setPreviewBackgroundColor(uiColor: UIColor) {
-
   }
 
   override fun setPreviewGravity(gravity: AVLayerVideoGravity) {

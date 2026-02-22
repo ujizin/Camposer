@@ -21,8 +21,15 @@ To ensure your changes do not break binary compatibility in future releases, run
 > If you are not familiar with ABI, please refer to the official documentation
 
 ```Bash
+./gradlew checkLegacyAbi
+```
+
+Then, to update the ABI, run the following command:
+
+```Bash
 ./gradlew updateLegacyAbi
 ```
+
 
 ### Tests
 
