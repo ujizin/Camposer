@@ -7,6 +7,7 @@ import platform.AVFoundation.AVCaptureVideoPreviewLayer
 import platform.AVFoundation.AVLayerVideoGravity
 import platform.Foundation.NSNotificationCenter
 import platform.UIKit.UIApplication.Companion.sharedApplication
+import platform.UIKit.UIColor
 import platform.UIKit.UIDeviceOrientationDidChangeNotification
 import platform.UIKit.UIView
 import platform.darwin.NSObjectProtocol
@@ -51,6 +52,11 @@ internal class PreviewManager(
   internal fun setGravity(gravity: AVLayerVideoGravity) {
     currentGravity = gravity
     videoPreviewLayer.setVideoGravity(gravity)
+  }
+
+  internal fun setBackgroundColor(color: UIColor) {
+    if (videoPreviewLayer.backgroundColor == color.CGColor) return
+    videoPreviewLayer.backgroundColor = color.CGColor
   }
 
   internal fun detachView() {

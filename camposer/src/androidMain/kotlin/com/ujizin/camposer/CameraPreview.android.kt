@@ -1,5 +1,6 @@
 package com.ujizin.camposer
 
+import android.graphics.drawable.ColorDrawable
 import android.view.ViewGroup
 import androidx.camera.view.PreviewView
 import androidx.compose.runtime.Composable
@@ -11,8 +12,10 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.viewinterop.AndroidView
@@ -65,10 +68,12 @@ internal actual fun CameraPreviewImpl(
   isImageAnalysisEnabled: Boolean,
   isFocusOnTapEnabled: Boolean,
   isPinchToZoomEnabled: Boolean,
+  previewBackgroundColor: Color,
   onTapFocus: (Offset) -> Unit,
   onSwitchCamera: (ImageBitmap) -> Unit,
   content: @Composable (() -> Unit),
 ) {
+  val backgroundColor = remember(previewBackgroundColor) { previewBackgroundColor.toArgb() }
   val lifecycleOwner = LocalLifecycleOwner.current
   val lifecycleEvent by lifecycleOwner.lifecycle.observeAsState()
   val cameraIsInitialized by rememberUpdatedState(cameraSession.isInitialized)
@@ -113,28 +118,21 @@ internal actual fun CameraPreviewImpl(
     update = { previewView ->
       if (!cameraIsInitialized) return@AndroidView
       with(previewView) {
-        if (this.scaleType != scaleType.type ||
-          this.implementationMode != implementationMode.value
-        ) {
+        if (this.scaleType != scaleType.type || this.implementationMode != implementationMode.value) {
           this.scaleType = scaleType.type
           this.implementationMode = implementationMode.value
           cameraSession.rebind(lifecycleOwner)
         }
 
-        latestBitmap = when {
-          lifecycleEvent == Lifecycle.Event.ON_STOP -> {
-            null
-          }
+        previewView.updateBackgroundColor(backgroundColor)
 
-          !isCameraIdle && camSelector != cameraSession.state.camSelector.value -> {
-            bitmap
-              ?.asImageBitmap()
-          }
-
-          else -> {
-            latestBitmap
-          }
-        }
+        latestBitmap = getLastBitmapOnSwitch(
+          cameraSession = cameraSession,
+          camSelector = camSelector,
+          isCameraIdle = isCameraIdle,
+          lifecycleEvent = lifecycleEvent,
+          latestBitmap = latestBitmap,
+        )
 
         cameraSession.update(
           camSelector = camSelector,
@@ -153,6 +151,33 @@ internal actual fun CameraPreviewImpl(
   )
 
   content()
+}
+
+private fun PreviewView.getLastBitmapOnSwitch(
+  cameraSession: CameraSession,
+  camSelector: CamSelector,
+  isCameraIdle: Boolean,
+  lifecycleEvent: Lifecycle.Event,
+  latestBitmap: ImageBitmap?,
+): ImageBitmap? = when {
+  lifecycleEvent == Lifecycle.Event.ON_STOP -> {
+    null
+  }
+
+  !isCameraIdle && camSelector != cameraSession.state.camSelector.value -> {
+    bitmap?.asImageBitmap()
+  }
+
+  else -> {
+    latestBitmap
+  }
+}
+
+private fun PreviewView.updateBackgroundColor(backgroundColor: Int) {
+  val previewBackground = background
+  if (previewBackground is ColorDrawable && previewBackground.color != backgroundColor) {
+    setBackgroundColor(backgroundColor)
+  }
 }
 
 private fun PreviewView.onViewBind(

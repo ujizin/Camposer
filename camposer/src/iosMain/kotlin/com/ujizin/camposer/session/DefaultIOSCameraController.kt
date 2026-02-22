@@ -74,6 +74,7 @@ import platform.Foundation.NSNotification
 import platform.Foundation.NSNotificationCenter
 import platform.Foundation.NSSelectorFromString
 import platform.Foundation.removeObserver
+import platform.UIKit.UIColor
 import platform.UIKit.UIView
 import platform.darwin.NSObject
 import platform.darwin.dispatch_async
@@ -255,6 +256,10 @@ public class DefaultIOSCameraController internal constructor(
     }
 
     captureDevice.withConfigurationLock { captureDevice.setActiveFormat(format) }
+  }
+
+  override fun setPreviewBackgroundColor(uiColor: UIColor) {
+    previewManager.setBackgroundColor(uiColor)
   }
 
   override fun setPreviewGravity(gravity: AVLayerVideoGravity) {

@@ -13,6 +13,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import com.ujizin.camposer.session.CameraSession
 import com.ujizin.camposer.state.properties.CaptureMode
@@ -41,6 +42,9 @@ import kotlinx.coroutines.delay
  * @param isImageAnalysisEnabled enable or disable image analysis
  * @param isFocusOnTapEnabled turn on feature focus on tap if true and supported
  * @param isPinchToZoomEnabled turn on feature pinch to zoom if true and supported
+ * @param previewBackgroundColor The preview background color to be added. This is necessary because
+ * non-fill scale types can display bars with the system background color, and it is not overridden
+ * by the modifier color.
  * @param onPreviewStreamChanged dispatch when preview is switching to front or back (Android only)
  * @param switchCameraContent composable preview when change camera and it's not been streaming yet (Android only)
  * @param focusTapContent content of focus tap, default is [SquareCornerFocus]
@@ -63,6 +67,7 @@ public fun CameraPreview(
   isImageAnalysisEnabled: Boolean = imageAnalyzer != null,
   isFocusOnTapEnabled: Boolean = cameraSession.state.isFocusOnTapEnabled.value,
   isPinchToZoomEnabled: Boolean = cameraSession.state.isPinchToZoomEnabled.value,
+  previewBackgroundColor: Color = Color.Unspecified,
   onPreviewStreamChanged: () -> Unit = {},
   switchCameraContent: @Composable (ImageBitmap) -> Unit = {},
   onFocus: suspend (onComplete: () -> Unit) -> Unit = { onComplete ->
@@ -92,6 +97,7 @@ public fun CameraPreview(
       implementationMode = implementationMode,
       isFocusOnTapEnabled = isFocusOnTapEnabled,
       isPinchToZoomEnabled = isPinchToZoomEnabled,
+      previewBackgroundColor = previewBackgroundColor,
       onTapFocus = { tapOffset = it },
       onSwitchCamera = { latestBitmap = it },
     )
@@ -150,6 +156,7 @@ internal expect fun CameraPreviewImpl(
   isImageAnalysisEnabled: Boolean,
   isFocusOnTapEnabled: Boolean,
   isPinchToZoomEnabled: Boolean,
+  previewBackgroundColor: Color,
   onTapFocus: (Offset) -> Unit,
   onSwitchCamera: (ImageBitmap) -> Unit,
   content: @Composable () -> Unit = {},

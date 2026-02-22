@@ -1,12 +1,15 @@
 package com.ujizin.camposer
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.UIKitViewController
+import com.ujizin.camposer.internal.utils.toUIColor
 import com.ujizin.camposer.internal.view.CameraViewController
 import com.ujizin.camposer.internal.view.CameraViewDelegate
 import com.ujizin.camposer.session.CameraSession
@@ -35,12 +38,15 @@ internal actual fun CameraPreviewImpl(
   isImageAnalysisEnabled: Boolean,
   isFocusOnTapEnabled: Boolean,
   isPinchToZoomEnabled: Boolean,
+  previewBackgroundColor: Color,
   onTapFocus: (Offset) -> Unit,
   onSwitchCamera: (ImageBitmap) -> Unit,
   content: @Composable () -> Unit,
 ) {
   val density = LocalDensity.current
-
+  val backgroundColor = remember(previewBackgroundColor) {
+    previewBackgroundColor.toUIColor()
+  }
   UIKitViewController(
     modifier = modifier,
     factory = {
@@ -58,7 +64,9 @@ internal actual fun CameraPreviewImpl(
       )
     },
     update = { cameraViewController ->
-      cameraViewController.cameraSession.update(
+      val session = cameraViewController.cameraSession
+      session.updatePreviewBackgroundColor(backgroundColor)
+      session.update(
         camSelector = camSelector,
         captureMode = captureMode,
         camFormat = camFormat,

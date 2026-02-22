@@ -21,6 +21,7 @@ import platform.AVFoundation.AVCaptureVideoStabilizationMode
 import platform.AVFoundation.AVCaptureVideoStabilizationModeAuto
 import platform.AVFoundation.AVLayerVideoGravity
 import platform.CoreGraphics.CGPoint
+import platform.UIKit.UIColor
 import platform.UIKit.UIView
 
 @OptIn(ExperimentalForeignApi::class)
@@ -155,6 +156,10 @@ class FakeIosCameraController : IOSCameraController {
 
   override fun renderPreviewLayer(view: UIView) {
     fakePreviewView = view
+  }
+
+  override fun setPreviewBackgroundColor(uiColor: UIColor) {
+
   }
 
   override fun setPreviewGravity(gravity: AVLayerVideoGravity) {

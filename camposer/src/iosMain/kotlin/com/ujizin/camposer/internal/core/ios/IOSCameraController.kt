@@ -16,6 +16,7 @@ import platform.AVFoundation.AVCaptureVideoOrientation
 import platform.AVFoundation.AVCaptureVideoStabilizationMode
 import platform.AVFoundation.AVLayerVideoGravity
 import platform.CoreGraphics.CGPoint
+import platform.UIKit.UIColor
 import platform.UIKit.UIView
 
 @OptIn(ExperimentalForeignApi::class)
@@ -72,6 +73,8 @@ public interface IOSCameraController {
   public fun renderPreviewLayer(view: UIView)
 
   public fun setPreviewGravity(gravity: AVLayerVideoGravity)
+
+  public fun setPreviewBackgroundColor(uiColor: UIColor)
 
   public fun setCaptureDevice(device: AVCaptureDevice)
 

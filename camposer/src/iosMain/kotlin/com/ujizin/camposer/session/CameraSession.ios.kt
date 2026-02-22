@@ -21,6 +21,7 @@ import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.AVFoundation.AVCaptureSession
 import platform.CoreGraphics.CGPoint
+import platform.UIKit.UIColor
 import platform.UIKit.UIView
 
 @OptIn(ExperimentalForeignApi::class)
@@ -121,6 +122,10 @@ public actual class CameraSession internal constructor(
 
   internal fun recoveryState() {
     iosCameraController.setTorchEnabled(state.isTorchEnabled.value)
+  }
+
+  internal fun updatePreviewBackgroundColor(uiColor: UIColor) {
+    iosCameraController.setPreviewBackgroundColor(uiColor)
   }
 
   internal fun dispose() {
