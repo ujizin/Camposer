@@ -13,16 +13,20 @@ internal class VideoApplier(
   private val iOSCameraController: IOSCameraController,
 ) : CameraStateApplier {
   fun applyImageCaptureStrategy(imageCaptureStrategy: ImageCaptureStrategy) {
-    iOSCameraController.setCameraOutputQuality(
-      quality = imageCaptureStrategy.quality,
-      highResolutionEnabled = imageCaptureStrategy.highResolutionEnabled,
-    )
-    cameraState.updateImageCaptureStrategy(imageCaptureStrategy)
+    cameraState.launch {
+      iOSCameraController.setCameraOutputQuality(
+        quality = imageCaptureStrategy.quality,
+        highResolutionEnabled = imageCaptureStrategy.highResolutionEnabled,
+      )
+      cameraState.updateImageCaptureStrategy(imageCaptureStrategy)
+    }
   }
 
   fun applyFrameRate(frameRate: Int) {
-    iOSCameraController.setFrameRate(frameRate)
-    cameraState.updateFrameRate(frameRate)
+    cameraState.launch {
+      iOSCameraController.setFrameRate(frameRate)
+      cameraState.updateFrameRate(frameRate)
+    }
   }
 
   fun applyVideoStabilizationMode(videoStabilizationMode: VideoStabilizationMode) {

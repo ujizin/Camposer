@@ -176,6 +176,12 @@ public class DefaultIOSCameraController internal constructor(
     captureSession.removeOutput(output)
   }
 
+  override fun withSessionConfiguration(block: () -> Unit) {
+    captureSession.beginConfiguration()
+    block()
+    captureSession.commitConfiguration()
+  }
+
   override fun start(
     captureOutput: AVCaptureOutput,
     device: AVCaptureDevice,
@@ -264,6 +270,8 @@ public class DefaultIOSCameraController internal constructor(
       return
     }
 
+    captureSession.beginConfiguration()
+
     // Remove the previous one
     if (_captureDeviceInput != null) {
       captureSession.removeInput(captureDeviceInput)
@@ -271,6 +279,7 @@ public class DefaultIOSCameraController internal constructor(
 
     _captureDeviceInput = device.toDeviceInput()
     captureSession.tryAddInput(captureDeviceInput)
+    captureSession.commitConfiguration()
   }
 
   override fun setAudioEnabled(isEnabled: Boolean) {

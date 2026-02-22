@@ -55,6 +55,8 @@ public interface IOSCameraController {
 
   public fun getCurrentDeviceOrientation(): AVCaptureVideoOrientation
 
+  public fun withSessionConfiguration(block: () -> Unit)
+
   public fun addOutput(output: AVCaptureOutput)
 
   public fun removeOutput(output: AVCaptureOutput)

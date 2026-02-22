@@ -56,15 +56,15 @@ internal class SessionTopologyApplier(
     previousCaptureMode: CaptureMode,
     captureMode: CaptureMode,
   ) {
-    resetConfig(captureMode.output)
-    removeCaptureMode(previousCaptureMode)
-    iOSCameraController.addOutput(captureMode.output)
-    updateConfig(captureMode = captureMode, captureModeChanged = true)
+    iOSCameraController.withSessionConfiguration {
+      iOSCameraController.removeOutput(previousCaptureMode.output)
+      iOSCameraController.addOutput(captureMode.output)
+      updateConfig(captureMode = captureMode, captureModeChanged = true)
+    }
     cameraState.updateCaptureMode(captureMode)
   }
 
   private fun applyCamSelectorInternal(camSelector: CamSelector) {
-    resetConfig(cameraState.captureMode.value.output)
     iOSCameraController.setCaptureDevice(iOSCameraController.getCaptureDevice(camSelector))
     updateConfig(
       captureMode = cameraState.captureMode.value,
@@ -74,15 +74,13 @@ internal class SessionTopologyApplier(
   }
 
   fun applyCamFormat(camFormat: CamFormat) {
-    setCamFormat(
-      camFormat = camFormat,
-      captureMode = cameraState.captureMode.value,
-    )
-    cameraState.updateCamFormat(camFormat)
-  }
-
-  private fun removeCaptureMode(captureMode: CaptureMode) {
-    iOSCameraController.removeOutput(captureMode.output)
+    cameraState.launch {
+      setCamFormat(
+        camFormat = camFormat,
+        captureMode = cameraState.captureMode.value,
+      )
+      cameraState.updateCamFormat(camFormat)
+    }
   }
 
   private fun setCamFormat(

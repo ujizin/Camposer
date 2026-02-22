@@ -127,6 +127,10 @@ class FakeIosCameraController : IOSCameraController {
   override fun getCurrentDeviceOrientation(): AVCaptureVideoOrientation =
     AVCaptureVideoOrientationPortrait
 
+  override fun withSessionConfiguration(block: () -> Unit) {
+    block()
+  }
+
   override fun addOutput(output: AVCaptureOutput) {
     fakeOutputs.add(output)
   }

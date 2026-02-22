@@ -221,6 +221,6 @@ internal fun CameraSession.update(
     updateImageCaptureStrategy(imageCaptureStrategy)
     updatePinchToZoomEnabled(isPinchToZoomEnabled)
 
-    state.launch { onSessionStarted() }
+    onSessionStarted()
   }
 }
