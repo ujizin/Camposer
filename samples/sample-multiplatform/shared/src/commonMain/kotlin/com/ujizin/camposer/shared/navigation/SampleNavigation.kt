@@ -1,6 +1,8 @@
 package com.ujizin.camposer.shared.navigation
 
-import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.entryProvider
@@ -16,7 +18,8 @@ fun SampleNavigation() {
     val backStack = rememberNavBackStack(Routes.config, Routes.PermissionRoute)
 
     NavDisplay(
-      modifier = Modifier.safeDrawingPadding(),
+      modifier = Modifier
+        .windowInsetsPadding(WindowInsets.safeDrawing),
       backStack = backStack,
       onBack = { backStack.removeLastOrNull() },
       entryProvider = entryProvider {

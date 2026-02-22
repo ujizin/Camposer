@@ -133,7 +133,6 @@ class CameraViewModel : ViewModel() {
     when (_uiState.value.captureMode) {
       CaptureMode.Image -> takePicture()
       CaptureMode.Video -> toggleRecording()
-      else -> Unit
     }
   }
 
@@ -168,7 +167,6 @@ class CameraViewModel : ViewModel() {
       FlashMode.Off -> FlashMode.Auto
       FlashMode.Auto -> FlashMode.On
       FlashMode.On -> FlashMode.Off
-      else -> FlashMode.Off
     }
     cameraController.setFlashMode(nextMode)
   }

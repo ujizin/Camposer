@@ -2,9 +2,9 @@ package com.ujizin.camposer.shared.features.camera.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -56,25 +56,21 @@ fun TopControlsBar(
   ) {
     Row(
       modifier = Modifier.fillMaxWidth(),
-      horizontalArrangement = Arrangement.SpaceBetween,
       verticalAlignment = Alignment.CenterVertically,
     ) {
-      Row(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-      ) {
-        ControlButton(
-          icon = painterResource(Res.drawable.settings),
-          contentDescription = "Settings",
-          onClick = onSettingsClick,
+      if (isFlashSupported) {
+        FlashButton(
+          flashMode = flashMode,
+          onClick = onFlashClick,
         )
-        if (isFlashSupported) {
-          FlashButton(
-            flashMode = flashMode,
-            onClick = onFlashClick,
-          )
-        }
       }
+
+      Spacer(Modifier.weight(1F))
+      ControlButton(
+        icon = painterResource(Res.drawable.settings),
+        contentDescription = "Settings",
+        onClick = onSettingsClick,
+      )
     }
 
     if (isRecording) {
@@ -128,7 +124,6 @@ fun FlashButton(
     FlashMode.Off -> painterResource(Res.drawable.flash_off) to "Flash Off"
     FlashMode.On -> painterResource(Res.drawable.flash_on) to "Flash On"
     FlashMode.Auto -> painterResource(Res.drawable.flash_auto) to "Flash Auto"
-    else -> painterResource(Res.drawable.flash_off) to "Flash Off"
   }
 
 
