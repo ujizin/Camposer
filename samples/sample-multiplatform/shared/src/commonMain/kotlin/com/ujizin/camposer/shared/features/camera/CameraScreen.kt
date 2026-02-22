@@ -105,6 +105,10 @@ fun CameraScreen(
     }
   }
 
+  LaunchedEffect(uiState.orientationStrategy) {
+    cameraViewModel.cameraController.setOrientationStrategy(uiState.orientationStrategy)
+  }
+
   CameraPreview(
     modifier = Modifier.fillMaxSize()
       .keepScreenOn(),
@@ -196,11 +200,13 @@ fun CameraScreen(
         is60FpsEnabled = uiState.is60FpsEnabled,
         isTapToFocusEnabled = uiState.isTapToFocusEnabled,
         aspectRatioOption = uiState.aspectRatioOption,
+        orientationStrategy = uiState.orientationStrategy,
         mirrorMode = uiState.mirrorMode,
         onVideoStabilizationChanged = cameraViewModel::setVideoStabilizationEnabled,
         on60FpsChanged = cameraViewModel::set60FpsEnabled,
         onTapToFocusChanged = cameraViewModel::setTapToFocusEnabled,
         onAspectRatioChanged = cameraViewModel::setAspectRatioOption,
+        onOrientationStrategyChanged = cameraViewModel::setOrientationStrategy,
         onMirrorModeChanged = cameraViewModel::setMirrorMode,
         onClose = cameraViewModel::closeSettings,
       )

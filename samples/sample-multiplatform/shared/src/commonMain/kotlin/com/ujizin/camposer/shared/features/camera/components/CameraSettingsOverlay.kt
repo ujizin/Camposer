@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.ujizin.camposer.shared.features.camera.AspectRatioOption
 import com.ujizin.camposer.state.properties.MirrorMode
+import com.ujizin.camposer.state.properties.OrientationStrategy
 
 @Composable
 fun CameraSettingsOverlay(
@@ -38,11 +39,13 @@ fun CameraSettingsOverlay(
   is60FpsEnabled: Boolean,
   isTapToFocusEnabled: Boolean,
   aspectRatioOption: AspectRatioOption,
+  orientationStrategy: OrientationStrategy,
   mirrorMode: MirrorMode,
   onVideoStabilizationChanged: (Boolean) -> Unit,
   on60FpsChanged: (Boolean) -> Unit,
   onTapToFocusChanged: (Boolean) -> Unit,
   onAspectRatioChanged: (AspectRatioOption) -> Unit,
+  onOrientationStrategyChanged: (OrientationStrategy) -> Unit,
   onMirrorModeChanged: (MirrorMode) -> Unit,
   onClose: () -> Unit,
 ) {
@@ -113,6 +116,19 @@ fun CameraSettingsOverlay(
         )
         DisclaimerText(
           text = "Target aspect ratio will be applied only if supported.",
+        )
+
+        RadioGroupSetting(
+          title = "Orientation Strategy",
+          options = listOf(
+            "Preview" to OrientationStrategy.Preview,
+            "Device" to OrientationStrategy.Device,
+          ),
+          selected = orientationStrategy,
+          onSelected = onOrientationStrategyChanged,
+        )
+        DisclaimerText(
+          text = "Orientation strategy Preview is not supported on Android yet.",
         )
 
         RadioGroupSetting(

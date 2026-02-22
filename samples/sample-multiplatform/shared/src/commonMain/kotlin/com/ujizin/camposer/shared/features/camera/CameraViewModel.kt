@@ -41,7 +41,7 @@ class CameraViewModel : ViewModel() {
   private var clearQrFeedbackJob: Job? = null
 
   fun initializeOrientationStrategy() {
-    cameraController.setOrientationStrategy(OrientationStrategy.Preview)
+    cameraController.setOrientationStrategy(_uiState.value.orientationStrategy)
   }
 
   fun takePicture() {
@@ -119,6 +119,12 @@ class CameraViewModel : ViewModel() {
   fun setAspectRatioOption(aspectRatioOption: AspectRatioOption) {
     _uiState.update { state ->
       state.copy(aspectRatioOption = aspectRatioOption)
+    }
+  }
+
+  fun setOrientationStrategy(orientationStrategy: OrientationStrategy) {
+    _uiState.update { state ->
+      state.copy(orientationStrategy = orientationStrategy)
     }
   }
 
