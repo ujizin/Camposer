@@ -22,7 +22,7 @@ data class CameraUiState(
   val isVideoStabilizationEnabled: Boolean = false,
   val is60FpsEnabled: Boolean = false,
   val isTapToFocusEnabled: Boolean = true,
-  val aspectRatioOption: AspectRatioOption = AspectRatioOption.Ratio16x9,
+  val aspectRatioOption: AspectRatioOption = AspectRatioOption.Full,
   val mirrorMode: MirrorMode = MirrorMode.OnlyInFront,
   val lastThumbnail: ByteArray? = null,
   val qrCodeText: String? = null,

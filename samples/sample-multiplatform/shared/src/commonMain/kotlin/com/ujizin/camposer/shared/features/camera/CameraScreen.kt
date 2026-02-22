@@ -6,12 +6,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.keepScreenOn
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -70,17 +72,25 @@ fun CameraScreen(
     uiState.isVideoStabilizationEnabled,
     isVideoStabilizationSupported,
   ) {
+    val configs = buildList {
+      add(FrameRateConfig(if (uiState.is60FpsEnabled) 60 else 30))
+      uiState.aspectRatioOption.ratio?.let { ratio ->
+        add(AspectRatioConfig(ratio))
+      }
+      add(ResolutionConfig.UltraHigh)
+      add(
+        VideoStabilizationConfig(
+          if (uiState.isVideoStabilizationEnabled && isVideoStabilizationSupported) {
+            VideoStabilizationMode.Standard
+          } else {
+            VideoStabilizationMode.Off
+          },
+        )
+      )
+    }
+
     CamFormat(
-      FrameRateConfig(if (uiState.is60FpsEnabled) 60 else 30),
-      AspectRatioConfig(uiState.aspectRatioOption.ratio),
-      ResolutionConfig.UltraHigh,
-      VideoStabilizationConfig(
-        if (uiState.isVideoStabilizationEnabled && isVideoStabilizationSupported) {
-          VideoStabilizationMode.Standard
-        } else {
-          VideoStabilizationMode.Off
-        },
-      ),
+      *configs.toTypedArray(),
     )
   }
 
@@ -98,16 +108,23 @@ fun CameraScreen(
       .keepScreenOn(),
     cameraSession = cameraSession,
     camFormat = camFormat,
-    scaleType = ScaleType.FitCenter,
+    scaleType = if (uiState.aspectRatioOption == AspectRatioOption.Full) {
+      ScaleType.FillCenter
+    } else {
+      ScaleType.FitCenter
+    },
     camSelector = uiState.camSelector,
     captureMode = uiState.captureMode,
     implementationMode = ImplementationMode.Compatible,
     imageAnalyzer = codeImageAnalyzer,
+    previewBackgroundColor = Color.Black,
     isImageAnalysisEnabled = uiState.captureMode == CaptureMode.Image,
     isFocusOnTapEnabled = uiState.isTapToFocusEnabled && isTapToFocusSupported,
   ) {
     Column(
-      modifier = Modifier.fillMaxWidth(),
+      modifier = Modifier
+        .fillMaxWidth()
+        .statusBarsPadding(),
       verticalArrangement = Arrangement.SpaceBetween,
     ) {
       TopControlsBar(

@@ -9,7 +9,9 @@ import SwiftUI
    
 struct ContentView: View {
     var body: some View {
-        CameraView().ignoresSafeArea(.keyboard)
+        CameraView()
+            .ignoresSafeArea(.all)
+            .ignoresSafeArea(.keyboard)
     }
 }
 
