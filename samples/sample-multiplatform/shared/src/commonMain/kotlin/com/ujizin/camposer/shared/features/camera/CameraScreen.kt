@@ -39,7 +39,6 @@ import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import com.ujizin.camposer.state.properties.format.CamFormat
 import com.ujizin.camposer.state.properties.format.config.AspectRatioConfig
 import com.ujizin.camposer.state.properties.format.config.FrameRateConfig
-import com.ujizin.camposer.state.properties.format.config.ResolutionConfig
 import com.ujizin.camposer.state.properties.format.config.VideoStabilizationConfig
 
 @Composable
@@ -77,10 +76,7 @@ fun CameraScreen(
   ) {
     val configs = buildList {
       add(FrameRateConfig(if (uiState.is60FpsEnabled) 60 else 30))
-      uiState.aspectRatioOption.ratio?.let { ratio ->
-        add(AspectRatioConfig(ratio))
-      }
-      add(ResolutionConfig.UltraHigh)
+      add(AspectRatioConfig(uiState.aspectRatioOption.ratio))
       add(
         VideoStabilizationConfig(
           if (uiState.isVideoStabilizationEnabled && isVideoStabilizationSupported) {

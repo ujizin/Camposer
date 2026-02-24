@@ -12,7 +12,6 @@ import com.ujizin.camposer.CaptureResult
 import com.ujizin.camposer.internal.core.AndroidCameraEngine
 import com.ujizin.camposer.internal.core.CameraEngine
 import com.ujizin.camposer.internal.core.camerax.CameraXController
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.concurrent.Executor
 
@@ -32,19 +31,39 @@ internal actual class DefaultTakePictureCommand private constructor(
   ) : this(cameraEngine = cameraEngine as AndroidCameraEngine)
 
   actual override fun takePicture(onImageCaptured: (CaptureResult<ByteArray>) -> Unit) {
-    val byteArrayOS = ByteArrayOutputStream()
+    val tempFile = runCatching {
+      File.createTempFile(TEMP_PICTURE_PREFIX, TEMP_PICTURE_SUFFIX)
+    }.getOrElse { throwable ->
+      onImageCaptured(CaptureResult.Error(throwable))
+      return
+    }
+
     takePicture(
       outputFileOptions = OutputFileOptions
-        .Builder(byteArrayOS)
+        .Builder(tempFile)
         .setMetadata(createMetadata())
         .build(),
       onResult = { result ->
-        val result =
+        val captureResult =
           when (result) {
-            is CaptureResult.Error -> CaptureResult.Error(result.throwable)
-            is CaptureResult.Success<Uri?> -> CaptureResult.Success(byteArrayOS.toByteArray())
+            is CaptureResult.Error -> {
+              CaptureResult.Error(result.throwable)
+            }
+
+            is CaptureResult.Success<Uri?> -> {
+              runCatching {
+                CaptureResult.Success(tempFile.readBytes())
+              }.getOrElse {
+                CaptureResult.Error(it)
+              }
+            }
           }
-        onImageCaptured(result)
+
+        if (tempFile.exists()) {
+          tempFile.delete()
+        }
+
+        onImageCaptured(captureResult)
       },
     )
   }
@@ -120,8 +139,13 @@ internal actual class DefaultTakePictureCommand private constructor(
     }
   }
 
-  fun createMetadata() =
+  private fun createMetadata() =
     ImageCapture.Metadata().apply {
       this.isReversedHorizontal = cameraEngine.isMirrorEnabled()
     }
+
+  companion object {
+    private const val TEMP_PICTURE_PREFIX = "temp_camposer_capture"
+    private const val TEMP_PICTURE_SUFFIX = ".jpg"
+  }
 }
