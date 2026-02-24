@@ -46,7 +46,7 @@ import kotlinx.coroutines.delay
  * non-fill scale types can display bars with the system background color, and it is not overridden
  * by the modifier color.
  * @param onPreviewStreamChanged dispatch when preview is switching to front or back (Android only)
- * @param switchCameraContent composable preview when change camera and it's not been streaming yet (Android only)
+ * @param switchCameraContent composable preview when change camera, and it's not been streaming yet (Android only)
  * @param focusTapContent content of focus tap, default is [SquareCornerFocus]
  * @param onFocus callback to use when on focus tap is triggered, call onComplete to [focusTapContent] gone.
  * @param content content composable within of camera preview.

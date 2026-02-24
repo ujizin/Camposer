@@ -1,5 +1,6 @@
 package com.ujizin.camposer.state.properties.selector
 
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.mapSaver
 import com.ujizin.camposer.manager.CameraDevice
@@ -17,6 +18,7 @@ import com.ujizin.camposer.manager.CameraDevice
  * @see CamPosition
  * @see CamLensType
  */
+@Stable
 public expect class CamSelector {
   public val camPosition: CamPosition
   public val camLensTypes: List<CamLensType>

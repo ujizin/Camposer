@@ -1,5 +1,6 @@
 package com.ujizin.camposer.session
 
+import androidx.compose.runtime.Stable
 import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.internal.core.CameraEngine
@@ -13,6 +14,7 @@ import com.ujizin.camposer.state.CameraState
  * indicating the runtime status of the camera, such as whether it is currently streaming
  * or initialized.
  */
+@Stable
 public expect class CameraSession {
   /**
    * The current state of the current camera.

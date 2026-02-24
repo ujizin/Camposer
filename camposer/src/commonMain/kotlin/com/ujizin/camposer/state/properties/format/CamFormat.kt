@@ -1,5 +1,6 @@
 package com.ujizin.camposer.state.properties.format
 
+import androidx.compose.runtime.Stable
 import com.ujizin.camposer.state.properties.format.config.CameraFormatConfig
 import com.ujizin.camposer.state.properties.format.config.ResolutionConfig
 
@@ -22,6 +23,7 @@ import com.ujizin.camposer.state.properties.format.config.ResolutionConfig
  * @see CameraFormatConfig
  * @see ResolutionConfig
  */
+@Stable
 public expect class CamFormat {
   public val configs: List<CameraFormatConfig>
 
