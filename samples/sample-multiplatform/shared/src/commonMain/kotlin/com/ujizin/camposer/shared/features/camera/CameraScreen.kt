@@ -24,6 +24,7 @@ import androidx.navigationevent.compose.rememberNavigationEventState
 import com.ujizin.camposer.CameraPreview
 import com.ujizin.camposer.codescanner.CodeType
 import com.ujizin.camposer.codescanner.rememberCodeImageAnalyzer
+import com.ujizin.camposer.lifecycle.compose.collectStateWithLifecycle
 import com.ujizin.camposer.session.rememberCameraSession
 import com.ujizin.camposer.shared.features.camera.components.BottomActionBar
 import com.ujizin.camposer.shared.features.camera.components.CameraSettingsOverlay
@@ -54,7 +55,7 @@ fun CameraScreen(
   val zoomRatio by cameraSession.state.zoomRatio.collectAsStateWithLifecycle()
   val isRecording = cameraViewModel.cameraController.isRecording
 
-  val cameraInfoState by cameraSession.info.collectAsStateWithLifecycle()
+  val cameraInfoState by cameraSession.info.collectStateWithLifecycle()
   val isFlashSupported = cameraInfoState.isFlashSupported
   val isTorchSupported = cameraInfoState.isTorchSupported
   val isTapToFocusSupported = cameraInfoState.isFocusSupported

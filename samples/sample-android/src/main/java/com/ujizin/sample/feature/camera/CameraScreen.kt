@@ -23,6 +23,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.skydoves.cloudy.cloudy
 import com.ujizin.camposer.CameraPreview
 import com.ujizin.camposer.controller.camera.CameraController
+import com.ujizin.camposer.lifecycle.compose.collectStateWithLifecycle
 import com.ujizin.camposer.manager.CameraDeviceState
 import com.ujizin.camposer.manager.rememberCameraDeviceState
 import com.ujizin.camposer.session.CameraSession
@@ -130,7 +131,7 @@ fun CameraSection(
   }
   val zoomRatio by cameraSession.state.zoomRatio.collectAsStateWithLifecycle()
   var zoomHasChanged by remember { mutableStateOf(false) }
-  val cameraInfoState by cameraSession.info.collectAsStateWithLifecycle()
+  val cameraInfoState by cameraSession.info.collectStateWithLifecycle()
   val hasFlashUnit = cameraInfoState.isFlashSupported
   var cameraOption by rememberSaveable { mutableStateOf(CameraOption.Photo) }
   val flashMode by cameraSession.state.flashMode.collectAsStateWithLifecycle()

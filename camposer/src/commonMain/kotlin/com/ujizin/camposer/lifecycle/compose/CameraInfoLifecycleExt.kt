@@ -1,9 +1,11 @@
-package androidx.lifecycle.compose
+package com.ujizin.camposer.lifecycle.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.info.CameraInfoState
 import kotlin.coroutines.CoroutineContext
@@ -15,7 +17,7 @@ import kotlin.coroutines.EmptyCoroutineContext
  * Collection starts when lifecycle reaches [minActiveState] and stops when below it.
  */
 @Composable
-public fun CameraInfo.collectAsStateWithLifecycle(
+public fun CameraInfo.collectStateWithLifecycle(
   lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
   minActiveState: Lifecycle.State = Lifecycle.State.STARTED,
   context: CoroutineContext = EmptyCoroutineContext,
@@ -32,7 +34,7 @@ public fun CameraInfo.collectAsStateWithLifecycle(
  * Collection starts when lifecycle reaches [minActiveState] and stops when below it.
  */
 @Composable
-public fun CameraInfo.collectAsStateWithLifecycle(
+public fun CameraInfo.collectStateWithLifecycle(
   lifecycle: Lifecycle,
   minActiveState: Lifecycle.State = Lifecycle.State.STARTED,
   context: CoroutineContext = EmptyCoroutineContext,
