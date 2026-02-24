@@ -7,7 +7,7 @@ Zoom can be initialized and managed as state within Compose. The following examp
 ```kotlin
 val cameraSession = rememberCameraSession()
 val zoomRatio by cameraSession.state.zoomRatio.collectAsStateWithLifecycle()
-val cameraInfoState by cameraSession.info.collectAsStateWithLifecycle()
+val cameraInfoState by cameraSession.info.collectStateWithLifecycle()
 val minZoom = cameraInfoState.minZoom
 val maxZoom = cameraInfoState.maxZoom
 

@@ -9,7 +9,9 @@ This value is represented as a Float, and its valid range depends on the active 
 You can check the minimum and maximum supported exposure values for the current camera using:
 
 ```kotlin
-val cameraInfoState by cameraSession.info.collectAsStateWithLifecycle()
+import com.ujizin.camposer.lifecycle.compose.collectStateWithLifecycle
+
+val cameraInfoState by cameraSession.info.collectStateWithLifecycle()
 val minExposure = cameraInfoState.minExposure
 val maxExposure = cameraInfoState.maxExposure
 ```
@@ -23,9 +25,12 @@ cameraController.setExposureCompensation(1F)
 ## Usage Example
 
 ```kotlin
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ujizin.camposer.lifecycle.compose.collectStateWithLifecycle
+
 val controller = remember { CameraController() }
 val cameraSession = rememberCameraSession(controller)
-val cameraInfoState by cameraSession.info.collectAsStateWithLifecycle()
+val cameraInfoState by cameraSession.info.collectStateWithLifecycle()
 val minExposure = cameraInfoState.minExposure
 val maxExposure = cameraInfoState.maxExposure
 val exposureCompensation by cameraSession.state.exposureCompensation.collectAsStateWithLifecycle()

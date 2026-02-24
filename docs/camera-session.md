@@ -64,8 +64,10 @@ The `info` provides read-only hardware capabilities of the current camera and li
 
 **Example:**
 ```kotlin
+import com.ujizin.camposer.lifecycle.compose.collectStateWithLifecycle
+
 val cameraSession = rememberCameraSession()
-val cameraInfoState by cameraSession.info.collectAsStateWithLifecycle()
+val cameraInfoState by cameraSession.info.collectStateWithLifecycle() // or val cameraInfoState by cameraSession.info.state.collectAsStateWithLifecycle()
 val isFlashSupported = cameraInfoState.isFlashSupported
 val maxZoom = cameraInfoState.maxZoom
 
@@ -129,30 +131,3 @@ if (isInitialized) {
     // Camera is ready to use
 }
 ```
-
-### hasInitializationError
-
-Indicates whether the camera initialization failed. This is useful for showing error UI or implementing retry logic.
-
-```kotlin
-val cameraSession = rememberCameraSession()
-val hasError by rememberUpdatedState(cameraSession.hasInitializationError)
-
-if (hasError) {
-    // Show error message and retry button
-    Column {
-        Text("Failed to initialize camera")
-        Button(onClick = {
-            if (cameraSession.retryInitialization()) {
-                // Retry successful, camera initialized
-            } else {
-                // Retry failed, still has error
-            }
-        }) {
-            Text("Retry")
-        }
-    }
-}
-```
-
-**Retry Initialization**: Use `cameraSession.retryInitialization()` to attempt initialization again after a failure. The method returns `true` if successful, `false` if it still fails.

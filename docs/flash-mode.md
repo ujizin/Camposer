@@ -7,7 +7,7 @@ To configure flash mode, you need to use the `CameraController`. This ensures st
 It's also important to note that flash needs to be supported by the camera. To check this, you can access:
 
 ```kotlin
-val cameraInfoState by cameraSession.info.collectAsStateWithLifecycle()
+val cameraInfoState by cameraSession.info.collectStateWithLifecycle()
 
 // Check if flash is supported
 val isFlashSupported = cameraInfoState.isFlashSupported

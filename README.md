@@ -26,7 +26,7 @@ Add dependencies to your module `build.gradle.kts` and sync your project:
 ```kotlin
 // Android
 dependencies {
-  implementation("io.github.ujizin:camposer:0.5.0")
+  implementation("io.github.ujizin:camposer:<version>")
 }
 
 // Kotlin Multiplatform
