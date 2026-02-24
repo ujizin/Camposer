@@ -111,6 +111,10 @@ To learn about and use additional features, check the [Documentation](https://uj
 
 Have a `fun code()`!
 
+## ✨ Inspiration
+
+Camposer includes features inspired by [react-native-vision-camera](https://github.com/mrousavy/react-native-vision-camera).
+
 ## License
 
 ```
