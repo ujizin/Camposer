@@ -8,7 +8,7 @@ mavenPublishing {
 
   pom {
     name = PUBLISH_ARTIFACT_ID
-    description = "Multiplatform Camera Library for Jetpack Compose."
+    description = "Multiplatform Camera Library built with Jetpack Compose."
     url = "https://github.com/ujizin/Camposer"
     licenses {
       license {
