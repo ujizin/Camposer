@@ -1,0 +1,25 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:com.ujizin.camposer.codescanner/CodeType/entries/#/PointingToDeclaration/Camposer Code Scanner/com.ujizin.camposer.codescanner/-code-type/[]entries.html
+$dokka.location:com.ujizin.camposer.codescanner/CodeType/valueOf/#kotlin.String/PointingToDeclaration/Camposer Code Scanner/com.ujizin.camposer.codescanner/-code-type/[]value-of.html
+$dokka.location:com.ujizin.camposer.codescanner/CodeType/values/#/PointingToDeclaration/Camposer Code Scanner/com.ujizin.camposer.codescanner/-code-type/[]values.html
+module:Camposer
+com.ujizin.camposer
+com.ujizin.camposer.controller.camera
+com.ujizin.camposer.controller.record
+com.ujizin.camposer.controller.takepicture
+com.ujizin.camposer.error
+com.ujizin.camposer.extensions
+com.ujizin.camposer.info
+com.ujizin.camposer.internal.core.ios
+com.ujizin.camposer.lifecycle.compose
+com.ujizin.camposer.manager
+com.ujizin.camposer.session
+com.ujizin.camposer.state
+com.ujizin.camposer.state.properties
+com.ujizin.camposer.state.properties.format
+com.ujizin.camposer.state.properties.format.config
+com.ujizin.camposer.state.properties.selector
+com.ujizin.camposer.ui.focus
+module:Camposer Code Scanner
+com.ujizin.camposer.codescanner

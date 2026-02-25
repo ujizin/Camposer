@@ -1,0 +1,881 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>IOSCameraController</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js", "js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+      if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      } else {
+        const savedDarkMode = JSON.parse(storage)
+        if (savedDarkMode === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/safe-local-storage_blocking.js"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../ui-kit/ui-kit.min.js" defer></script></head>
+<body>
+<div class="root">
+    <header class="navigation theme-dark" id="navigation-wrapper" role="banner">
+<a class="library-name--link" href="../../../index.html" tabindex="1">
+                    Camposer
+            </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+        </div>
+        <div class="navigation-controls">
+        <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
+                <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true" data-filter=":camposer/iosMain">ios</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
+                    <div class="dropdown--header"><span>Target filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close target filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":camposer/iosMain" data-filter=":camposer/iosMain">
+                                <span class="checkbox--icon"></span>
+                                ios
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </ul>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </header>
+    <div id="container">
+        <nav id="leftColumn" class="sidebar" data-item-type="SECTION" data-item-config="{&quot;defaultSize&quot;: 280, &quot;minSize&quot;: 200, &quot;maxSize&quot;: 400}">
+            <a class="toc--skip-link" href="#main">Skip to content</a>
+            <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox" aria-label="Table of contents">
+                    <div class="dropdown--header">
+                            <span>
+                                    Camposer
+                            </span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                    <div class="sidebar--inner" id="sideMenu"></div>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </nav>
+        <div id="resizer" class="resizer" data-item-type="BAR"></div>
+        <div id="main" data-item-type="SECTION" role="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="Camposer::com.ujizin.camposer.internal.core.ios/IOSCameraController///PointingToDeclaration//-270536443">
+  <div class="breadcrumbs"><a href="../../index.html">Camposer</a><span class="delimiter">/</span><a href="../index.html">com.ujizin.camposer.internal.core.ios</a><span class="delimiter">/</span><span class="current">IOSCameraController</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>IOSCamera</span><wbr><span><span>Controller</span></span></h1>
+    <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+      <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">IOSCameraController</a></div><h4 class="tableheader">Inheritors</h4><div class="table"><div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../com.ujizin.camposer.session/-default-i-o-s-camera-controller/index.html">DefaultIOSCameraController</a></div></span></div><div></div></div></div></div></div>    </div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="PROPERTY">
+        <h2 class="tableheader">Properties</h2>
+        <div class="table"><a data-name="-1379177496%2FProperties%2F-270536443" anchor-label="captureDevice" id="-1379177496%2FProperties%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="capture-device.html"><span>capture</span><wbr><span><span>Device</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1379177496%2FProperties%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="capture-device.html">captureDevice</a><span class="token operator">: </span>ERROR CLASS: Symbol not found for AVCaptureDevice</div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2112612872%2FProperties%2F-270536443" anchor-label="captureDeviceInput" id="2112612872%2FProperties%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="capture-device-input.html"><span>capture</span><wbr><span>Device</span><wbr><span><span>Input</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2112612872%2FProperties%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="capture-device-input.html">captureDeviceInput</a><span class="token operator">: </span>ERROR CLASS: Symbol not found for AVCaptureDeviceInput</div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-675539898%2FProperties%2F-270536443" anchor-label="captureSession" id="-675539898%2FProperties%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="capture-session.html"><span>capture</span><wbr><span><span>Session</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-675539898%2FProperties%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="capture-session.html">captureSession</a><span class="token operator">: </span>ERROR CLASS: Symbol not found for AVCaptureSession</div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-221208%2FProperties%2F-270536443" anchor-label="exposureCompensationRange" id="-221208%2FProperties%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="exposure-compensation-range.html"><span>exposure</span><wbr><span>Compensation</span><wbr><span><span>Range</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-221208%2FProperties%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="exposure-compensation-range.html">exposureCompensationRange</a><span class="token operator">: </span>ERROR CLASS: Symbol not found for Pair&lt;kotlin/Float, kotlin/Float&gt;</div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1302883874%2FProperties%2F-270536443" anchor-label="fpsRange" id="1302883874%2FProperties%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="fps-range.html"><span>fps</span><wbr><span><span>Range</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1302883874%2FProperties%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="fps-range.html">fpsRange</a><span class="token operator">: </span>ERROR CLASS: Symbol not found for Pair&lt;kotlin/Int, kotlin/Int&gt;</div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2020192064%2FProperties%2F-270536443" anchor-label="hasFlash" id="-2020192064%2FProperties%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="has-flash.html"><span>has</span><wbr><span><span>Flash</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2020192064%2FProperties%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="has-flash.html">hasFlash</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1976029748%2FProperties%2F-270536443" anchor-label="hasTorch" id="1976029748%2FProperties%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="has-torch.html"><span>has</span><wbr><span><span>Torch</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1976029748%2FProperties%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="has-torch.html">hasTorch</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1770621345%2FProperties%2F-270536443" anchor-label="isExposureCompensationSupported" id="1770621345%2FProperties%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-exposure-compensation-supported.html"><span>is</span><wbr><span>Exposure</span><wbr><span>Compensation</span><wbr><span><span>Supported</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1770621345%2FProperties%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="is-exposure-compensation-supported.html">isExposureCompensationSupported</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2137723565%2FProperties%2F-270536443" anchor-label="isFlashAvailable" id="-2137723565%2FProperties%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-flash-available.html"><span>is</span><wbr><span>Flash</span><wbr><span><span>Available</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2137723565%2FProperties%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="is-flash-available.html">isFlashAvailable</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1758049802%2FProperties%2F-270536443" anchor-label="isFocusSupported" id="-1758049802%2FProperties%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-focus-supported.html"><span>is</span><wbr><span>Focus</span><wbr><span><span>Supported</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1758049802%2FProperties%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="is-focus-supported.html">isFocusSupported</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1243156573%2FProperties%2F-270536443" anchor-label="isMuted" id="-1243156573%2FProperties%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-muted.html"><span>is</span><wbr><span><span>Muted</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1243156573%2FProperties%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="is-muted.html">isMuted</a><span class="token operator">: </span>ERROR CLASS: Symbol not found for StateFlow&lt;kotlin/Boolean&gt;</div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1348369059%2FProperties%2F-270536443" anchor-label="isRecording" id="-1348369059%2FProperties%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-recording.html"><span>is</span><wbr><span><span>Recording</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1348369059%2FProperties%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="is-recording.html">isRecording</a><span class="token operator">: </span>ERROR CLASS: Symbol not found for StateFlow&lt;kotlin/Boolean&gt;</div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1395929505%2FProperties%2F-270536443" anchor-label="isTorchAvailable" id="-1395929505%2FProperties%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-torch-available.html"><span>is</span><wbr><span>Torch</span><wbr><span><span>Available</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1395929505%2FProperties%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="is-torch-available.html">isTorchAvailable</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-327527622%2FProperties%2F-270536443" anchor-label="zoomRange" id="-327527622%2FProperties%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="zoom-range.html"><span>zoom</span><wbr><span><span>Range</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-327527622%2FProperties%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="zoom-range.html">zoomRange</a><span class="token operator">: </span>ERROR CLASS: Symbol not found for Pair&lt;kotlin/Float, kotlin/Float&gt;</div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="tableheader">Functions</h2>
+        <div class="table"><a data-name="1281306456%2FFunctions%2F-270536443" anchor-label="addOutput" id="1281306456%2FFunctions%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="add-output.html"><span>add</span><wbr><span><span>Output</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1281306456%2FFunctions%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="add-output.html"><span class="token function">addOutput</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">output<span class="token operator">: </span>ERROR CLASS: Symbol not found for AVCaptureOutput</span></span><span class="token punctuation">)</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-444304082%2FFunctions%2F-270536443" anchor-label="getCaptureDevice" id="-444304082%2FFunctions%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-capture-device.html"><span>get</span><wbr><span>Capture</span><wbr><span><span>Device</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-444304082%2FFunctions%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="get-capture-device.html"><span class="token function">getCaptureDevice</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">deviceTypes<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span>ERROR CLASS: Symbol not found for AVCaptureDeviceType<span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">position<span class="token operator">: </span>ERROR CLASS: Symbol not found for AVCaptureDevicePosition<span class="token punctuation">, </span></span><span class="parameter ">uniqueId<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span><span class="token operator">: </span>ERROR CLASS: Symbol not found for AVCaptureDevice?<span class="token operator">?</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1162975917%2FFunctions%2F-270536443" anchor-label="getCurrentDeviceOrientation" id="1162975917%2FFunctions%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-current-device-orientation.html"><span>get</span><wbr><span>Current</span><wbr><span>Device</span><wbr><span><span>Orientation</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1162975917%2FFunctions%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="get-current-device-orientation.html"><span class="token function">getCurrentDeviceOrientation</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span>ERROR CLASS: Symbol not found for AVCaptureVideoOrientation</div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="654515242%2FFunctions%2F-270536443" anchor-label="getCurrentPosition" id="654515242%2FFunctions%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-current-position.html"><span>get</span><wbr><span>Current</span><wbr><span><span>Position</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="654515242%2FFunctions%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="get-current-position.html"><span class="token function">getCurrentPosition</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span>ERROR CLASS: Symbol not found for AVCaptureDevicePosition</div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1758808176%2FFunctions%2F-270536443" anchor-label="isVideoStabilizationSupported" id="-1758808176%2FFunctions%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-video-stabilization-supported.html"><span>is</span><wbr><span>Video</span><wbr><span>Stabilization</span><wbr><span><span>Supported</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1758808176%2FFunctions%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="is-video-stabilization-supported.html"><span class="token function">isVideoStabilizationSupported</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">mode<span class="token operator">: </span>ERROR CLASS: Symbol not found for AVCaptureVideoStabilizationMode</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="867885261%2FFunctions%2F-270536443" anchor-label="isZeroShutterLagSupported" id="867885261%2FFunctions%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-zero-shutter-lag-supported.html"><span>is</span><wbr><span>Zero</span><wbr><span>Shutter</span><wbr><span>Lag</span><wbr><span><span>Supported</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="867885261%2FFunctions%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="is-zero-shutter-lag-supported.html"><span class="token function">isZeroShutterLagSupported</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">output<span class="token operator">: </span>ERROR CLASS: Symbol not found for AVCaptureOutput</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-28175599%2FFunctions%2F-270536443" anchor-label="muteRecording" id="-28175599%2FFunctions%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="mute-recording.html"><span>mute</span><wbr><span><span>Recording</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-28175599%2FFunctions%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="mute-recording.html"><span class="token function">muteRecording</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">isMuted<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span>ERROR CLASS: Symbol not found for Result&lt;kotlin/Boolean&gt;</div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1966442885%2FFunctions%2F-270536443" anchor-label="pauseRecording" id="-1966442885%2FFunctions%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="pause-recording.html"><span>pause</span><wbr><span><span>Recording</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1966442885%2FFunctions%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="pause-recording.html"><span class="token function">pauseRecording</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span>ERROR CLASS: Symbol not found for Result&lt;kotlin/Boolean&gt;</div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="529362109%2FFunctions%2F-270536443" anchor-label="release" id="529362109%2FFunctions%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="release.html"><span><span>release</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="529362109%2FFunctions%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="release.html"><span class="token function">release</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1837040151%2FFunctions%2F-270536443" anchor-label="removeOutput" id="-1837040151%2FFunctions%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="remove-output.html"><span>remove</span><wbr><span><span>Output</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1837040151%2FFunctions%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="remove-output.html"><span class="token function">removeOutput</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">output<span class="token operator">: </span>ERROR CLASS: Symbol not found for AVCaptureOutput</span></span><span class="token punctuation">)</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1814645524%2FFunctions%2F-270536443" anchor-label="renderPreviewLayer" id="1814645524%2FFunctions%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="render-preview-layer.html"><span>render</span><wbr><span>Preview</span><wbr><span><span>Layer</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1814645524%2FFunctions%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="render-preview-layer.html"><span class="token function">renderPreviewLayer</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">view<span class="token operator">: </span>ERROR CLASS: Symbol not found for UIView</span></span><span class="token punctuation">)</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2047120416%2FFunctions%2F-270536443" anchor-label="resumeRecording" id="2047120416%2FFunctions%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="resume-recording.html"><span>resume</span><wbr><span><span>Recording</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2047120416%2FFunctions%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="resume-recording.html"><span class="token function">resumeRecording</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span>ERROR CLASS: Symbol not found for Result&lt;kotlin/Boolean&gt;</div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1301644156%2FFunctions%2F-270536443" anchor-label="setAudioEnabled" id="1301644156%2FFunctions%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-audio-enabled.html"><span>set</span><wbr><span>Audio</span><wbr><span><span>Enabled</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1301644156%2FFunctions%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="set-audio-enabled.html"><span class="token function">setAudioEnabled</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">isEnabled<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1785526052%2FFunctions%2F-270536443" anchor-label="setCameraOutputQuality" id="1785526052%2FFunctions%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-camera-output-quality.html"><span>set</span><wbr><span>Camera</span><wbr><span>Output</span><wbr><span><span>Quality</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1785526052%2FFunctions%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="set-camera-output-quality.html"><span class="token function">setCameraOutputQuality</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">quality<span class="token operator">: </span>ERROR CLASS: Symbol not found for AVCapturePhotoQualityPrioritization<span class="token punctuation">, </span></span><span class="parameter ">highResolutionEnabled<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="646734793%2FFunctions%2F-270536443" anchor-label="setCaptureDevice" id="646734793%2FFunctions%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-capture-device.html"><span>set</span><wbr><span>Capture</span><wbr><span><span>Device</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="646734793%2FFunctions%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="set-capture-device.html"><span class="token function">setCaptureDevice</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">device<span class="token operator">: </span>ERROR CLASS: Symbol not found for AVCaptureDevice</span></span><span class="token punctuation">)</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-86959655%2FFunctions%2F-270536443" anchor-label="setDeviceFormat" id="-86959655%2FFunctions%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-device-format.html"><span>set</span><wbr><span>Device</span><wbr><span><span>Format</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-86959655%2FFunctions%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="set-device-format.html"><span class="token function">setDeviceFormat</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">format<span class="token operator">: </span>ERROR CLASS: Symbol not found for AVCaptureDeviceFormat</span></span><span class="token punctuation">)</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1355112402%2FFunctions%2F-270536443" anchor-label="setExposureCompensation" id="1355112402%2FFunctions%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-exposure-compensation.html"><span>set</span><wbr><span>Exposure</span><wbr><span><span>Compensation</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1355112402%2FFunctions%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="set-exposure-compensation.html"><span class="token function">setExposureCompensation</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">exposureCompensation<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></span></span><span class="token punctuation">)</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1311125017%2FFunctions%2F-270536443" anchor-label="setFlashMode" id="1311125017%2FFunctions%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-flash-mode.html"><span>set</span><wbr><span>Flash</span><wbr><span><span>Mode</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1311125017%2FFunctions%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="set-flash-mode.html"><span class="token function">setFlashMode</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">mode<span class="token operator">: </span>ERROR CLASS: Symbol not found for AVCaptureFlashMode</span></span><span class="token punctuation">)</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1558774846%2FFunctions%2F-270536443" anchor-label="setFocusPoint" id="1558774846%2FFunctions%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-focus-point.html"><span>set</span><wbr><span>Focus</span><wbr><span><span>Point</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1558774846%2FFunctions%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="set-focus-point.html"><span class="token function">setFocusPoint</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">focusPoint<span class="token operator">: </span>ERROR CLASS: Symbol not found for CValue&lt;ERROR CLASS: Symbol not found for CGPoint&gt;</span></span><span class="token punctuation">)</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1018560119%2FFunctions%2F-270536443" anchor-label="setFrameRate" id="-1018560119%2FFunctions%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-frame-rate.html"><span>set</span><wbr><span>Frame</span><wbr><span><span>Rate</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1018560119%2FFunctions%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="set-frame-rate.html"><span class="token function">setFrameRate</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">frameRate<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-839847896%2FFunctions%2F-270536443" anchor-label="setPreviewBackgroundColor" id="-839847896%2FFunctions%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-preview-background-color.html"><span>set</span><wbr><span>Preview</span><wbr><span>Background</span><wbr><span><span>Color</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-839847896%2FFunctions%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="set-preview-background-color.html"><span class="token function">setPreviewBackgroundColor</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">uiColor<span class="token operator">: </span>ERROR CLASS: Symbol not found for UIColor</span></span><span class="token punctuation">)</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="129146305%2FFunctions%2F-270536443" anchor-label="setPreviewGravity" id="129146305%2FFunctions%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-preview-gravity.html"><span>set</span><wbr><span>Preview</span><wbr><span><span>Gravity</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="129146305%2FFunctions%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="set-preview-gravity.html"><span class="token function">setPreviewGravity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">gravity<span class="token operator">: </span>ERROR CLASS: Symbol not found for AVLayerVideoGravity</span></span><span class="token punctuation">)</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="257845538%2FFunctions%2F-270536443" anchor-label="setTorchEnabled" id="257845538%2FFunctions%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-torch-enabled.html"><span>set</span><wbr><span>Torch</span><wbr><span><span>Enabled</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="257845538%2FFunctions%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="set-torch-enabled.html"><span class="token function">setTorchEnabled</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">isTorchEnabled<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="88095574%2FFunctions%2F-270536443" anchor-label="setVideoStabilization" id="88095574%2FFunctions%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-video-stabilization.html"><span>set</span><wbr><span>Video</span><wbr><span><span>Stabilization</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="88095574%2FFunctions%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="set-video-stabilization.html"><span class="token function">setVideoStabilization</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">mode<span class="token operator">: </span>ERROR CLASS: Symbol not found for AVCaptureVideoStabilizationMode</span></span><span class="token punctuation">)</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-553249391%2FFunctions%2F-270536443" anchor-label="setZoomRatio" id="-553249391%2FFunctions%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-zoom-ratio.html"><span>set</span><wbr><span>Zoom</span><wbr><span><span>Ratio</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-553249391%2FFunctions%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="set-zoom-ratio.html"><span class="token function">setZoomRatio</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">zoomRatio<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></span></span><span class="token punctuation">)</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="453303371%2FFunctions%2F-270536443" anchor-label="start" id="453303371%2FFunctions%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="start.html"><span><span>start</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="453303371%2FFunctions%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="start.html"><span class="token function">start</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">captureOutput<span class="token operator">: </span>ERROR CLASS: Symbol not found for AVCaptureOutput<span class="token punctuation">, </span></span><span class="parameter ">device<span class="token operator">: </span>ERROR CLASS: Symbol not found for AVCaptureDevice<span class="token punctuation">, </span></span><span class="parameter ">isMuted<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">onRunningChanged<span class="token operator">: </span><span class="token punctuation">(</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="496625256%2FFunctions%2F-270536443" anchor-label="startRecording" id="496625256%2FFunctions%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="start-recording.html"><span>start</span><wbr><span><span>Recording</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="496625256%2FFunctions%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="start-recording.html"><span class="token function">startRecording</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">isMirrorEnabled<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">videoOrientation<span class="token operator">: </span>ERROR CLASS: Symbol not found for AVCaptureVideoOrientation<span class="token punctuation">, </span></span><span class="parameter ">filename<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">onVideoCaptured<span class="token operator">: </span><span class="token punctuation">(</span>ERROR CLASS: Symbol not found for Result&lt;kotlin/String&gt;<span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2005498997%2FFunctions%2F-270536443" anchor-label="stopRecording" id="2005498997%2FFunctions%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="stop-recording.html"><span>stop</span><wbr><span><span>Recording</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2005498997%2FFunctions%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="stop-recording.html"><span class="token function">stopRecording</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span>ERROR CLASS: Symbol not found for Result&lt;kotlin/Boolean&gt;</div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-672438539%2FFunctions%2F-270536443" anchor-label="takePicture" id="-672438539%2FFunctions%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="take-picture.html"><span>take</span><wbr><span><span>Picture</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-672438539%2FFunctions%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="take-picture.html"><span class="token function">takePicture</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">isMirrorEnabled<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">flashMode<span class="token operator">: </span>ERROR CLASS: Symbol not found for AVCaptureFlashMode<span class="token punctuation">, </span></span><span class="parameter ">videoOrientation<span class="token operator">: </span>ERROR CLASS: Symbol not found for AVCaptureVideoOrientation<span class="token punctuation">, </span></span><span class="parameter ">onPictureCaptured<span class="token operator">: </span><span class="token punctuation">(</span>ERROR CLASS: Symbol not found for Result&lt;kotlin/ByteArray&gt;<span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="take-picture.html"><span class="token function">takePicture</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">filename<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">isMirrorEnabled<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">flashMode<span class="token operator">: </span>ERROR CLASS: Symbol not found for AVCaptureFlashMode<span class="token punctuation">, </span></span><span class="parameter ">videoOrientation<span class="token operator">: </span>ERROR CLASS: Symbol not found for AVCaptureVideoOrientation<span class="token punctuation">, </span></span><span class="parameter ">onPictureCaptured<span class="token operator">: </span><span class="token punctuation">(</span>ERROR CLASS: Symbol not found for Result&lt;kotlin/String&gt;<span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="83496822%2FFunctions%2F-270536443" anchor-label="withSessionConfiguration" id="83496822%2FFunctions%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="with-session-configuration.html"><span>with</span><wbr><span>Session</span><wbr><span><span>Configuration</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="83496822%2FFunctions%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="with-session-configuration.html"><span class="token function">withSessionConfiguration</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">block<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <div class="footer--container">
+            <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+            <div class="footer--content">
+                <div>
+                    <span>Generated by </span>
+                    <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                        Dokka
+                    </a>
+                    <div>© 2026 Copyright</div>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

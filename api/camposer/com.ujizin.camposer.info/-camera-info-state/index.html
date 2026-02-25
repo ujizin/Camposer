@@ -1,0 +1,450 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>CameraInfoState</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js", "js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+      if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      } else {
+        const savedDarkMode = JSON.parse(storage)
+        if (savedDarkMode === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/safe-local-storage_blocking.js"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../ui-kit/ui-kit.min.js" defer></script></head>
+<body>
+<div class="root">
+    <header class="navigation theme-dark" id="navigation-wrapper" role="banner">
+<a class="library-name--link" href="../../../index.html" tabindex="1">
+                    Camposer
+            </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+        </div>
+        <div class="navigation-controls">
+        <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
+                <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true" data-filter=":camposer/commonMain">common</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
+                    <div class="dropdown--header"><span>Target filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close target filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":camposer/commonMain" data-filter=":camposer/commonMain">
+                                <span class="checkbox--icon"></span>
+                                common
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </ul>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </header>
+    <div id="container">
+        <nav id="leftColumn" class="sidebar" data-item-type="SECTION" data-item-config="{&quot;defaultSize&quot;: 280, &quot;minSize&quot;: 200, &quot;maxSize&quot;: 400}">
+            <a class="toc--skip-link" href="#main">Skip to content</a>
+            <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox" aria-label="Table of contents">
+                    <div class="dropdown--header">
+                            <span>
+                                    Camposer
+                            </span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                    <div class="sidebar--inner" id="sideMenu"></div>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </nav>
+        <div id="resizer" class="resizer" data-item-type="BAR"></div>
+        <div id="main" data-item-type="SECTION" role="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="Camposer::com.ujizin.camposer.info/CameraInfoState///PointingToDeclaration//-1142822691">
+  <div class="breadcrumbs"><a href="../../index.html">Camposer</a><span class="delimiter">/</span><a href="../index.html">com.ujizin.camposer.info</a><span class="delimiter">/</span><span class="current">CameraInfoState</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Camera</span><wbr><span>Info</span><wbr><span><span>State</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">CameraInfoState</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>isZoomSupported<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>isExposureSupported<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>minZoom<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token operator"> = </span><span class="token constant">1.0f</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>maxZoom<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token operator"> = </span><span class="token constant">1.0f</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>minExposure<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token operator"> = </span><span class="token constant">0.0f</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>maxExposure<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token operator"> = </span><span class="token constant">0.0f</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>isFlashSupported<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>isFlashAvailable<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>isTorchSupported<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>isTorchAvailable<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>isZeroShutterLagSupported<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>isVideoStabilizationSupported<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>isFocusSupported<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>minFPS<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span>-1<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>maxFPS<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span>-1<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>photoFormats<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../../com.ujizin.camposer.state.properties/-camera-data/index.html">CameraData</a><span class="token operator">&gt;</span><span class="token operator"> = </span>emptyList()<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>videoFormats<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../../com.ujizin.camposer.state.properties/-camera-data/index.html">CameraData</a><span class="token operator">&gt;</span><span class="token operator"> = </span>emptyList()</span></span><span class="token punctuation">)</span></div><p class="paragraph">A class containing detailed information about the device's camera capabilities.</p><p class="paragraph">This class provides read-only access to various camera features such as zoom limits, exposure ranges, flash and torch support, focus capabilities, and supported formats for both photos and videos. It is used to query the camera's hardware specifications and current availability status.</p><p class="paragraph">Fields are emitted through CameraInfo <code class="lang-kotlin">state</code> as a single immutable model.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="tableheader">Constructors</h2>
+        <div class="table"><a data-name="599767920%2FConstructors%2F-1142822691" anchor-label="CameraInfoState" id="599767920%2FConstructors%2F-1142822691" data-filterable-set=":camposer/commonMain"></a>
+          <div class="table-row table-row_content" data-togglable="CONSTRUCTOR" data-filterable-current=":camposer/commonMain" data-filterable-set=":camposer/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-camera-info-state.html"><span>Camera</span><wbr><span>Info</span><wbr><span><span>State</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="599767920%2FConstructors%2F-1142822691"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">isZoomSupported<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter ">isExposureSupported<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter ">minZoom<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token operator"> = </span><span class="token constant">1.0f</span><span class="token punctuation">, </span></span><span class="parameter ">maxZoom<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token operator"> = </span><span class="token constant">1.0f</span><span class="token punctuation">, </span></span><span class="parameter ">minExposure<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token operator"> = </span><span class="token constant">0.0f</span><span class="token punctuation">, </span></span><span class="parameter ">maxExposure<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token operator"> = </span><span class="token constant">0.0f</span><span class="token punctuation">, </span></span><span class="parameter ">isFlashSupported<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter ">isFlashAvailable<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter ">isTorchSupported<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter ">isTorchAvailable<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter ">isZeroShutterLagSupported<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter ">isVideoStabilizationSupported<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter ">isFocusSupported<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter ">minFPS<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span>-1<span class="token punctuation">, </span></span><span class="parameter ">maxFPS<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span>-1<span class="token punctuation">, </span></span><span class="parameter ">photoFormats<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../../com.ujizin.camposer.state.properties/-camera-data/index.html">CameraData</a><span class="token operator">&gt;</span><span class="token operator"> = </span>emptyList()<span class="token punctuation">, </span></span><span class="parameter ">videoFormats<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../../com.ujizin.camposer.state.properties/-camera-data/index.html">CameraData</a><span class="token operator">&gt;</span><span class="token operator"> = </span>emptyList()</span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="tableheader">Properties</h2>
+        <div class="table"><a data-name="-1791246964%2FProperties%2F-1142822691" anchor-label="isExposureSupported" id="-1791246964%2FProperties%2F-1142822691" data-filterable-set=":camposer/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/commonMain" data-filterable-set=":camposer/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-exposure-supported.html"><span>is</span><wbr><span>Exposure</span><wbr><span><span>Supported</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1791246964%2FProperties%2F-1142822691"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="is-exposure-supported.html">isExposureSupported</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Indicates whether exposure compensation is supported.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-562281074%2FProperties%2F-1142822691" anchor-label="isFlashAvailable" id="-562281074%2FProperties%2F-1142822691" data-filterable-set=":camposer/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/commonMain" data-filterable-set=":camposer/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-flash-available.html"><span>is</span><wbr><span>Flash</span><wbr><span><span>Available</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-562281074%2FProperties%2F-1142822691"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="is-flash-available.html">isFlashAvailable</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Indicates whether flash is currently available.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1443329865%2FProperties%2F-1142822691" anchor-label="isFlashSupported" id="1443329865%2FProperties%2F-1142822691" data-filterable-set=":camposer/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/commonMain" data-filterable-set=":camposer/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-flash-supported.html"><span>is</span><wbr><span>Flash</span><wbr><span><span>Supported</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1443329865%2FProperties%2F-1142822691"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="is-flash-supported.html">isFlashSupported</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Indicates whether the camera has flash hardware.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-182607311%2FProperties%2F-1142822691" anchor-label="isFocusSupported" id="-182607311%2FProperties%2F-1142822691" data-filterable-set=":camposer/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/commonMain" data-filterable-set=":camposer/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-focus-supported.html"><span>is</span><wbr><span>Focus</span><wbr><span><span>Supported</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-182607311%2FProperties%2F-1142822691"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="is-focus-supported.html">isFocusSupported</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Indicates whether focus operations are supported.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="179512986%2FProperties%2F-1142822691" anchor-label="isTorchAvailable" id="179512986%2FProperties%2F-1142822691" data-filterable-set=":camposer/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/commonMain" data-filterable-set=":camposer/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-torch-available.html"><span>is</span><wbr><span>Torch</span><wbr><span><span>Available</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="179512986%2FProperties%2F-1142822691"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="is-torch-available.html">isTorchAvailable</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Indicates whether torch mode is currently available.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2109843371%2FProperties%2F-1142822691" anchor-label="isTorchSupported" id="-2109843371%2FProperties%2F-1142822691" data-filterable-set=":camposer/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/commonMain" data-filterable-set=":camposer/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-torch-supported.html"><span>is</span><wbr><span>Torch</span><wbr><span><span>Supported</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2109843371%2FProperties%2F-1142822691"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="is-torch-supported.html">isTorchSupported</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Indicates whether torch mode is supported.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2146754281%2FProperties%2F-1142822691" anchor-label="isVideoStabilizationSupported" id="2146754281%2FProperties%2F-1142822691" data-filterable-set=":camposer/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/commonMain" data-filterable-set=":camposer/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-video-stabilization-supported.html"><span>is</span><wbr><span>Video</span><wbr><span>Stabilization</span><wbr><span><span>Supported</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2146754281%2FProperties%2F-1142822691"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="is-video-stabilization-supported.html">isVideoStabilizationSupported</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Indicates whether video stabilization is supported.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="318322098%2FProperties%2F-1142822691" anchor-label="isZeroShutterLagSupported" id="318322098%2FProperties%2F-1142822691" data-filterable-set=":camposer/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/commonMain" data-filterable-set=":camposer/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-zero-shutter-lag-supported.html"><span>is</span><wbr><span>Zero</span><wbr><span>Shutter</span><wbr><span>Lag</span><wbr><span><span>Supported</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="318322098%2FProperties%2F-1142822691"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="is-zero-shutter-lag-supported.html">isZeroShutterLagSupported</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Indicates whether Zero Shutter Lag is supported.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="472763480%2FProperties%2F-1142822691" anchor-label="isZoomSupported" id="472763480%2FProperties%2F-1142822691" data-filterable-set=":camposer/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/commonMain" data-filterable-set=":camposer/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-zoom-supported.html"><span>is</span><wbr><span>Zoom</span><wbr><span><span>Supported</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="472763480%2FProperties%2F-1142822691"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="is-zoom-supported.html">isZoomSupported</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Indicates whether Zoom is supported.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="229642782%2FProperties%2F-1142822691" anchor-label="maxExposure" id="229642782%2FProperties%2F-1142822691" data-filterable-set=":camposer/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/commonMain" data-filterable-set=":camposer/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="max-exposure.html"><span>max</span><wbr><span><span>Exposure</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="229642782%2FProperties%2F-1142822691"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="max-exposure.html">maxExposure</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></div><div class="brief "><p class="paragraph">Maximum supported exposure compensation.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1658034068%2FProperties%2F-1142822691" anchor-label="maxFPS" id="-1658034068%2FProperties%2F-1142822691" data-filterable-set=":camposer/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/commonMain" data-filterable-set=":camposer/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="max-f-p-s.html"><span>max</span><wbr><span><span>FPS</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1658034068%2FProperties%2F-1142822691"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="max-f-p-s.html">maxFPS</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></div><div class="brief "><p class="paragraph">Maximum supported frame rate.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="51342546%2FProperties%2F-1142822691" anchor-label="maxZoom" id="51342546%2FProperties%2F-1142822691" data-filterable-set=":camposer/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/commonMain" data-filterable-set=":camposer/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="max-zoom.html"><span>max</span><wbr><span><span>Zoom</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="51342546%2FProperties%2F-1142822691"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="max-zoom.html">maxZoom</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></div><div class="brief "><p class="paragraph">Maximum supported zoom ratio.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-516397328%2FProperties%2F-1142822691" anchor-label="minExposure" id="-516397328%2FProperties%2F-1142822691" data-filterable-set=":camposer/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/commonMain" data-filterable-set=":camposer/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="min-exposure.html"><span>min</span><wbr><span><span>Exposure</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-516397328%2FProperties%2F-1142822691"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="min-exposure.html">minExposure</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></div><div class="brief "><p class="paragraph">Minimum supported exposure compensation.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="91412570%2FProperties%2F-1142822691" anchor-label="minFPS" id="91412570%2FProperties%2F-1142822691" data-filterable-set=":camposer/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/commonMain" data-filterable-set=":camposer/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="min-f-p-s.html"><span>min</span><wbr><span><span>FPS</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="91412570%2FProperties%2F-1142822691"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="min-f-p-s.html">minFPS</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></div><div class="brief "><p class="paragraph">Minimum supported frame rate.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1550386524%2FProperties%2F-1142822691" anchor-label="minZoom" id="-1550386524%2FProperties%2F-1142822691" data-filterable-set=":camposer/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/commonMain" data-filterable-set=":camposer/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="min-zoom.html"><span>min</span><wbr><span><span>Zoom</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1550386524%2FProperties%2F-1142822691"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="min-zoom.html">minZoom</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></div><div class="brief "><p class="paragraph">Minimum supported zoom ratio.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1472739623%2FProperties%2F-1142822691" anchor-label="photoFormats" id="1472739623%2FProperties%2F-1142822691" data-filterable-set=":camposer/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/commonMain" data-filterable-set=":camposer/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="photo-formats.html"><span>photo</span><wbr><span><span>Formats</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1472739623%2FProperties%2F-1142822691"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="photo-formats.html">photoFormats</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../../com.ujizin.camposer.state.properties/-camera-data/index.html">CameraData</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Supported photo formats for the current camera.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1103735664%2FProperties%2F-1142822691" anchor-label="videoFormats" id="1103735664%2FProperties%2F-1142822691" data-filterable-set=":camposer/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/commonMain" data-filterable-set=":camposer/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="video-formats.html"><span>video</span><wbr><span><span>Formats</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1103735664%2FProperties%2F-1142822691"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="video-formats.html">videoFormats</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../../com.ujizin.camposer.state.properties/-camera-data/index.html">CameraData</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Supported video formats for the current camera.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="tableheader">Functions</h2>
+        <div class="table"><a data-name="496796144%2FFunctions%2F-1142822691" anchor-label="equals" id="496796144%2FFunctions%2F-1142822691" data-filterable-set=":camposer/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/commonMain" data-filterable-set=":camposer/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="equals.html"><span><span>equals</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="496796144%2FFunctions%2F-1142822691"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">operator override </span><span class="token keyword">fun </span><a href="equals.html"><span class="token function">equals</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">other<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1334789898%2FFunctions%2F-1142822691" anchor-label="hashCode" id="-1334789898%2FFunctions%2F-1142822691" data-filterable-set=":camposer/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/commonMain" data-filterable-set=":camposer/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="hash-code.html"><span>hash</span><wbr><span><span>Code</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1334789898%2FFunctions%2F-1142822691"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="hash-code.html"><span class="token function">hashCode</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1512955963%2FFunctions%2F-1142822691" anchor-label="toString" id="-1512955963%2FFunctions%2F-1142822691" data-filterable-set=":camposer/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/commonMain" data-filterable-set=":camposer/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="to-string.html"><span>to</span><wbr><span><span>String</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1512955963%2FFunctions%2F-1142822691"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="to-string.html"><span class="token function">toString</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <div class="footer--container">
+            <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+            <div class="footer--content">
+                <div>
+                    <span>Generated by </span>
+                    <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                        Dokka
+                    </a>
+                    <div>© 2026 Copyright</div>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

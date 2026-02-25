@@ -1,0 +1,257 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>ImageAnalyzer</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js", "js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+      if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      } else {
+        const savedDarkMode = JSON.parse(storage)
+        if (savedDarkMode === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/safe-local-storage_blocking.js"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../ui-kit/ui-kit.min.js" defer></script></head>
+<body>
+<div class="root">
+    <header class="navigation theme-dark" id="navigation-wrapper" role="banner">
+<a class="library-name--link" href="../../../index.html" tabindex="1">
+                    Camposer
+            </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+        </div>
+        <div class="navigation-controls">
+        <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
+                <button class="platform-tag platform-selector jvm-like" data-active="" aria-pressed="true" data-filter=":camposer/androidMain">android</button>
+                <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true" data-filter=":camposer/commonMain">common</button>
+                <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true" data-filter=":camposer/iosMain">ios</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
+                    <div class="dropdown--header"><span>Target filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close target filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option jvm-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":camposer/androidMain" data-filter=":camposer/androidMain">
+                                <span class="checkbox--icon"></span>
+                                android
+                            </label>
+                        </li>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":camposer/commonMain" data-filter=":camposer/commonMain">
+                                <span class="checkbox--icon"></span>
+                                common
+                            </label>
+                        </li>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":camposer/iosMain" data-filter=":camposer/iosMain">
+                                <span class="checkbox--icon"></span>
+                                ios
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </ul>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </header>
+    <div id="container">
+        <nav id="leftColumn" class="sidebar" data-item-type="SECTION" data-item-config="{&quot;defaultSize&quot;: 280, &quot;minSize&quot;: 200, &quot;maxSize&quot;: 400}">
+            <a class="toc--skip-link" href="#main">Skip to content</a>
+            <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox" aria-label="Table of contents">
+                    <div class="dropdown--header">
+                            <span>
+                                    Camposer
+                            </span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                    <div class="sidebar--inner" id="sideMenu"></div>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </nav>
+        <div id="resizer" class="resizer" data-item-type="BAR"></div>
+        <div id="main" data-item-type="SECTION" role="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="Camposer::com.ujizin.camposer.state.properties/ImageAnalyzer///PointingToDeclaration//-1103401433">
+  <div class="breadcrumbs"><a href="../../index.html">Camposer</a><span class="delimiter">/</span><a href="../index.html">com.ujizin.camposer.state.properties</a><span class="delimiter">/</span><span class="current">ImageAnalyzer</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Image</span><wbr><span><span>Analyzer</span></span></h1>
+    <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+      <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/androidMain" data-filterable-set=":camposer/androidMain" data-active="" data-toggle=":camposer/androidMain">android</button><button class="platform-bookmark" data-filterable-current=":camposer/commonMain" data-filterable-set=":camposer/commonMain" data-toggle=":camposer/commonMain">common</button><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-togglable=":camposer/androidMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Stable.html"><span class="token annotation builtin">Stable</span></a></div></div><span class="token keyword">actual </span><span class="token keyword">class </span><a href="index.html">ImageAnalyzer</a></div><p class="paragraph">Intermediate Image analyzer from cameraX</p><h4 class="tableheader">Parameters</h4><div class="table"><div class="table-row table-row_content" data-filterable-current=":camposer/androidMain" data-filterable-set=":camposer/androidMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>image</span><wbr><span>Analysis</span><wbr><span>Backpressure</span><wbr><span><span>Strategy</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the backpressure strategy applied to the image producer</p></div></div></div></div><div class="table-row table-row_content" data-filterable-current=":camposer/androidMain" data-filterable-set=":camposer/androidMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>resolution</span><wbr><span><span>Selector</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the intended resolution for ImageAnalysis</p></div></div></div></div><div class="table-row table-row_content" data-filterable-current=":camposer/androidMain" data-filterable-set=":camposer/androidMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>image</span><wbr><span>Analysis</span><wbr><span>Image</span><wbr><span>Queue</span><wbr><span><span>Depth</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the image queue depth of ImageAnalysis.</p></div></div></div></div><div class="table-row table-row_content" data-filterable-current=":camposer/androidMain" data-filterable-set=":camposer/androidMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>analyzer</span></span></u></div></span></div><div><div class="title"><p class="paragraph">receive images and perform custom processing.</p></div></div></div></div></div><h4 class="tableheader">See also</h4><div class="table"><div class="table-row table-row_content" data-filterable-current=":camposer/androidMain" data-filterable-set=":camposer/androidMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../com.ujizin.camposer.session/remember-image-analyzer.html"><span>remember</span><wbr><span>Image</span><wbr><span><span>Analyzer</span></span></a></div></span></div><div></div></div></div></div></div><div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Stable.html"><span class="token annotation builtin">Stable</span></a></div></div><span class="token keyword">expect </span><span class="token keyword">class </span><a href="index.html">ImageAnalyzer</a></div><p class="paragraph">Image Analyzer used to analyze camera frames.</p><p class="paragraph">A class wrapper for <code class="lang-kotlin">ImageAnalysis</code> on Android and <code class="lang-kotlin">AVCaptureOutput</code> (e.g <code class="lang-kotlin">AVCaptureMetadataOutput</code>) on iOS, allowing real-time processing for tasks like QR code scanning, face detection, or ML.</p></div><div class="content sourceset-dependent-content" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">class </span><a href="index.html">ImageAnalyzer</a></div></div>    </div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="tableheader">Constructors</h2>
+        <div class="table"><a data-name="866385193%2FConstructors%2F-91807978" anchor-label="ImageAnalyzer" id="866385193%2FConstructors%2F-91807978" data-filterable-set=":camposer/androidMain,:camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-togglable="CONSTRUCTOR" data-filterable-current=":camposer/androidMain,:camposer/iosMain" data-filterable-set=":camposer/androidMain,:camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-image-analyzer.html"><span>Image</span><wbr><span><span>Analyzer</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="866385193%2FConstructors%2F-91807978"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/androidMain" data-filterable-set=":camposer/androidMain" data-active="" data-toggle=":camposer/androidMain">android</button><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/androidMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">controller<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/camera/view/CameraController.html">CameraController</a><span class="token punctuation">, </span></span><span class="parameter ">imageAnalysisBackpressureStrategy<span class="token operator">: </span><a href="../-image-analysis-backpressure-strategy/index.html">ImageAnalysisBackpressureStrategy</a><span class="token operator"> = </span>find(controller.imageAnalysisBackpressureStrategy)<span class="token punctuation">, </span></span><span class="parameter ">resolutionSelector<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/camera/core/resolutionselector/ResolutionSelector.html">ResolutionSelector</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">imageAnalysisImageQueueDepth<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span>controller.imageAnalysisImageQueueDepth<span class="token punctuation">, </span></span><span class="parameter ">analyzer<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/camera/core/ImageAnalysis.Analyzer.html">ImageAnalysis.Analyzer</a></span></span><span class="token punctuation">)</span></div></div><div class="content sourceset-dependent-content" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">controller<span class="token operator">: </span><a href="../../com.ujizin.camposer.internal.core.ios/-i-o-s-camera-controller/index.html">IOSCameraController</a><span class="token punctuation">, </span></span><span class="parameter ">analyzer<span class="token operator">: </span><a href="-analyzer/index.html">ImageAnalyzer.Analyzer</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="TYPE">
+        <h2 class="tableheader">Types</h2>
+        <div class="table"><a data-name="-695389499%2FClasslikes%2F-270536443" anchor-label="Analyzer" id="-695389499%2FClasslikes%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-analyzer/index.html"><span><span>Analyzer</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-695389499%2FClasslikes%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-analyzer/index.html">Analyzer</a><span class="token operator">&lt;</span><span class="token keyword">out </span><a href="-analyzer/index.html">T</a><span class="token operator"> : </span>ERROR CLASS: Symbol not found for AVCaptureOutput<span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>output<span class="token operator">: </span><a href="-analyzer/index.html">T</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>onOutputAttached<span class="token operator">: </span><span class="token punctuation">(</span><a href="-analyzer/index.html">T</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="tableheader">Functions</h2>
+        <div class="table"><a data-name="-868152155%2FFunctions%2F-270536443" anchor-label="dispose" id="-868152155%2FFunctions%2F-270536443" data-filterable-set=":camposer/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="dispose.html"><span><span>dispose</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-868152155%2FFunctions%2F-270536443"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-active="" data-toggle=":camposer/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="dispose.html"><span class="token function">dispose</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1065035211%2FFunctions%2F-718575267" anchor-label="equals" id="1065035211%2FFunctions%2F-718575267" data-filterable-set=":camposer/androidMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/androidMain" data-filterable-set=":camposer/androidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="equals.html"><span><span>equals</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1065035211%2FFunctions%2F-718575267"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/androidMain" data-filterable-set=":camposer/androidMain" data-active="" data-toggle=":camposer/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/androidMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">operator override </span><span class="token keyword">fun </span><a href="equals.html"><span class="token function">equals</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">other<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1719647557%2FFunctions%2F-718575267" anchor-label="hashCode" id="-1719647557%2FFunctions%2F-718575267" data-filterable-set=":camposer/androidMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/androidMain" data-filterable-set=":camposer/androidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="hash-code.html"><span>hash</span><wbr><span><span>Code</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1719647557%2FFunctions%2F-718575267"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/androidMain" data-filterable-set=":camposer/androidMain" data-active="" data-toggle=":camposer/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/androidMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="hash-code.html"><span class="token function">hashCode</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="720744994%2FFunctions%2F-718575267" anchor-label="update" id="720744994%2FFunctions%2F-718575267" data-filterable-set=":camposer/androidMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":camposer/androidMain" data-filterable-set=":camposer/androidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="update.html"><span><span>update</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="720744994%2FFunctions%2F-718575267"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/androidMain" data-filterable-set=":camposer/androidMain" data-active="" data-toggle=":camposer/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/androidMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="update.html"><span class="token function">update</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">imageAnalysisBackpressureStrategy<span class="token operator">: </span><a href="../-image-analysis-backpressure-strategy/index.html">ImageAnalysisBackpressureStrategy</a><span class="token operator"> = </span>find(
+        controller.imageAnalysisBackpressureStrategy,
+      )<span class="token punctuation">, </span></span><span class="parameter ">imageAnalysisTargetSize<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/camera/core/resolutionselector/ResolutionSelector.html">ResolutionSelector</a><span class="token operator">?</span><span class="token operator"> = </span>controller.imageAnalysisResolutionSelector<span class="token punctuation">, </span></span><span class="parameter ">imageAnalysisImageQueueDepth<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span>controller.imageAnalysisImageQueueDepth<span class="token punctuation">, </span></span><span class="parameter ">analyzer<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/camera/core/ImageAnalysis.Analyzer.html">ImageAnalysis.Analyzer</a><span class="token operator"> = </span>this.analyzer</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Update actual image analysis instance.</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <div class="footer--container">
+            <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+            <div class="footer--content">
+                <div>
+                    <span>Generated by </span>
+                    <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                        Dokka
+                    </a>
+                    <div>© 2026 Copyright</div>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

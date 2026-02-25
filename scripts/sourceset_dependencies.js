@@ -1,1 +1,0 @@
-sourceset_dependencies='{":camposer/debug":[],":camposer/main":[],":camposer/release":[]}'
