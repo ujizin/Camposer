@@ -71,9 +71,11 @@ import platform.CoreGraphics.CGPoint
 import platform.CoreGraphics.CGPointMake
 import platform.CoreMedia.CMTimeMake
 import platform.Foundation.NSKeyValueChangeNewKey
+import platform.Foundation.NSKeyValueObservingOptionNew
 import platform.Foundation.NSNotification
 import platform.Foundation.NSNotificationCenter
 import platform.Foundation.NSSelectorFromString
+import platform.Foundation.addObserver
 import platform.Foundation.removeObserver
 import platform.UIKit.UIColor
 import platform.UIKit.UIView
@@ -149,9 +151,11 @@ public class DefaultIOSCameraController internal constructor(
   override val isRecording: StateFlow<Boolean>
     get() = recordController.isRecording
 
-  private val audioInput: AVCaptureDeviceInput
-    get() = defaultDeviceWithMediaType(AVMediaTypeAudio)?.toDeviceInput()
+  private val audioInput: AVCaptureDeviceInput by lazy {
+    defaultDeviceWithMediaType(AVMediaTypeAudio)?.toDeviceInput()
       ?: throw AudioInputNotFoundException()
+  }
+
   internal val frameRateRanges: List<AVFrameRateRange>
     get() = captureDevice.activeFormat.videoSupportedFrameRateRanges
       .filterIsInstance<AVFrameRateRange>()
@@ -200,10 +204,11 @@ public class DefaultIOSCameraController internal constructor(
 
       previewManager.start(captureSession)
 
-      orientationListener.start()
-      captureSession.startRunning()
+      runningObserver?.let {
+        captureSession.removeObserver(it, RUNNING_KEY_PATH)
+      }
 
-      runningObserver = object : NSObject(), NSKeyValueObservingProtocol {
+      val runningObserver = object : NSObject(), NSKeyValueObservingProtocol {
         override fun observeValueForKeyPath(
           keyPath: String?,
           ofObject: Any?,
@@ -212,7 +217,18 @@ public class DefaultIOSCameraController internal constructor(
         ) {
           onRunningChanged(change?.get(NSKeyValueChangeNewKey) as? Boolean == true)
         }
-      }
+      }.also { runningObserver = it }
+
+      captureSession.addObserver(
+        observer = runningObserver,
+        forKeyPath = RUNNING_KEY_PATH,
+        options = NSKeyValueObservingOptionNew,
+        context = null,
+      )
+
+      orientationListener.start()
+      captureSession.startRunning()
+      onRunningChanged(captureSession.isRunning())
     }
 
   override fun getCurrentDeviceOrientation(): AVCaptureVideoOrientation =
@@ -242,7 +258,7 @@ public class DefaultIOSCameraController internal constructor(
     val output = captureSession.outputs.firstIsInstanceOrNull<AVCaptureMovieFileOutput>()
     val videoConnection = output?.connectionWithMediaType(AVMediaTypeVideo)
 
-    if (isVideoStabilizationSupported(mode)) {
+    if (!isVideoStabilizationSupported(mode)) {
       return
     }
 
