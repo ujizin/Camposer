@@ -122,16 +122,14 @@ public actual class CameraSession internal constructor(
     }
   }
 
-  public actual fun retryInitialization(): Boolean {
+  public actual fun retryInitialization() {
     if (!hasInitializationError) {
-      return isInitialized
+      return
     }
 
     hasInitializationError = false
     isInitialized = false
-
     initialize()
-    return isInitialized
   }
 
   internal actual fun onSessionStarted() {

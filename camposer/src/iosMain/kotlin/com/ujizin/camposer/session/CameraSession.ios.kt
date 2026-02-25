@@ -87,16 +87,15 @@ public actual class CameraSession internal constructor(
       Logger.error("Failed to initialize camera session", error)
     }
 
-  public actual fun retryInitialization(): Boolean {
+  public actual fun retryInitialization() {
     if (!hasInitializationError) {
-      return isInitialized
+      return
     }
 
     hasInitializationError = false
     isInitialized = false
 
     setupCamera()
-    return isInitialized
   }
 
   internal actual fun onSessionStarted() {

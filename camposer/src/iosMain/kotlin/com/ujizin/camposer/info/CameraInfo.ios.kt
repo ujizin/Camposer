@@ -41,7 +41,7 @@ public actual class CameraInfo internal constructor(
         isFlashSupported = controller.hasFlash,
         isFlashAvailable = controller.isFlashAvailable,
         isTorchSupported = controller.hasTorch,
-        isTorchAvailable = controller.isFlashAvailable,
+        isTorchAvailable = controller.isTorchAvailable,
         isZeroShutterLagSupported = controller.isZeroShutterLagSupported(output),
         isVideoStabilizationSupported = videoFormats.isVideoStabilizationSupported(),
         isFocusSupported = controller.isFocusSupported,

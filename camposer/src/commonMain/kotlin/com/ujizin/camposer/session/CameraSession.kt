@@ -58,7 +58,7 @@ public expect class CameraSession {
    *
    * @return true if retry was successful, false otherwise
    */
-  public fun retryInitialization(): Boolean
+  public fun retryInitialization()
 
   internal fun onSessionStarted()
 }
