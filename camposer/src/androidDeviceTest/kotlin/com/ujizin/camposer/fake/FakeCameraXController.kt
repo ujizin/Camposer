@@ -219,16 +219,9 @@ internal class FakeCameraXController : CameraXController {
     mainExecutor: Executor,
     consumerEvent: Consumer<RecordEvent>,
   ): RecordingWrapper =
-    FakeRecordingWrapper(
-      onRecord = {
-        consumerEvent.accept(
-          RecordEvent(
-            true,
-            hasErrorInRecording,
-            Uri.EMPTY,
-          ),
-        )
-      },
+    createRecording(
+      outputUri = Uri.EMPTY,
+      consumerEvent = consumerEvent,
     )
 
   override fun startRecording(
@@ -237,16 +230,9 @@ internal class FakeCameraXController : CameraXController {
     mainExecutor: Executor,
     consumerEvent: Consumer<RecordEvent>,
   ): RecordingWrapper =
-    FakeRecordingWrapper(
-      onRecord = {
-        consumerEvent.accept(
-          RecordEvent(
-            true,
-            hasErrorInRecording,
-            mediaStoreOutputOptions.collectionUri,
-          ),
-        )
-      },
+    createRecording(
+      outputUri = mediaStoreOutputOptions.collectionUri,
+      consumerEvent = consumerEvent,
     )
 
   override fun startRecording(
@@ -255,16 +241,9 @@ internal class FakeCameraXController : CameraXController {
     mainExecutor: Executor,
     consumerEvent: Consumer<RecordEvent>,
   ): RecordingWrapper =
-    FakeRecordingWrapper(
-      onRecord = {
-        consumerEvent.accept(
-          RecordEvent(
-            true,
-            hasErrorInRecording,
-            fileOutputOptions.file.toUri(),
-          ),
-        )
-      },
+    createRecording(
+      outputUri = fileOutputOptions.file.toUri(),
+      consumerEvent = consumerEvent,
     )
 
   override fun takePicture(
@@ -282,5 +261,30 @@ internal class FakeCameraXController : CameraXController {
 
   override fun bindToLifecycle(lifecycle: LifecycleOwner) {
     bindCount++
+  }
+
+  private fun createRecording(
+    outputUri: Uri,
+    consumerEvent: Consumer<RecordEvent>,
+  ): RecordingWrapper {
+    consumerEvent.accept(
+      RecordEvent(
+        isFinalized = false,
+        hasError = false,
+        outputUri = Uri.EMPTY,
+        isStarted = true,
+      ),
+    )
+    return FakeRecordingWrapper(
+      onRecord = {
+        consumerEvent.accept(
+          RecordEvent(
+            isFinalized = true,
+            hasError = hasErrorInRecording,
+            outputUri = outputUri,
+          ),
+        )
+      },
+    )
   }
 }

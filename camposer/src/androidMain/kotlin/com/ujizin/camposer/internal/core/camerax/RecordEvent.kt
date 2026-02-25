@@ -12,6 +12,8 @@ internal class RecordEvent(
   internal val cause: Throwable? = finalizeEvent?.cause
   internal val error: Int? = finalizeEvent?.error
 
+  internal var isStarted = event is VideoRecordEvent.Start
+    private set
   internal var isFinalized = event is VideoRecordEvent.Finalize
     private set
   internal var hasError: Boolean = finalizeEvent?.hasError() ?: false
@@ -25,7 +27,9 @@ internal class RecordEvent(
     isFinalized: Boolean,
     hasError: Boolean,
     outputUri: Uri,
+    isStarted: Boolean = false,
   ) : this(null) {
+    this.isStarted = isStarted
     this.isFinalized = isFinalized
     this.hasError = hasError
     this.outputUri = outputUri

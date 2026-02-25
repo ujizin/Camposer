@@ -130,7 +130,6 @@ internal actual class DefaultRecordController private constructor(
     onRecordBuild: () -> RecordingWrapper,
   ) {
     try {
-      isRecording = true
       recordController = onRecordBuild()
     } catch (exception: Exception) {
       isRecording = false
@@ -140,6 +139,9 @@ internal actual class DefaultRecordController private constructor(
 
   private fun getConsumerEvent(onResult: (CaptureResult<Uri?>) -> Unit): Consumer<RecordEvent> =
     Consumer { record ->
+      if (record.isStarted) {
+        isRecording = true
+      }
       if (record.isFinalized) {
         isRecording = false
         isMuted = false
