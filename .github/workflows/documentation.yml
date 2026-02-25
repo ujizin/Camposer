@@ -36,6 +36,7 @@ jobs:
         with:
           python-version: '3.12'
           cache: 'pip'
+          cache-dependency-path: '.github/docs-requirements.txt'
 
       - name: Install dependencies
         run: pip3 install -r .github/docs-requirements.txt
