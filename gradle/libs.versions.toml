@@ -2,94 +2,52 @@
 
 # Camposer libraries
 
-kotlin = "2.0.0"
-gradle = "8.5.2"
+gradle = "9.0.1"
 gradle-nexus = "2.0.0"
-androidx-test = "1.6.1"
-camerax = "1.4.1"
-compose-bom = "2024.12.01"
+spotless = "8.1.0"
+ktlint = "1.8.0"
+kotlin = "2.3.0"
+dokka = "2.1.0"
+androidx-test = "1.7.0"
+androidx-arch-core = "2.2.0"
+camerax = "1.5.2"
+coroutines = "1.10.2"
+compose-multiplatform = "1.11.0-alpha01"
+binary-compatibility-validator = "0.18.1"
+maven-publish = "0.35.0"
 
-# Sample app libraries
+# Camposer scanner
 
-androidx-core = "1.15.0"
-exoplayer = "2.19.1"
-zxing = "3.5.3"
-cloudy = "0.1.1"
-appcompat = "1.9.3"
-material = "1.12.0"
-lifecycle = "2.8.7"
-navigation = "2.8.5"
-kotlinx-serialization = "1.6.3"
-accompanist = "0.34.0"
-coil = "2.7.0"
-koin = "4.0.0"
-datastore = "1.1.1"
+mlkit-barcode = "17.3.0"
+camera-mlkit-vision = "1.5.2"
 
 [libraries]
 
-androidx-core = { module = "androidx.core:core", version.ref = "androidx-core" }
+compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose-multiplatform" }
+compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose-multiplatform" }
+compose-ui-test = { module = "org.jetbrains.compose.ui:ui-test", version.ref = "compose-multiplatform" }
+compose-junit4 = { module = "org.jetbrains.compose.ui:ui-test-junit4", version.ref = "compose-multiplatform" }
 
-lifecycle = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-savedstate", version.ref = "lifecycle" }
-
-compose-activity = { module = "androidx.activity:activity-compose", version.ref = "appcompat" }
-
-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
-compose-runtime = { module = "androidx.compose.runtime:runtime" }
-compose-ui = { module = "androidx.compose.ui:ui" }
-compose-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
-
-compose-foundation = { module = "androidx.compose.foundation:foundation" }
-compose-material3 = { module = "androidx.compose.material:material" }
-compose-material3-icons = { module = "androidx.compose.material:material-icons-extended" }
-compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
-
-compose-lifecycle = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
-
-compose-junit = { module = "androidx.compose.ui:ui-test-junit4" }
-
-material = { module = "com.google.android.material:material", version.ref = "material" }
-
-coil = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
-coil-video = { module = "io.coil-kt:coil-video", version.ref = "coil" }
-
-koin = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
-
-datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
-
-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
-
-exoplayer = { module = "com.google.android.exoplayer:exoplayer", version.ref = "exoplayer" }
-
-c1amerax-core = { module = "androidx.camera:camera-core", version.ref = "camerax" }
+camera-core = { module = "androidx.camera:camera-core", version.ref = "camerax" }
 camerax-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "camerax" }
 camerax-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "camerax" }
 camerax-view = { module = "androidx.camera:camera-view", version.ref = "camerax" }
 
-zxing-core = { module = "com.google.zxing:core", version.ref = "zxing" }
-
-accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
-
-cloudy = { module = "com.github.skydoves:cloudy", version.ref = "cloudy" }
-
 androidx-test-core = { module = "androidx.test:core-ktx", version.ref = "androidx-test" }
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-test" }
+androidx-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "androidx-arch-core" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+
+mlkit-barcode-scanning = { module = "com.google.mlkit:barcode-scanning", version.ref = "mlkit-barcode" }
+androidx-camera-mlkit-vision = { group = "androidx.camera", name = "camera-mlkit-vision", version.ref = "camera-mlkit-vision" }
 
 [bundles]
 
-compose = [
-    "compose-runtime",
-    "compose-ui",
-    "compose-tooling-preview",
-    "compose-ui-tooling",
-    "compose-foundation"
-]
-
-internal-camerax = [
-    "camerax-camera2",
-    "camerax-lifecycle",
-    "camerax-view"
+camerax = [
+  "camera-core",
+  "camerax-camera2",
+  "camerax-lifecycle",
+  "camerax-view"
 ]
 
 [plugins]
@@ -98,7 +56,12 @@ application = { id = "com.android.application", version.ref = "gradle" }
 library = { id = "com.android.library", version.ref = "gradle" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-dokka = { id = "org.jetbrains.dokka", version.ref = "kotlin" }
-dokka-java-doc = { id = "org.jetbrains.dokka-javadoc", version.ref = "kotlin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "gradle" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 gradle-nexus = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "gradle-nexus" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
+binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binary-compatibility-validator" }
+maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publish" }

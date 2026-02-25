@@ -1,113 +1,133 @@
 # Camposer
 
 <p align="center">
- <img src="sample/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" />
+ <img src="docs/assets/ic_launcher_round.png" width="200"/>
 </p>
 <p align="center">
-  <a href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"/></a>
-  <img src="https://github.com/ujizin/Camposer/actions/workflows/android_test.yml/badge.svg?branch=main"/>
-  <img src="https://github.com/ujizin/Camposer/actions/workflows/build.yml/badge.svg?branch=main"/>
-  <a href="https://android-arsenal.com/api?level=21"><img alt="API" src="https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat"/></a>
-  <a href="https://github.com/ujizin"><img alt="Profile" src="https://badgen.net/badge/ujizin/Github/orange?icon=github"/></a>
-  <a href="https://medium.com/@lucasyujideveloper/camposer-camera-library-using-jetpack-compose-for-android-3af63220fa00"><img src="https://badgen.net/badge/icon/Medium?icon=medium&label=Story"/></a>
-  <a href="https://ujizin.github.io/Camposer/"><img alt="Dokka" src="https://badgen.net/badge/Dokka/Camposer/purple?icon=libraries"/></a></br>
+  <a href="https://search.maven.org/search?q=g:%22io.github.ujizin%22%20AND%20a:%22camposer%22">
+  <img src="https://img.shields.io/maven-metadata/v.svg?color=dark-green&label=Maven%20Central&metadataUrl=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fio%2Fgithub%2Fujizin%2Fcamposer%2Fmaven-metadata.xml"/></a>
+  <img alt="Static Badge" src="https://img.shields.io/badge/Platform-Android-3DDC84?logo=android">
+  <img alt="Static Badge" src="https://img.shields.io/badge/Platform-iOS-F5F5F7?logo=ios"> <br/>
   <a href="https://androidweekly.net/issues/issue-546"><img src="https://androidweekly.net/issues/issue-546/badge"/></a>
 </p>
 
-<p align="center">Tired to use a camera in Jetpack Compose with interoperability? Then Camposer was made for you. <br> A camera library totally in Jetpack Compose which supports taking photos, recording videos, flash modes, zoom ratio, and among others!</p>
+<p align="center">📸 A multiplatform camera library built with Jetpack Compose for taking photos, recording videos, controlling flash/torch, zooming, and more.</p>
 <br>
 <p align="center">
-<img src="https://user-images.githubusercontent.com/51065868/201734193-053dd4f5-c9cb-4a62-9692-1a62264911a5.gif" width="250"/> <img src="https://user-images.githubusercontent.com/51065868/201736304-f1f1b5fa-3f3d-4c12-9d40-a790e0d4d82b.gif" width="250"/>
+<img src="https://user-images.githubusercontent.com/51065868/201734193-053dd4f5-c9cb-4a62-9692-1a62264911a5.gif" width="175"/> <img src="https://user-images.githubusercontent.com/51065868/201736304-f1f1b5fa-3f3d-4c12-9d40-a790e0d4d82b.gif" width="175"/>
 </p>
 
-<p align="center"><small>Check out the <a href="https://github.com/ujizin/Camposer/tree/main/sample">Sample project</a></small></p>
+<p align="center"><small>✨ Check out the <a href="https://github.com/ujizin/Camposer/tree/main/samples">sample projects</a></small></p>
 
+## 🚀 Quick Start
 
-## Gradle
+Add the dependencies to your module `build.gradle.kts`, then sync your project:
 
-<a href="https://search.maven.org/search?q=g:%22io.github.ujizin%22%20AND%20a:%22camposer%22"><img src="https://img.shields.io/maven-metadata/v.svg?color=dark-green&label=Maven%20Central&metadataUrl=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fio%2Fgithub%2Fujizin%2Fcamposer%2Fmaven-metadata.xml"/></a>
+```kotlin
+// Android
+dependencies {
+  implementation("io.github.ujizin:camposer:<version>")
+}
 
-Add dependency to your `build.gradle` and sync your project
+// Kotlin Multiplatform
+sourceSets {
+  commonMain.dependencies {
+    implementation("io.github.ujizin:camposer:<version>")
+    // Required when you want to use code analysis features (e.g., QR code scanning).
+    implementation("io.github.ujizin:camposer-code-scanner:<version>")
+  }
+}
 
 ```
-implementation 'io.github.ujizin:camposer:<version>'
-```
 
-## How to use
+### 🧩 Basic Usage
 
-To add `CameraPreview` composable, just use the example below:
+To show the `CameraPreview` composable, use the example below:
 
-```Kotlin
-val cameraState = rememberCameraState()
-var camSelector by rememberCamSelector(CamSelector.Back)
+```kotlin
+val controller = remember { CameraController() }
+val cameraSession = rememberCameraSession(controller)
+var camSelector by remember { mutableStateOf(CamSelector.Back) }
 CameraPreview(
-  cameraState = cameraState,
+  cameraSession = cameraSession,
   camSelector = camSelector,
 ) {
   // Camera Preview UI
 }
 ```
 
-### Taking pictures
+## ✨ Features
 
-To take picture use `CameraState` and call `takePicture` method from it.
+- 📸 Take pictures
+- 🎥 Record videos
+- 🔍 Zoom
+- 🎯 Focus support (tap to focus)
+- ⚡ Flash mode
+- 🔦 Torch
+- 🎛️ Exposure compensation
+- 🖼️ Image/video quality controls
+- 🔭 Multi-camera lens support (Ultra-wide, Wide & Telephoto)
+- ⏱️ 30/60 FPS video recording
+- 🎬 Video stabilization (iOS only for now)
+- 🧠 Image analyzer (code scanner)
 
-```Kotlin
-// Using content values
-cameraState.takePicture(contentValues, mediaURI) { result ->
+## 📚 Documentation
+
+Visit the docs to learn more: [ujizin.github.io/Camposer](https://ujizin.github.io/Camposer)
+
+## 🛠️ Usage Examples
+
+### 📸 Taking Pictures
+
+Use `CameraSession` and call `takePicture`:
+
+```kotlin
+// Capture into a temporary byte array
+cameraSession.takePicture { result ->
   /* ... */
 }
 
-// Using files
-cameraState.takePicture(file) { result -> /* ... */ }
+// Capture into a file
+cameraSession.takePicture(fileName) { result -> /* ... */ }
 ```
 
-### Recording videos
+### 🎥 Recording Videos
 
-Change the capture mode for `CaptureMode.Video` on `CameraPreview` and call `toggleRecording` method twice for stop recording, or use `startRecording` and `stopRecording` separately
+Set `captureMode = CaptureMode.Video` in `CameraPreview`, then call `startRecording` and `stopRecording`.
 
-```Kotlin
-// Using content values
-cameraState.startRecording()
-cameraState.stopRecording(contentValues, mediaURI) { result ->
+```kotlin
+cameraSession.startRecording(fileName) { result ->
   /* ... */
 }
-
-// Using file
-cameraState.startRecording()
-cameraState.stopRecording(file) { result -> /* ... */ }
-
-// Using content values + toggle
-cameraState.toggleRecording(contentValues, mediaURI) { result ->
-  /* ... */
-}
-
-// Using files + toggle
-cameraState.toggleRecording(file) { result -> /* ... */ }
+cameraSession.stopRecording()
 ```
 
-### Switch cameras
+### 🔄 Switching Cameras
 
-To switch cameras, you have to add `camSelector` to your `CameraPreview` composable, as shown previously, after implementation, just need to change its state.
+To switch cameras, pass `camSelector` to `CameraPreview` (as shown above) and update its state.
 
-```Kotlin
-// Use front camera
+```kotlin
+// Front camera
 camSelector = CamSelector.Front
 
-// Use back camera
+// Back camera
 camSelector = CamSelector.Back
 
-// Inverse camera selector
+// Toggle camera selector
 camSelector = camSelector.inverse
 ```
 
-###  Other configurations
+### ➕ More
 
-If you want to use other configurations, you can see our [wiki](https://github.com/DevLucasYuji/Camposer/wiki).
+To explore additional features, check the [documentation](https://ujizin.github.io/Camposer).
 
-Have a `fun code()`!
+Have `fun code()`! 👨‍💻
 
-##  License
+## ✨ Inspiration
+
+Camposer includes features inspired by [react-native-vision-camera](https://github.com/mrousavy/react-native-vision-camera).
+
+## 📄 License
 
 ```
 Copyright 2022 ujizin (Lucas Yuji) 

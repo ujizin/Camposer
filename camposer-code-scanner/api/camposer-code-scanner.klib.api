@@ -1,0 +1,100 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <io.github.ujizin:camposer-code-scanner>
+final enum class com.ujizin.camposer.codescanner/CodeType : kotlin/Enum<com.ujizin.camposer.codescanner/CodeType> { // com.ujizin.camposer.codescanner/CodeType|null[0]
+    enum entry Aztec // com.ujizin.camposer.codescanner/CodeType.Aztec|null[0]
+    enum entry Barcode128 // com.ujizin.camposer.codescanner/CodeType.Barcode128|null[0]
+    enum entry Barcode39 // com.ujizin.camposer.codescanner/CodeType.Barcode39|null[0]
+    enum entry Barcode93 // com.ujizin.camposer.codescanner/CodeType.Barcode93|null[0]
+    enum entry BarcodeEAN13 // com.ujizin.camposer.codescanner/CodeType.BarcodeEAN13|null[0]
+    enum entry BarcodeEAN8 // com.ujizin.camposer.codescanner/CodeType.BarcodeEAN8|null[0]
+    enum entry CodaBar // com.ujizin.camposer.codescanner/CodeType.CodaBar|null[0]
+    enum entry DataMatrix // com.ujizin.camposer.codescanner/CodeType.DataMatrix|null[0]
+    enum entry ITF // com.ujizin.camposer.codescanner/CodeType.ITF|null[0]
+    enum entry PDF417 // com.ujizin.camposer.codescanner/CodeType.PDF417|null[0]
+    enum entry QRCode // com.ujizin.camposer.codescanner/CodeType.QRCode|null[0]
+    enum entry UPCA // com.ujizin.camposer.codescanner/CodeType.UPCA|null[0]
+    enum entry UPCE // com.ujizin.camposer.codescanner/CodeType.UPCE|null[0]
+
+    final val entries // com.ujizin.camposer.codescanner/CodeType.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.ujizin.camposer.codescanner/CodeType> // com.ujizin.camposer.codescanner/CodeType.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.ujizin.camposer.codescanner/CodeType // com.ujizin.camposer.codescanner/CodeType.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.ujizin.camposer.codescanner/CodeType> // com.ujizin.camposer.codescanner/CodeType.values|values#static(){}[0]
+}
+
+abstract fun interface com.ujizin.camposer.codescanner/CodeAnalyzerListener { // com.ujizin.camposer.codescanner/CodeAnalyzerListener|null[0]
+    abstract fun onCodeScanned(com.ujizin.camposer.codescanner/CodeResult) // com.ujizin.camposer.codescanner/CodeAnalyzerListener.onCodeScanned|onCodeScanned(com.ujizin.camposer.codescanner.CodeResult){}[0]
+}
+
+final class com.ujizin.camposer.codescanner/CodeResult { // com.ujizin.camposer.codescanner/CodeResult|null[0]
+    final val corners // com.ujizin.camposer.codescanner/CodeResult.corners|{}corners[0]
+        final fun <get-corners>(): kotlin.collections/List<com.ujizin.camposer.codescanner/CornerPointer> // com.ujizin.camposer.codescanner/CodeResult.corners.<get-corners>|<get-corners>(){}[0]
+    final val frameRect // com.ujizin.camposer.codescanner/CodeResult.frameRect|{}frameRect[0]
+        final fun <get-frameRect>(): com.ujizin.camposer.codescanner/FrameRect // com.ujizin.camposer.codescanner/CodeResult.frameRect.<get-frameRect>|<get-frameRect>(){}[0]
+    final val text // com.ujizin.camposer.codescanner/CodeResult.text|{}text[0]
+        final fun <get-text>(): kotlin/String // com.ujizin.camposer.codescanner/CodeResult.text.<get-text>|<get-text>(){}[0]
+    final val type // com.ujizin.camposer.codescanner/CodeResult.type|{}type[0]
+        final fun <get-type>(): com.ujizin.camposer.codescanner/CodeType // com.ujizin.camposer.codescanner/CodeResult.type.<get-type>|<get-type>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.ujizin.camposer.codescanner/CodeResult.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.ujizin.camposer.codescanner/CodeResult.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.ujizin.camposer.codescanner/CodeResult.toString|toString(){}[0]
+}
+
+final class com.ujizin.camposer.codescanner/CodeTypeNotSupportedException : kotlin/Exception { // com.ujizin.camposer.codescanner/CodeTypeNotSupportedException|null[0]
+    constructor <init>(com.ujizin.camposer.codescanner/CodeType, kotlin/String = ...) // com.ujizin.camposer.codescanner/CodeTypeNotSupportedException.<init>|<init>(com.ujizin.camposer.codescanner.CodeType;kotlin.String){}[0]
+
+    final val codeType // com.ujizin.camposer.codescanner/CodeTypeNotSupportedException.codeType|{}codeType[0]
+        final fun <get-codeType>(): com.ujizin.camposer.codescanner/CodeType // com.ujizin.camposer.codescanner/CodeTypeNotSupportedException.codeType.<get-codeType>|<get-codeType>(){}[0]
+}
+
+final class com.ujizin.camposer.codescanner/CornerPointer { // com.ujizin.camposer.codescanner/CornerPointer|null[0]
+    constructor <init>(kotlin/Int, kotlin/Int) // com.ujizin.camposer.codescanner/CornerPointer.<init>|<init>(kotlin.Int;kotlin.Int){}[0]
+
+    final val x // com.ujizin.camposer.codescanner/CornerPointer.x|{}x[0]
+        final fun <get-x>(): kotlin/Int // com.ujizin.camposer.codescanner/CornerPointer.x.<get-x>|<get-x>(){}[0]
+    final val y // com.ujizin.camposer.codescanner/CornerPointer.y|{}y[0]
+        final fun <get-y>(): kotlin/Int // com.ujizin.camposer.codescanner/CornerPointer.y.<get-y>|<get-y>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.ujizin.camposer.codescanner/CornerPointer.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.ujizin.camposer.codescanner/CornerPointer.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.ujizin.camposer.codescanner/CornerPointer.toString|toString(){}[0]
+}
+
+final class com.ujizin.camposer.codescanner/FrameRect { // com.ujizin.camposer.codescanner/FrameRect|null[0]
+    constructor <init>(kotlin/Int, kotlin/Int, kotlin/Int, kotlin/Int) // com.ujizin.camposer.codescanner/FrameRect.<init>|<init>(kotlin.Int;kotlin.Int;kotlin.Int;kotlin.Int){}[0]
+
+    final val bottom // com.ujizin.camposer.codescanner/FrameRect.bottom|{}bottom[0]
+        final fun <get-bottom>(): kotlin/Int // com.ujizin.camposer.codescanner/FrameRect.bottom.<get-bottom>|<get-bottom>(){}[0]
+    final val height // com.ujizin.camposer.codescanner/FrameRect.height|{}height[0]
+        final fun <get-height>(): kotlin/Int // com.ujizin.camposer.codescanner/FrameRect.height.<get-height>|<get-height>(){}[0]
+    final val left // com.ujizin.camposer.codescanner/FrameRect.left|{}left[0]
+        final fun <get-left>(): kotlin/Int // com.ujizin.camposer.codescanner/FrameRect.left.<get-left>|<get-left>(){}[0]
+    final val right // com.ujizin.camposer.codescanner/FrameRect.right|{}right[0]
+        final fun <get-right>(): kotlin/Int // com.ujizin.camposer.codescanner/FrameRect.right.<get-right>|<get-right>(){}[0]
+    final val top // com.ujizin.camposer.codescanner/FrameRect.top|{}top[0]
+        final fun <get-top>(): kotlin/Int // com.ujizin.camposer.codescanner/FrameRect.top.<get-top>|<get-top>(){}[0]
+    final val width // com.ujizin.camposer.codescanner/FrameRect.width|{}width[0]
+        final fun <get-width>(): kotlin/Int // com.ujizin.camposer.codescanner/FrameRect.width.<get-width>|<get-width>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.ujizin.camposer.codescanner/FrameRect.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.ujizin.camposer.codescanner/FrameRect.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.ujizin.camposer.codescanner/FrameRect.toString|toString(){}[0]
+}
+
+final val com.ujizin.camposer.codescanner/com_ujizin_camposer_codescanner_CodeResult$stableprop // com.ujizin.camposer.codescanner/com_ujizin_camposer_codescanner_CodeResult$stableprop|#static{}com_ujizin_camposer_codescanner_CodeResult$stableprop[0]
+final val com.ujizin.camposer.codescanner/com_ujizin_camposer_codescanner_CodeTypeNotSupportedException$stableprop // com.ujizin.camposer.codescanner/com_ujizin_camposer_codescanner_CodeTypeNotSupportedException$stableprop|#static{}com_ujizin_camposer_codescanner_CodeTypeNotSupportedException$stableprop[0]
+final val com.ujizin.camposer.codescanner/com_ujizin_camposer_codescanner_CornerPointer$stableprop // com.ujizin.camposer.codescanner/com_ujizin_camposer_codescanner_CornerPointer$stableprop|#static{}com_ujizin_camposer_codescanner_CornerPointer$stableprop[0]
+final val com.ujizin.camposer.codescanner/com_ujizin_camposer_codescanner_FrameRect$stableprop // com.ujizin.camposer.codescanner/com_ujizin_camposer_codescanner_FrameRect$stableprop|#static{}com_ujizin_camposer_codescanner_FrameRect$stableprop[0]
+
+final fun (com.ujizin.camposer.session/CameraSession).com.ujizin.camposer.codescanner/rememberCodeImageAnalyzer(kotlin.collections/List<com.ujizin.camposer.codescanner/CodeType>?, kotlin/Function1<kotlin/Throwable, kotlin/Unit>?, com.ujizin.camposer.codescanner/CodeAnalyzerListener, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int): com.ujizin.camposer.state.properties/ImageAnalyzer // com.ujizin.camposer.codescanner/rememberCodeImageAnalyzer|rememberCodeImageAnalyzer@com.ujizin.camposer.session.CameraSession(kotlin.collections.List<com.ujizin.camposer.codescanner.CodeType>?;kotlin.Function1<kotlin.Throwable,kotlin.Unit>?;com.ujizin.camposer.codescanner.CodeAnalyzerListener;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
+final fun com.ujizin.camposer.codescanner/com_ujizin_camposer_codescanner_CodeResult$stableprop_getter(): kotlin/Int // com.ujizin.camposer.codescanner/com_ujizin_camposer_codescanner_CodeResult$stableprop_getter|com_ujizin_camposer_codescanner_CodeResult$stableprop_getter(){}[0]
+final fun com.ujizin.camposer.codescanner/com_ujizin_camposer_codescanner_CodeTypeNotSupportedException$stableprop_getter(): kotlin/Int // com.ujizin.camposer.codescanner/com_ujizin_camposer_codescanner_CodeTypeNotSupportedException$stableprop_getter|com_ujizin_camposer_codescanner_CodeTypeNotSupportedException$stableprop_getter(){}[0]
+final fun com.ujizin.camposer.codescanner/com_ujizin_camposer_codescanner_CornerPointer$stableprop_getter(): kotlin/Int // com.ujizin.camposer.codescanner/com_ujizin_camposer_codescanner_CornerPointer$stableprop_getter|com_ujizin_camposer_codescanner_CornerPointer$stableprop_getter(){}[0]
+final fun com.ujizin.camposer.codescanner/com_ujizin_camposer_codescanner_FrameRect$stableprop_getter(): kotlin/Int // com.ujizin.camposer.codescanner/com_ujizin_camposer_codescanner_FrameRect$stableprop_getter|com_ujizin_camposer_codescanner_FrameRect$stableprop_getter(){}[0]

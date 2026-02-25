@@ -1,0 +1,27 @@
+# Xcode
+**/*.xcuserstate
+**/*.xcscmblueprint
+**/*.xccheckout
+**/*.moved-aside
+/*.xcworkspace/xcuserdata/
+*.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
+
+# Swift Package Manager
+
+*.xcodeproj/
+Packages/
+Package.pins
+Package.resolved
+
+## App packaging
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+.build/
+
+timeline.xctimeline
+playground.xcworkspace

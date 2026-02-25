@@ -1,18 +1,24 @@
 name: Android Test
+
 on:
   push:
-    pull-request:
-      branches:
-        - main
+    branches: [ main ]
+  pull_request:
+    branches: [ '*' ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        api-level: [21, 26, 31, 34]
+        api-level: [23, 26, 31, 34]
         include:
-          - api-level: 21
+          - api-level: 23
             arch: 'x86'
             target: default
           - api-level: 26
@@ -25,16 +31,15 @@ jobs:
             arch: 'x86_64'
             target: google_apis
     steps:
-      - name: checkout
-        uses: actions/checkout@v4
-
-      - name: set up JDK 17
-        uses: actions/setup-java@v3
+      - name: Check out code
+        uses: actions/checkout@v6.0.1
+      - name: Set up JDK
+        uses: actions/setup-java@v5.1.0
         with:
-          java-version: '17'
-          distribution: 'temurin'
+          distribution: 'zulu'
+          java-version: 21
 
-      - name: make gradlew executable
+      - name: Make gradlew executable
         run: chmod +x ./gradlew
 
       - name: Enable KVM group perms
@@ -55,7 +60,7 @@ jobs:
             ~/.android/adb*
           key: avd-${{ matrix.api-level }}
 
-      - name: create AVD and generate snapshot for caching
+      - name: Create AVD and generate snapshot for caching
         if: steps.avd-cache.outputs.cache-hit != 'true'
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -63,11 +68,11 @@ jobs:
           arch: ${{ matrix.arch }}
           target: ${{ matrix.target }}
           force-avd-creation: false
-          emulator-options: -no-window -no-boot-anim -camera-back emulated -camera-front emulated -gpu swiftshader_indirect
+          emulator-options: -no-window -no-boot-anim -camera-back emulated -camera-front emulated -gpu swiftshader_indirect -metrics-collection
           disable-animations: false
           script: echo "Generated AVD snapshot for caching."
 
-      - name: run android tests
+      - name: Run android tests
         uses: reactivecircus/android-emulator-runner@v2
         env:
           ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL: 60

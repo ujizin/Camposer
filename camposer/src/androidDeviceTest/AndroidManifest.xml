@@ -1,0 +1,34 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+  <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+  <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+  <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+
+  <uses-permission android:name="android.permission.CAMERA" />
+
+  <uses-feature
+    android:name="android.hardware.camera2"
+    android:required="true" />
+
+  <uses-permission
+    android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    android:maxSdkVersion="29"
+    tools:ignore="ScopedStorage" />
+  <uses-permission
+    android:name="android.permission.READ_EXTERNAL_STORAGE"
+    android:maxSdkVersion="32" />
+
+  <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+  <application android:requestLegacyExternalStorage="true">
+    <activity
+      android:name="androidx.activity.ComponentActivity"
+      android:exported="false"
+      tools:node="merge"
+      tools:replace="android:exported" />
+  </application>
+
+</manifest>

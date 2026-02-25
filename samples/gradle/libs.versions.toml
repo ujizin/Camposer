@@ -1,0 +1,112 @@
+[versions]
+
+agp = "9.0.1"
+camposer = "1.0.0"
+kotlin = "2.3.0"
+compose-multiplatform = "1.10.1"
+compose-bom = "2026.01.00"
+exoplayer = "2.19.1"
+zxing = "3.5.4"
+cloudy = "0.5.0"
+appcompat = "1.12.2"
+material = "1.13.0"
+material3 = "1.9.0"
+lifecycle = "2.10.0"
+kmp-lifecycle = "2.9.6"
+navigation = "2.9.6"
+kotlinx-serialization = "1.10.0"
+accompanist = "0.37.3"
+coil = "2.7.0"
+koin = "4.1.1"
+datastore = "1.2.0"
+
+# kmp
+kotlinx-io = "0.8.2"
+core-ktx = "1.17.0"
+multiplatform-nav3-ui = "1.0.0-alpha06"
+moko-permissions = "0.20.1"
+coil3 = "3.3.0"
+filekit = "0.12.0"
+
+[libraries]
+
+camposer = { module = "io.github.ujizin:camposer", version.ref = "camposer" }
+camposer-code-scanner = { module = "io.github.ujizin:camposer-code-scanner", version.ref = "camposer" }
+material = { module = "com.google.android.material:material", version.ref = "material" }
+koin = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
+datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+
+lifecycle = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
+lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-savedstate", version.ref = "lifecycle" }
+
+compose-activity = { module = "androidx.activity:activity-compose", version.ref = "appcompat" }
+compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
+compose-runtime-android = { module = "androidx.compose.runtime:runtime" }
+compose-ui-android = { module = "androidx.compose.ui:ui" }
+compose-ui-preview-android = { module = "androidx.compose.ui:ui-tooling-preview" }
+compose-ui-tooling-android = { module = "androidx.compose.ui:ui-tooling" }
+compose-foundation-android = { module = "androidx.compose.foundation:foundation" }
+compose-navigation-android = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
+compose-lifecycle = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
+
+compose-material3-android = { module = "androidx.compose.material:material" }
+compose-material3-icons = { module = "androidx.compose.material:material-icons-extended" }
+
+exoplayer = { module = "com.google.android.exoplayer:exoplayer", version.ref = "exoplayer" }
+zxing-core = { module = "com.google.zxing:core", version.ref = "zxing" }
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
+cloudy = { module = "com.github.skydoves:cloudy", version.ref = "cloudy" }
+
+jetbrains-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "kmp-lifecycle" }
+jetbrains-navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "multiplatform-nav3-ui" }
+
+moko-permissions = { module = "dev.icerock.moko:permissions", version.ref = "moko-permissions" }
+moko-permissions-compose = { module = "dev.icerock.moko:permissions-compose", version.ref = "moko-permissions" }
+moko-permissions-camera = { module = "dev.icerock.moko:permissions-camera", version.ref = "moko-permissions" }
+moko-permissions-microphone = { module = "dev.icerock.moko:permissions-microphone", version.ref = "moko-permissions" }
+
+coil = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
+coil-video = { module = "io.coil-kt:coil-video", version.ref = "coil" }
+
+
+kotlinx-io = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kotlinx-io" }
+filekit-core = { module = "io.github.vinceglb:filekit-core", version.ref = "filekit" }
+filekit-dialogs = { module = "io.github.vinceglb:filekit-dialogs", version.ref = "filekit" }
+
+## KMP Compose
+compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose-multiplatform" }
+compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose-multiplatform" }
+compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose-multiplatform" }
+compose-ui-tooling = { module = "org.jetbrains.compose.ui:ui-tooling", version.ref = "compose-multiplatform" }
+compose-ui-preview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "compose-multiplatform" }
+compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "material3" }
+compose-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose-multiplatform" }
+compose-coil3 = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil3" }
+
+[bundles]
+
+compose-android = [
+  "compose-runtime-android",
+  "compose-foundation-android",
+  "compose-ui-android",
+  "compose-ui-preview-android",
+  "compose-ui-tooling-android",
+]
+
+compose-kmp = [
+  "compose-runtime",
+  "compose-foundation",
+  "compose-ui",
+  "compose-ui-preview",
+]
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+
+kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }

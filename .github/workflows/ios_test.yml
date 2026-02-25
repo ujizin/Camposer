@@ -1,0 +1,33 @@
+name: iOS Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ '*' ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: macos-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6.0.1
+      - name: Set up JDK
+        uses: actions/setup-java@v5.1.0
+        with:
+          distribution: 'zulu'
+          java-version: 21
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Gradle cache
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Run iOS tests
+        run: ./gradlew clean iosSimulatorArm64Test

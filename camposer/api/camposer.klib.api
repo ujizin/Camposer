@@ -1,0 +1,722 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <io.github.ujizin:camposer>
+final enum class com.ujizin.camposer.state.properties.selector/CamLensType : kotlin/Enum<com.ujizin.camposer.state.properties.selector/CamLensType> { // com.ujizin.camposer.state.properties.selector/CamLensType|null[0]
+    enum entry Telephoto // com.ujizin.camposer.state.properties.selector/CamLensType.Telephoto|null[0]
+    enum entry UltraWide // com.ujizin.camposer.state.properties.selector/CamLensType.UltraWide|null[0]
+    enum entry Wide // com.ujizin.camposer.state.properties.selector/CamLensType.Wide|null[0]
+
+    final val entries // com.ujizin.camposer.state.properties.selector/CamLensType.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.ujizin.camposer.state.properties.selector/CamLensType> // com.ujizin.camposer.state.properties.selector/CamLensType.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.ujizin.camposer.state.properties.selector/CamLensType // com.ujizin.camposer.state.properties.selector/CamLensType.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.ujizin.camposer.state.properties.selector/CamLensType> // com.ujizin.camposer.state.properties.selector/CamLensType.values|values#static(){}[0]
+}
+
+final enum class com.ujizin.camposer.state.properties.selector/CamPosition : kotlin/Enum<com.ujizin.camposer.state.properties.selector/CamPosition> { // com.ujizin.camposer.state.properties.selector/CamPosition|null[0]
+    enum entry Back // com.ujizin.camposer.state.properties.selector/CamPosition.Back|null[0]
+    enum entry External // com.ujizin.camposer.state.properties.selector/CamPosition.External|null[0]
+    enum entry Front // com.ujizin.camposer.state.properties.selector/CamPosition.Front|null[0]
+    enum entry Unknown // com.ujizin.camposer.state.properties.selector/CamPosition.Unknown|null[0]
+
+    final val entries // com.ujizin.camposer.state.properties.selector/CamPosition.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.ujizin.camposer.state.properties.selector/CamPosition> // com.ujizin.camposer.state.properties.selector/CamPosition.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.ujizin.camposer.state.properties.selector/CamPosition // com.ujizin.camposer.state.properties.selector/CamPosition.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.ujizin.camposer.state.properties.selector/CamPosition> // com.ujizin.camposer.state.properties.selector/CamPosition.values|values#static(){}[0]
+
+    final object Companion // com.ujizin.camposer.state.properties.selector/CamPosition.Companion|null[0]
+}
+
+final enum class com.ujizin.camposer.state.properties/CaptureMode : kotlin/Enum<com.ujizin.camposer.state.properties/CaptureMode> { // com.ujizin.camposer.state.properties/CaptureMode|null[0]
+    enum entry Image // com.ujizin.camposer.state.properties/CaptureMode.Image|null[0]
+    enum entry Video // com.ujizin.camposer.state.properties/CaptureMode.Video|null[0]
+
+    final val entries // com.ujizin.camposer.state.properties/CaptureMode.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.ujizin.camposer.state.properties/CaptureMode> // com.ujizin.camposer.state.properties/CaptureMode.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.ujizin.camposer.state.properties/CaptureMode // com.ujizin.camposer.state.properties/CaptureMode.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.ujizin.camposer.state.properties/CaptureMode> // com.ujizin.camposer.state.properties/CaptureMode.values|values#static(){}[0]
+}
+
+final enum class com.ujizin.camposer.state.properties/FlashMode : kotlin/Enum<com.ujizin.camposer.state.properties/FlashMode> { // com.ujizin.camposer.state.properties/FlashMode|null[0]
+    enum entry Auto // com.ujizin.camposer.state.properties/FlashMode.Auto|null[0]
+    enum entry Off // com.ujizin.camposer.state.properties/FlashMode.Off|null[0]
+    enum entry On // com.ujizin.camposer.state.properties/FlashMode.On|null[0]
+
+    final val entries // com.ujizin.camposer.state.properties/FlashMode.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.ujizin.camposer.state.properties/FlashMode> // com.ujizin.camposer.state.properties/FlashMode.entries.<get-entries>|<get-entries>#static(){}[0]
+    final val inverse // com.ujizin.camposer.state.properties/FlashMode.inverse|{}inverse[0]
+        final fun <get-inverse>(): com.ujizin.camposer.state.properties/FlashMode // com.ujizin.camposer.state.properties/FlashMode.inverse.<get-inverse>|<get-inverse>(){}[0]
+
+    final fun valueOf(kotlin/String): com.ujizin.camposer.state.properties/FlashMode // com.ujizin.camposer.state.properties/FlashMode.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.ujizin.camposer.state.properties/FlashMode> // com.ujizin.camposer.state.properties/FlashMode.values|values#static(){}[0]
+}
+
+final enum class com.ujizin.camposer.state.properties/ImageCaptureStrategy : kotlin/Enum<com.ujizin.camposer.state.properties/ImageCaptureStrategy> { // com.ujizin.camposer.state.properties/ImageCaptureStrategy|null[0]
+    enum entry Balanced // com.ujizin.camposer.state.properties/ImageCaptureStrategy.Balanced|null[0]
+    enum entry MaxQuality // com.ujizin.camposer.state.properties/ImageCaptureStrategy.MaxQuality|null[0]
+    enum entry MinLatency // com.ujizin.camposer.state.properties/ImageCaptureStrategy.MinLatency|null[0]
+
+    final val entries // com.ujizin.camposer.state.properties/ImageCaptureStrategy.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.ujizin.camposer.state.properties/ImageCaptureStrategy> // com.ujizin.camposer.state.properties/ImageCaptureStrategy.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.ujizin.camposer.state.properties/ImageCaptureStrategy // com.ujizin.camposer.state.properties/ImageCaptureStrategy.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.ujizin.camposer.state.properties/ImageCaptureStrategy> // com.ujizin.camposer.state.properties/ImageCaptureStrategy.values|values#static(){}[0]
+}
+
+final enum class com.ujizin.camposer.state.properties/ImplementationMode : kotlin/Enum<com.ujizin.camposer.state.properties/ImplementationMode> { // com.ujizin.camposer.state.properties/ImplementationMode|null[0]
+    enum entry Compatible // com.ujizin.camposer.state.properties/ImplementationMode.Compatible|null[0]
+    enum entry Performance // com.ujizin.camposer.state.properties/ImplementationMode.Performance|null[0]
+
+    final val entries // com.ujizin.camposer.state.properties/ImplementationMode.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.ujizin.camposer.state.properties/ImplementationMode> // com.ujizin.camposer.state.properties/ImplementationMode.entries.<get-entries>|<get-entries>#static(){}[0]
+    final val inverse // com.ujizin.camposer.state.properties/ImplementationMode.inverse|{}inverse[0]
+        final fun <get-inverse>(): com.ujizin.camposer.state.properties/ImplementationMode // com.ujizin.camposer.state.properties/ImplementationMode.inverse.<get-inverse>|<get-inverse>(){}[0]
+
+    final fun valueOf(kotlin/String): com.ujizin.camposer.state.properties/ImplementationMode // com.ujizin.camposer.state.properties/ImplementationMode.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.ujizin.camposer.state.properties/ImplementationMode> // com.ujizin.camposer.state.properties/ImplementationMode.values|values#static(){}[0]
+}
+
+final enum class com.ujizin.camposer.state.properties/MirrorMode : kotlin/Enum<com.ujizin.camposer.state.properties/MirrorMode> { // com.ujizin.camposer.state.properties/MirrorMode|null[0]
+    enum entry Off // com.ujizin.camposer.state.properties/MirrorMode.Off|null[0]
+    enum entry On // com.ujizin.camposer.state.properties/MirrorMode.On|null[0]
+    enum entry OnlyInFront // com.ujizin.camposer.state.properties/MirrorMode.OnlyInFront|null[0]
+
+    final val entries // com.ujizin.camposer.state.properties/MirrorMode.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.ujizin.camposer.state.properties/MirrorMode> // com.ujizin.camposer.state.properties/MirrorMode.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.ujizin.camposer.state.properties/MirrorMode // com.ujizin.camposer.state.properties/MirrorMode.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.ujizin.camposer.state.properties/MirrorMode> // com.ujizin.camposer.state.properties/MirrorMode.values|values#static(){}[0]
+}
+
+final enum class com.ujizin.camposer.state.properties/OrientationStrategy : kotlin/Enum<com.ujizin.camposer.state.properties/OrientationStrategy> { // com.ujizin.camposer.state.properties/OrientationStrategy|null[0]
+    enum entry Device // com.ujizin.camposer.state.properties/OrientationStrategy.Device|null[0]
+    enum entry Preview // com.ujizin.camposer.state.properties/OrientationStrategy.Preview|null[0]
+
+    final val entries // com.ujizin.camposer.state.properties/OrientationStrategy.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.ujizin.camposer.state.properties/OrientationStrategy> // com.ujizin.camposer.state.properties/OrientationStrategy.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.ujizin.camposer.state.properties/OrientationStrategy // com.ujizin.camposer.state.properties/OrientationStrategy.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.ujizin.camposer.state.properties/OrientationStrategy> // com.ujizin.camposer.state.properties/OrientationStrategy.values|values#static(){}[0]
+}
+
+final enum class com.ujizin.camposer.state.properties/ScaleType : kotlin/Enum<com.ujizin.camposer.state.properties/ScaleType> { // com.ujizin.camposer.state.properties/ScaleType|null[0]
+    enum entry FillCenter // com.ujizin.camposer.state.properties/ScaleType.FillCenter|null[0]
+    enum entry FillEnd // com.ujizin.camposer.state.properties/ScaleType.FillEnd|null[0]
+    enum entry FillStart // com.ujizin.camposer.state.properties/ScaleType.FillStart|null[0]
+    enum entry FitCenter // com.ujizin.camposer.state.properties/ScaleType.FitCenter|null[0]
+    enum entry FitEnd // com.ujizin.camposer.state.properties/ScaleType.FitEnd|null[0]
+    enum entry FitStart // com.ujizin.camposer.state.properties/ScaleType.FitStart|null[0]
+
+    final val entries // com.ujizin.camposer.state.properties/ScaleType.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.ujizin.camposer.state.properties/ScaleType> // com.ujizin.camposer.state.properties/ScaleType.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.ujizin.camposer.state.properties/ScaleType // com.ujizin.camposer.state.properties/ScaleType.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.ujizin.camposer.state.properties/ScaleType> // com.ujizin.camposer.state.properties/ScaleType.values|values#static(){}[0]
+}
+
+final enum class com.ujizin.camposer.state.properties/VideoStabilizationMode : kotlin/Enum<com.ujizin.camposer.state.properties/VideoStabilizationMode> { // com.ujizin.camposer.state.properties/VideoStabilizationMode|null[0]
+    enum entry Cinematic // com.ujizin.camposer.state.properties/VideoStabilizationMode.Cinematic|null[0]
+    enum entry CinematicExtended // com.ujizin.camposer.state.properties/VideoStabilizationMode.CinematicExtended|null[0]
+    enum entry CinematicExtendedEnhanced // com.ujizin.camposer.state.properties/VideoStabilizationMode.CinematicExtendedEnhanced|null[0]
+    enum entry Off // com.ujizin.camposer.state.properties/VideoStabilizationMode.Off|null[0]
+    enum entry Standard // com.ujizin.camposer.state.properties/VideoStabilizationMode.Standard|null[0]
+
+    final val entries // com.ujizin.camposer.state.properties/VideoStabilizationMode.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.ujizin.camposer.state.properties/VideoStabilizationMode> // com.ujizin.camposer.state.properties/VideoStabilizationMode.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.ujizin.camposer.state.properties/VideoStabilizationMode // com.ujizin.camposer.state.properties/VideoStabilizationMode.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.ujizin.camposer.state.properties/VideoStabilizationMode> // com.ujizin.camposer.state.properties/VideoStabilizationMode.values|values#static(){}[0]
+}
+
+abstract interface com.ujizin.camposer.controller.record/RecordController { // com.ujizin.camposer.controller.record/RecordController|null[0]
+    abstract val isMuted // com.ujizin.camposer.controller.record/RecordController.isMuted|{}isMuted[0]
+        abstract fun <get-isMuted>(): kotlinx.coroutines.flow/StateFlow<kotlin/Boolean> // com.ujizin.camposer.controller.record/RecordController.isMuted.<get-isMuted>|<get-isMuted>(){}[0]
+    abstract val isRecording // com.ujizin.camposer.controller.record/RecordController.isRecording|{}isRecording[0]
+        abstract fun <get-isRecording>(): kotlinx.coroutines.flow/StateFlow<kotlin/Boolean> // com.ujizin.camposer.controller.record/RecordController.isRecording.<get-isRecording>|<get-isRecording>(){}[0]
+
+    abstract fun muteRecording(kotlin/Boolean): kotlin/Result<kotlin/Boolean> // com.ujizin.camposer.controller.record/RecordController.muteRecording|muteRecording(kotlin.Boolean){}[0]
+    abstract fun pauseRecording(): kotlin/Result<kotlin/Boolean> // com.ujizin.camposer.controller.record/RecordController.pauseRecording|pauseRecording(){}[0]
+    abstract fun resumeRecording(): kotlin/Result<kotlin/Boolean> // com.ujizin.camposer.controller.record/RecordController.resumeRecording|resumeRecording(){}[0]
+    abstract fun startRecording(kotlin/String, kotlin/Function1<com.ujizin.camposer/CaptureResult<kotlin/String>, kotlin/Unit>) // com.ujizin.camposer.controller.record/RecordController.startRecording|startRecording(kotlin.String;kotlin.Function1<com.ujizin.camposer.CaptureResult<kotlin.String>,kotlin.Unit>){}[0]
+    abstract fun stopRecording(): kotlin/Result<kotlin/Boolean> // com.ujizin.camposer.controller.record/RecordController.stopRecording|stopRecording(){}[0]
+}
+
+abstract interface com.ujizin.camposer.controller.takepicture/TakePictureCommand { // com.ujizin.camposer.controller.takepicture/TakePictureCommand|null[0]
+    abstract fun takePicture(kotlin/Function1<com.ujizin.camposer/CaptureResult<kotlin/ByteArray>, kotlin/Unit>) // com.ujizin.camposer.controller.takepicture/TakePictureCommand.takePicture|takePicture(kotlin.Function1<com.ujizin.camposer.CaptureResult<kotlin.ByteArray>,kotlin.Unit>){}[0]
+    abstract fun takePicture(kotlin/String, kotlin/Function1<com.ujizin.camposer/CaptureResult<kotlin/String>, kotlin/Unit>) // com.ujizin.camposer.controller.takepicture/TakePictureCommand.takePicture|takePicture(kotlin.String;kotlin.Function1<com.ujizin.camposer.CaptureResult<kotlin.String>,kotlin.Unit>){}[0]
+}
+
+abstract interface com.ujizin.camposer.internal.core.ios/IOSCameraController { // com.ujizin.camposer.internal.core.ios/IOSCameraController|null[0]
+    abstract val captureDevice // com.ujizin.camposer.internal.core.ios/IOSCameraController.captureDevice|{}captureDevice[0]
+        abstract fun <get-captureDevice>(): platform.AVFoundation/AVCaptureDevice // com.ujizin.camposer.internal.core.ios/IOSCameraController.captureDevice.<get-captureDevice>|<get-captureDevice>(){}[0]
+    abstract val captureDeviceInput // com.ujizin.camposer.internal.core.ios/IOSCameraController.captureDeviceInput|{}captureDeviceInput[0]
+        abstract fun <get-captureDeviceInput>(): platform.AVFoundation/AVCaptureDeviceInput // com.ujizin.camposer.internal.core.ios/IOSCameraController.captureDeviceInput.<get-captureDeviceInput>|<get-captureDeviceInput>(){}[0]
+    abstract val captureSession // com.ujizin.camposer.internal.core.ios/IOSCameraController.captureSession|{}captureSession[0]
+        abstract fun <get-captureSession>(): platform.AVFoundation/AVCaptureSession // com.ujizin.camposer.internal.core.ios/IOSCameraController.captureSession.<get-captureSession>|<get-captureSession>(){}[0]
+    abstract val exposureCompensationRange // com.ujizin.camposer.internal.core.ios/IOSCameraController.exposureCompensationRange|{}exposureCompensationRange[0]
+        abstract fun <get-exposureCompensationRange>(): kotlin/Pair<kotlin/Float, kotlin/Float> // com.ujizin.camposer.internal.core.ios/IOSCameraController.exposureCompensationRange.<get-exposureCompensationRange>|<get-exposureCompensationRange>(){}[0]
+    abstract val fpsRange // com.ujizin.camposer.internal.core.ios/IOSCameraController.fpsRange|{}fpsRange[0]
+        abstract fun <get-fpsRange>(): kotlin/Pair<kotlin/Int, kotlin/Int> // com.ujizin.camposer.internal.core.ios/IOSCameraController.fpsRange.<get-fpsRange>|<get-fpsRange>(){}[0]
+    abstract val hasFlash // com.ujizin.camposer.internal.core.ios/IOSCameraController.hasFlash|{}hasFlash[0]
+        abstract fun <get-hasFlash>(): kotlin/Boolean // com.ujizin.camposer.internal.core.ios/IOSCameraController.hasFlash.<get-hasFlash>|<get-hasFlash>(){}[0]
+    abstract val hasTorch // com.ujizin.camposer.internal.core.ios/IOSCameraController.hasTorch|{}hasTorch[0]
+        abstract fun <get-hasTorch>(): kotlin/Boolean // com.ujizin.camposer.internal.core.ios/IOSCameraController.hasTorch.<get-hasTorch>|<get-hasTorch>(){}[0]
+    abstract val isExposureCompensationSupported // com.ujizin.camposer.internal.core.ios/IOSCameraController.isExposureCompensationSupported|{}isExposureCompensationSupported[0]
+        abstract fun <get-isExposureCompensationSupported>(): kotlin/Boolean // com.ujizin.camposer.internal.core.ios/IOSCameraController.isExposureCompensationSupported.<get-isExposureCompensationSupported>|<get-isExposureCompensationSupported>(){}[0]
+    abstract val isFlashAvailable // com.ujizin.camposer.internal.core.ios/IOSCameraController.isFlashAvailable|{}isFlashAvailable[0]
+        abstract fun <get-isFlashAvailable>(): kotlin/Boolean // com.ujizin.camposer.internal.core.ios/IOSCameraController.isFlashAvailable.<get-isFlashAvailable>|<get-isFlashAvailable>(){}[0]
+    abstract val isFocusSupported // com.ujizin.camposer.internal.core.ios/IOSCameraController.isFocusSupported|{}isFocusSupported[0]
+        abstract fun <get-isFocusSupported>(): kotlin/Boolean // com.ujizin.camposer.internal.core.ios/IOSCameraController.isFocusSupported.<get-isFocusSupported>|<get-isFocusSupported>(){}[0]
+    abstract val isMuted // com.ujizin.camposer.internal.core.ios/IOSCameraController.isMuted|{}isMuted[0]
+        abstract fun <get-isMuted>(): kotlinx.coroutines.flow/StateFlow<kotlin/Boolean> // com.ujizin.camposer.internal.core.ios/IOSCameraController.isMuted.<get-isMuted>|<get-isMuted>(){}[0]
+    abstract val isRecording // com.ujizin.camposer.internal.core.ios/IOSCameraController.isRecording|{}isRecording[0]
+        abstract fun <get-isRecording>(): kotlinx.coroutines.flow/StateFlow<kotlin/Boolean> // com.ujizin.camposer.internal.core.ios/IOSCameraController.isRecording.<get-isRecording>|<get-isRecording>(){}[0]
+    abstract val isTorchAvailable // com.ujizin.camposer.internal.core.ios/IOSCameraController.isTorchAvailable|{}isTorchAvailable[0]
+        abstract fun <get-isTorchAvailable>(): kotlin/Boolean // com.ujizin.camposer.internal.core.ios/IOSCameraController.isTorchAvailable.<get-isTorchAvailable>|<get-isTorchAvailable>(){}[0]
+    abstract val zoomRange // com.ujizin.camposer.internal.core.ios/IOSCameraController.zoomRange|{}zoomRange[0]
+        abstract fun <get-zoomRange>(): kotlin/Pair<kotlin/Float, kotlin/Float> // com.ujizin.camposer.internal.core.ios/IOSCameraController.zoomRange.<get-zoomRange>|<get-zoomRange>(){}[0]
+
+    abstract fun addOutput(platform.AVFoundation/AVCaptureOutput) // com.ujizin.camposer.internal.core.ios/IOSCameraController.addOutput|addOutput(platform.AVFoundation.AVCaptureOutput){}[0]
+    abstract fun getCaptureDevice(kotlin.collections/List<kotlin/String?>, kotlin/Long, kotlin/String? = ...): platform.AVFoundation/AVCaptureDevice? // com.ujizin.camposer.internal.core.ios/IOSCameraController.getCaptureDevice|getCaptureDevice(kotlin.collections.List<kotlin.String?>;kotlin.Long;kotlin.String?){}[0]
+    abstract fun getCurrentDeviceOrientation(): kotlin/Long // com.ujizin.camposer.internal.core.ios/IOSCameraController.getCurrentDeviceOrientation|getCurrentDeviceOrientation(){}[0]
+    abstract fun getCurrentPosition(): kotlin/Long // com.ujizin.camposer.internal.core.ios/IOSCameraController.getCurrentPosition|getCurrentPosition(){}[0]
+    abstract fun isVideoStabilizationSupported(kotlin/Long): kotlin/Boolean // com.ujizin.camposer.internal.core.ios/IOSCameraController.isVideoStabilizationSupported|isVideoStabilizationSupported(kotlin.Long){}[0]
+    abstract fun isZeroShutterLagSupported(platform.AVFoundation/AVCaptureOutput): kotlin/Boolean // com.ujizin.camposer.internal.core.ios/IOSCameraController.isZeroShutterLagSupported|isZeroShutterLagSupported(platform.AVFoundation.AVCaptureOutput){}[0]
+    abstract fun muteRecording(kotlin/Boolean): kotlin/Result<kotlin/Boolean> // com.ujizin.camposer.internal.core.ios/IOSCameraController.muteRecording|muteRecording(kotlin.Boolean){}[0]
+    abstract fun pauseRecording(): kotlin/Result<kotlin/Boolean> // com.ujizin.camposer.internal.core.ios/IOSCameraController.pauseRecording|pauseRecording(){}[0]
+    abstract fun release() // com.ujizin.camposer.internal.core.ios/IOSCameraController.release|release(){}[0]
+    abstract fun removeOutput(platform.AVFoundation/AVCaptureOutput) // com.ujizin.camposer.internal.core.ios/IOSCameraController.removeOutput|removeOutput(platform.AVFoundation.AVCaptureOutput){}[0]
+    abstract fun renderPreviewLayer(platform.UIKit/UIView) // com.ujizin.camposer.internal.core.ios/IOSCameraController.renderPreviewLayer|renderPreviewLayer(platform.UIKit.UIView){}[0]
+    abstract fun resumeRecording(): kotlin/Result<kotlin/Boolean> // com.ujizin.camposer.internal.core.ios/IOSCameraController.resumeRecording|resumeRecording(){}[0]
+    abstract fun setAudioEnabled(kotlin/Boolean) // com.ujizin.camposer.internal.core.ios/IOSCameraController.setAudioEnabled|setAudioEnabled(kotlin.Boolean){}[0]
+    abstract fun setCameraOutputQuality(kotlin/Long, kotlin/Boolean) // com.ujizin.camposer.internal.core.ios/IOSCameraController.setCameraOutputQuality|setCameraOutputQuality(kotlin.Long;kotlin.Boolean){}[0]
+    abstract fun setCaptureDevice(platform.AVFoundation/AVCaptureDevice) // com.ujizin.camposer.internal.core.ios/IOSCameraController.setCaptureDevice|setCaptureDevice(platform.AVFoundation.AVCaptureDevice){}[0]
+    abstract fun setDeviceFormat(platform.AVFoundation/AVCaptureDeviceFormat) // com.ujizin.camposer.internal.core.ios/IOSCameraController.setDeviceFormat|setDeviceFormat(platform.AVFoundation.AVCaptureDeviceFormat){}[0]
+    abstract fun setExposureCompensation(kotlin/Float) // com.ujizin.camposer.internal.core.ios/IOSCameraController.setExposureCompensation|setExposureCompensation(kotlin.Float){}[0]
+    abstract fun setFlashMode(kotlin/Long) // com.ujizin.camposer.internal.core.ios/IOSCameraController.setFlashMode|setFlashMode(kotlin.Long){}[0]
+    abstract fun setFocusPoint(kotlinx.cinterop/CValue<platform.CoreGraphics/CGPoint>) // com.ujizin.camposer.internal.core.ios/IOSCameraController.setFocusPoint|setFocusPoint(kotlinx.cinterop.CValue<platform.CoreGraphics.CGPoint>){}[0]
+    abstract fun setFrameRate(kotlin/Int) // com.ujizin.camposer.internal.core.ios/IOSCameraController.setFrameRate|setFrameRate(kotlin.Int){}[0]
+    abstract fun setPreviewBackgroundColor(platform.UIKit/UIColor) // com.ujizin.camposer.internal.core.ios/IOSCameraController.setPreviewBackgroundColor|setPreviewBackgroundColor(platform.UIKit.UIColor){}[0]
+    abstract fun setPreviewGravity(kotlin/String?) // com.ujizin.camposer.internal.core.ios/IOSCameraController.setPreviewGravity|setPreviewGravity(kotlin.String?){}[0]
+    abstract fun setTorchEnabled(kotlin/Boolean) // com.ujizin.camposer.internal.core.ios/IOSCameraController.setTorchEnabled|setTorchEnabled(kotlin.Boolean){}[0]
+    abstract fun setVideoStabilization(kotlin/Long) // com.ujizin.camposer.internal.core.ios/IOSCameraController.setVideoStabilization|setVideoStabilization(kotlin.Long){}[0]
+    abstract fun setZoomRatio(kotlin/Float) // com.ujizin.camposer.internal.core.ios/IOSCameraController.setZoomRatio|setZoomRatio(kotlin.Float){}[0]
+    abstract fun start(platform.AVFoundation/AVCaptureOutput, platform.AVFoundation/AVCaptureDevice, kotlin/Boolean, kotlin/Function1<kotlin/Boolean, kotlin/Unit>) // com.ujizin.camposer.internal.core.ios/IOSCameraController.start|start(platform.AVFoundation.AVCaptureOutput;platform.AVFoundation.AVCaptureDevice;kotlin.Boolean;kotlin.Function1<kotlin.Boolean,kotlin.Unit>){}[0]
+    abstract fun startRecording(kotlin/Boolean, kotlin/Long, kotlin/String, kotlin/Function1<kotlin/Result<kotlin/String>, kotlin/Unit>) // com.ujizin.camposer.internal.core.ios/IOSCameraController.startRecording|startRecording(kotlin.Boolean;kotlin.Long;kotlin.String;kotlin.Function1<kotlin.Result<kotlin.String>,kotlin.Unit>){}[0]
+    abstract fun stopRecording(): kotlin/Result<kotlin/Boolean> // com.ujizin.camposer.internal.core.ios/IOSCameraController.stopRecording|stopRecording(){}[0]
+    abstract fun takePicture(kotlin/Boolean, kotlin/Long, kotlin/Long, kotlin/Function1<kotlin/Result<kotlin/ByteArray>, kotlin/Unit>) // com.ujizin.camposer.internal.core.ios/IOSCameraController.takePicture|takePicture(kotlin.Boolean;kotlin.Long;kotlin.Long;kotlin.Function1<kotlin.Result<kotlin.ByteArray>,kotlin.Unit>){}[0]
+    abstract fun takePicture(kotlin/String, kotlin/Boolean, kotlin/Long, kotlin/Long, kotlin/Function1<kotlin/Result<kotlin/String>, kotlin/Unit>) // com.ujizin.camposer.internal.core.ios/IOSCameraController.takePicture|takePicture(kotlin.String;kotlin.Boolean;kotlin.Long;kotlin.Long;kotlin.Function1<kotlin.Result<kotlin.String>,kotlin.Unit>){}[0]
+    abstract fun withSessionConfiguration(kotlin/Function0<kotlin/Unit>) // com.ujizin.camposer.internal.core.ios/IOSCameraController.withSessionConfiguration|withSessionConfiguration(kotlin.Function0<kotlin.Unit>){}[0]
+}
+
+sealed interface <#A: out kotlin/Any?> com.ujizin.camposer/CaptureResult { // com.ujizin.camposer/CaptureResult|null[0]
+    final class <#A1: kotlin/Any?> Success : com.ujizin.camposer/CaptureResult<#A1> { // com.ujizin.camposer/CaptureResult.Success|null[0]
+        constructor <init>(#A1) // com.ujizin.camposer/CaptureResult.Success.<init>|<init>(1:0){}[0]
+
+        final val data // com.ujizin.camposer/CaptureResult.Success.data|{}data[0]
+            final fun <get-data>(): #A1 // com.ujizin.camposer/CaptureResult.Success.data.<get-data>|<get-data>(){}[0]
+
+        final fun component1(): #A1 // com.ujizin.camposer/CaptureResult.Success.component1|component1(){}[0]
+        final fun copy(#A1 = ...): com.ujizin.camposer/CaptureResult.Success<#A1> // com.ujizin.camposer/CaptureResult.Success.copy|copy(1:0){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.ujizin.camposer/CaptureResult.Success.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.ujizin.camposer/CaptureResult.Success.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.ujizin.camposer/CaptureResult.Success.toString|toString(){}[0]
+    }
+
+    final class Error : com.ujizin.camposer/CaptureResult<kotlin/Nothing> { // com.ujizin.camposer/CaptureResult.Error|null[0]
+        constructor <init>(kotlin/Throwable) // com.ujizin.camposer/CaptureResult.Error.<init>|<init>(kotlin.Throwable){}[0]
+
+        final val throwable // com.ujizin.camposer/CaptureResult.Error.throwable|{}throwable[0]
+            final fun <get-throwable>(): kotlin/Throwable // com.ujizin.camposer/CaptureResult.Error.throwable.<get-throwable>|<get-throwable>(){}[0]
+
+        final fun component1(): kotlin/Throwable // com.ujizin.camposer/CaptureResult.Error.component1|component1(){}[0]
+        final fun copy(kotlin/Throwable = ...): com.ujizin.camposer/CaptureResult.Error // com.ujizin.camposer/CaptureResult.Error.copy|copy(kotlin.Throwable){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.ujizin.camposer/CaptureResult.Error.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.ujizin.camposer/CaptureResult.Error.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.ujizin.camposer/CaptureResult.Error.toString|toString(){}[0]
+    }
+}
+
+sealed interface com.ujizin.camposer.manager/CameraDeviceState { // com.ujizin.camposer.manager/CameraDeviceState|null[0]
+    final class Devices : com.ujizin.camposer.manager/CameraDeviceState { // com.ujizin.camposer.manager/CameraDeviceState.Devices|null[0]
+        constructor <init>(kotlin.collections/List<com.ujizin.camposer.manager/CameraDevice>) // com.ujizin.camposer.manager/CameraDeviceState.Devices.<init>|<init>(kotlin.collections.List<com.ujizin.camposer.manager.CameraDevice>){}[0]
+
+        final val cameraDevices // com.ujizin.camposer.manager/CameraDeviceState.Devices.cameraDevices|{}cameraDevices[0]
+            final fun <get-cameraDevices>(): kotlin.collections/List<com.ujizin.camposer.manager/CameraDevice> // com.ujizin.camposer.manager/CameraDeviceState.Devices.cameraDevices.<get-cameraDevices>|<get-cameraDevices>(){}[0]
+
+        final fun component1(): kotlin.collections/List<com.ujizin.camposer.manager/CameraDevice> // com.ujizin.camposer.manager/CameraDeviceState.Devices.component1|component1(){}[0]
+        final fun copy(kotlin.collections/List<com.ujizin.camposer.manager/CameraDevice> = ...): com.ujizin.camposer.manager/CameraDeviceState.Devices // com.ujizin.camposer.manager/CameraDeviceState.Devices.copy|copy(kotlin.collections.List<com.ujizin.camposer.manager.CameraDevice>){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.ujizin.camposer.manager/CameraDeviceState.Devices.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.ujizin.camposer.manager/CameraDeviceState.Devices.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.ujizin.camposer.manager/CameraDeviceState.Devices.toString|toString(){}[0]
+    }
+
+    final object Initial : com.ujizin.camposer.manager/CameraDeviceState { // com.ujizin.camposer.manager/CameraDeviceState.Initial|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.ujizin.camposer.manager/CameraDeviceState.Initial.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.ujizin.camposer.manager/CameraDeviceState.Initial.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.ujizin.camposer.manager/CameraDeviceState.Initial.toString|toString(){}[0]
+    }
+}
+
+sealed interface com.ujizin.camposer.state.properties.format.config/CameraFormatConfig // com.ujizin.camposer.state.properties.format.config/CameraFormatConfig|null[0]
+
+abstract class <#A: com.ujizin.camposer.controller.record/RecordController, #B: com.ujizin.camposer.controller.takepicture/TakePictureCommand> com.ujizin.camposer.controller.camera/CommonCameraController : com.ujizin.camposer.controller.camera/CameraControllerContract { // com.ujizin.camposer.controller.camera/CommonCameraController|null[0]
+    open val info // com.ujizin.camposer.controller.camera/CommonCameraController.info|{}info[0]
+        open fun <get-info>(): com.ujizin.camposer.info/CameraInfo? // com.ujizin.camposer.controller.camera/CommonCameraController.info.<get-info>|<get-info>(){}[0]
+    open val isMuted // com.ujizin.camposer.controller.camera/CommonCameraController.isMuted|{}isMuted[0]
+        open fun <get-isMuted>(): kotlinx.coroutines.flow/StateFlow<kotlin/Boolean> // com.ujizin.camposer.controller.camera/CommonCameraController.isMuted.<get-isMuted>|<get-isMuted>(){}[0]
+    open val isRecording // com.ujizin.camposer.controller.camera/CommonCameraController.isRecording|{}isRecording[0]
+        open fun <get-isRecording>(): kotlinx.coroutines.flow/StateFlow<kotlin/Boolean> // com.ujizin.camposer.controller.camera/CommonCameraController.isRecording.<get-isRecording>|<get-isRecording>(){}[0]
+    open val isRunning // com.ujizin.camposer.controller.camera/CommonCameraController.isRunning|{}isRunning[0]
+        open fun <get-isRunning>(): kotlinx.coroutines.flow/StateFlow<kotlin/Boolean> // com.ujizin.camposer.controller.camera/CommonCameraController.isRunning.<get-isRunning>|<get-isRunning>(){}[0]
+    open val state // com.ujizin.camposer.controller.camera/CommonCameraController.state|{}state[0]
+        open fun <get-state>(): com.ujizin.camposer.state/CameraState? // com.ujizin.camposer.controller.camera/CommonCameraController.state.<get-state>|<get-state>(){}[0]
+
+    final var recordController // com.ujizin.camposer.controller.camera/CommonCameraController.recordController|{}recordController[0]
+        final fun <get-recordController>(): #A? // com.ujizin.camposer.controller.camera/CommonCameraController.recordController.<get-recordController>|<get-recordController>(){}[0]
+    final var takePictureCommand // com.ujizin.camposer.controller.camera/CommonCameraController.takePictureCommand|{}takePictureCommand[0]
+        final fun <get-takePictureCommand>(): #B? // com.ujizin.camposer.controller.camera/CommonCameraController.takePictureCommand.<get-takePictureCommand>|<get-takePictureCommand>(){}[0]
+
+    final fun <#A1: kotlin/Any?, #B1: kotlin/Any?> (#A1?).runBind(kotlin/Function1<#A1, #B1>): #B1 // com.ujizin.camposer.controller.camera/CommonCameraController.runBind|runBind@0:0?(kotlin.Function1<0:0,0:1>){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]
+    open fun muteRecording(kotlin/Boolean): kotlin/Result<kotlin/Boolean> // com.ujizin.camposer.controller.camera/CommonCameraController.muteRecording|muteRecording(kotlin.Boolean){}[0]
+    open fun pauseRecording(): kotlin/Result<kotlin/Boolean> // com.ujizin.camposer.controller.camera/CommonCameraController.pauseRecording|pauseRecording(){}[0]
+    open fun resumeRecording(): kotlin/Result<kotlin/Boolean> // com.ujizin.camposer.controller.camera/CommonCameraController.resumeRecording|resumeRecording(){}[0]
+    open fun setExposureCompensation(kotlin/Float) // com.ujizin.camposer.controller.camera/CommonCameraController.setExposureCompensation|setExposureCompensation(kotlin.Float){}[0]
+    open fun setFlashMode(com.ujizin.camposer.state.properties/FlashMode): kotlin/Result<kotlin/Unit> // com.ujizin.camposer.controller.camera/CommonCameraController.setFlashMode|setFlashMode(com.ujizin.camposer.state.properties.FlashMode){}[0]
+    open fun setMirrorMode(com.ujizin.camposer.state.properties/MirrorMode) // com.ujizin.camposer.controller.camera/CommonCameraController.setMirrorMode|setMirrorMode(com.ujizin.camposer.state.properties.MirrorMode){}[0]
+    open fun setOrientationStrategy(com.ujizin.camposer.state.properties/OrientationStrategy) // com.ujizin.camposer.controller.camera/CommonCameraController.setOrientationStrategy|setOrientationStrategy(com.ujizin.camposer.state.properties.OrientationStrategy){}[0]
+    open fun setTorchEnabled(kotlin/Boolean): kotlin/Result<kotlin/Unit> // com.ujizin.camposer.controller.camera/CommonCameraController.setTorchEnabled|setTorchEnabled(kotlin.Boolean){}[0]
+    open fun setVideoFrameRate(kotlin/Int): kotlin/Result<kotlin/Unit> // com.ujizin.camposer.controller.camera/CommonCameraController.setVideoFrameRate|setVideoFrameRate(kotlin.Int){}[0]
+    open fun setVideoStabilizationEnabled(com.ujizin.camposer.state.properties/VideoStabilizationMode): kotlin/Result<kotlin/Unit> // com.ujizin.camposer.controller.camera/CommonCameraController.setVideoStabilizationEnabled|setVideoStabilizationEnabled(com.ujizin.camposer.state.properties.VideoStabilizationMode){}[0]
+    open fun setZoomRatio(kotlin/Float) // com.ujizin.camposer.controller.camera/CommonCameraController.setZoomRatio|setZoomRatio(kotlin.Float){}[0]
+    open fun startRecording(kotlin/String, kotlin/Function1<com.ujizin.camposer/CaptureResult<kotlin/String>, kotlin/Unit>) // com.ujizin.camposer.controller.camera/CommonCameraController.startRecording|startRecording(kotlin.String;kotlin.Function1<com.ujizin.camposer.CaptureResult<kotlin.String>,kotlin.Unit>){}[0]
+    open fun stopRecording(): kotlin/Result<kotlin/Boolean> // com.ujizin.camposer.controller.camera/CommonCameraController.stopRecording|stopRecording(){}[0]
+    open fun takePicture(kotlin/Function1<com.ujizin.camposer/CaptureResult<kotlin/ByteArray>, kotlin/Unit>) // com.ujizin.camposer.controller.camera/CommonCameraController.takePicture|takePicture(kotlin.Function1<com.ujizin.camposer.CaptureResult<kotlin.ByteArray>,kotlin.Unit>){}[0]
+    open fun takePicture(kotlin/String, kotlin/Function1<com.ujizin.camposer/CaptureResult<kotlin/String>, kotlin/Unit>) // com.ujizin.camposer.controller.camera/CommonCameraController.takePicture|takePicture(kotlin.String;kotlin.Function1<com.ujizin.camposer.CaptureResult<kotlin.String>,kotlin.Unit>){}[0]
+}
+
+final class com.ujizin.camposer.controller.camera/CameraController : com.ujizin.camposer.controller.camera/CommonCameraController<com.ujizin.camposer.controller.record/RecordController, com.ujizin.camposer.controller.takepicture/TakePictureCommand> { // com.ujizin.camposer.controller.camera/CameraController|null[0]
+    constructor <init>() // com.ujizin.camposer.controller.camera/CameraController.<init>|<init>(){}[0]
+}
+
+final class com.ujizin.camposer.error/CaptureModeException : kotlin/Exception { // com.ujizin.camposer.error/CaptureModeException|null[0]
+    constructor <init>(com.ujizin.camposer.state.properties/CaptureMode, kotlin/String = ...) // com.ujizin.camposer.error/CaptureModeException.<init>|<init>(com.ujizin.camposer.state.properties.CaptureMode;kotlin.String){}[0]
+}
+
+final class com.ujizin.camposer.error/RecordNotInitializedException : kotlin/Exception { // com.ujizin.camposer.error/RecordNotInitializedException|null[0]
+    constructor <init>() // com.ujizin.camposer.error/RecordNotInitializedException.<init>|<init>(){}[0]
+}
+
+final class com.ujizin.camposer.info/CameraInfo { // com.ujizin.camposer.info/CameraInfo|null[0]
+    final val state // com.ujizin.camposer.info/CameraInfo.state|{}state[0]
+        final fun <get-state>(): kotlinx.coroutines.flow/StateFlow<com.ujizin.camposer.info/CameraInfoState> // com.ujizin.camposer.info/CameraInfo.state.<get-state>|<get-state>(){}[0]
+}
+
+final class com.ujizin.camposer.info/CameraInfoState { // com.ujizin.camposer.info/CameraInfoState|null[0]
+    constructor <init>(kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Float = ..., kotlin/Float = ..., kotlin/Float = ..., kotlin/Float = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Int = ..., kotlin/Int = ..., kotlin.collections/List<com.ujizin.camposer.state.properties/CameraData> = ..., kotlin.collections/List<com.ujizin.camposer.state.properties/CameraData> = ...) // com.ujizin.camposer.info/CameraInfoState.<init>|<init>(kotlin.Boolean;kotlin.Boolean;kotlin.Float;kotlin.Float;kotlin.Float;kotlin.Float;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.Int;kotlin.Int;kotlin.collections.List<com.ujizin.camposer.state.properties.CameraData>;kotlin.collections.List<com.ujizin.camposer.state.properties.CameraData>){}[0]
+
+    final val isExposureSupported // com.ujizin.camposer.info/CameraInfoState.isExposureSupported|{}isExposureSupported[0]
+        final fun <get-isExposureSupported>(): kotlin/Boolean // com.ujizin.camposer.info/CameraInfoState.isExposureSupported.<get-isExposureSupported>|<get-isExposureSupported>(){}[0]
+    final val isFlashAvailable // com.ujizin.camposer.info/CameraInfoState.isFlashAvailable|{}isFlashAvailable[0]
+        final fun <get-isFlashAvailable>(): kotlin/Boolean // com.ujizin.camposer.info/CameraInfoState.isFlashAvailable.<get-isFlashAvailable>|<get-isFlashAvailable>(){}[0]
+    final val isFlashSupported // com.ujizin.camposer.info/CameraInfoState.isFlashSupported|{}isFlashSupported[0]
+        final fun <get-isFlashSupported>(): kotlin/Boolean // com.ujizin.camposer.info/CameraInfoState.isFlashSupported.<get-isFlashSupported>|<get-isFlashSupported>(){}[0]
+    final val isFocusSupported // com.ujizin.camposer.info/CameraInfoState.isFocusSupported|{}isFocusSupported[0]
+        final fun <get-isFocusSupported>(): kotlin/Boolean // com.ujizin.camposer.info/CameraInfoState.isFocusSupported.<get-isFocusSupported>|<get-isFocusSupported>(){}[0]
+    final val isTorchAvailable // com.ujizin.camposer.info/CameraInfoState.isTorchAvailable|{}isTorchAvailable[0]
+        final fun <get-isTorchAvailable>(): kotlin/Boolean // com.ujizin.camposer.info/CameraInfoState.isTorchAvailable.<get-isTorchAvailable>|<get-isTorchAvailable>(){}[0]
+    final val isTorchSupported // com.ujizin.camposer.info/CameraInfoState.isTorchSupported|{}isTorchSupported[0]
+        final fun <get-isTorchSupported>(): kotlin/Boolean // com.ujizin.camposer.info/CameraInfoState.isTorchSupported.<get-isTorchSupported>|<get-isTorchSupported>(){}[0]
+    final val isVideoStabilizationSupported // com.ujizin.camposer.info/CameraInfoState.isVideoStabilizationSupported|{}isVideoStabilizationSupported[0]
+        final fun <get-isVideoStabilizationSupported>(): kotlin/Boolean // com.ujizin.camposer.info/CameraInfoState.isVideoStabilizationSupported.<get-isVideoStabilizationSupported>|<get-isVideoStabilizationSupported>(){}[0]
+    final val isZeroShutterLagSupported // com.ujizin.camposer.info/CameraInfoState.isZeroShutterLagSupported|{}isZeroShutterLagSupported[0]
+        final fun <get-isZeroShutterLagSupported>(): kotlin/Boolean // com.ujizin.camposer.info/CameraInfoState.isZeroShutterLagSupported.<get-isZeroShutterLagSupported>|<get-isZeroShutterLagSupported>(){}[0]
+    final val isZoomSupported // com.ujizin.camposer.info/CameraInfoState.isZoomSupported|{}isZoomSupported[0]
+        final fun <get-isZoomSupported>(): kotlin/Boolean // com.ujizin.camposer.info/CameraInfoState.isZoomSupported.<get-isZoomSupported>|<get-isZoomSupported>(){}[0]
+    final val maxExposure // com.ujizin.camposer.info/CameraInfoState.maxExposure|{}maxExposure[0]
+        final fun <get-maxExposure>(): kotlin/Float // com.ujizin.camposer.info/CameraInfoState.maxExposure.<get-maxExposure>|<get-maxExposure>(){}[0]
+    final val maxFPS // com.ujizin.camposer.info/CameraInfoState.maxFPS|{}maxFPS[0]
+        final fun <get-maxFPS>(): kotlin/Int // com.ujizin.camposer.info/CameraInfoState.maxFPS.<get-maxFPS>|<get-maxFPS>(){}[0]
+    final val maxZoom // com.ujizin.camposer.info/CameraInfoState.maxZoom|{}maxZoom[0]
+        final fun <get-maxZoom>(): kotlin/Float // com.ujizin.camposer.info/CameraInfoState.maxZoom.<get-maxZoom>|<get-maxZoom>(){}[0]
+    final val minExposure // com.ujizin.camposer.info/CameraInfoState.minExposure|{}minExposure[0]
+        final fun <get-minExposure>(): kotlin/Float // com.ujizin.camposer.info/CameraInfoState.minExposure.<get-minExposure>|<get-minExposure>(){}[0]
+    final val minFPS // com.ujizin.camposer.info/CameraInfoState.minFPS|{}minFPS[0]
+        final fun <get-minFPS>(): kotlin/Int // com.ujizin.camposer.info/CameraInfoState.minFPS.<get-minFPS>|<get-minFPS>(){}[0]
+    final val minZoom // com.ujizin.camposer.info/CameraInfoState.minZoom|{}minZoom[0]
+        final fun <get-minZoom>(): kotlin/Float // com.ujizin.camposer.info/CameraInfoState.minZoom.<get-minZoom>|<get-minZoom>(){}[0]
+    final val photoFormats // com.ujizin.camposer.info/CameraInfoState.photoFormats|{}photoFormats[0]
+        final fun <get-photoFormats>(): kotlin.collections/List<com.ujizin.camposer.state.properties/CameraData> // com.ujizin.camposer.info/CameraInfoState.photoFormats.<get-photoFormats>|<get-photoFormats>(){}[0]
+    final val videoFormats // com.ujizin.camposer.info/CameraInfoState.videoFormats|{}videoFormats[0]
+        final fun <get-videoFormats>(): kotlin.collections/List<com.ujizin.camposer.state.properties/CameraData> // com.ujizin.camposer.info/CameraInfoState.videoFormats.<get-videoFormats>|<get-videoFormats>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.ujizin.camposer.info/CameraInfoState.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.ujizin.camposer.info/CameraInfoState.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.ujizin.camposer.info/CameraInfoState.toString|toString(){}[0]
+}
+
+final class com.ujizin.camposer.manager/CameraDevice { // com.ujizin.camposer.manager/CameraDevice|null[0]
+    final val cameraId // com.ujizin.camposer.manager/CameraDevice.cameraId|{}cameraId[0]
+        final fun <get-cameraId>(): com.ujizin.camposer.state.properties.selector/CameraId // com.ujizin.camposer.manager/CameraDevice.cameraId.<get-cameraId>|<get-cameraId>(){}[0]
+    final val fov // com.ujizin.camposer.manager/CameraDevice.fov|{}fov[0]
+        final fun <get-fov>(): kotlin/Float // com.ujizin.camposer.manager/CameraDevice.fov.<get-fov>|<get-fov>(){}[0]
+    final val lensType // com.ujizin.camposer.manager/CameraDevice.lensType|{}lensType[0]
+        final fun <get-lensType>(): kotlin.collections/List<com.ujizin.camposer.state.properties.selector/CamLensType> // com.ujizin.camposer.manager/CameraDevice.lensType.<get-lensType>|<get-lensType>(){}[0]
+    final val name // com.ujizin.camposer.manager/CameraDevice.name|{}name[0]
+        final fun <get-name>(): kotlin/String // com.ujizin.camposer.manager/CameraDevice.name.<get-name>|<get-name>(){}[0]
+    final val photoData // com.ujizin.camposer.manager/CameraDevice.photoData|{}photoData[0]
+        final fun <get-photoData>(): kotlin.collections/List<com.ujizin.camposer.state.properties/CameraData> // com.ujizin.camposer.manager/CameraDevice.photoData.<get-photoData>|<get-photoData>(){}[0]
+    final val position // com.ujizin.camposer.manager/CameraDevice.position|{}position[0]
+        final fun <get-position>(): com.ujizin.camposer.state.properties.selector/CamPosition // com.ujizin.camposer.manager/CameraDevice.position.<get-position>|<get-position>(){}[0]
+    final val videoData // com.ujizin.camposer.manager/CameraDevice.videoData|{}videoData[0]
+        final fun <get-videoData>(): kotlin.collections/List<com.ujizin.camposer.state.properties/CameraData> // com.ujizin.camposer.manager/CameraDevice.videoData.<get-videoData>|<get-videoData>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.ujizin.camposer.manager/CameraDevice.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.ujizin.camposer.manager/CameraDevice.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.ujizin.camposer.manager/CameraDevice.toString|toString(){}[0]
+}
+
+final class com.ujizin.camposer.session/CameraSession { // com.ujizin.camposer.session/CameraSession|null[0]
+    constructor <init>(com.ujizin.camposer.controller.camera/CameraController, com.ujizin.camposer.internal.core.ios/IOSCameraController = ...) // com.ujizin.camposer.session/CameraSession.<init>|<init>(com.ujizin.camposer.controller.camera.CameraController;com.ujizin.camposer.internal.core.ios.IOSCameraController){}[0]
+
+    final val cameraController // com.ujizin.camposer.session/CameraSession.cameraController|{}cameraController[0]
+        final fun <get-cameraController>(): com.ujizin.camposer.session/DefaultIOSCameraController // com.ujizin.camposer.session/CameraSession.cameraController.<get-cameraController>|<get-cameraController>(){}[0]
+    final val controller // com.ujizin.camposer.session/CameraSession.controller|{}controller[0]
+        final fun <get-controller>(): com.ujizin.camposer.controller.camera/CameraController // com.ujizin.camposer.session/CameraSession.controller.<get-controller>|<get-controller>(){}[0]
+    final val info // com.ujizin.camposer.session/CameraSession.info|{}info[0]
+        final fun <get-info>(): com.ujizin.camposer.info/CameraInfo // com.ujizin.camposer.session/CameraSession.info.<get-info>|<get-info>(){}[0]
+    final val state // com.ujizin.camposer.session/CameraSession.state|{}state[0]
+        final fun <get-state>(): com.ujizin.camposer.state/CameraState // com.ujizin.camposer.session/CameraSession.state.<get-state>|<get-state>(){}[0]
+
+    final var hasInitializationError // com.ujizin.camposer.session/CameraSession.hasInitializationError|{}hasInitializationError[0]
+        final fun <get-hasInitializationError>(): kotlin/Boolean // com.ujizin.camposer.session/CameraSession.hasInitializationError.<get-hasInitializationError>|<get-hasInitializationError>(){}[0]
+    final var isInitialized // com.ujizin.camposer.session/CameraSession.isInitialized|{}isInitialized[0]
+        final fun <get-isInitialized>(): kotlin/Boolean // com.ujizin.camposer.session/CameraSession.isInitialized.<get-isInitialized>|<get-isInitialized>(){}[0]
+    final var isStreaming // com.ujizin.camposer.session/CameraSession.isStreaming|{}isStreaming[0]
+        final fun <get-isStreaming>(): kotlin/Boolean // com.ujizin.camposer.session/CameraSession.isStreaming.<get-isStreaming>|<get-isStreaming>(){}[0]
+
+    final fun retryInitialization() // com.ujizin.camposer.session/CameraSession.retryInitialization|retryInitialization(){}[0]
+}
+
+final class com.ujizin.camposer.session/DefaultIOSCameraController : com.ujizin.camposer.internal.core.ios/IOSCameraController { // com.ujizin.camposer.session/DefaultIOSCameraController|null[0]
+    final val captureDevice // com.ujizin.camposer.session/DefaultIOSCameraController.captureDevice|{}captureDevice[0]
+        final fun <get-captureDevice>(): platform.AVFoundation/AVCaptureDevice // com.ujizin.camposer.session/DefaultIOSCameraController.captureDevice.<get-captureDevice>|<get-captureDevice>(){}[0]
+    final val captureDeviceInput // com.ujizin.camposer.session/DefaultIOSCameraController.captureDeviceInput|{}captureDeviceInput[0]
+        final fun <get-captureDeviceInput>(): platform.AVFoundation/AVCaptureDeviceInput // com.ujizin.camposer.session/DefaultIOSCameraController.captureDeviceInput.<get-captureDeviceInput>|<get-captureDeviceInput>(){}[0]
+    final val captureSession // com.ujizin.camposer.session/DefaultIOSCameraController.captureSession|{}captureSession[0]
+        final fun <get-captureSession>(): platform.AVFoundation/AVCaptureSession // com.ujizin.camposer.session/DefaultIOSCameraController.captureSession.<get-captureSession>|<get-captureSession>(){}[0]
+    final val exposureCompensationRange // com.ujizin.camposer.session/DefaultIOSCameraController.exposureCompensationRange|{}exposureCompensationRange[0]
+        final fun <get-exposureCompensationRange>(): kotlin/Pair<kotlin/Float, kotlin/Float> // com.ujizin.camposer.session/DefaultIOSCameraController.exposureCompensationRange.<get-exposureCompensationRange>|<get-exposureCompensationRange>(){}[0]
+    final val fpsRange // com.ujizin.camposer.session/DefaultIOSCameraController.fpsRange|{}fpsRange[0]
+        final fun <get-fpsRange>(): kotlin/Pair<kotlin/Int, kotlin/Int> // com.ujizin.camposer.session/DefaultIOSCameraController.fpsRange.<get-fpsRange>|<get-fpsRange>(){}[0]
+    final val hasFlash // com.ujizin.camposer.session/DefaultIOSCameraController.hasFlash|{}hasFlash[0]
+        final fun <get-hasFlash>(): kotlin/Boolean // com.ujizin.camposer.session/DefaultIOSCameraController.hasFlash.<get-hasFlash>|<get-hasFlash>(){}[0]
+    final val hasTorch // com.ujizin.camposer.session/DefaultIOSCameraController.hasTorch|{}hasTorch[0]
+        final fun <get-hasTorch>(): kotlin/Boolean // com.ujizin.camposer.session/DefaultIOSCameraController.hasTorch.<get-hasTorch>|<get-hasTorch>(){}[0]
+    final val isExposureCompensationSupported // com.ujizin.camposer.session/DefaultIOSCameraController.isExposureCompensationSupported|{}isExposureCompensationSupported[0]
+        final fun <get-isExposureCompensationSupported>(): kotlin/Boolean // com.ujizin.camposer.session/DefaultIOSCameraController.isExposureCompensationSupported.<get-isExposureCompensationSupported>|<get-isExposureCompensationSupported>(){}[0]
+    final val isFlashAvailable // com.ujizin.camposer.session/DefaultIOSCameraController.isFlashAvailable|{}isFlashAvailable[0]
+        final fun <get-isFlashAvailable>(): kotlin/Boolean // com.ujizin.camposer.session/DefaultIOSCameraController.isFlashAvailable.<get-isFlashAvailable>|<get-isFlashAvailable>(){}[0]
+    final val isFocusSupported // com.ujizin.camposer.session/DefaultIOSCameraController.isFocusSupported|{}isFocusSupported[0]
+        final fun <get-isFocusSupported>(): kotlin/Boolean // com.ujizin.camposer.session/DefaultIOSCameraController.isFocusSupported.<get-isFocusSupported>|<get-isFocusSupported>(){}[0]
+    final val isMuted // com.ujizin.camposer.session/DefaultIOSCameraController.isMuted|{}isMuted[0]
+        final fun <get-isMuted>(): kotlinx.coroutines.flow/StateFlow<kotlin/Boolean> // com.ujizin.camposer.session/DefaultIOSCameraController.isMuted.<get-isMuted>|<get-isMuted>(){}[0]
+    final val isRecording // com.ujizin.camposer.session/DefaultIOSCameraController.isRecording|{}isRecording[0]
+        final fun <get-isRecording>(): kotlinx.coroutines.flow/StateFlow<kotlin/Boolean> // com.ujizin.camposer.session/DefaultIOSCameraController.isRecording.<get-isRecording>|<get-isRecording>(){}[0]
+    final val isRunning // com.ujizin.camposer.session/DefaultIOSCameraController.isRunning|{}isRunning[0]
+        final fun <get-isRunning>(): kotlin/Boolean // com.ujizin.camposer.session/DefaultIOSCameraController.isRunning.<get-isRunning>|<get-isRunning>(){}[0]
+    final val isTorchAvailable // com.ujizin.camposer.session/DefaultIOSCameraController.isTorchAvailable|{}isTorchAvailable[0]
+        final fun <get-isTorchAvailable>(): kotlin/Boolean // com.ujizin.camposer.session/DefaultIOSCameraController.isTorchAvailable.<get-isTorchAvailable>|<get-isTorchAvailable>(){}[0]
+    final val previewLayer // com.ujizin.camposer.session/DefaultIOSCameraController.previewLayer|{}previewLayer[0]
+        final fun <get-previewLayer>(): platform.AVFoundation/AVCaptureVideoPreviewLayer // com.ujizin.camposer.session/DefaultIOSCameraController.previewLayer.<get-previewLayer>|<get-previewLayer>(){}[0]
+    final val zoomRange // com.ujizin.camposer.session/DefaultIOSCameraController.zoomRange|{}zoomRange[0]
+        final fun <get-zoomRange>(): kotlin/Pair<kotlin/Float, kotlin/Float> // com.ujizin.camposer.session/DefaultIOSCameraController.zoomRange.<get-zoomRange>|<get-zoomRange>(){}[0]
+
+    final fun addOutput(platform.AVFoundation/AVCaptureOutput) // com.ujizin.camposer.session/DefaultIOSCameraController.addOutput|addOutput(platform.AVFoundation.AVCaptureOutput){}[0]
+    final fun getCaptureDevice(kotlin.collections/List<kotlin/String?>, kotlin/Long, kotlin/String?): platform.AVFoundation/AVCaptureDevice? // com.ujizin.camposer.session/DefaultIOSCameraController.getCaptureDevice|getCaptureDevice(kotlin.collections.List<kotlin.String?>;kotlin.Long;kotlin.String?){}[0]
+    final fun getCurrentDeviceOrientation(): kotlin/Long // com.ujizin.camposer.session/DefaultIOSCameraController.getCurrentDeviceOrientation|getCurrentDeviceOrientation(){}[0]
+    final fun getCurrentPosition(): kotlin/Long // com.ujizin.camposer.session/DefaultIOSCameraController.getCurrentPosition|getCurrentPosition(){}[0]
+    final fun isVideoStabilizationSupported(kotlin/Long): kotlin/Boolean // com.ujizin.camposer.session/DefaultIOSCameraController.isVideoStabilizationSupported|isVideoStabilizationSupported(kotlin.Long){}[0]
+    final fun isZeroShutterLagSupported(platform.AVFoundation/AVCaptureOutput): kotlin/Boolean // com.ujizin.camposer.session/DefaultIOSCameraController.isZeroShutterLagSupported|isZeroShutterLagSupported(platform.AVFoundation.AVCaptureOutput){}[0]
+    final fun muteRecording(kotlin/Boolean): kotlin/Result<kotlin/Boolean> // com.ujizin.camposer.session/DefaultIOSCameraController.muteRecording|muteRecording(kotlin.Boolean){}[0]
+    final fun pauseRecording(): kotlin/Result<kotlin/Boolean> // com.ujizin.camposer.session/DefaultIOSCameraController.pauseRecording|pauseRecording(){}[0]
+    final fun release() // com.ujizin.camposer.session/DefaultIOSCameraController.release|release(){}[0]
+    final fun removeOutput(platform.AVFoundation/AVCaptureOutput) // com.ujizin.camposer.session/DefaultIOSCameraController.removeOutput|removeOutput(platform.AVFoundation.AVCaptureOutput){}[0]
+    final fun renderPreviewLayer(platform.UIKit/UIView) // com.ujizin.camposer.session/DefaultIOSCameraController.renderPreviewLayer|renderPreviewLayer(platform.UIKit.UIView){}[0]
+    final fun resumeRecording(): kotlin/Result<kotlin/Boolean> // com.ujizin.camposer.session/DefaultIOSCameraController.resumeRecording|resumeRecording(){}[0]
+    final fun setAudioEnabled(kotlin/Boolean) // com.ujizin.camposer.session/DefaultIOSCameraController.setAudioEnabled|setAudioEnabled(kotlin.Boolean){}[0]
+    final fun setCameraOutputQuality(kotlin/Long, kotlin/Boolean) // com.ujizin.camposer.session/DefaultIOSCameraController.setCameraOutputQuality|setCameraOutputQuality(kotlin.Long;kotlin.Boolean){}[0]
+    final fun setCaptureDevice(platform.AVFoundation/AVCaptureDevice) // com.ujizin.camposer.session/DefaultIOSCameraController.setCaptureDevice|setCaptureDevice(platform.AVFoundation.AVCaptureDevice){}[0]
+    final fun setDeviceFormat(platform.AVFoundation/AVCaptureDeviceFormat) // com.ujizin.camposer.session/DefaultIOSCameraController.setDeviceFormat|setDeviceFormat(platform.AVFoundation.AVCaptureDeviceFormat){}[0]
+    final fun setExposureCompensation(kotlin/Float) // com.ujizin.camposer.session/DefaultIOSCameraController.setExposureCompensation|setExposureCompensation(kotlin.Float){}[0]
+    final fun setFlashMode(kotlin/Long) // com.ujizin.camposer.session/DefaultIOSCameraController.setFlashMode|setFlashMode(kotlin.Long){}[0]
+    final fun setFocusPoint(kotlinx.cinterop/CValue<platform.CoreGraphics/CGPoint>) // com.ujizin.camposer.session/DefaultIOSCameraController.setFocusPoint|setFocusPoint(kotlinx.cinterop.CValue<platform.CoreGraphics.CGPoint>){}[0]
+    final fun setFrameRate(kotlin/Int) // com.ujizin.camposer.session/DefaultIOSCameraController.setFrameRate|setFrameRate(kotlin.Int){}[0]
+    final fun setPreviewBackgroundColor(platform.UIKit/UIColor) // com.ujizin.camposer.session/DefaultIOSCameraController.setPreviewBackgroundColor|setPreviewBackgroundColor(platform.UIKit.UIColor){}[0]
+    final fun setPreviewGravity(kotlin/String?) // com.ujizin.camposer.session/DefaultIOSCameraController.setPreviewGravity|setPreviewGravity(kotlin.String?){}[0]
+    final fun setTorchEnabled(kotlin/Boolean) // com.ujizin.camposer.session/DefaultIOSCameraController.setTorchEnabled|setTorchEnabled(kotlin.Boolean){}[0]
+    final fun setVideoStabilization(kotlin/Long) // com.ujizin.camposer.session/DefaultIOSCameraController.setVideoStabilization|setVideoStabilization(kotlin.Long){}[0]
+    final fun setZoomRatio(kotlin/Float) // com.ujizin.camposer.session/DefaultIOSCameraController.setZoomRatio|setZoomRatio(kotlin.Float){}[0]
+    final fun start(platform.AVFoundation/AVCaptureOutput, platform.AVFoundation/AVCaptureDevice, kotlin/Boolean, kotlin/Function1<kotlin/Boolean, kotlin/Unit>) // com.ujizin.camposer.session/DefaultIOSCameraController.start|start(platform.AVFoundation.AVCaptureOutput;platform.AVFoundation.AVCaptureDevice;kotlin.Boolean;kotlin.Function1<kotlin.Boolean,kotlin.Unit>){}[0]
+    final fun startRecording(kotlin/Boolean, kotlin/Long, kotlin/String, kotlin/Function1<kotlin/Result<kotlin/String>, kotlin/Unit>) // com.ujizin.camposer.session/DefaultIOSCameraController.startRecording|startRecording(kotlin.Boolean;kotlin.Long;kotlin.String;kotlin.Function1<kotlin.Result<kotlin.String>,kotlin.Unit>){}[0]
+    final fun stopRecording(): kotlin/Result<kotlin/Boolean> // com.ujizin.camposer.session/DefaultIOSCameraController.stopRecording|stopRecording(){}[0]
+    final fun takePicture(kotlin/Boolean, kotlin/Long, kotlin/Long, kotlin/Function1<kotlin/Result<kotlin/ByteArray>, kotlin/Unit>) // com.ujizin.camposer.session/DefaultIOSCameraController.takePicture|takePicture(kotlin.Boolean;kotlin.Long;kotlin.Long;kotlin.Function1<kotlin.Result<kotlin.ByteArray>,kotlin.Unit>){}[0]
+    final fun takePicture(kotlin/String, kotlin/Boolean, kotlin/Long, kotlin/Long, kotlin/Function1<kotlin/Result<kotlin/String>, kotlin/Unit>) // com.ujizin.camposer.session/DefaultIOSCameraController.takePicture|takePicture(kotlin.String;kotlin.Boolean;kotlin.Long;kotlin.Long;kotlin.Function1<kotlin.Result<kotlin.String>,kotlin.Unit>){}[0]
+    final fun withSessionConfiguration(kotlin/Function0<kotlin/Unit>) // com.ujizin.camposer.session/DefaultIOSCameraController.withSessionConfiguration|withSessionConfiguration(kotlin.Function0<kotlin.Unit>){}[0]
+}
+
+final class com.ujizin.camposer.state.properties.format.config/AspectRatioConfig : com.ujizin.camposer.state.properties.format.config/CameraFormatConfig { // com.ujizin.camposer.state.properties.format.config/AspectRatioConfig|null[0]
+    constructor <init>(kotlin/Float) // com.ujizin.camposer.state.properties.format.config/AspectRatioConfig.<init>|<init>(kotlin.Float){}[0]
+
+    final val aspectRatio // com.ujizin.camposer.state.properties.format.config/AspectRatioConfig.aspectRatio|{}aspectRatio[0]
+        final fun <get-aspectRatio>(): kotlin/Float // com.ujizin.camposer.state.properties.format.config/AspectRatioConfig.aspectRatio.<get-aspectRatio>|<get-aspectRatio>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.ujizin.camposer.state.properties.format.config/AspectRatioConfig.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.ujizin.camposer.state.properties.format.config/AspectRatioConfig.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.ujizin.camposer.state.properties.format.config/AspectRatioConfig.toString|toString(){}[0]
+}
+
+final class com.ujizin.camposer.state.properties.format.config/FrameRateConfig : com.ujizin.camposer.state.properties.format.config/CameraFormatConfig { // com.ujizin.camposer.state.properties.format.config/FrameRateConfig|null[0]
+    constructor <init>(kotlin/Int) // com.ujizin.camposer.state.properties.format.config/FrameRateConfig.<init>|<init>(kotlin.Int){}[0]
+
+    final val fps // com.ujizin.camposer.state.properties.format.config/FrameRateConfig.fps|{}fps[0]
+        final fun <get-fps>(): kotlin/Int // com.ujizin.camposer.state.properties.format.config/FrameRateConfig.fps.<get-fps>|<get-fps>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.ujizin.camposer.state.properties.format.config/FrameRateConfig.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.ujizin.camposer.state.properties.format.config/FrameRateConfig.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.ujizin.camposer.state.properties.format.config/FrameRateConfig.toString|toString(){}[0]
+}
+
+final class com.ujizin.camposer.state.properties.format.config/ResolutionConfig : com.ujizin.camposer.state.properties.format.config/CameraFormatConfig { // com.ujizin.camposer.state.properties.format.config/ResolutionConfig|null[0]
+    constructor <init>(kotlin/Int, kotlin/Int) // com.ujizin.camposer.state.properties.format.config/ResolutionConfig.<init>|<init>(kotlin.Int;kotlin.Int){}[0]
+
+    final val height // com.ujizin.camposer.state.properties.format.config/ResolutionConfig.height|{}height[0]
+        final fun <get-height>(): kotlin/Int // com.ujizin.camposer.state.properties.format.config/ResolutionConfig.height.<get-height>|<get-height>(){}[0]
+    final val width // com.ujizin.camposer.state.properties.format.config/ResolutionConfig.width|{}width[0]
+        final fun <get-width>(): kotlin/Int // com.ujizin.camposer.state.properties.format.config/ResolutionConfig.width.<get-width>|<get-width>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.ujizin.camposer.state.properties.format.config/ResolutionConfig.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.ujizin.camposer.state.properties.format.config/ResolutionConfig.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.ujizin.camposer.state.properties.format.config/ResolutionConfig.toString|toString(){}[0]
+
+    final object Companion { // com.ujizin.camposer.state.properties.format.config/ResolutionConfig.Companion|null[0]
+        final val High // com.ujizin.camposer.state.properties.format.config/ResolutionConfig.Companion.High|{}High[0]
+            final fun <get-High>(): com.ujizin.camposer.state.properties.format.config/ResolutionConfig // com.ujizin.camposer.state.properties.format.config/ResolutionConfig.Companion.High.<get-High>|<get-High>(){}[0]
+        final val Low // com.ujizin.camposer.state.properties.format.config/ResolutionConfig.Companion.Low|{}Low[0]
+            final fun <get-Low>(): com.ujizin.camposer.state.properties.format.config/ResolutionConfig // com.ujizin.camposer.state.properties.format.config/ResolutionConfig.Companion.Low.<get-Low>|<get-Low>(){}[0]
+        final val Medium // com.ujizin.camposer.state.properties.format.config/ResolutionConfig.Companion.Medium|{}Medium[0]
+            final fun <get-Medium>(): com.ujizin.camposer.state.properties.format.config/ResolutionConfig // com.ujizin.camposer.state.properties.format.config/ResolutionConfig.Companion.Medium.<get-Medium>|<get-Medium>(){}[0]
+        final val UltraHigh // com.ujizin.camposer.state.properties.format.config/ResolutionConfig.Companion.UltraHigh|{}UltraHigh[0]
+            final fun <get-UltraHigh>(): com.ujizin.camposer.state.properties.format.config/ResolutionConfig // com.ujizin.camposer.state.properties.format.config/ResolutionConfig.Companion.UltraHigh.<get-UltraHigh>|<get-UltraHigh>(){}[0]
+    }
+}
+
+final class com.ujizin.camposer.state.properties.format.config/VideoStabilizationConfig : com.ujizin.camposer.state.properties.format.config/CameraFormatConfig { // com.ujizin.camposer.state.properties.format.config/VideoStabilizationConfig|null[0]
+    constructor <init>(com.ujizin.camposer.state.properties/VideoStabilizationMode = ...) // com.ujizin.camposer.state.properties.format.config/VideoStabilizationConfig.<init>|<init>(com.ujizin.camposer.state.properties.VideoStabilizationMode){}[0]
+
+    final val mode // com.ujizin.camposer.state.properties.format.config/VideoStabilizationConfig.mode|{}mode[0]
+        final fun <get-mode>(): com.ujizin.camposer.state.properties/VideoStabilizationMode // com.ujizin.camposer.state.properties.format.config/VideoStabilizationConfig.mode.<get-mode>|<get-mode>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.ujizin.camposer.state.properties.format.config/VideoStabilizationConfig.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.ujizin.camposer.state.properties.format.config/VideoStabilizationConfig.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.ujizin.camposer.state.properties.format.config/VideoStabilizationConfig.toString|toString(){}[0]
+}
+
+final class com.ujizin.camposer.state.properties.format/CamFormat { // com.ujizin.camposer.state.properties.format/CamFormat|null[0]
+    constructor <init>() // com.ujizin.camposer.state.properties.format/CamFormat.<init>|<init>(){}[0]
+    constructor <init>(kotlin/Array<out com.ujizin.camposer.state.properties.format.config/CameraFormatConfig>...) // com.ujizin.camposer.state.properties.format/CamFormat.<init>|<init>(kotlin.Array<out|com.ujizin.camposer.state.properties.format.config.CameraFormatConfig>...){}[0]
+
+    final val configs // com.ujizin.camposer.state.properties.format/CamFormat.configs|{}configs[0]
+        final fun <get-configs>(): kotlin.collections/List<com.ujizin.camposer.state.properties.format.config/CameraFormatConfig> // com.ujizin.camposer.state.properties.format/CamFormat.configs.<get-configs>|<get-configs>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.ujizin.camposer.state.properties.format/CamFormat.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.ujizin.camposer.state.properties.format/CamFormat.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.ujizin.camposer.state.properties.format/CamFormat.toString|toString(){}[0]
+
+    final object Companion // com.ujizin.camposer.state.properties.format/CamFormat.Companion|null[0]
+}
+
+final class com.ujizin.camposer.state.properties.selector/CamSelector { // com.ujizin.camposer.state.properties.selector/CamSelector|null[0]
+    constructor <init>(com.ujizin.camposer.manager/CameraDevice) // com.ujizin.camposer.state.properties.selector/CamSelector.<init>|<init>(com.ujizin.camposer.manager.CameraDevice){}[0]
+    constructor <init>(com.ujizin.camposer.state.properties.selector/CamPosition, kotlin.collections/List<com.ujizin.camposer.state.properties.selector/CamLensType> = ...) // com.ujizin.camposer.state.properties.selector/CamSelector.<init>|<init>(com.ujizin.camposer.state.properties.selector.CamPosition;kotlin.collections.List<com.ujizin.camposer.state.properties.selector.CamLensType>){}[0]
+
+    final val camLensTypes // com.ujizin.camposer.state.properties.selector/CamSelector.camLensTypes|{}camLensTypes[0]
+        final fun <get-camLensTypes>(): kotlin.collections/List<com.ujizin.camposer.state.properties.selector/CamLensType> // com.ujizin.camposer.state.properties.selector/CamSelector.camLensTypes.<get-camLensTypes>|<get-camLensTypes>(){}[0]
+    final val camPosition // com.ujizin.camposer.state.properties.selector/CamSelector.camPosition|{}camPosition[0]
+        final fun <get-camPosition>(): com.ujizin.camposer.state.properties.selector/CamPosition // com.ujizin.camposer.state.properties.selector/CamSelector.camPosition.<get-camPosition>|<get-camPosition>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.ujizin.camposer.state.properties.selector/CamSelector.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.ujizin.camposer.state.properties.selector/CamSelector.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.ujizin.camposer.state.properties.selector/CamSelector.toString|toString(){}[0]
+
+    final object Companion { // com.ujizin.camposer.state.properties.selector/CamSelector.Companion|null[0]
+        final val Back // com.ujizin.camposer.state.properties.selector/CamSelector.Companion.Back|{}Back[0]
+            final fun <get-Back>(): com.ujizin.camposer.state.properties.selector/CamSelector // com.ujizin.camposer.state.properties.selector/CamSelector.Companion.Back.<get-Back>|<get-Back>(){}[0]
+        final val Front // com.ujizin.camposer.state.properties.selector/CamSelector.Companion.Front|{}Front[0]
+            final fun <get-Front>(): com.ujizin.camposer.state.properties.selector/CamSelector // com.ujizin.camposer.state.properties.selector/CamSelector.Companion.Front.<get-Front>|<get-Front>(){}[0]
+    }
+}
+
+final class com.ujizin.camposer.state.properties.selector/CameraId { // com.ujizin.camposer.state.properties.selector/CameraId|null[0]
+    final val uniqueId // com.ujizin.camposer.state.properties.selector/CameraId.uniqueId|{}uniqueId[0]
+        final fun <get-uniqueId>(): kotlin/String // com.ujizin.camposer.state.properties.selector/CameraId.uniqueId.<get-uniqueId>|<get-uniqueId>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.ujizin.camposer.state.properties.selector/CameraId.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.ujizin.camposer.state.properties.selector/CameraId.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.ujizin.camposer.state.properties.selector/CameraId.toString|toString(){}[0]
+}
+
+final class com.ujizin.camposer.state.properties/CameraData { // com.ujizin.camposer.state.properties/CameraData|null[0]
+    final val height // com.ujizin.camposer.state.properties/CameraData.height|{}height[0]
+        final fun <get-height>(): kotlin/Int // com.ujizin.camposer.state.properties/CameraData.height.<get-height>|<get-height>(){}[0]
+    final val isFocusSupported // com.ujizin.camposer.state.properties/CameraData.isFocusSupported|{}isFocusSupported[0]
+        final fun <get-isFocusSupported>(): kotlin/Boolean // com.ujizin.camposer.state.properties/CameraData.isFocusSupported.<get-isFocusSupported>|<get-isFocusSupported>(){}[0]
+    final val maxFps // com.ujizin.camposer.state.properties/CameraData.maxFps|{}maxFps[0]
+        final fun <get-maxFps>(): kotlin/Int? // com.ujizin.camposer.state.properties/CameraData.maxFps.<get-maxFps>|<get-maxFps>(){}[0]
+    final val minFps // com.ujizin.camposer.state.properties/CameraData.minFps|{}minFps[0]
+        final fun <get-minFps>(): kotlin/Int? // com.ujizin.camposer.state.properties/CameraData.minFps.<get-minFps>|<get-minFps>(){}[0]
+    final val videoStabilizationModes // com.ujizin.camposer.state.properties/CameraData.videoStabilizationModes|{}videoStabilizationModes[0]
+        final fun <get-videoStabilizationModes>(): kotlin.collections/List<com.ujizin.camposer.state.properties/VideoStabilizationMode>? // com.ujizin.camposer.state.properties/CameraData.videoStabilizationModes.<get-videoStabilizationModes>|<get-videoStabilizationModes>(){}[0]
+    final val width // com.ujizin.camposer.state.properties/CameraData.width|{}width[0]
+        final fun <get-width>(): kotlin/Int // com.ujizin.camposer.state.properties/CameraData.width.<get-width>|<get-width>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.ujizin.camposer.state.properties/CameraData.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.ujizin.camposer.state.properties/CameraData.hashCode|hashCode(){}[0]
+    final fun toCameraFormat(): com.ujizin.camposer.state.properties.format/CamFormat // com.ujizin.camposer.state.properties/CameraData.toCameraFormat|toCameraFormat(){}[0]
+    final fun toString(): kotlin/String // com.ujizin.camposer.state.properties/CameraData.toString|toString(){}[0]
+}
+
+final class com.ujizin.camposer.state.properties/ImageAnalyzer { // com.ujizin.camposer.state.properties/ImageAnalyzer|null[0]
+    constructor <init>(com.ujizin.camposer.internal.core.ios/IOSCameraController, com.ujizin.camposer.state.properties/ImageAnalyzer.Analyzer<*>) // com.ujizin.camposer.state.properties/ImageAnalyzer.<init>|<init>(com.ujizin.camposer.internal.core.ios.IOSCameraController;com.ujizin.camposer.state.properties.ImageAnalyzer.Analyzer<*>){}[0]
+
+    final fun dispose() // com.ujizin.camposer.state.properties/ImageAnalyzer.dispose|dispose(){}[0]
+
+    final class <#A1: out platform.AVFoundation/AVCaptureOutput> Analyzer { // com.ujizin.camposer.state.properties/ImageAnalyzer.Analyzer|null[0]
+        constructor <init>(#A1, kotlin/Function1<#A1, kotlin/Unit>) // com.ujizin.camposer.state.properties/ImageAnalyzer.Analyzer.<init>|<init>(1:0;kotlin.Function1<1:0,kotlin.Unit>){}[0]
+
+        final val onOutputAttached // com.ujizin.camposer.state.properties/ImageAnalyzer.Analyzer.onOutputAttached|{}onOutputAttached[0]
+            final fun <get-onOutputAttached>(): kotlin/Function1<#A1, kotlin/Unit> // com.ujizin.camposer.state.properties/ImageAnalyzer.Analyzer.onOutputAttached.<get-onOutputAttached>|<get-onOutputAttached>(){}[0]
+        final val output // com.ujizin.camposer.state.properties/ImageAnalyzer.Analyzer.output|{}output[0]
+            final fun <get-output>(): #A1 // com.ujizin.camposer.state.properties/ImageAnalyzer.Analyzer.output.<get-output>|<get-output>(){}[0]
+    }
+}
+
+final class com.ujizin.camposer.state/CameraState { // com.ujizin.camposer.state/CameraState|null[0]
+    final val camFormat // com.ujizin.camposer.state/CameraState.camFormat|{}camFormat[0]
+        final fun <get-camFormat>(): kotlinx.coroutines.flow/StateFlow<com.ujizin.camposer.state.properties.format/CamFormat> // com.ujizin.camposer.state/CameraState.camFormat.<get-camFormat>|<get-camFormat>(){}[0]
+    final val camSelector // com.ujizin.camposer.state/CameraState.camSelector|{}camSelector[0]
+        final fun <get-camSelector>(): kotlinx.coroutines.flow/StateFlow<com.ujizin.camposer.state.properties.selector/CamSelector> // com.ujizin.camposer.state/CameraState.camSelector.<get-camSelector>|<get-camSelector>(){}[0]
+    final val captureMode // com.ujizin.camposer.state/CameraState.captureMode|{}captureMode[0]
+        final fun <get-captureMode>(): kotlinx.coroutines.flow/StateFlow<com.ujizin.camposer.state.properties/CaptureMode> // com.ujizin.camposer.state/CameraState.captureMode.<get-captureMode>|<get-captureMode>(){}[0]
+    final val exposureCompensation // com.ujizin.camposer.state/CameraState.exposureCompensation|{}exposureCompensation[0]
+        final fun <get-exposureCompensation>(): kotlinx.coroutines.flow/StateFlow<kotlin/Float> // com.ujizin.camposer.state/CameraState.exposureCompensation.<get-exposureCompensation>|<get-exposureCompensation>(){}[0]
+    final val flashMode // com.ujizin.camposer.state/CameraState.flashMode|{}flashMode[0]
+        final fun <get-flashMode>(): kotlinx.coroutines.flow/StateFlow<com.ujizin.camposer.state.properties/FlashMode> // com.ujizin.camposer.state/CameraState.flashMode.<get-flashMode>|<get-flashMode>(){}[0]
+    final val frameRate // com.ujizin.camposer.state/CameraState.frameRate|{}frameRate[0]
+        final fun <get-frameRate>(): kotlinx.coroutines.flow/StateFlow<kotlin/Int> // com.ujizin.camposer.state/CameraState.frameRate.<get-frameRate>|<get-frameRate>(){}[0]
+    final val imageAnalyzer // com.ujizin.camposer.state/CameraState.imageAnalyzer|{}imageAnalyzer[0]
+        final fun <get-imageAnalyzer>(): kotlinx.coroutines.flow/StateFlow<com.ujizin.camposer.state.properties/ImageAnalyzer?> // com.ujizin.camposer.state/CameraState.imageAnalyzer.<get-imageAnalyzer>|<get-imageAnalyzer>(){}[0]
+    final val imageCaptureStrategy // com.ujizin.camposer.state/CameraState.imageCaptureStrategy|{}imageCaptureStrategy[0]
+        final fun <get-imageCaptureStrategy>(): kotlinx.coroutines.flow/StateFlow<com.ujizin.camposer.state.properties/ImageCaptureStrategy> // com.ujizin.camposer.state/CameraState.imageCaptureStrategy.<get-imageCaptureStrategy>|<get-imageCaptureStrategy>(){}[0]
+    final val implementationMode // com.ujizin.camposer.state/CameraState.implementationMode|{}implementationMode[0]
+        final fun <get-implementationMode>(): kotlinx.coroutines.flow/StateFlow<com.ujizin.camposer.state.properties/ImplementationMode> // com.ujizin.camposer.state/CameraState.implementationMode.<get-implementationMode>|<get-implementationMode>(){}[0]
+    final val isFocusOnTapEnabled // com.ujizin.camposer.state/CameraState.isFocusOnTapEnabled|{}isFocusOnTapEnabled[0]
+        final fun <get-isFocusOnTapEnabled>(): kotlinx.coroutines.flow/StateFlow<kotlin/Boolean> // com.ujizin.camposer.state/CameraState.isFocusOnTapEnabled.<get-isFocusOnTapEnabled>|<get-isFocusOnTapEnabled>(){}[0]
+    final val isImageAnalyzerEnabled // com.ujizin.camposer.state/CameraState.isImageAnalyzerEnabled|{}isImageAnalyzerEnabled[0]
+        final fun <get-isImageAnalyzerEnabled>(): kotlinx.coroutines.flow/StateFlow<kotlin/Boolean> // com.ujizin.camposer.state/CameraState.isImageAnalyzerEnabled.<get-isImageAnalyzerEnabled>|<get-isImageAnalyzerEnabled>(){}[0]
+    final val isPinchToZoomEnabled // com.ujizin.camposer.state/CameraState.isPinchToZoomEnabled|{}isPinchToZoomEnabled[0]
+        final fun <get-isPinchToZoomEnabled>(): kotlinx.coroutines.flow/StateFlow<kotlin/Boolean> // com.ujizin.camposer.state/CameraState.isPinchToZoomEnabled.<get-isPinchToZoomEnabled>|<get-isPinchToZoomEnabled>(){}[0]
+    final val isTorchEnabled // com.ujizin.camposer.state/CameraState.isTorchEnabled|{}isTorchEnabled[0]
+        final fun <get-isTorchEnabled>(): kotlinx.coroutines.flow/StateFlow<kotlin/Boolean> // com.ujizin.camposer.state/CameraState.isTorchEnabled.<get-isTorchEnabled>|<get-isTorchEnabled>(){}[0]
+    final val mirrorMode // com.ujizin.camposer.state/CameraState.mirrorMode|{}mirrorMode[0]
+        final fun <get-mirrorMode>(): kotlinx.coroutines.flow/StateFlow<com.ujizin.camposer.state.properties/MirrorMode> // com.ujizin.camposer.state/CameraState.mirrorMode.<get-mirrorMode>|<get-mirrorMode>(){}[0]
+    final val orientationStrategy // com.ujizin.camposer.state/CameraState.orientationStrategy|{}orientationStrategy[0]
+        final fun <get-orientationStrategy>(): kotlinx.coroutines.flow/StateFlow<com.ujizin.camposer.state.properties/OrientationStrategy> // com.ujizin.camposer.state/CameraState.orientationStrategy.<get-orientationStrategy>|<get-orientationStrategy>(){}[0]
+    final val scaleType // com.ujizin.camposer.state/CameraState.scaleType|{}scaleType[0]
+        final fun <get-scaleType>(): kotlinx.coroutines.flow/StateFlow<com.ujizin.camposer.state.properties/ScaleType> // com.ujizin.camposer.state/CameraState.scaleType.<get-scaleType>|<get-scaleType>(){}[0]
+    final val videoStabilizationMode // com.ujizin.camposer.state/CameraState.videoStabilizationMode|{}videoStabilizationMode[0]
+        final fun <get-videoStabilizationMode>(): kotlinx.coroutines.flow/StateFlow<com.ujizin.camposer.state.properties/VideoStabilizationMode> // com.ujizin.camposer.state/CameraState.videoStabilizationMode.<get-videoStabilizationMode>|<get-videoStabilizationMode>(){}[0]
+    final val zoomRatio // com.ujizin.camposer.state/CameraState.zoomRatio|{}zoomRatio[0]
+        final fun <get-zoomRatio>(): kotlinx.coroutines.flow/StateFlow<kotlin/Float> // com.ujizin.camposer.state/CameraState.zoomRatio.<get-zoomRatio>|<get-zoomRatio>(){}[0]
+
+    final fun updateMirrorMode(com.ujizin.camposer.state.properties/MirrorMode) // com.ujizin.camposer.state/CameraState.updateMirrorMode|updateMirrorMode(com.ujizin.camposer.state.properties.MirrorMode){}[0]
+}
+
+final val com.ujizin.camposer.controller.camera/com_ujizin_camposer_controller_camera_CameraController$stableprop // com.ujizin.camposer.controller.camera/com_ujizin_camposer_controller_camera_CameraController$stableprop|#static{}com_ujizin_camposer_controller_camera_CameraController$stableprop[0]
+final val com.ujizin.camposer.controller.camera/com_ujizin_camposer_controller_camera_CommonCameraController$stableprop // com.ujizin.camposer.controller.camera/com_ujizin_camposer_controller_camera_CommonCameraController$stableprop|#static{}com_ujizin_camposer_controller_camera_CommonCameraController$stableprop[0]
+final val com.ujizin.camposer.error/com_ujizin_camposer_error_CaptureModeException$stableprop // com.ujizin.camposer.error/com_ujizin_camposer_error_CaptureModeException$stableprop|#static{}com_ujizin_camposer_error_CaptureModeException$stableprop[0]
+final val com.ujizin.camposer.error/com_ujizin_camposer_error_RecordNotInitializedException$stableprop // com.ujizin.camposer.error/com_ujizin_camposer_error_RecordNotInitializedException$stableprop|#static{}com_ujizin_camposer_error_RecordNotInitializedException$stableprop[0]
+final val com.ujizin.camposer.info/com_ujizin_camposer_info_CameraInfo$stableprop // com.ujizin.camposer.info/com_ujizin_camposer_info_CameraInfo$stableprop|#static{}com_ujizin_camposer_info_CameraInfo$stableprop[0]
+final val com.ujizin.camposer.info/com_ujizin_camposer_info_CameraInfoState$stableprop // com.ujizin.camposer.info/com_ujizin_camposer_info_CameraInfoState$stableprop|#static{}com_ujizin_camposer_info_CameraInfoState$stableprop[0]
+final val com.ujizin.camposer.manager/com_ujizin_camposer_manager_CameraDevice$stableprop // com.ujizin.camposer.manager/com_ujizin_camposer_manager_CameraDevice$stableprop|#static{}com_ujizin_camposer_manager_CameraDevice$stableprop[0]
+final val com.ujizin.camposer.manager/com_ujizin_camposer_manager_CameraDeviceState_Devices$stableprop // com.ujizin.camposer.manager/com_ujizin_camposer_manager_CameraDeviceState_Devices$stableprop|#static{}com_ujizin_camposer_manager_CameraDeviceState_Devices$stableprop[0]
+final val com.ujizin.camposer.manager/com_ujizin_camposer_manager_CameraDeviceState_Initial$stableprop // com.ujizin.camposer.manager/com_ujizin_camposer_manager_CameraDeviceState_Initial$stableprop|#static{}com_ujizin_camposer_manager_CameraDeviceState_Initial$stableprop[0]
+final val com.ujizin.camposer.session/com_ujizin_camposer_session_CameraSession$stableprop // com.ujizin.camposer.session/com_ujizin_camposer_session_CameraSession$stableprop|#static{}com_ujizin_camposer_session_CameraSession$stableprop[0]
+final val com.ujizin.camposer.session/com_ujizin_camposer_session_DefaultIOSCameraController$stableprop // com.ujizin.camposer.session/com_ujizin_camposer_session_DefaultIOSCameraController$stableprop|#static{}com_ujizin_camposer_session_DefaultIOSCameraController$stableprop[0]
+final val com.ujizin.camposer.state.properties.format.config/com_ujizin_camposer_state_properties_format_config_AspectRatioConfig$stableprop // com.ujizin.camposer.state.properties.format.config/com_ujizin_camposer_state_properties_format_config_AspectRatioConfig$stableprop|#static{}com_ujizin_camposer_state_properties_format_config_AspectRatioConfig$stableprop[0]
+final val com.ujizin.camposer.state.properties.format.config/com_ujizin_camposer_state_properties_format_config_FrameRateConfig$stableprop // com.ujizin.camposer.state.properties.format.config/com_ujizin_camposer_state_properties_format_config_FrameRateConfig$stableprop|#static{}com_ujizin_camposer_state_properties_format_config_FrameRateConfig$stableprop[0]
+final val com.ujizin.camposer.state.properties.format.config/com_ujizin_camposer_state_properties_format_config_ResolutionConfig$stableprop // com.ujizin.camposer.state.properties.format.config/com_ujizin_camposer_state_properties_format_config_ResolutionConfig$stableprop|#static{}com_ujizin_camposer_state_properties_format_config_ResolutionConfig$stableprop[0]
+final val com.ujizin.camposer.state.properties.format.config/com_ujizin_camposer_state_properties_format_config_VideoStabilizationConfig$stableprop // com.ujizin.camposer.state.properties.format.config/com_ujizin_camposer_state_properties_format_config_VideoStabilizationConfig$stableprop|#static{}com_ujizin_camposer_state_properties_format_config_VideoStabilizationConfig$stableprop[0]
+final val com.ujizin.camposer.state.properties.format/Default // com.ujizin.camposer.state.properties.format/Default|@com.ujizin.camposer.state.properties.format.CamFormat.Companion{}Default[0]
+    final fun (com.ujizin.camposer.state.properties.format/CamFormat.Companion).<get-Default>(): com.ujizin.camposer.state.properties.format/CamFormat // com.ujizin.camposer.state.properties.format/Default.<get-Default>|<get-Default>@com.ujizin.camposer.state.properties.format.CamFormat.Companion(){}[0]
+final val com.ujizin.camposer.state.properties.format/High // com.ujizin.camposer.state.properties.format/High|@com.ujizin.camposer.state.properties.format.CamFormat.Companion{}High[0]
+    final fun (com.ujizin.camposer.state.properties.format/CamFormat.Companion).<get-High>(): com.ujizin.camposer.state.properties.format/CamFormat // com.ujizin.camposer.state.properties.format/High.<get-High>|<get-High>@com.ujizin.camposer.state.properties.format.CamFormat.Companion(){}[0]
+final val com.ujizin.camposer.state.properties.format/Low // com.ujizin.camposer.state.properties.format/Low|@com.ujizin.camposer.state.properties.format.CamFormat.Companion{}Low[0]
+    final fun (com.ujizin.camposer.state.properties.format/CamFormat.Companion).<get-Low>(): com.ujizin.camposer.state.properties.format/CamFormat // com.ujizin.camposer.state.properties.format/Low.<get-Low>|<get-Low>@com.ujizin.camposer.state.properties.format.CamFormat.Companion(){}[0]
+final val com.ujizin.camposer.state.properties.format/Medium // com.ujizin.camposer.state.properties.format/Medium|@com.ujizin.camposer.state.properties.format.CamFormat.Companion{}Medium[0]
+    final fun (com.ujizin.camposer.state.properties.format/CamFormat.Companion).<get-Medium>(): com.ujizin.camposer.state.properties.format/CamFormat // com.ujizin.camposer.state.properties.format/Medium.<get-Medium>|<get-Medium>@com.ujizin.camposer.state.properties.format.CamFormat.Companion(){}[0]
+final val com.ujizin.camposer.state.properties.format/UltraHigh // com.ujizin.camposer.state.properties.format/UltraHigh|@com.ujizin.camposer.state.properties.format.CamFormat.Companion{}UltraHigh[0]
+    final fun (com.ujizin.camposer.state.properties.format/CamFormat.Companion).<get-UltraHigh>(): com.ujizin.camposer.state.properties.format/CamFormat // com.ujizin.camposer.state.properties.format/UltraHigh.<get-UltraHigh>|<get-UltraHigh>@com.ujizin.camposer.state.properties.format.CamFormat.Companion(){}[0]
+final val com.ujizin.camposer.state.properties.format/com_ujizin_camposer_state_properties_format_CamFormat$stableprop // com.ujizin.camposer.state.properties.format/com_ujizin_camposer_state_properties_format_CamFormat$stableprop|#static{}com_ujizin_camposer_state_properties_format_CamFormat$stableprop[0]
+final val com.ujizin.camposer.state.properties.selector/Saver // com.ujizin.camposer.state.properties.selector/Saver|@com.ujizin.camposer.state.properties.selector.CamSelector.Companion{}Saver[0]
+    final fun (com.ujizin.camposer.state.properties.selector/CamSelector.Companion).<get-Saver>(): androidx.compose.runtime.saveable/Saver<com.ujizin.camposer.state.properties.selector/CamSelector, kotlin/Any> // com.ujizin.camposer.state.properties.selector/Saver.<get-Saver>|<get-Saver>@com.ujizin.camposer.state.properties.selector.CamSelector.Companion(){}[0]
+final val com.ujizin.camposer.state.properties.selector/com_ujizin_camposer_state_properties_selector_CamSelector$stableprop // com.ujizin.camposer.state.properties.selector/com_ujizin_camposer_state_properties_selector_CamSelector$stableprop|#static{}com_ujizin_camposer_state_properties_selector_CamSelector$stableprop[0]
+final val com.ujizin.camposer.state.properties.selector/com_ujizin_camposer_state_properties_selector_CameraId$stableprop // com.ujizin.camposer.state.properties.selector/com_ujizin_camposer_state_properties_selector_CameraId$stableprop|#static{}com_ujizin_camposer_state_properties_selector_CameraId$stableprop[0]
+final val com.ujizin.camposer.state.properties.selector/inverse // com.ujizin.camposer.state.properties.selector/inverse|@com.ujizin.camposer.state.properties.selector.CamSelector{}inverse[0]
+    final fun (com.ujizin.camposer.state.properties.selector/CamSelector).<get-inverse>(): com.ujizin.camposer.state.properties.selector/CamSelector // com.ujizin.camposer.state.properties.selector/inverse.<get-inverse>|<get-inverse>@com.ujizin.camposer.state.properties.selector.CamSelector(){}[0]
+final val com.ujizin.camposer.state.properties/com_ujizin_camposer_state_properties_CameraData$stableprop // com.ujizin.camposer.state.properties/com_ujizin_camposer_state_properties_CameraData$stableprop|#static{}com_ujizin_camposer_state_properties_CameraData$stableprop[0]
+final val com.ujizin.camposer.state.properties/com_ujizin_camposer_state_properties_ImageAnalyzer$stableprop // com.ujizin.camposer.state.properties/com_ujizin_camposer_state_properties_ImageAnalyzer$stableprop|#static{}com_ujizin_camposer_state_properties_ImageAnalyzer$stableprop[0]
+final val com.ujizin.camposer.state.properties/com_ujizin_camposer_state_properties_ImageAnalyzer_Analyzer$stableprop // com.ujizin.camposer.state.properties/com_ujizin_camposer_state_properties_ImageAnalyzer_Analyzer$stableprop|#static{}com_ujizin_camposer_state_properties_ImageAnalyzer_Analyzer$stableprop[0]
+final val com.ujizin.camposer.state/com_ujizin_camposer_state_CameraState$stableprop // com.ujizin.camposer.state/com_ujizin_camposer_state_CameraState$stableprop|#static{}com_ujizin_camposer_state_CameraState$stableprop[0]
+final val com.ujizin.camposer/com_ujizin_camposer_CaptureResult_Error$stableprop // com.ujizin.camposer/com_ujizin_camposer_CaptureResult_Error$stableprop|#static{}com_ujizin_camposer_CaptureResult_Error$stableprop[0]
+final val com.ujizin.camposer/com_ujizin_camposer_CaptureResult_Success$stableprop // com.ujizin.camposer/com_ujizin_camposer_CaptureResult_Success$stableprop|#static{}com_ujizin_camposer_CaptureResult_Success$stableprop[0]
+
+final fun (com.ujizin.camposer.info/CameraInfo).com.ujizin.camposer.lifecycle.compose/collectStateWithLifecycle(androidx.lifecycle/Lifecycle, androidx.lifecycle/Lifecycle.State?, kotlin.coroutines/CoroutineContext?, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int): androidx.compose.runtime/State<com.ujizin.camposer.info/CameraInfoState> // com.ujizin.camposer.lifecycle.compose/collectStateWithLifecycle|collectStateWithLifecycle@com.ujizin.camposer.info.CameraInfo(androidx.lifecycle.Lifecycle;androidx.lifecycle.Lifecycle.State?;kotlin.coroutines.CoroutineContext?;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
+final fun (com.ujizin.camposer.info/CameraInfo).com.ujizin.camposer.lifecycle.compose/collectStateWithLifecycle(androidx.lifecycle/LifecycleOwner?, androidx.lifecycle/Lifecycle.State?, kotlin.coroutines/CoroutineContext?, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int): androidx.compose.runtime/State<com.ujizin.camposer.info/CameraInfoState> // com.ujizin.camposer.lifecycle.compose/collectStateWithLifecycle|collectStateWithLifecycle@com.ujizin.camposer.info.CameraInfo(androidx.lifecycle.LifecycleOwner?;androidx.lifecycle.Lifecycle.State?;kotlin.coroutines.CoroutineContext?;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
+final fun com.ujizin.camposer.controller.camera/com_ujizin_camposer_controller_camera_CameraController$stableprop_getter(): kotlin/Int // com.ujizin.camposer.controller.camera/com_ujizin_camposer_controller_camera_CameraController$stableprop_getter|com_ujizin_camposer_controller_camera_CameraController$stableprop_getter(){}[0]
+final fun com.ujizin.camposer.controller.camera/com_ujizin_camposer_controller_camera_CommonCameraController$stableprop_getter(): kotlin/Int // com.ujizin.camposer.controller.camera/com_ujizin_camposer_controller_camera_CommonCameraController$stableprop_getter|com_ujizin_camposer_controller_camera_CommonCameraController$stableprop_getter(){}[0]
+final fun com.ujizin.camposer.error/com_ujizin_camposer_error_CaptureModeException$stableprop_getter(): kotlin/Int // com.ujizin.camposer.error/com_ujizin_camposer_error_CaptureModeException$stableprop_getter|com_ujizin_camposer_error_CaptureModeException$stableprop_getter(){}[0]
+final fun com.ujizin.camposer.error/com_ujizin_camposer_error_RecordNotInitializedException$stableprop_getter(): kotlin/Int // com.ujizin.camposer.error/com_ujizin_camposer_error_RecordNotInitializedException$stableprop_getter|com_ujizin_camposer_error_RecordNotInitializedException$stableprop_getter(){}[0]
+final fun com.ujizin.camposer.info/com_ujizin_camposer_info_CameraInfo$stableprop_getter(): kotlin/Int // com.ujizin.camposer.info/com_ujizin_camposer_info_CameraInfo$stableprop_getter|com_ujizin_camposer_info_CameraInfo$stableprop_getter(){}[0]
+final fun com.ujizin.camposer.info/com_ujizin_camposer_info_CameraInfoState$stableprop_getter(): kotlin/Int // com.ujizin.camposer.info/com_ujizin_camposer_info_CameraInfoState$stableprop_getter|com_ujizin_camposer_info_CameraInfoState$stableprop_getter(){}[0]
+final fun com.ujizin.camposer.manager/com_ujizin_camposer_manager_CameraDevice$stableprop_getter(): kotlin/Int // com.ujizin.camposer.manager/com_ujizin_camposer_manager_CameraDevice$stableprop_getter|com_ujizin_camposer_manager_CameraDevice$stableprop_getter(){}[0]
+final fun com.ujizin.camposer.manager/com_ujizin_camposer_manager_CameraDeviceState_Devices$stableprop_getter(): kotlin/Int // com.ujizin.camposer.manager/com_ujizin_camposer_manager_CameraDeviceState_Devices$stableprop_getter|com_ujizin_camposer_manager_CameraDeviceState_Devices$stableprop_getter(){}[0]
+final fun com.ujizin.camposer.manager/com_ujizin_camposer_manager_CameraDeviceState_Initial$stableprop_getter(): kotlin/Int // com.ujizin.camposer.manager/com_ujizin_camposer_manager_CameraDeviceState_Initial$stableprop_getter|com_ujizin_camposer_manager_CameraDeviceState_Initial$stableprop_getter(){}[0]
+final fun com.ujizin.camposer.manager/rememberCameraDeviceState(androidx.compose.runtime/Composer?, kotlin/Int): androidx.compose.runtime/State<com.ujizin.camposer.manager/CameraDeviceState> // com.ujizin.camposer.manager/rememberCameraDeviceState|rememberCameraDeviceState(androidx.compose.runtime.Composer?;kotlin.Int){}[0]
+final fun com.ujizin.camposer.session/com_ujizin_camposer_session_CameraSession$stableprop_getter(): kotlin/Int // com.ujizin.camposer.session/com_ujizin_camposer_session_CameraSession$stableprop_getter|com_ujizin_camposer_session_CameraSession$stableprop_getter(){}[0]
+final fun com.ujizin.camposer.session/com_ujizin_camposer_session_DefaultIOSCameraController$stableprop_getter(): kotlin/Int // com.ujizin.camposer.session/com_ujizin_camposer_session_DefaultIOSCameraController$stableprop_getter|com_ujizin_camposer_session_DefaultIOSCameraController$stableprop_getter(){}[0]
+final fun com.ujizin.camposer.session/rememberCameraSession(com.ujizin.camposer.controller.camera/CameraController, androidx.compose.runtime/Composer?, kotlin/Int): com.ujizin.camposer.session/CameraSession // com.ujizin.camposer.session/rememberCameraSession|rememberCameraSession(com.ujizin.camposer.controller.camera.CameraController;androidx.compose.runtime.Composer?;kotlin.Int){}[0]
+final fun com.ujizin.camposer.state.properties.format.config/com_ujizin_camposer_state_properties_format_config_AspectRatioConfig$stableprop_getter(): kotlin/Int // com.ujizin.camposer.state.properties.format.config/com_ujizin_camposer_state_properties_format_config_AspectRatioConfig$stableprop_getter|com_ujizin_camposer_state_properties_format_config_AspectRatioConfig$stableprop_getter(){}[0]
+final fun com.ujizin.camposer.state.properties.format.config/com_ujizin_camposer_state_properties_format_config_FrameRateConfig$stableprop_getter(): kotlin/Int // com.ujizin.camposer.state.properties.format.config/com_ujizin_camposer_state_properties_format_config_FrameRateConfig$stableprop_getter|com_ujizin_camposer_state_properties_format_config_FrameRateConfig$stableprop_getter(){}[0]
+final fun com.ujizin.camposer.state.properties.format.config/com_ujizin_camposer_state_properties_format_config_ResolutionConfig$stableprop_getter(): kotlin/Int // com.ujizin.camposer.state.properties.format.config/com_ujizin_camposer_state_properties_format_config_ResolutionConfig$stableprop_getter|com_ujizin_camposer_state_properties_format_config_ResolutionConfig$stableprop_getter(){}[0]
+final fun com.ujizin.camposer.state.properties.format.config/com_ujizin_camposer_state_properties_format_config_VideoStabilizationConfig$stableprop_getter(): kotlin/Int // com.ujizin.camposer.state.properties.format.config/com_ujizin_camposer_state_properties_format_config_VideoStabilizationConfig$stableprop_getter|com_ujizin_camposer_state_properties_format_config_VideoStabilizationConfig$stableprop_getter(){}[0]
+final fun com.ujizin.camposer.state.properties.format/com_ujizin_camposer_state_properties_format_CamFormat$stableprop_getter(): kotlin/Int // com.ujizin.camposer.state.properties.format/com_ujizin_camposer_state_properties_format_CamFormat$stableprop_getter|com_ujizin_camposer_state_properties_format_CamFormat$stableprop_getter(){}[0]
+final fun com.ujizin.camposer.state.properties.selector/com_ujizin_camposer_state_properties_selector_CamSelector$stableprop_getter(): kotlin/Int // com.ujizin.camposer.state.properties.selector/com_ujizin_camposer_state_properties_selector_CamSelector$stableprop_getter|com_ujizin_camposer_state_properties_selector_CamSelector$stableprop_getter(){}[0]
+final fun com.ujizin.camposer.state.properties.selector/com_ujizin_camposer_state_properties_selector_CameraId$stableprop_getter(): kotlin/Int // com.ujizin.camposer.state.properties.selector/com_ujizin_camposer_state_properties_selector_CameraId$stableprop_getter|com_ujizin_camposer_state_properties_selector_CameraId$stableprop_getter(){}[0]
+final fun com.ujizin.camposer.state.properties/com_ujizin_camposer_state_properties_CameraData$stableprop_getter(): kotlin/Int // com.ujizin.camposer.state.properties/com_ujizin_camposer_state_properties_CameraData$stableprop_getter|com_ujizin_camposer_state_properties_CameraData$stableprop_getter(){}[0]
+final fun com.ujizin.camposer.state.properties/com_ujizin_camposer_state_properties_ImageAnalyzer$stableprop_getter(): kotlin/Int // com.ujizin.camposer.state.properties/com_ujizin_camposer_state_properties_ImageAnalyzer$stableprop_getter|com_ujizin_camposer_state_properties_ImageAnalyzer$stableprop_getter(){}[0]
+final fun com.ujizin.camposer.state.properties/com_ujizin_camposer_state_properties_ImageAnalyzer_Analyzer$stableprop_getter(): kotlin/Int // com.ujizin.camposer.state.properties/com_ujizin_camposer_state_properties_ImageAnalyzer_Analyzer$stableprop_getter|com_ujizin_camposer_state_properties_ImageAnalyzer_Analyzer$stableprop_getter(){}[0]
+final fun com.ujizin.camposer.state/com_ujizin_camposer_state_CameraState$stableprop_getter(): kotlin/Int // com.ujizin.camposer.state/com_ujizin_camposer_state_CameraState$stableprop_getter|com_ujizin_camposer_state_CameraState$stableprop_getter(){}[0]
+final fun com.ujizin.camposer.ui.focus/CircleFocus(androidx.compose.ui/Modifier?, androidx.compose.ui.unit/Dp, androidx.compose.foundation/BorderStroke?, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // com.ujizin.camposer.ui.focus/CircleFocus|CircleFocus(androidx.compose.ui.Modifier?;androidx.compose.ui.unit.Dp;androidx.compose.foundation.BorderStroke?;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
+final fun com.ujizin.camposer.ui.focus/SquareCornerFocus(androidx.compose.ui/Modifier?, androidx.compose.ui.unit/Dp, androidx.compose.ui.unit/Dp, androidx.compose.foundation/BorderStroke?, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // com.ujizin.camposer.ui.focus/SquareCornerFocus|SquareCornerFocus(androidx.compose.ui.Modifier?;androidx.compose.ui.unit.Dp;androidx.compose.ui.unit.Dp;androidx.compose.foundation.BorderStroke?;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
+final fun com.ujizin.camposer.ui.focus/SquareFocus(androidx.compose.ui/Modifier?, androidx.compose.ui.unit/Dp, androidx.compose.foundation/BorderStroke?, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // com.ujizin.camposer.ui.focus/SquareFocus|SquareFocus(androidx.compose.ui.Modifier?;androidx.compose.ui.unit.Dp;androidx.compose.foundation.BorderStroke?;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
+final fun com.ujizin.camposer/CameraPreview(androidx.compose.ui/Modifier?, com.ujizin.camposer.session/CameraSession, com.ujizin.camposer.state.properties.selector/CamSelector?, com.ujizin.camposer.state.properties/CaptureMode?, com.ujizin.camposer.state.properties/ImageCaptureStrategy?, com.ujizin.camposer.state.properties/ScaleType?, com.ujizin.camposer.state.properties/ImageAnalyzer?, com.ujizin.camposer.state.properties.format/CamFormat?, com.ujizin.camposer.state.properties/ImplementationMode?, kotlin/Boolean, kotlin/Boolean, kotlin/Boolean, androidx.compose.ui.graphics/Color, kotlin/Function0<kotlin/Unit>?, kotlin/Function3<androidx.compose.ui.graphics/ImageBitmap, androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>?, kotlin.coroutines/SuspendFunction1<kotlin/Function0<kotlin/Unit>, kotlin/Unit>?, kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>?, kotlin/Function3<androidx.compose.foundation.layout/BoxScope, androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>?, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int, kotlin/Int) // com.ujizin.camposer/CameraPreview|CameraPreview(androidx.compose.ui.Modifier?;com.ujizin.camposer.session.CameraSession;com.ujizin.camposer.state.properties.selector.CamSelector?;com.ujizin.camposer.state.properties.CaptureMode?;com.ujizin.camposer.state.properties.ImageCaptureStrategy?;com.ujizin.camposer.state.properties.ScaleType?;com.ujizin.camposer.state.properties.ImageAnalyzer?;com.ujizin.camposer.state.properties.format.CamFormat?;com.ujizin.camposer.state.properties.ImplementationMode?;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;androidx.compose.ui.graphics.Color;kotlin.Function0<kotlin.Unit>?;kotlin.Function3<androidx.compose.ui.graphics.ImageBitmap,androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>?;kotlin.coroutines.SuspendFunction1<kotlin.Function0<kotlin.Unit>,kotlin.Unit>?;kotlin.Function2<androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>?;kotlin.Function3<androidx.compose.foundation.layout.BoxScope,androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>?;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int;kotlin.Int){}[0]
+final fun com.ujizin.camposer/com_ujizin_camposer_CaptureResult_Error$stableprop_getter(): kotlin/Int // com.ujizin.camposer/com_ujizin_camposer_CaptureResult_Error$stableprop_getter|com_ujizin_camposer_CaptureResult_Error$stableprop_getter(){}[0]
+final fun com.ujizin.camposer/com_ujizin_camposer_CaptureResult_Success$stableprop_getter(): kotlin/Int // com.ujizin.camposer/com_ujizin_camposer_CaptureResult_Success$stableprop_getter|com_ujizin_camposer_CaptureResult_Success$stableprop_getter(){}[0]

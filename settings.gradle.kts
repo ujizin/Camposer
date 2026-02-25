@@ -15,5 +15,5 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Camposer"
 
-include(":sample")
 include(":camposer")
+include(":camposer-code-scanner")
