@@ -18,7 +18,7 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 internal abstract class CameraSessionTest {
   protected val testDispatcher = UnconfinedTestDispatcher()
 
-  protected val cameraTest: FakeCameraTest by lazy { FakeCameraTest() }
+  protected val cameraTest: FakeCameraTest by lazy { FakeCameraTest(testDispatcher) }
 
   protected val cameraSession by lazy {
     createCameraSession(

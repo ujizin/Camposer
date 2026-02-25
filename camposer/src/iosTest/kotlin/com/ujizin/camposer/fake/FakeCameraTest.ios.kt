@@ -13,15 +13,23 @@ import com.ujizin.camposer.state.properties.output
 import com.ujizin.camposer.state.properties.quality
 import com.ujizin.camposer.state.properties.selector.CamSelector
 import com.ujizin.camposer.state.properties.selector.value
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 internal actual class FakeCameraTest(
-  val fakeIosCameraController: FakeIosCameraController,
+  internal val fakeIosCameraController: FakeIosCameraController,
+  private val testDispatcher: CoroutineDispatcher,
 ) {
-  actual constructor() : this(fakeIosCameraController = FakeIosCameraController())
+  actual constructor(
+    testDispatcher: CoroutineDispatcher,
+  ) : this(
+    fakeIosCameraController = FakeIosCameraController(),
+    testDispatcher = testDispatcher,
+  )
 
-  actual val cameraController: CameraController = CameraController()
+  actual val cameraController: CameraController = CameraController(testDispatcher)
   actual val cameraInfo: CameraInfo = CameraInfo(fakeIosCameraController)
 
   actual var hasErrorInRecording: Boolean
@@ -112,5 +120,9 @@ internal actual class FakeCameraTest(
 
   actual fun assertCamFormat(expected: CamFormat) {
     // no-op
+  }
+
+  actual fun assertIsRecording(expected: Boolean) {
+    assertEquals(expected, fakeIosCameraController.isRecording.value)
   }
 }

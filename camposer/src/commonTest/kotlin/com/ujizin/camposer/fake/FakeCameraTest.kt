@@ -8,8 +8,11 @@ import com.ujizin.camposer.state.properties.ImageAnalyzer
 import com.ujizin.camposer.state.properties.ImageCaptureStrategy
 import com.ujizin.camposer.state.properties.format.CamFormat
 import com.ujizin.camposer.state.properties.selector.CamSelector
+import kotlinx.coroutines.CoroutineDispatcher
 
-internal expect class FakeCameraTest() {
+internal expect class FakeCameraTest(
+  testDispatcher: CoroutineDispatcher,
+) {
   val cameraController: CameraController
 
   val cameraInfo: CameraInfo
@@ -37,4 +40,6 @@ internal expect class FakeCameraTest() {
   fun assertImageAnalyzer(expected: ImageAnalyzer?)
 
   fun assertCamFormat(expected: CamFormat)
+
+  fun assertIsRecording(expected: Boolean)
 }

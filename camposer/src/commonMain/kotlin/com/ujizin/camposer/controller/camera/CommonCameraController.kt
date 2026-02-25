@@ -11,7 +11,11 @@ import com.ujizin.camposer.state.properties.FlashMode
 import com.ujizin.camposer.state.properties.MirrorMode
 import com.ujizin.camposer.state.properties.OrientationStrategy
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -32,7 +36,9 @@ import kotlinx.coroutines.flow.update
 public abstract class CommonCameraController<
   RC : RecordController,
   TPC : TakePictureCommand,
-> internal constructor() : CameraControllerContract {
+> internal constructor(
+  dispatcher: CoroutineDispatcher = Dispatchers.Main,
+) : CameraControllerContract {
   protected var recordController: RC? = null
     private set
 
@@ -43,7 +49,7 @@ public abstract class CommonCameraController<
 
   private val pendingBundle = Bundle()
 
-  private val mainScope = MainScope()
+  private val mainScope = CoroutineScope(dispatcher + SupervisorJob())
 
   private val _isRunning = MutableStateFlow(false)
   public override val isRunning: StateFlow<Boolean> = _isRunning.asStateFlow()

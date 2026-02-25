@@ -8,6 +8,7 @@ import com.ujizin.camposer.state.properties.FlashMode
 import com.ujizin.camposer.state.properties.MirrorMode
 import com.ujizin.camposer.state.properties.OrientationStrategy
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.StateFlow
 
 /**
@@ -22,6 +23,8 @@ import kotlinx.coroutines.flow.StateFlow
 @Stable
 public expect class CameraController : CameraControllerContract {
   public constructor()
+
+  internal constructor(dispatcher: CoroutineDispatcher)
 
   override val state: CameraState?
   override val info: CameraInfo?

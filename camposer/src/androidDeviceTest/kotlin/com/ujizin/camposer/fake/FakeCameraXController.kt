@@ -76,6 +76,8 @@ internal class FakeCameraXController : CameraXController {
 
   var hasErrorInRecording = false
     internal set
+  var isRecording = false
+    internal set
 
   private var exposureState: ExposureState = object : ExposureState {
     override fun getExposureCompensationIndex(): Int = fakeExposureCompensationIndex
@@ -267,6 +269,7 @@ internal class FakeCameraXController : CameraXController {
     outputUri: Uri,
     consumerEvent: Consumer<RecordEvent>,
   ): RecordingWrapper {
+    isRecording = true
     consumerEvent.accept(
       RecordEvent(
         isFinalized = false,
@@ -277,6 +280,7 @@ internal class FakeCameraXController : CameraXController {
     )
     return FakeRecordingWrapper(
       onRecord = {
+        isRecording = false
         consumerEvent.accept(
           RecordEvent(
             isFinalized = true,

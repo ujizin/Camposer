@@ -12,6 +12,7 @@ import com.ujizin.camposer.state.properties.format.CamFormat
 import com.ujizin.camposer.state.properties.mode
 import com.ujizin.camposer.state.properties.selector.CamSelector
 import com.ujizin.camposer.state.properties.value
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlin.math.roundToInt
@@ -19,10 +20,14 @@ import kotlin.test.assertEquals
 
 internal actual class FakeCameraTest(
   internal val cameraXController: FakeCameraXController,
+  private val testDispatcher: CoroutineDispatcher,
 ) {
-  actual constructor() : this(FakeCameraXController())
+  actual constructor(testDispatcher: CoroutineDispatcher) : this(
+    cameraXController = FakeCameraXController(),
+    testDispatcher = testDispatcher,
+  )
 
-  actual val cameraController: CameraController = CameraController()
+  actual val cameraController: CameraController = CameraController(testDispatcher)
 
   actual val cameraInfo: CameraInfo by lazy {
     CameraInfo(
@@ -92,5 +97,9 @@ internal actual class FakeCameraTest(
     assertEquals(resolutionSelector, cameraXController.previewResolutionSelector)
     assertEquals(resolutionSelector, cameraXController.imageCaptureResolutionSelector)
     assertEquals(resolutionSelector, cameraXController.imageAnalysisResolutionSelector)
+  }
+
+  actual fun assertIsRecording(expected: Boolean) {
+    assertEquals(expected, cameraXController.isRecording)
   }
 }

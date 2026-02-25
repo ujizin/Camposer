@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
+import androidx.annotation.VisibleForTesting
 import androidx.camera.core.ImageCapture
 import androidx.camera.video.FileDescriptorOutputOptions
 import androidx.camera.video.FileOutputOptions
@@ -13,10 +14,16 @@ import androidx.camera.video.MediaStoreOutputOptions
 import androidx.camera.view.video.AudioConfig
 import androidx.compose.runtime.Stable
 import com.ujizin.camposer.CaptureResult
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import java.io.File
 
 @Stable
-public actual class CameraController : AndroidCameraController() {
+public actual class CameraController actual constructor(
+  dispatcher: CoroutineDispatcher,
+) : AndroidCameraController(dispatcher) {
+  public actual constructor() : this(Dispatchers.Main)
+
   @RequiresPermission(Manifest.permission.RECORD_AUDIO)
   override fun startRecording(
     fileOutputOptions: FileOutputOptions,
