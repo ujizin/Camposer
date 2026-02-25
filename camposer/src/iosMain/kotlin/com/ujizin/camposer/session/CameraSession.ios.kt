@@ -1,6 +1,7 @@
 package com.ujizin.camposer.session
 
 import androidx.annotation.RestrictTo
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -25,6 +26,7 @@ import platform.UIKit.UIColor
 import platform.UIKit.UIView
 
 @OptIn(ExperimentalForeignApi::class)
+@Stable
 public actual class CameraSession internal constructor(
   internal actual val cameraEngine: CameraEngine,
   internal val iosCameraController: IOSCameraController = (cameraEngine as IOSCameraEngine)

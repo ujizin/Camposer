@@ -1,5 +1,6 @@
 package com.ujizin.camposer.state.properties.selector
 
+import androidx.compose.runtime.Stable
 import com.ujizin.camposer.internal.core.ios.IOSCameraController
 import com.ujizin.camposer.manager.CameraDevice
 import com.ujizin.camposer.state.properties.selector.CamLensType.Telephoto
@@ -12,6 +13,7 @@ import platform.AVFoundation.AVCaptureDeviceTypeBuiltInTripleCamera
 import platform.AVFoundation.AVCaptureDeviceTypeBuiltInWideAngleCamera
 import platform.AVFoundation.AVCaptureDeviceTypeExternal
 
+@Stable
 public actual class CamSelector {
   public actual val camPosition: CamPosition
   public actual val camLensTypes: List<CamLensType>

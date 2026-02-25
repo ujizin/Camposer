@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.camera.camera2.internal.Camera2CameraInfoImpl
 import androidx.camera.core.CameraInfo
 import androidx.camera.core.CameraSelector
+import androidx.compose.runtime.Stable
 import com.ujizin.camposer.internal.utils.CameraUtils
 import com.ujizin.camposer.manager.CameraDevice
 
@@ -18,6 +19,7 @@ import com.ujizin.camposer.manager.CameraDevice
  *
  * @see CameraSelector
  */
+@Stable
 public actual class CamSelector {
   public actual val camPosition: CamPosition
 

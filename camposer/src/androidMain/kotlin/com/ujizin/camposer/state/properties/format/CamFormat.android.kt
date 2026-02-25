@@ -8,6 +8,7 @@ import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.video.FallbackStrategy
 import androidx.camera.video.Quality
 import androidx.camera.video.QualitySelector
+import androidx.compose.runtime.Stable
 import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.internal.core.camerax.CameraXController
 import com.ujizin.camposer.state.properties.CameraData
@@ -17,6 +18,7 @@ import com.ujizin.camposer.state.properties.format.config.CameraFormatConfig
 import com.ujizin.camposer.state.properties.format.config.ResolutionConfig
 import kotlin.math.abs
 
+@Stable
 public actual class CamFormat
   actual constructor(
     vararg configs: CameraFormatConfig,

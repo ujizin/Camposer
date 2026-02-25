@@ -1,5 +1,6 @@
 package com.ujizin.camposer.state.properties.format
 
+import androidx.compose.runtime.Stable
 import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.internal.core.ios.IOSCameraController
 import com.ujizin.camposer.state.properties.CameraData
@@ -9,6 +10,7 @@ import com.ujizin.camposer.state.properties.format.config.CameraFormatConfig
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.AVFoundation.AVCaptureDeviceFormat
 
+@Stable
 public actual class CamFormat actual constructor(
   vararg configs: CameraFormatConfig,
 ) {
