@@ -7,7 +7,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 @Stable
-public actual class CameraController actual constructor(
+public actual class CameraController internal actual constructor(
   dispatcher: CoroutineDispatcher,
 ) : CommonCameraController<
     RecordController,

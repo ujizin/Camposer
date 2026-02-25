@@ -6,7 +6,6 @@ import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
-import androidx.annotation.VisibleForTesting
 import androidx.camera.core.ImageCapture
 import androidx.camera.video.FileDescriptorOutputOptions
 import androidx.camera.video.FileOutputOptions
@@ -19,7 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import java.io.File
 
 @Stable
-public actual class CameraController actual constructor(
+public actual class CameraController internal actual constructor(
   dispatcher: CoroutineDispatcher,
 ) : AndroidCameraController(dispatcher) {
   public actual constructor() : this(Dispatchers.Main)
