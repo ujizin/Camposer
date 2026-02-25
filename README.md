@@ -11,17 +11,17 @@
   <a href="https://androidweekly.net/issues/issue-546"><img src="https://androidweekly.net/issues/issue-546/badge"/></a>
 </p>
 
-<p align="center">A multiplatform camera library built with Jetpack Compose that supports taking photos, recording videos, flash modes, zoom ratios, and more.</p>
+<p align="center">📸 A multiplatform camera library built with Jetpack Compose for taking photos, recording videos, controlling flash/torch, zooming, and more.</p>
 <br>
 <p align="center">
-<img src="https://user-images.githubusercontent.com/51065868/201734193-053dd4f5-c9cb-4a62-9692-1a62264911a5.gif" width="200"/> <img src="https://user-images.githubusercontent.com/51065868/201736304-f1f1b5fa-3f3d-4c12-9d40-a790e0d4d82b.gif" width="200"/>
+<img src="https://user-images.githubusercontent.com/51065868/201734193-053dd4f5-c9cb-4a62-9692-1a62264911a5.gif" width="175"/> <img src="https://user-images.githubusercontent.com/51065868/201736304-f1f1b5fa-3f3d-4c12-9d40-a790e0d4d82b.gif" width="175"/>
 </p>
 
-<p align="center"><small>Check out the <a href="https://github.com/ujizin/Camposer/tree/main/sample">Sample project</a></small></p>
+<p align="center"><small>✨ Check out the <a href="https://github.com/ujizin/Camposer/tree/main/samples">sample projects</a></small></p>
 
-## Quickstart
+## 🚀 Quick Start
 
-Add dependencies to your module `build.gradle.kts` and sync your project:
+Add the dependencies to your module `build.gradle.kts`, then sync your project:
 
 ```kotlin
 // Android
@@ -40,11 +40,11 @@ sourceSets {
 
 ```
 
-### How to use
+### 🧩 Basic Usage
 
-To add the `CameraPreview` composable, use the example below:
+To show the `CameraPreview` composable, use the example below:
 
-```Kotlin
+```kotlin
 val controller = remember { CameraController() }
 val cameraSession = rememberCameraSession(controller)
 var camSelector by remember { mutableStateOf(CamSelector.Back) }
@@ -56,66 +56,78 @@ CameraPreview(
 }
 ```
 
-## Documentation
+## ✨ Features
 
-Visit the documentation to learn more: https://ujizin.github.io/Camposer
+- 📸 Take pictures
+- 🎥 Record videos
+- 🔍 Zoom
+- 🎯 Focus support (tap to focus)
+- ⚡ Flash mode
+- 🔦 Torch
+- 🎛️ Exposure compensation
+- 🖼️ Image/video quality controls
+- 🔭 Multi-camera lens support (Ultra-wide, Wide & Telephoto)
+- ⏱️ 30/60 FPS video recording
+- 🎬 Video stabilization (iOS only for now)
+- 🧠 Image analyzer (code scanner)
 
-## Usage examples
+## 📚 Documentation
 
-### Taking pictures
+Visit the docs to learn more: [ujizin.github.io/Camposer](https://ujizin.github.io/Camposer)
 
-To take a picture, use `CameraSession` and call its `takePicture` method.
+## 🛠️ Usage Examples
 
-```Kotlin
-// Using temporary byte array
+### 📸 Taking Pictures
+
+Use `CameraSession` and call `takePicture`:
+
+```kotlin
+// Capture into a temporary byte array
 cameraSession.takePicture { result ->
   /* ... */
 }
 
-// Using files
+// Capture into a file
 cameraSession.takePicture(fileName) { result -> /* ... */ }
 ```
 
-### Recording videos
+### 🎥 Recording Videos
 
-Set `captureMode = CaptureMode.Video` on `CameraPreview`, then call `toggleRecording` twice to
-stop recording, or use `startRecording` and `stopRecording` separately.
+Set `captureMode = CaptureMode.Video` in `CameraPreview`, then call `startRecording` and `stopRecording`.
 
-```Kotlin
-// Using content values
+```kotlin
 cameraSession.startRecording(fileName) { result ->
   /* ... */
 }
 cameraSession.stopRecording()
 ```
 
-### Switch cameras
+### 🔄 Switching Cameras
 
-To switch cameras, pass `camSelector` to your `CameraPreview` composable, as shown above, then
-update its state.
+To switch cameras, pass `camSelector` to `CameraPreview` (as shown above) and update its state.
 
-```Kotlin
-// Use front camera
+```kotlin
+// Front camera
 camSelector = CamSelector.Front
 
-// Use back camera
+// Back camera
 camSelector = CamSelector.Back
 
-// Inverse camera selector
+// Toggle camera selector
 camSelector = camSelector.inverse
 ```
 
-### More
+### ➕ More
 
-To learn about and use additional features, check the [Documentation](https://ujizin.github.io/Camposer).
+To explore additional features, check the [documentation](https://ujizin.github.io/Camposer).
 
-Have a `fun code()`!
+Have `fun code()`! 👨‍💻
 
 ## ✨ Inspiration
 
 Camposer includes features inspired by [react-native-vision-camera](https://github.com/mrousavy/react-native-vision-camera).
 
-## License
+## 📄 License
 
 ```
 Copyright 2022 ujizin (Lucas Yuji) 
