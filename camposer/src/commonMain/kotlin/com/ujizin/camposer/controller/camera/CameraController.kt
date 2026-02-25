@@ -1,5 +1,6 @@
 package com.ujizin.camposer.controller.camera
 
+import androidx.compose.runtime.Stable
 import com.ujizin.camposer.CaptureResult
 import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.state.CameraState
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.StateFlow
  * It offers methods to capture images, record videos, and manipulate camera parameters such as
  * zoom, exposure, focus, flash modes, and torch settings.
  */
+@Stable
 public expect class CameraController : CameraControllerContract {
   public constructor()
 
@@ -25,8 +27,8 @@ public expect class CameraController : CameraControllerContract {
   override val info: CameraInfo?
   override val isRunning: StateFlow<Boolean>
 
-  override val isMuted: Boolean
-  override val isRecording: Boolean
+  override val isMuted: StateFlow<Boolean>
+  override val isRecording: StateFlow<Boolean>
 
   override fun startRecording(
     filename: String,

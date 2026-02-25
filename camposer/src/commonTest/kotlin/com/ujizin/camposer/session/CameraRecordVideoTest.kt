@@ -20,12 +20,12 @@ internal class CameraRecordVideoTest : CameraSessionTest() {
       actualFilename = result.data
     }
 
-    assertTrue(controller.isRecording)
+    assertTrue(controller.isRecording.value)
 
     controller.stopRecording()
 
     assertEquals(expectedFilename, actualFilename)
-    assertFalse(controller.isRecording)
+    assertFalse(controller.isRecording.value)
   }
 
   @Test
@@ -41,11 +41,11 @@ internal class CameraRecordVideoTest : CameraSessionTest() {
       hasError = result is CaptureResult.Error
     }
 
-    assertTrue(controller.isRecording)
+    assertTrue(controller.isRecording.value)
 
     controller.stopRecording()
 
     assertTrue(hasError)
-    assertFalse(controller.isRecording)
+    assertFalse(controller.isRecording.value)
   }
 }

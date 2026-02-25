@@ -63,6 +63,7 @@ fun CameraScreen(
     is CameraUiState.Ready -> {
       val cameraController = remember { CameraController() }
       val cameraSession = rememberCameraSession(cameraController)
+      val isRecording by cameraController.isRecording.collectAsStateWithLifecycle()
       val context = LocalContext.current
       CameraSection(
         cameraSession = cameraSession,
@@ -80,7 +81,7 @@ fun CameraScreen(
           )
         },
         onTakePicture = { viewModel.takePicture(cameraController) },
-        isRecording = cameraController.isRecording,
+        isRecording = isRecording,
         onAnalyzeImage = viewModel::analyzeImage,
       )
 

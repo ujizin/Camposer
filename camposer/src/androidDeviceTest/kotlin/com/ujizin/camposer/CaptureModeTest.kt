@@ -97,7 +97,7 @@ internal class CaptureModeTest : CameraTest() {
           }
         }
       }
-      waitUntil(CAPTURE_MODE_TIMEOUT) { cameraController.isRecording }
+      waitUntil(CAPTURE_MODE_TIMEOUT) { cameraController.isRecording.value }
 
       runBlocking {
         delay(RECORD_VIDEO_DELAY)

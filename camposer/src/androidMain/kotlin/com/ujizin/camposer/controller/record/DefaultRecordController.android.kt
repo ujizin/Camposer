@@ -9,9 +9,6 @@ import androidx.camera.video.FileDescriptorOutputOptions
 import androidx.camera.video.FileOutputOptions
 import androidx.camera.video.MediaStoreOutputOptions
 import androidx.camera.view.video.AudioConfig
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.core.util.Consumer
 import com.ujizin.camposer.CaptureResult
 import com.ujizin.camposer.error.RecordNotInitializedException
@@ -19,6 +16,10 @@ import com.ujizin.camposer.internal.core.AndroidCameraEngine
 import com.ujizin.camposer.internal.core.CameraEngine
 import com.ujizin.camposer.internal.core.camerax.RecordEvent
 import com.ujizin.camposer.internal.core.camerax.RecordingWrapper
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import java.io.File
 
 internal actual class DefaultRecordController private constructor(
@@ -33,10 +34,11 @@ internal actual class DefaultRecordController private constructor(
 
   private var recordController: RecordingWrapper? = null
 
-  actual override var isMuted: Boolean by mutableStateOf(false)
-    private set
-  actual override var isRecording: Boolean by mutableStateOf(false)
-    private set
+  private val _isMuted = MutableStateFlow(false)
+  actual override val isMuted: StateFlow<Boolean> = _isMuted.asStateFlow()
+
+  private val _isRecording = MutableStateFlow(false)
+  actual override val isRecording: StateFlow<Boolean> = _isRecording.asStateFlow()
 
   @RequiresPermission(Manifest.permission.RECORD_AUDIO)
   actual override fun startRecording(
@@ -63,7 +65,7 @@ internal actual class DefaultRecordController private constructor(
     audioConfig: AudioConfig,
     onResult: (CaptureResult<Uri?>) -> Unit,
   ) = prepareRecording(onResult) {
-    isMuted = !audioConfig.audioEnabled
+    _isMuted.update { !audioConfig.audioEnabled }
     controller.startRecording(
       fileDescriptorOutputOptions,
       audioConfig,
@@ -79,7 +81,7 @@ internal actual class DefaultRecordController private constructor(
     onResult: (CaptureResult<Uri?>) -> Unit,
   ): Unit =
     prepareRecording(onResult) {
-      isMuted = !audioConfig.audioEnabled
+      _isMuted.update { !audioConfig.audioEnabled }
       controller.startRecording(
         fileOutputOptions,
         audioConfig,
@@ -93,7 +95,7 @@ internal actual class DefaultRecordController private constructor(
     audioConfig: AudioConfig,
     onResult: (CaptureResult<Uri?>) -> Unit,
   ) = prepareRecording(onError = onResult) {
-    isMuted = !audioConfig.audioEnabled
+    _isMuted.update { !audioConfig.audioEnabled }
     controller.startRecording(
       mediaStoreOutputOptions,
       audioConfig,
@@ -121,7 +123,7 @@ internal actual class DefaultRecordController private constructor(
     recordController?.mute(isMuted) ?: return Result.failure(
       RecordNotInitializedException(),
     )
-    this.isMuted = isMuted
+    _isMuted.update { isMuted }
     return Result.success(true)
   }
 
@@ -132,7 +134,7 @@ internal actual class DefaultRecordController private constructor(
     try {
       recordController = onRecordBuild()
     } catch (exception: Exception) {
-      isRecording = false
+      _isRecording.update { false }
       onError(CaptureResult.Error(exception))
     }
   }
@@ -140,11 +142,12 @@ internal actual class DefaultRecordController private constructor(
   private fun getConsumerEvent(onResult: (CaptureResult<Uri?>) -> Unit): Consumer<RecordEvent> =
     Consumer { record ->
       if (record.isStarted) {
-        isRecording = true
+        _isRecording.update { true }
       }
+
       if (record.isFinalized) {
-        isRecording = false
-        isMuted = false
+        _isRecording.update { false }
+        _isMuted.update { false }
         val result =
           when {
             !record.hasError -> CaptureResult.Success(record.outputUri)

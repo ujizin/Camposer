@@ -55,7 +55,7 @@ class CameraViewModel : ViewModel() {
 
   @OptIn(ExperimentalUuidApi::class)
   fun toggleRecording() {
-    if (cameraController.isRecording) {
+    if (cameraController.isRecording.value) {
       cameraController.stopRecording()
       stopRecordingCounter()
       _uiState.update { it.copy(recordingDurationSeconds = 0L) }
@@ -218,7 +218,7 @@ class CameraViewModel : ViewModel() {
       while (isActive) {
         delay(1.seconds)
         _uiState.update { state ->
-          if (!cameraController.isRecording) state
+          if (!cameraController.isRecording.value) state
           else state.copy(recordingDurationSeconds = state.recordingDurationSeconds + 1)
         }
       }

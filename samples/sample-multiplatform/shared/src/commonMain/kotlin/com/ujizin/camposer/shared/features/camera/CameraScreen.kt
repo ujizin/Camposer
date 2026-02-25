@@ -52,7 +52,7 @@ fun CameraScreen(
   val flashMode by cameraSession.state.flashMode.collectAsStateWithLifecycle()
   val isTorchEnabled by cameraSession.state.isTorchEnabled.collectAsStateWithLifecycle()
   val zoomRatio by cameraSession.state.zoomRatio.collectAsStateWithLifecycle()
-  val isRecording = cameraViewModel.cameraController.isRecording
+  val isRecording by cameraViewModel.cameraController.isRecording.collectAsStateWithLifecycle()
 
   val cameraInfoState by cameraSession.info.collectStateWithLifecycle()
   val isFlashSupported = cameraInfoState.isFlashSupported

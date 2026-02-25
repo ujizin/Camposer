@@ -11,9 +11,13 @@ import com.ujizin.camposer.state.properties.FlashMode
 import com.ujizin.camposer.state.properties.MirrorMode
 import com.ujizin.camposer.state.properties.OrientationStrategy
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 
 /**
@@ -28,7 +32,7 @@ import kotlinx.coroutines.flow.update
 public abstract class CommonCameraController<
   RC : RecordController,
   TPC : TakePictureCommand,
-> internal constructor() : CameraControllerContract {
+  > internal constructor() : CameraControllerContract {
   protected var recordController: RC? = null
     private set
 
@@ -37,22 +41,24 @@ public abstract class CommonCameraController<
 
   private var cameraEngine: CameraEngine? = null
 
+  private val pendingBundle = Bundle()
+
+  private val mainScope = MainScope()
+
+  private val _isRunning = MutableStateFlow(false)
+  public override val isRunning: StateFlow<Boolean> = _isRunning.asStateFlow()
+
   override val state: CameraState?
     get() = cameraEngine?.cameraState
 
   override val info: CameraInfo?
     get() = cameraEngine?.cameraInfo
 
-  private val _isRunning = MutableStateFlow(false)
-  public override val isRunning: StateFlow<Boolean> = _isRunning.asStateFlow()
+  private val _isMuted = MutableStateFlow(false)
+  override val isMuted: StateFlow<Boolean> = _isMuted.asStateFlow()
 
-  private val pendingBundle = Bundle()
-
-  override val isMuted: Boolean
-    get() = recordController?.isMuted ?: false
-
-  override val isRecording: Boolean
-    get() = recordController?.isRecording ?: false
+  private val _isRecording = MutableStateFlow(false)
+  override val isRecording: StateFlow<Boolean> = _isRecording.asStateFlow()
 
   override fun startRecording(
     filename: String,
@@ -167,12 +173,13 @@ public abstract class CommonCameraController<
     recordController: RC,
     takePictureCommand: TPC,
     cameraEngine: CameraEngine,
-    cameraState: CameraState,
-    cameraInfo: CameraInfo,
   ) {
     this.recordController = recordController
     this.takePictureCommand = takePictureCommand
     this.cameraEngine = cameraEngine
+
+    recordController.isRecording.onEach(_isRecording::emit).launchIn(mainScope)
+    recordController.isMuted.onEach(_isMuted::emit).launchIn(mainScope)
   }
 
   internal fun onSessionStarted() {
@@ -206,6 +213,10 @@ public abstract class CommonCameraController<
     }
 
     return block()
+  }
+
+  internal fun dispose() {
+    mainScope.cancel()
   }
 
   internal companion object {

@@ -3,6 +3,7 @@ package com.ujizin.camposer.internal.core.ios
 import androidx.annotation.RestrictTo
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.coroutines.flow.StateFlow
 import platform.AVFoundation.AVCaptureDevice
 import platform.AVFoundation.AVCaptureDeviceFormat
 import platform.AVFoundation.AVCaptureDeviceInput
@@ -39,9 +40,9 @@ public interface IOSCameraController {
   public val isTorchAvailable: Boolean
   public val hasTorch: Boolean
 
-  public val isMuted: Boolean
+  public val isMuted: StateFlow<Boolean>
 
-  public val isRecording: Boolean
+  public val isRecording: StateFlow<Boolean>
 
   public fun isZeroShutterLagSupported(output: AVCaptureOutput): Boolean
 

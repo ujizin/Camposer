@@ -14,6 +14,7 @@ import com.ujizin.camposer.internal.extensions.tryAddOutput
 import com.ujizin.camposer.internal.extensions.withConfigurationLock
 import com.ujizin.camposer.internal.utils.DispatchQueue.cameraQueue
 import com.ujizin.camposer.manager.PreviewManager
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.CValue
@@ -142,10 +143,10 @@ public class DefaultIOSCameraController internal constructor(
   override val hasTorch: Boolean
     get() = captureDevice.hasTorch
 
-  override val isMuted: Boolean
+  override val isMuted: StateFlow<Boolean>
     get() = recordController.isMuted
 
-  override val isRecording: Boolean
+  override val isRecording: StateFlow<Boolean>
     get() = recordController.isRecording
 
   private val audioInput: AVCaptureDeviceInput

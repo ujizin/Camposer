@@ -54,8 +54,9 @@ class CameraViewModel(
         .getUser()
         .onStart { CameraUiState.Initial }
         .collect { user ->
-          _uiState.value = CameraUiState.Ready(user, fileDataSource.lastPicture).apply {
-            this@CameraViewModel.user = user
+          this@CameraViewModel.user = user
+          _uiState.update {
+            CameraUiState.Ready(user, fileDataSource.lastPicture)
           }
         }
     }

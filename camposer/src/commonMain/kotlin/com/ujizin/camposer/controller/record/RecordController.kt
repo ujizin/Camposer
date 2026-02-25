@@ -1,6 +1,7 @@
 package com.ujizin.camposer.controller.record
 
 import com.ujizin.camposer.CaptureResult
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * Controller interface for managing video recording operations.
@@ -13,9 +14,9 @@ import com.ujizin.camposer.CaptureResult
  * For standard usage in an application, please use the implementation provided by [com.ujizin.camposer.controller.camera.CameraController].
  */
 public interface RecordController {
-  public val isMuted: Boolean
+  public val isMuted: StateFlow<Boolean>
 
-  public val isRecording: Boolean
+  public val isRecording: StateFlow<Boolean>
 
   public fun startRecording(
     filename: String,

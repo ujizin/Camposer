@@ -3,6 +3,10 @@ package com.ujizin.camposer.fake
 import com.ujizin.camposer.internal.core.ios.IOSCameraController
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import platform.AVFoundation.AVCaptureDevice
 import platform.AVFoundation.AVCaptureDeviceFormat
 import platform.AVFoundation.AVCaptureDeviceInput
@@ -68,8 +72,8 @@ class FakeIosCameraController : IOSCameraController {
   var fakeIsZSLSupported: Boolean = true
     internal set
 
-  private var fakeIsMuted: Boolean = false
-  private var fakeIsRecording: Boolean = false
+  private val mutableFakeIsMuted = MutableStateFlow(false)
+  private val mutableFakeIsRecording = MutableStateFlow(false)
 
   private var position: AVCaptureDevicePosition = AVCaptureDevicePositionUnspecified
 
@@ -103,11 +107,9 @@ class FakeIosCameraController : IOSCameraController {
   override val isFocusSupported: Boolean
     get() = fakeIsFocusSupported
 
-  override val isMuted: Boolean
-    get() = fakeIsMuted
+  override val isMuted: StateFlow<Boolean> = mutableFakeIsMuted.asStateFlow()
 
-  override val isRecording: Boolean
-    get() = fakeIsRecording
+  override val isRecording: StateFlow<Boolean> = mutableFakeIsRecording.asStateFlow()
 
   override fun isZeroShutterLagSupported(output: AVCaptureOutput): Boolean = true
 
@@ -233,7 +235,7 @@ class FakeIosCameraController : IOSCameraController {
     filename: String,
     onVideoCaptured: (Result<String>) -> Unit,
   ) {
-    fakeIsRecording = true
+    mutableFakeIsRecording.update { true }
 
     if (fakeErrorInRecording) {
       onVideoCaptured(Result.failure(Exception("Fake error")))
@@ -248,13 +250,13 @@ class FakeIosCameraController : IOSCameraController {
   override fun pauseRecording(): Result<Boolean> = Result.success(true)
 
   override fun stopRecording(): Result<Boolean> {
-    fakeIsRecording = false
-    fakeIsMuted = false
+    mutableFakeIsRecording.update { false }
+    mutableFakeIsMuted.update { false }
     return Result.success(true)
   }
 
   override fun muteRecording(isMuted: Boolean): Result<Boolean> {
-    fakeIsMuted = isMuted
+    mutableFakeIsMuted.update { isMuted }
     return Result.success(true)
   }
 

@@ -62,7 +62,7 @@ public interface AndroidRecordController : RecordController {
     audioConfig: AudioConfig = AudioConfig.create(true),
     onResult: (CaptureResult<Uri?>) -> Unit,
   ) {
-    when (isRecording) {
+    when (isRecording.value) {
       true -> stopRecording()
       false -> startRecording(fileDescriptorOutputOptions, audioConfig, onResult)
     }
@@ -77,7 +77,7 @@ public interface AndroidRecordController : RecordController {
     audioConfig: AudioConfig = AudioConfig.create(true),
     onResult: (CaptureResult<Uri?>) -> Unit,
   ) {
-    when (isRecording) {
+    when (isRecording.value) {
       true -> stopRecording()
       false -> startRecording(mediaStoreOutputOptions, audioConfig, onResult)
     }
@@ -92,7 +92,7 @@ public interface AndroidRecordController : RecordController {
     audioConfig: AudioConfig = AudioConfig.create(true),
     onResult: (CaptureResult<Uri?>) -> Unit,
   ) {
-    when (isRecording) {
+    when (isRecording.value) {
       true -> stopRecording()
 
       false -> startRecording(

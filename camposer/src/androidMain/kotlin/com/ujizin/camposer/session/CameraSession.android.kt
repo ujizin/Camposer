@@ -108,8 +108,6 @@ public actual class CameraSession internal constructor(
         recordController = DefaultRecordController(cameraEngine = cameraEngine),
         takePictureCommand = DefaultTakePictureCommand(cameraEngine = cameraEngine),
         cameraEngine = cameraEngine,
-        cameraState = state,
-        cameraInfo = info,
       )
 
       cameraXControllerWrapper.onInitialize {
@@ -152,6 +150,7 @@ public actual class CameraSession internal constructor(
 
   internal fun dispose() {
     state.dispose()
+    controller.dispose()
     cameraXControllerWrapper.unbind()
   }
 }

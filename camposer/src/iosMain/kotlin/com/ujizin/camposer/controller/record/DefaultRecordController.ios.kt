@@ -8,6 +8,7 @@ import com.ujizin.camposer.internal.core.ios.IOSCameraController
 import com.ujizin.camposer.internal.extensions.toCaptureResult
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.properties.CaptureMode
+import kotlinx.coroutines.flow.StateFlow
 
 internal actual class DefaultRecordController private constructor(
   private val cameraEngine: IOSCameraEngine,
@@ -22,13 +23,11 @@ internal actual class DefaultRecordController private constructor(
   private val cameraState: CameraState
     get() = cameraEngine.cameraState
 
-  actual override var isMuted: Boolean = controller.isMuted
+  actual override val isMuted: StateFlow<Boolean>
     get() = controller.isMuted
-    private set
 
-  actual override var isRecording: Boolean = controller.isRecording
+  actual override val isRecording: StateFlow<Boolean>
     get() = controller.isRecording
-    private set
 
   actual override fun startRecording(
     filename: String,

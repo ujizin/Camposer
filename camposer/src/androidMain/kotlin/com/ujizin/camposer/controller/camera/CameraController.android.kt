@@ -11,9 +11,11 @@ import androidx.camera.video.FileDescriptorOutputOptions
 import androidx.camera.video.FileOutputOptions
 import androidx.camera.video.MediaStoreOutputOptions
 import androidx.camera.view.video.AudioConfig
+import androidx.compose.runtime.Stable
 import com.ujizin.camposer.CaptureResult
 import java.io.File
 
+@Stable
 public actual class CameraController : AndroidCameraController() {
   @RequiresPermission(Manifest.permission.RECORD_AUDIO)
   override fun startRecording(

@@ -14,6 +14,7 @@ import com.ujizin.sample.router.Router
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -31,7 +32,7 @@ class PreviewViewModel(
         val file = File(Uri.decode(route.path))
         emit(PreviewUiState.Ready(file, file.isVideo))
       }.collect { state ->
-        _uiState.value = state
+        _uiState.update { state }
       }
     }
   }
@@ -44,7 +45,7 @@ class PreviewViewModel(
     viewModelScope.launch {
       file.delete(context.contentResolver, intentSenderLauncher)
       if (!file.exists()) {
-        _uiState.value = PreviewUiState.Deleted
+        _uiState.update { PreviewUiState.Deleted }
       }
     }
   }

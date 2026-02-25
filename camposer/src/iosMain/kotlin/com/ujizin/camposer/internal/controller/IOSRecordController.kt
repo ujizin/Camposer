@@ -1,14 +1,15 @@
 package com.ujizin.camposer.internal.controller
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import com.ujizin.camposer.internal.core.ios.IOSCameraController
 import com.ujizin.camposer.internal.error.CameraNotRunningException
 import com.ujizin.camposer.internal.error.ErrorRecordVideoException
 import com.ujizin.camposer.internal.error.VideoOutputNotFoundException
 import com.ujizin.camposer.internal.extensions.firstIsInstanceOrNull
 import com.ujizin.camposer.internal.extensions.setMirrorEnabled
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import platform.AVFoundation.AVCaptureFileOutput
 import platform.AVFoundation.AVCaptureFileOutputRecordingDelegateProtocol
 import platform.AVFoundation.AVCaptureMovieFileOutput
@@ -29,10 +30,11 @@ internal class IOSRecordController(
   private val videoRecordOutput: AVCaptureMovieFileOutput?
     get() = captureSession.outputs.firstIsInstanceOrNull<AVCaptureMovieFileOutput>()
 
-  var isMuted: Boolean by mutableStateOf(false)
-    private set
-  var isRecording: Boolean by mutableStateOf(false)
-    private set
+  private val _isMuted = MutableStateFlow(false)
+  val isMuted: StateFlow<Boolean> = _isMuted.asStateFlow()
+
+  private val _isRecording = MutableStateFlow(false)
+  val isRecording: StateFlow<Boolean> = _isRecording.asStateFlow()
 
   fun start(
     filename: String,
@@ -64,7 +66,7 @@ internal class IOSRecordController(
           else -> Result.success(filename)
         }
         onVideoCaptured(result)
-        isRecording = false
+        _isRecording.update { false }
         videoDelegate = null
       }
     }.apply { videoDelegate = this }
@@ -74,7 +76,7 @@ internal class IOSRecordController(
       recordingDelegate = videoDelegate,
     )
 
-    isRecording = true
+    _isRecording.update { true }
   }
 
   fun resume(): Result<Boolean> {
@@ -89,13 +91,13 @@ internal class IOSRecordController(
 
   fun stop(): Result<Boolean> {
     videoRecordOutput?.stopRecording() ?: return Result.failure(VideoOutputNotFoundException())
-    isRecording = false
-    isMuted = false
+    _isRecording.update { false }
+    _isMuted.update { false }
     return Result.success(true)
   }
 
   fun mute(isMuted: Boolean): Result<Boolean> {
-    this.isMuted = isMuted
+    _isMuted.update { isMuted }
     cameraController.setAudioEnabled(!isMuted)
     return Result.success(true)
   }

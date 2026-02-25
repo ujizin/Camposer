@@ -71,8 +71,6 @@ public actual class CameraSession internal constructor(
           recordController = DefaultRecordController(cameraEngine),
           takePictureCommand = DefaultTakePictureCommand(cameraEngine),
           cameraEngine = cameraEngine,
-          cameraState = state,
-          cameraInfo = info,
         )
 
         setCaptureDevice(
@@ -109,7 +107,7 @@ public actual class CameraSession internal constructor(
     iosCameraController.start(
       captureOutput = state.captureMode.value.output,
       device = iosCameraController.getCaptureDevice(state.camSelector.value),
-      isMuted = controller.isMuted,
+      isMuted = controller.isMuted.value,
       onRunningChanged = { isStreaming = it },
     )
 
@@ -130,6 +128,7 @@ public actual class CameraSession internal constructor(
 
   internal fun dispose() {
     state.dispose()
+    controller.dispose()
     iosCameraController.release()
   }
 }
