@@ -32,7 +32,7 @@ import kotlinx.coroutines.flow.update
 public abstract class CommonCameraController<
   RC : RecordController,
   TPC : TakePictureCommand,
-  > internal constructor() : CameraControllerContract {
+> internal constructor() : CameraControllerContract {
   protected var recordController: RC? = null
     private set
 

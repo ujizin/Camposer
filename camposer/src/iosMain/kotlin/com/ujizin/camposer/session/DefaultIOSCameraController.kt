@@ -14,12 +14,12 @@ import com.ujizin.camposer.internal.extensions.tryAddOutput
 import com.ujizin.camposer.internal.extensions.withConfigurationLock
 import com.ujizin.camposer.internal.utils.DispatchQueue.cameraQueue
 import com.ujizin.camposer.manager.PreviewManager
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.ObjCAction
+import kotlinx.coroutines.flow.StateFlow
 import platform.AVFoundation.AVCaptureDevice
 import platform.AVFoundation.AVCaptureDevice.Companion.defaultDeviceWithMediaType
 import platform.AVFoundation.AVCaptureDeviceDiscoverySession
