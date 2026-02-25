@@ -12,6 +12,7 @@ concurrency:
 
 jobs:
   lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
@@ -53,6 +54,7 @@ jobs:
         run: ./gradlew checkLegacyAbi
 
   build:
+    name: Build
     runs-on: macos-latest
     steps:
       - name: Check out code
