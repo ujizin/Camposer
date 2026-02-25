@@ -402,7 +402,7 @@ final class com.ujizin.camposer.session/CameraSession { // com.ujizin.camposer.s
     final var isStreaming // com.ujizin.camposer.session/CameraSession.isStreaming|{}isStreaming[0]
         final fun <get-isStreaming>(): kotlin/Boolean // com.ujizin.camposer.session/CameraSession.isStreaming.<get-isStreaming>|<get-isStreaming>(){}[0]
 
-    final fun retryInitialization(): kotlin/Boolean // com.ujizin.camposer.session/CameraSession.retryInitialization|retryInitialization(){}[0]
+    final fun retryInitialization() // com.ujizin.camposer.session/CameraSession.retryInitialization|retryInitialization(){}[0]
 }
 
 final class com.ujizin.camposer.session/DefaultIOSCameraController : com.ujizin.camposer.internal.core.ios/IOSCameraController { // com.ujizin.camposer.session/DefaultIOSCameraController|null[0]
