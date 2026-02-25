@@ -17,6 +17,11 @@ internal class VideoApplier(
   private val cameraInfo: CameraInfo,
   private val cameraXController: CameraXController,
 ) : CameraStateApplier {
+
+  override fun onCameraInitialized() {
+    cameraState.updateFrameRate(cameraXController.videoCaptureTargetFrameRate.upper)
+  }
+
   fun applyImageCaptureStrategy(imageCaptureStrategy: ImageCaptureStrategy) {
     setImageCaptureStrategy(imageCaptureStrategy)
     cameraState.updateImageCaptureStrategy(imageCaptureStrategy)
