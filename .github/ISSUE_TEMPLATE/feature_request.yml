@@ -1,0 +1,73 @@
+name: Feature request
+description: Suggest an idea or improvement for Camposer
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for proposing a feature.
+        Please provide enough detail so we can evaluate and prioritize it.
+
+  - type: dropdown
+    id: request_type
+    attributes:
+      label: Request Type
+      description: What kind of proposal is this?
+      options:
+        - New feature
+        - Improvement to existing feature
+        - API/design change
+        - Documentation improvement
+        - Performance improvement
+    validations:
+      required: true
+
+  - type: textarea
+    id: feature_description
+    attributes:
+      label: Describe the feature that you want
+      description: Explain the feature you would like to have.
+      placeholder: Describe the feature you want to add.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed_solution
+    attributes:
+      label: Proposed solution (Optional)
+      description: Describe the solution you would like.
+      placeholder: What should happen?
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Describe alternatives or workarounds you considered.
+      placeholder: What else did you try?
+    validations:
+      required: false
+
+  - type: textarea
+    id: use_case
+    attributes:
+      label: Use case
+      description: Explain where this feature would be used.
+      placeholder: In my app, this helps when ...
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Checklist
+      options:
+        - label: I checked existing issues to avoid duplicates.
+          required: true
+        - label: I can provide more context if needed.
+          required: false
+        - label: I am willing to submit a PR for this feature.
+          required: false

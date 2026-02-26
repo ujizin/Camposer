@@ -1,0 +1,142 @@
+name: Bug report
+description: Report a problem to help improve Camposer
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this issue.
+        Please fill out all required fields so we can reproduce and fix it faster.
+
+  - type: dropdown
+    id: bug_type
+    attributes:
+      label: Bug Type
+      description: Select the category that best matches this issue.
+      options:
+        - Camera preview
+        - Image Capture flow
+        - Video recording
+        - Device compatibility
+        - Build/Setup
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: device
+    attributes:
+      label: Device
+      description: "Example: Samsung S22, Xiaomi Poco F3."
+      placeholder: Samsung S22
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      description: Select the platform where the issue happens.
+      options:
+        - Android
+        - iOS
+    validations:
+      required: true
+
+  - type: input
+    id: platform_version
+    attributes:
+      label: Platform Version
+      description: OS version for the selected platform (Android/iOS).
+      placeholder: "Android 14 or iOS 17"
+    validations:
+      required: true
+
+  - type: input
+    id: library_version
+    attributes:
+      label: Library Version
+      description: Camposer version where the issue happens.
+      placeholder: v1.0.0
+    validations:
+      required: true
+
+  - type: textarea
+    id: bug_description
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of the bug.
+      placeholder: What happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps_to_reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Share exact steps so we can reproduce the issue.
+      placeholder: |
+        1. Go to ...
+        2. Tap on ...
+        3. Observe ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected_behavior
+    attributes:
+      label: Expected behavior
+      description: Describe what you expected to happen.
+      placeholder: What should have happened?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: reproducibility
+    attributes:
+      label: Reproducibility
+      description: How often does this issue happen?
+      options:
+        - Always
+        - Frequently
+        - Sometimes
+        - Rarely
+        - I could not reproduce again
+    validations:
+      required: true
+
+  - type: textarea
+    id: issue_logs
+    attributes:
+      label: Issue logs
+      description: Paste logcat output, stack traces, or crash logs.
+      placeholder: |
+        Attach relevant logs here.
+        Use fenced code blocks for better readability.
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Additional context
+      description: Add screenshots, sample project links, or anything else useful.
+      placeholder: Drag and drop screenshots or include links here.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Checklist
+      options:
+        - label: I checked existing issues to avoid creating a duplicate.
+          required: true
+        - label: I can provide more debugging details if needed.
+          required: false
+        - label: I am willing to submit a PR for this issue.
+          required: false

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and usage help
+    url: https://github.com/ujizin/Camposer/discussions
+    about: Ask usage questions or start a discussion.
+  - name: Documentation
+    url: ujizin.github.io/Camposer
+    about: Check the project documentation before opening an issue.
