@@ -37,6 +37,26 @@
   line-height: 1.65;
 }
 
+/* Fallback tokens for first paint (before mode-specific attributes apply) */
+:root {
+  --md-accent-fg-color: #7f63c8;
+  --md-accent-fg-color--transparent: rgba(127, 99, 200, 0.16);
+  --camposer-accent: #7f63c8;
+  --camposer-accent-soft: rgba(127, 99, 200, 0.12);
+  --camposer-panel-bg: linear-gradient(160deg, rgba(249, 246, 255, 0.92) 0%, rgba(243, 238, 255, 0.96) 100%);
+  --camposer-panel-border: rgba(127, 99, 200, 0.16);
+  --camposer-sidebar-bg: linear-gradient(180deg, #faf7ff 0%, #f4efff 100%);
+  --camposer-sidebar-border: rgba(127, 99, 200, 0.18);
+  --camposer-page-bg: radial-gradient(120% 90% at 0% 0%, rgba(190, 170, 255, 0.12) 0%, rgba(190, 170, 255, 0) 50%),
+    linear-gradient(180deg, #fdfcff 0%, #f8f5ff 100%);
+  --camposer-header-bg: linear-gradient(90deg, rgba(70, 43, 121, 0.95) 0%, rgba(54, 33, 97, 0.95) 100%);
+  --camposer-header-fg: #f8f3ff;
+  --camposer-heading-1: #3a2468;
+  --camposer-footer-bg: linear-gradient(90deg, rgba(88, 59, 150, 0.96) 0%, rgba(72, 47, 130, 0.96) 100%);
+  --camposer-footer-meta-bg: linear-gradient(90deg, rgba(74, 50, 130, 0.97) 0%, rgba(62, 40, 112, 0.97) 100%);
+  --camposer-footer-fg: #f5f0ff;
+}
+
 [data-md-color-scheme="default"] .camposer-hero {
   background:
     radial-gradient(95% 160% at 10% 0%, rgba(122, 90, 255, 0.18) 0%, rgba(122, 90, 255, 0) 60%),
@@ -93,8 +113,6 @@
   --camposer-footer-bg: linear-gradient(90deg, rgba(88, 59, 150, 0.96) 0%, rgba(72, 47, 130, 0.96) 100%);
   --camposer-footer-meta-bg: linear-gradient(90deg, rgba(74, 50, 130, 0.97) 0%, rgba(62, 40, 112, 0.97) 100%);
   --camposer-footer-fg: #f5f0ff;
-  --camposer-scrollbar-thumb: #8f74d3;
-  --camposer-scrollbar-track: rgba(143, 116, 211, 0.18);
 }
 
 [data-md-color-scheme="slate"] {
@@ -114,8 +132,6 @@
   --camposer-footer-bg: linear-gradient(90deg, rgba(70, 43, 121, 0.96) 0%, rgba(54, 33, 97, 0.96) 100%);
   --camposer-footer-meta-bg: linear-gradient(90deg, rgba(57, 35, 99, 0.98) 0%, rgba(48, 29, 84, 0.98) 100%);
   --camposer-footer-fg: #f5f0ff;
-  --camposer-scrollbar-thumb: #c7b4ff;
-  --camposer-scrollbar-track: rgba(199, 180, 255, 0.2);
 }
 
 .md-header {
@@ -156,6 +172,24 @@ select:focus-visible,
   outline: 2px solid var(--camposer-accent) !important;
   outline-offset: 2px;
   box-shadow: 0 0 0 2px var(--camposer-accent-soft);
+}
+
+/* Search uses a dedicated focus style to avoid offset shadow artifacts */
+.md-search__input:focus-visible,
+.md-search__icon:focus-visible,
+.md-search__form:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.md-search__form {
+  box-shadow: none;
+}
+
+.md-search__form:focus-within {
+  outline: 1px solid var(--camposer-accent);
+  outline-offset: 0;
+  box-shadow: none;
 }
 
 .md-main__inner {
@@ -202,11 +236,6 @@ select:focus-visible,
 
 .md-typeset table:not([class]) th {
   background: var(--camposer-accent-soft);
-}
-
-.md-sidebar--primary,
-.md-sidebar--secondary {
-  position: sticky;
 }
 
 .md-sidebar__scrollwrap {
@@ -311,93 +340,6 @@ select:focus-visible,
 .md-footer a:hover,
 .md-social__link:hover {
   color: #ffffff;
-}
-
-/* Purple scrollbar */
-html,
-body,
-.md-main,
-.md-main__inner,
-.md-content,
-.md-sidebar__scrollwrap,
-.md-nav__list,
-.md-search__scrollwrap {
-  scrollbar-width: thin;
-  scrollbar-color: var(--camposer-scrollbar-thumb) var(--camposer-scrollbar-track);
-}
-
-html::-webkit-scrollbar,
-body::-webkit-scrollbar,
-.md-main::-webkit-scrollbar,
-.md-main__inner::-webkit-scrollbar,
-.md-content::-webkit-scrollbar,
-.md-sidebar__scrollwrap::-webkit-scrollbar,
-.md-nav__list::-webkit-scrollbar,
-.md-search__scrollwrap::-webkit-scrollbar {
-  width: 10px !important;
-  height: 10px !important;
-}
-
-*::-webkit-scrollbar {
-  width: 10px !important;
-  height: 10px !important;
-}
-
-html::-webkit-scrollbar-track,
-body::-webkit-scrollbar-track,
-.md-main::-webkit-scrollbar-track,
-.md-main__inner::-webkit-scrollbar-track,
-.md-content::-webkit-scrollbar-track,
-.md-sidebar__scrollwrap::-webkit-scrollbar-track,
-.md-nav__list::-webkit-scrollbar-track,
-.md-search__scrollwrap::-webkit-scrollbar-track {
-  background: var(--camposer-scrollbar-track) !important;
-  border-radius: 999px;
-}
-
-*::-webkit-scrollbar-track {
-  background: var(--camposer-scrollbar-track) !important;
-  border-radius: 999px;
-}
-
-html::-webkit-scrollbar-thumb,
-body::-webkit-scrollbar-thumb,
-.md-main::-webkit-scrollbar-thumb,
-.md-main__inner::-webkit-scrollbar-thumb,
-.md-content::-webkit-scrollbar-thumb,
-.md-sidebar__scrollwrap::-webkit-scrollbar-thumb,
-.md-nav__list::-webkit-scrollbar-thumb,
-.md-search__scrollwrap::-webkit-scrollbar-thumb {
-  background-color: var(--camposer-scrollbar-thumb) !important;
-  border-radius: 999px;
-  border: none !important;
-  background-clip: padding-box;
-}
-
-*::-webkit-scrollbar-thumb {
-  background-color: var(--camposer-scrollbar-thumb) !important;
-  border-radius: 999px;
-  border: none !important;
-  background-clip: padding-box;
-}
-
-html::-webkit-scrollbar-thumb:hover,
-body::-webkit-scrollbar-thumb:hover,
-.md-main::-webkit-scrollbar-thumb:hover,
-.md-main__inner::-webkit-scrollbar-thumb:hover,
-.md-content::-webkit-scrollbar-thumb:hover,
-.md-sidebar__scrollwrap::-webkit-scrollbar-thumb:hover,
-.md-nav__list::-webkit-scrollbar-thumb:hover,
-.md-search__scrollwrap::-webkit-scrollbar-thumb:hover {
-  background-color: var(--camposer-scrollbar-thumb) !important;
-}
-
-*::-webkit-scrollbar-thumb:hover {
-  background-color: var(--camposer-scrollbar-thumb) !important;
-}
-
-*::-webkit-scrollbar-thumb:active {
-  background-color: var(--camposer-accent) !important;
 }
 
 @media screen and (max-width: 76.2344em) {
