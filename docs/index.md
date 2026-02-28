@@ -1,11 +1,14 @@
 # Overview
 
-<p align="center">
-    <img src="assets/ic_launcher_round.png" align="center" width=200>
-</p>
-<p align="center">
-A Kotlin Multiplatform camera library fully built in Jetpack Compose, supporting photo capture, video recording, flash modes, zoom ratios, and more!
-</p>
+<div class="camposer-hero">
+    <img src="assets/ic_launcher_round.png" alt="Camposer logo" class="camposer-hero__logo">
+    <p class="camposer-hero__eyebrow">Camposer</p>
+    <p class="camposer-hero__title">Kotlin Multiplatform Camera Library</p>
+    <p class="camposer-hero__description">
+        Camposer is built with Jetpack Compose and gives you a modern camera stack for Android and iOS:
+        photo capture, video recording, flash/torch controls, zoom, focus, stabilization, and analyzers.
+    </p>
+</div>
 
 ## Platform Support
 

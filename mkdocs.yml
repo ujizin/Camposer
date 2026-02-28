@@ -53,6 +53,9 @@ markdown_extensions:
   - tables
   - admonition
 
+extra_css:
+  - assets/stylesheets/extra.css
+
 nav:
   - Overview: index.md
   - Getting Started: getting-started.md

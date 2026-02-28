@@ -1,0 +1,403 @@
+.camposer-hero {
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+  margin: 0.5rem 0 2rem;
+  padding: 2rem 1.5rem;
+  border-radius: 1.25rem;
+  border: 1px solid transparent;
+  text-align: center;
+}
+
+.camposer-hero__logo {
+  width: 110px;
+  height: 110px;
+  border-radius: 100%;
+  box-shadow: 0 10px 28px rgba(18, 12, 42, 0.28);
+}
+
+.camposer-hero__eyebrow {
+  margin: 0;
+  font-size: 1rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.camposer-hero__title {
+  margin: 0;
+  font-size: clamp(1.35rem, 2.1vw, 2rem);
+  line-height: 1.2;
+  font-weight: 800;
+}
+
+.camposer-hero__description {
+  margin: 0;
+  max-width: 48rem;
+  line-height: 1.65;
+}
+
+[data-md-color-scheme="default"] .camposer-hero {
+  background:
+    radial-gradient(95% 160% at 10% 0%, rgba(122, 90, 255, 0.18) 0%, rgba(122, 90, 255, 0) 60%),
+    linear-gradient(135deg, rgba(24, 32, 62, 0.05) 0%, rgba(61, 18, 126, 0.1) 100%);
+  border-color: rgba(99, 102, 241, 0.22);
+}
+
+[data-md-color-scheme="default"] .camposer-hero__eyebrow {
+  color: #6b46c1;
+}
+
+[data-md-color-scheme="default"] .camposer-hero__title {
+  color: #1f2041;
+}
+
+[data-md-color-scheme="default"] .camposer-hero__description {
+  color: #333a5a;
+}
+
+[data-md-color-scheme="slate"] .camposer-hero {
+  background:
+    radial-gradient(95% 180% at 10% 0%, rgba(164, 138, 255, 0.24) 0%, rgba(164, 138, 255, 0) 60%),
+    linear-gradient(140deg, rgba(28, 35, 55, 0.95) 0%, rgba(52, 24, 87, 0.85) 100%);
+  border-color: rgba(189, 171, 255, 0.4);
+}
+
+[data-md-color-scheme="slate"] .camposer-hero__eyebrow {
+  color: #d6c8ff;
+}
+
+[data-md-color-scheme="slate"] .camposer-hero__title {
+  color: #f2ecff;
+}
+
+[data-md-color-scheme="slate"] .camposer-hero__description {
+  color: #e1d9ff;
+}
+
+/* Global docs theme refresh */
+[data-md-color-scheme="default"] {
+  --md-accent-fg-color: #7f63c8;
+  --md-accent-fg-color--transparent: rgba(127, 99, 200, 0.16);
+  --camposer-accent: #7f63c8;
+  --camposer-accent-soft: rgba(127, 99, 200, 0.12);
+  --camposer-panel-bg: linear-gradient(160deg, rgba(249, 246, 255, 0.92) 0%, rgba(243, 238, 255, 0.96) 100%);
+  --camposer-panel-border: rgba(127, 99, 200, 0.16);
+  --camposer-sidebar-bg: linear-gradient(180deg, #faf7ff 0%, #f4efff 100%);
+  --camposer-sidebar-border: rgba(127, 99, 200, 0.18);
+  --camposer-page-bg: radial-gradient(120% 90% at 0% 0%, rgba(190, 170, 255, 0.12) 0%, rgba(190, 170, 255, 0) 50%),
+    linear-gradient(180deg, #fdfcff 0%, #f8f5ff 100%);
+  --camposer-header-bg: linear-gradient(90deg, rgba(70, 43, 121, 0.95) 0%, rgba(54, 33, 97, 0.95) 100%);
+  --camposer-header-fg: #f8f3ff;
+  --camposer-heading-1: #3a2468;
+  --camposer-footer-bg: linear-gradient(90deg, rgba(88, 59, 150, 0.96) 0%, rgba(72, 47, 130, 0.96) 100%);
+  --camposer-footer-meta-bg: linear-gradient(90deg, rgba(74, 50, 130, 0.97) 0%, rgba(62, 40, 112, 0.97) 100%);
+  --camposer-footer-fg: #f5f0ff;
+  --camposer-scrollbar-thumb: #8f74d3;
+  --camposer-scrollbar-track: rgba(143, 116, 211, 0.18);
+}
+
+[data-md-color-scheme="slate"] {
+  --md-accent-fg-color: #c7b4ff;
+  --md-accent-fg-color--transparent: rgba(199, 180, 255, 0.2);
+  --camposer-accent: #c7b4ff;
+  --camposer-accent-soft: rgba(199, 180, 255, 0.14);
+  --camposer-panel-bg: linear-gradient(155deg, rgba(29, 20, 52, 0.92) 0%, rgba(39, 26, 69, 0.95) 100%);
+  --camposer-panel-border: rgba(199, 180, 255, 0.25);
+  --camposer-sidebar-bg: linear-gradient(180deg, #1a132e 0%, #271a40 100%);
+  --camposer-sidebar-border: rgba(199, 180, 255, 0.2);
+  --camposer-page-bg: radial-gradient(120% 90% at 0% 0%, rgba(141, 114, 217, 0.2) 0%, rgba(141, 114, 217, 0) 52%),
+    linear-gradient(180deg, #0f0b1a 0%, #151024 100%);
+  --camposer-header-bg: linear-gradient(90deg, rgba(70, 43, 121, 0.95) 0%, rgba(54, 33, 97, 0.95) 100%);
+  --camposer-header-fg: #f8f3ff;
+  --camposer-heading-1: #efe7ff;
+  --camposer-footer-bg: linear-gradient(90deg, rgba(70, 43, 121, 0.96) 0%, rgba(54, 33, 97, 0.96) 100%);
+  --camposer-footer-meta-bg: linear-gradient(90deg, rgba(57, 35, 99, 0.98) 0%, rgba(48, 29, 84, 0.98) 100%);
+  --camposer-footer-fg: #f5f0ff;
+  --camposer-scrollbar-thumb: #c7b4ff;
+  --camposer-scrollbar-track: rgba(199, 180, 255, 0.2);
+}
+
+.md-header {
+  backdrop-filter: blur(8px);
+  background: var(--camposer-header-bg);
+  color: var(--camposer-header-fg);
+  box-shadow: 0 1px 0 rgba(127, 99, 200, 0.28);
+}
+
+.md-header__button,
+.md-header__topic,
+.md-header__title,
+.md-header__source,
+.md-tabs__link {
+  color: var(--camposer-header-fg);
+}
+
+.md-header .md-icon,
+.md-search__icon {
+  color: var(--camposer-header-fg);
+}
+
+.md-search__input::placeholder {
+  color: rgba(248, 243, 255, 0.75);
+}
+
+:root {
+  accent-color: var(--camposer-accent);
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[role="button"]:focus-visible,
+.md-nav__link:focus-visible {
+  outline: 2px solid var(--camposer-accent) !important;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--camposer-accent-soft);
+}
+
+.md-main__inner {
+  margin-top: 0.8rem;
+}
+
+.md-main {
+  background: var(--camposer-page-bg);
+}
+
+.md-typeset h1 {
+  letter-spacing: -0.02em;
+  font-weight: 800;
+  color: var(--camposer-heading-1);
+}
+
+.md-typeset h2 {
+  margin-top: 2.1rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--camposer-panel-border);
+}
+
+.md-typeset a {
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+}
+
+.md-typeset a:hover {
+  color: var(--camposer-accent);
+}
+
+.md-typeset .admonition,
+.md-typeset details,
+.md-typeset pre > code,
+.md-typeset table:not([class]) {
+  border-radius: 14px;
+  border: 1px solid var(--camposer-panel-border);
+  background: var(--camposer-panel-bg);
+}
+
+.md-typeset table:not([class]) {
+  overflow: hidden;
+}
+
+.md-typeset table:not([class]) th {
+  background: var(--camposer-accent-soft);
+}
+
+.md-sidebar--primary,
+.md-sidebar--secondary {
+  position: sticky;
+}
+
+.md-sidebar__scrollwrap {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.md-nav--primary .md-nav__title,
+.md-nav--secondary .md-nav__title {
+  padding-top: 0.55rem;
+  padding-bottom: 0.55rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  font-weight: 700;
+  color: var(--camposer-accent);
+  background: transparent;
+  border-bottom: none;
+  box-shadow: none;
+}
+
+.md-nav__title .md-nav__button,
+.md-nav__title .md-nav__icon,
+.md-nav__title .md-ellipsis {
+  color: var(--camposer-accent);
+}
+
+.md-nav__title .md-nav__button,
+.md-nav__title .md-nav__icon {
+  margin-right: 0.5rem;
+}
+
+.md-nav__title {
+  background: transparent !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+.md-nav__title + .md-nav__list {
+  padding-top: 0;
+}
+
+.md-nav__title + .md-nav__list > .md-nav__item:first-child {
+  margin-top: 0;
+}
+
+.md-nav--primary > .md-nav__list > .md-nav__item:first-child,
+.md-nav--secondary > .md-nav__list > .md-nav__item:first-child {
+  margin-top: 0;
+}
+
+.md-nav__link {
+  margin: 0.12rem 0.4rem;
+  padding: 0.36rem 0.6rem;
+  border-radius: 10px;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.md-nav__link:hover {
+  background: var(--camposer-accent-soft);
+}
+
+.md-nav__link--active,
+.md-nav__item .md-nav__link:focus-visible {
+  background: var(--camposer-accent-soft);
+  color: var(--camposer-accent);
+  font-weight: 700;
+}
+
+.md-top {
+  border-radius: 999px;
+}
+
+.md-footer {
+  background: var(--camposer-footer-bg);
+  color: var(--camposer-footer-fg);
+  border-top: 1px solid rgba(214, 200, 255, 0.28);
+}
+
+.md-footer-meta {
+  background: var(--camposer-footer-meta-bg);
+  color: var(--camposer-footer-fg);
+}
+
+.md-footer__title,
+.md-footer__direction,
+.md-footer__button,
+.md-copyright,
+.md-social__link,
+.md-footer a {
+  color: var(--camposer-footer-fg);
+}
+
+.md-footer a:hover,
+.md-social__link:hover {
+  color: #ffffff;
+}
+
+/* Purple scrollbar */
+html,
+body,
+.md-main,
+.md-main__inner,
+.md-content,
+.md-sidebar__scrollwrap,
+.md-nav__list,
+.md-search__scrollwrap {
+  scrollbar-width: thin;
+  scrollbar-color: var(--camposer-scrollbar-thumb) var(--camposer-scrollbar-track);
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+.md-main::-webkit-scrollbar,
+.md-main__inner::-webkit-scrollbar,
+.md-content::-webkit-scrollbar,
+.md-sidebar__scrollwrap::-webkit-scrollbar,
+.md-nav__list::-webkit-scrollbar,
+.md-search__scrollwrap::-webkit-scrollbar {
+  width: 10px !important;
+  height: 10px !important;
+}
+
+*::-webkit-scrollbar {
+  width: 10px !important;
+  height: 10px !important;
+}
+
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track,
+.md-main::-webkit-scrollbar-track,
+.md-main__inner::-webkit-scrollbar-track,
+.md-content::-webkit-scrollbar-track,
+.md-sidebar__scrollwrap::-webkit-scrollbar-track,
+.md-nav__list::-webkit-scrollbar-track,
+.md-search__scrollwrap::-webkit-scrollbar-track {
+  background: var(--camposer-scrollbar-track) !important;
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--camposer-scrollbar-track) !important;
+  border-radius: 999px;
+}
+
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb,
+.md-main::-webkit-scrollbar-thumb,
+.md-main__inner::-webkit-scrollbar-thumb,
+.md-content::-webkit-scrollbar-thumb,
+.md-sidebar__scrollwrap::-webkit-scrollbar-thumb,
+.md-nav__list::-webkit-scrollbar-thumb,
+.md-search__scrollwrap::-webkit-scrollbar-thumb {
+  background-color: var(--camposer-scrollbar-thumb) !important;
+  border-radius: 999px;
+  border: none !important;
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--camposer-scrollbar-thumb) !important;
+  border-radius: 999px;
+  border: none !important;
+  background-clip: padding-box;
+}
+
+html::-webkit-scrollbar-thumb:hover,
+body::-webkit-scrollbar-thumb:hover,
+.md-main::-webkit-scrollbar-thumb:hover,
+.md-main__inner::-webkit-scrollbar-thumb:hover,
+.md-content::-webkit-scrollbar-thumb:hover,
+.md-sidebar__scrollwrap::-webkit-scrollbar-thumb:hover,
+.md-nav__list::-webkit-scrollbar-thumb:hover,
+.md-search__scrollwrap::-webkit-scrollbar-thumb:hover {
+  background-color: var(--camposer-scrollbar-thumb) !important;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--camposer-scrollbar-thumb) !important;
+}
+
+*::-webkit-scrollbar-thumb:active {
+  background-color: var(--camposer-accent) !important;
+}
+
+@media screen and (max-width: 76.2344em) {
+  .md-sidebar__scrollwrap {
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+  }
+}
