@@ -227,6 +227,9 @@ select:focus-visible,
   background: transparent;
   border-bottom: none;
   box-shadow: none;
+  position: static !important;
+  top: auto !important;
+  z-index: auto !important;
 }
 
 .md-nav__title .md-nav__button,
@@ -244,6 +247,10 @@ select:focus-visible,
   background: transparent !important;
   border-bottom: none !important;
   box-shadow: none !important;
+  position: static !important;
+  top: auto !important;
+  z-index: auto !important;
+  isolation: auto;
 }
 
 .md-nav__title + .md-nav__list {
