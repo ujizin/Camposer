@@ -3,9 +3,9 @@ package com.ujizin.camposer.state.properties.selector
 public actual class CameraId internal constructor(
   public val deviceId: String,
 ) {
-  actual override fun equals(other: Any?): Boolean {
+  actual override operator fun equals(other: Any?): Boolean {
     if (this === other) return true
-    if (other !is CameraId) return false
+    if (other == null || other !is CameraId) return false
     return deviceId == other.deviceId
   }
 

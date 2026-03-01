@@ -4,7 +4,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
-class CameraIdTest {
+internal class CameraIdTest {
 
   @Test
   fun `equality is based on deviceId`() {
@@ -18,6 +18,13 @@ class CameraIdTest {
   @Test
   fun `toString includes deviceId`() {
     val id = CameraId("42")
-    assert(id.toString().contains("42"))
+    assertEquals("CameraId(deviceId=42)", id.toString())
+  }
+
+  @Test
+  fun `equal instances have equal hashCodes`() {
+    val id1 = CameraId("0")
+    val id2 = CameraId("0")
+    assertEquals(id1.hashCode(), id2.hashCode())
   }
 }
