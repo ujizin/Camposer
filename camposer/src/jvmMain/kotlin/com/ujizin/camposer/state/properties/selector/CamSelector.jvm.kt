@@ -34,7 +34,7 @@ public actual class CamSelector {
     this.cameraDevice = cameraDevice
   }
 
-  actual override fun equals(other: Any?): Boolean {
+  actual override operator fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || other !is CamSelector) return false
     if (camPosition != other.camPosition) return false
