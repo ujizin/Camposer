@@ -135,10 +135,26 @@
 }
 
 .md-header {
-  backdrop-filter: blur(8px);
-  background: var(--camposer-header-bg);
+  /* backdrop-filter must NOT be set on .md-header itself: per CSS spec, a
+     non-none backdrop-filter on an ancestor creates a new containing block
+     for position:fixed descendants. On mobile, .md-search__inner uses
+     position:fixed;height:100%;width:100% to fill the viewport. With
+     backdrop-filter on .md-header, that 100% resolves to the header height
+     (~48px) instead of the viewport, clipping the search overlay and hiding
+     "Type to start searching" + results. Moved to ::before instead. */
+  background: transparent;
   color: var(--camposer-header-fg);
   box-shadow: 0 1px 0 rgba(127, 99, 200, 0.28);
+}
+
+.md-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  backdrop-filter: blur(8px);
+  background: var(--camposer-header-bg);
+  pointer-events: none;
 }
 
 .md-header__button,
@@ -149,13 +165,24 @@
   color: var(--camposer-header-fg);
 }
 
-.md-header .md-icon,
-.md-search__icon {
-  color: var(--camposer-header-fg);
-}
-
 .md-search__input::placeholder {
   color: rgba(248, 243, 255, 0.75);
+}
+
+/* On mobile the search expands to a full-screen overlay whose background is
+   --md-default-bg-color (white in light mode). Our global header icon rules set
+   near-white colors that are invisible on white. Restore Material's default dark
+   colors specifically for search form elements in that context. */
+@media screen and (max-width: 59.984375em) {
+  [data-md-color-scheme="default"] .md-search__form .md-icon,
+  [data-md-color-scheme="default"] .md-search__input ~ .md-search__icon,
+  [data-md-color-scheme="default"] .md-search__input + .md-search__icon {
+    color: var(--md-default-fg-color--light);
+  }
+
+  [data-md-color-scheme="default"] .md-search__input::placeholder {
+    color: var(--md-default-fg-color--light);
+  }
 }
 
 :root {
@@ -243,10 +270,21 @@ select:focus-visible,
   border-radius: 0;
   background: transparent;
   box-shadow: none;
+  /* Material's @supports selector(::-webkit-scrollbar) block resets
+     scrollbar-gutter to 'auto' in Chrome/Safari. This means the 4px WebKit
+     scrollbar takes up layout space when it briefly appears during page
+     load/navigation, causing a visible shift (the "flick"). Restoring
+     'stable' here (loaded after Material's CSS) overrides that reset, so the
+     gutter is always reserved and the scrollbar appearing/disappearing never
+     shifts the sidebar content. */
+  scrollbar-gutter: stable;
 }
 
 .md-nav--primary .md-nav__title,
 .md-nav--secondary .md-nav__title {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
   padding-top: 0.55rem;
   padding-bottom: 0.55rem;
   padding-left: 1rem;
@@ -269,7 +307,12 @@ select:focus-visible,
 
 .md-nav__title .md-nav__button,
 .md-nav__title .md-nav__icon {
-  margin-right: 0.5rem;
+  flex: 0 0 auto;
+  line-height: 1;
+}
+
+.md-nav__title .md-ellipsis {
+  line-height: 1.2;
 }
 
 .md-nav__title {
@@ -283,7 +326,7 @@ select:focus-visible,
 }
 
 .md-nav__title + .md-nav__list {
-  padding-top: 0;
+  padding-top: 0.25rem;
 }
 
 .md-nav__title + .md-nav__list > .md-nav__item:first-child {
@@ -343,6 +386,98 @@ select:focus-visible,
 }
 
 @media screen and (max-width: 76.2344em) {
+  /* Restore positioning context so the absolute-positioned back arrow
+     (.md-nav__icon) is positioned relative to its title container.
+     The global rule sets position:static which breaks this. */
+  .md-nav__title {
+    position: relative !important;
+  }
+
+  .md-nav__link {
+    margin: 0;
+    padding: 0;
+    border-radius: 0;
+    transition: background-color 120ms ease, color 120ms ease;
+  }
+  /* Fix mobile drawer brand row: keep logo + title aligned and visible */
+  .md-nav--primary .md-nav__title[for="__drawer"] {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 3.4rem;
+    padding: 2.7rem 2.8rem;
+    color: var(--camposer-accent) !important;
+    line-height: 1.2;
+    overflow: hidden;
+  }
+
+  .md-nav--primary .md-nav__title[for="__drawer"] .md-nav__button,
+  .md-nav--primary .md-nav__title[for="__drawer"] .md-nav__icon {
+    margin: 0;
+    flex: 0 0 auto;
+  }
+
+  /* Logo anchor — fixed-size flex item, prevents shrinking/overlap */
+  .md-nav--primary .md-nav__title[for="__drawer"] .md-logo,
+  .md-nav--primary .md-nav__title[for="__drawer"] .md-nav__button.md-logo {
+    flex: 0 0 2rem;
+    width: 2.3rem;
+    height: 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .md-nav--primary .md-nav__title[for="__drawer"] .md-logo img,
+  .md-nav--primary .md-nav__title[for="__drawer"] .md-nav__button.md-logo img {
+    width: 2rem;
+    height: 2rem;
+    max-width: 2rem;
+    max-height: 2rem;
+    display: block;
+  }
+
+  /* Drawer header site name: fill remaining space and truncate if too long */
+  .md-nav--primary .md-nav__title[for="__drawer"] .md-ellipsis {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Section nav titles: ellipsis can overflow (back arrow + text) */
+  .md-nav__title:not([for="__drawer"]) .md-ellipsis {
+    overflow: visible;
+    text-overflow: clip;
+  }
+
+  /* Section nav title (back arrow + section name).
+     Material positions .md-nav__icon absolutely at left:0.4rem + margin:0.2rem.
+     Switch from flex to block and add padding-left to clear the icon. */
+  .md-nav--primary .md-nav__title:not([for="__drawer"]) {
+    display: block;
+    padding-left: 2.2rem;
+    padding-right: 1rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Vertically center the back arrow icon in the section title */
+  .md-nav--primary .md-nav__title:not([for="__drawer"]) .md-nav__icon {
+      top: 19px;
+  }
+
+  .md-nav__title + .md-nav__list {
+    padding-top: 0.4rem;
+  }
+
+  /* Keep first item from touching the repository/source block */
+  .md-nav--primary .md-nav__source + .md-nav__list {
+    margin-top: 0.35rem;
+  }
+
   .md-sidebar__scrollwrap {
     border-radius: 0;
     border: none;
