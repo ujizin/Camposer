@@ -146,6 +146,7 @@ public actual class CameraSession internal constructor(
   }
 
   internal fun dispose() {
+    isStreaming = false
     frameLoopJob?.cancel()
     frameLoopJob = null
     val jvmEngine = cameraEngine as? JvmCameraEngine
