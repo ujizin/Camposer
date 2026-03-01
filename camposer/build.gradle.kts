@@ -63,6 +63,8 @@ kotlin {
     }
   }
 
+  jvm()
+
   sourceSets {
     commonMain.dependencies {
       implementation(libs.compose.runtime)
@@ -74,6 +76,18 @@ kotlin {
     }
 
     iosMain.dependencies {}
+
+    jvmMain.dependencies {
+      implementation(libs.javacv)
+      listOf("linux-x86_64", "macosx-arm64", "macosx-x86_64", "windows-x86_64").forEach { platform ->
+        implementation("org.bytedeco:opencv:4.9.0-1.5.10:$platform")
+        implementation("org.bytedeco:ffmpeg:6.1.1-1.5.10:$platform")
+      }
+    }
+    jvmTest.dependencies {
+      implementation(kotlin("test"))
+      implementation(libs.kotlinx.coroutines.test)
+    }
 
     commonTest.dependencies {
       implementation(kotlin("test"))

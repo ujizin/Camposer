@@ -15,6 +15,7 @@ coroutines = "1.10.2"
 compose-multiplatform = "1.10.2"
 binary-compatibility-validator = "0.18.1"
 maven-publish = "0.36.0"
+javacv = "1.5.13"
 
 # Camposer scanner
 
@@ -37,6 +38,7 @@ androidx-test-core = { module = "androidx.test:core-ktx", version.ref = "android
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-test" }
 androidx-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "androidx-arch-core" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+javacv = { module = "org.bytedeco:javacv", version.ref = "javacv" }
 
 mlkit-barcode-scanning = { module = "com.google.mlkit:barcode-scanning", version.ref = "mlkit-barcode" }
 androidx-camera-mlkit-vision = { group = "androidx.camera", name = "camera-mlkit-vision", version.ref = "camera-mlkit-vision" }
