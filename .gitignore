@@ -19,3 +19,6 @@ local.properties
 buildSrc/.kotlin
 docs/api
 site
+# JVM test artifacts (CameraTakePictureTest writes relative-path files)
+camposer/*.jpg
+camposer/*.mp4

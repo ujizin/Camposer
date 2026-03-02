@@ -12,7 +12,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -34,6 +36,7 @@ internal actual class CameraDevicesManager(
 
   private suspend fun poll() {
     while (true) {
+      currentCoroutineContext().ensureActive()
       val discovered = discoverDevices()
       _cameraDevicesState.update { discovered }
       delay(pollIntervalMs)

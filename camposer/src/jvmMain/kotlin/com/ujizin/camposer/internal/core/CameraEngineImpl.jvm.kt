@@ -28,7 +28,7 @@ import org.bytedeco.opencv.opencv_core.Mat
 internal actual class CameraEngineImpl(
   actual override val cameraController: CameraController,
   actual override val cameraInfo: CameraInfo,
-  override val capture: JvmCameraCapture = JvmCameraCaptureImpl(),
+  override val capture: JvmCameraCapture,
   private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : JvmCameraEngine {
 

@@ -13,7 +13,7 @@ internal class CameraEngineImplTest {
   private fun buildEngine(): CameraEngineImpl {
     val capture = FakeJvmCameraCapture()
     val controller = CameraController()
-    val info = CameraInfo(JvmCameraInfo())
+    val info = CameraInfo(JvmCameraInfo(capture))
     return CameraEngineImpl(
       cameraController = controller,
       cameraInfo = info,

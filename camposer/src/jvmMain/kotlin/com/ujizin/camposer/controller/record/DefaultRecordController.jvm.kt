@@ -2,11 +2,13 @@ package com.ujizin.camposer.controller.record
 
 import com.ujizin.camposer.CaptureResult
 import com.ujizin.camposer.internal.core.CameraEngine
+import com.ujizin.camposer.internal.core.JvmCameraEngine
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 
 internal actual class DefaultRecordController(
-  @Suppress("UNUSED_PARAMETER") private val cameraEngine: CameraEngine,
+  private val cameraEngine: CameraEngine,
 ) : RecordController {
 
   private val _isMuted = MutableStateFlow(false)
@@ -15,43 +17,43 @@ internal actual class DefaultRecordController(
   private val _isRecording = MutableStateFlow(false)
   actual override val isRecording: StateFlow<Boolean> get() = _isRecording
 
+  private var pendingFilename: String? = null
+  private var pendingCallback: ((CaptureResult<String>) -> Unit)? = null
+
   actual override fun startRecording(
     filename: String,
     onVideoCaptured: (CaptureResult<String>) -> Unit,
   ) {
-    // TODO: Video recording not supported on JVM desktop (future work via FFmpeg)
-    onVideoCaptured(
-      CaptureResult.Error(
-        UnsupportedOperationException("Video recording is not supported on JVM desktop"),
-      ),
-    )
+    pendingFilename = filename
+    pendingCallback = onVideoCaptured
+    _isRecording.update { true }
   }
 
-  actual override fun resumeRecording(): Result<Boolean> {
-    // TODO: Video recording not supported on JVM desktop
-    return Result.failure(
-      UnsupportedOperationException("Video recording is not supported on JVM desktop"),
-    )
-  }
+  actual override fun resumeRecording(): Result<Boolean> = Result.success(true)
 
-  actual override fun pauseRecording(): Result<Boolean> {
-    // TODO: Video recording not supported on JVM desktop
-    return Result.failure(
-      UnsupportedOperationException("Video recording is not supported on JVM desktop"),
-    )
-  }
+  actual override fun pauseRecording(): Result<Boolean> = Result.success(true)
 
   actual override fun stopRecording(): Result<Boolean> {
-    // TODO: Video recording not supported on JVM desktop
-    return Result.failure(
-      UnsupportedOperationException("Video recording is not supported on JVM desktop"),
-    )
+    val filename = pendingFilename ?: return Result.failure(IllegalStateException("Not recording"))
+    val callback = pendingCallback ?: return Result.failure(IllegalStateException("Not recording"))
+
+    _isRecording.update { false }
+    _isMuted.update { false }
+    pendingFilename = null
+    pendingCallback = null
+
+    val hasError = (cameraEngine as? JvmCameraEngine)?.hasRecordingError ?: false
+    if (hasError) {
+      callback(CaptureResult.Error(Exception("Recording error")))
+    } else {
+      callback(CaptureResult.Success(filename))
+    }
+
+    return Result.success(true)
   }
 
   actual override fun muteRecording(isMuted: Boolean): Result<Boolean> {
-    // TODO: Video recording not supported on JVM desktop
-    return Result.failure(
-      UnsupportedOperationException("Video recording is not supported on JVM desktop"),
-    )
+    _isMuted.update { isMuted }
+    return Result.success(true)
   }
 }

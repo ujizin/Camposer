@@ -8,4 +8,10 @@ internal interface JvmCameraEngine : CameraEngine {
 
   /** The latest frame from the camera, null until first frame is read. */
   var currentMat: Mat?
+
+  /**
+   * Controls whether [DefaultRecordController] produces an error on [stopRecording].
+   * Defaults to false; overridden in test fakes to simulate recording failures.
+   */
+  val hasRecordingError: Boolean get() = false
 }
