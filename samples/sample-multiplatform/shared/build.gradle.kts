@@ -77,7 +77,7 @@ kotlin {
     }
 
     jvmMain.dependencies {
-      implementation(libs.compose.desktop.current)
+      implementation(compose.desktop.currentOs)
       implementation(libs.javacv)
     }
   }
