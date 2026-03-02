@@ -19,19 +19,23 @@ import com.ujizin.camposer.internal.extensions.toImageBitmap
 import com.ujizin.camposer.internal.utils.Logger
 import com.ujizin.camposer.state.CameraState
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.newSingleThreadContext
 import org.bytedeco.opencv.global.opencv_core
 import org.bytedeco.opencv.opencv_core.Mat
 
+@OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
 @Stable
 public actual class CameraSession internal constructor(
   internal actual val cameraEngine: CameraEngine,
@@ -48,7 +52,8 @@ public actual class CameraSession internal constructor(
   public actual var isStreaming: Boolean by mutableStateOf(false)
     internal set
 
-  private val sessionScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+  private val cameraDispatcher = newSingleThreadContext("CameraIO")
+  private val sessionScope = CoroutineScope(cameraDispatcher + SupervisorJob())
 
   private val _currentFrame = MutableStateFlow<ImageBitmap?>(null)
   public val currentFrame: StateFlow<ImageBitmap?> = _currentFrame.asStateFlow()
@@ -104,7 +109,10 @@ public actual class CameraSession internal constructor(
       try {
         while (isActive) {
           val read = jvmEngine.capture.read(mat)
-          if (!read || mat.empty()) continue
+          if (!read || mat.empty()) {
+            delay(16)
+            continue
+          }
 
           jvmEngine.currentMat = mat.clone()
 
@@ -154,5 +162,6 @@ public actual class CameraSession internal constructor(
     state.dispose()
     controller.dispose()
     sessionScope.cancel()
+    cameraDispatcher.close()
   }
 }

@@ -25,6 +25,15 @@ compose.desktop {
       targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
       packageName = "CamposerSample"
       packageVersion = "1.0.0"
+
+      macOS {
+        infoPlist {
+          extraKeysRawXml = """
+            <key>NSCameraUsageDescription</key>
+            <string>This app uses the camera to show a live preview.</string>
+          """.trimIndent()
+        }
+      }
     }
   }
 }
