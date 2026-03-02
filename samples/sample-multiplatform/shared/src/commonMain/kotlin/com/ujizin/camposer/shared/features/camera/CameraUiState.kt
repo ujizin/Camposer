@@ -1,7 +1,7 @@
 package com.ujizin.camposer.shared.features.camera
 
-import com.ujizin.camposer.codescanner.CornerPointer
-import com.ujizin.camposer.codescanner.FrameRect
+import com.ujizin.camposer.shared.utils.QrCorner
+import com.ujizin.camposer.shared.utils.QrRect
 import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.MirrorMode
 import com.ujizin.camposer.state.properties.OrientationStrategy
@@ -28,6 +28,6 @@ data class CameraUiState(
   val mirrorMode: MirrorMode = MirrorMode.OnlyInFront,
   val lastThumbnail: ByteArray? = null,
   val qrCodeText: String? = null,
-  val qrCodeFrameRect: FrameRect? = null,
-  val qrCodeCorners: List<CornerPointer> = emptyList(),
+  val qrCodeFrameRect: QrRect? = null,
+  val qrCodeCorners: List<QrCorner> = emptyList(),
 )

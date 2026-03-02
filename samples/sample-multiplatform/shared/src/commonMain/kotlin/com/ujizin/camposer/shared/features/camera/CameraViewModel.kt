@@ -3,8 +3,9 @@ package com.ujizin.camposer.shared.features.camera
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ujizin.camposer.CaptureResult
-import com.ujizin.camposer.codescanner.CodeResult
 import com.ujizin.camposer.controller.camera.CameraController
+import com.ujizin.camposer.shared.utils.QrCorner
+import com.ujizin.camposer.shared.utils.QrRect
 import com.ujizin.camposer.shared.utils.getFirstFrameVideo
 import com.ujizin.camposer.shared.utils.saveVideoToGallery
 import com.ujizin.camposer.state.properties.CaptureMode
@@ -181,14 +182,14 @@ class CameraViewModel : ViewModel() {
     cameraController.setTorchEnabled(!isCurrentlyEnabled)
   }
 
-  fun onCodeAnalyzed(code: CodeResult) {
+  fun onCodeAnalyzed(text: String, frameRect: QrRect, corners: List<QrCorner>) {
     if (_uiState.value.captureMode != CaptureMode.Image) return
 
     _uiState.update { state ->
       state.copy(
-        qrCodeText = code.text,
-        qrCodeFrameRect = code.frameRect,
-        qrCodeCorners = code.corners,
+        qrCodeText = text,
+        qrCodeFrameRect = frameRect,
+        qrCodeCorners = corners,
       )
     }
     scheduleQrFeedbackClear()

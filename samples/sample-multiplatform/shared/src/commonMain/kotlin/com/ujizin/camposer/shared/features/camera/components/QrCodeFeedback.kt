@@ -23,8 +23,8 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.ujizin.camposer.codescanner.CornerPointer
-import com.ujizin.camposer.codescanner.FrameRect
+import com.ujizin.camposer.shared.utils.QrCorner
+import com.ujizin.camposer.shared.utils.QrRect
 import kotlin.math.hypot
 import kotlin.math.min
 
@@ -78,8 +78,8 @@ fun QrCodeLinkPopup(
 @Composable
 fun QrCodeOverlay(
   modifier: Modifier = Modifier,
-  frameRect: FrameRect?,
-  corners: List<CornerPointer>,
+  frameRect: QrRect?,
+  corners: List<QrCorner>,
 ) {
   if (frameRect == null && corners.isEmpty()) return
 
@@ -241,7 +241,7 @@ private fun Offset.normalizedOrZero(): Offset {
   return if (distance == 0f) Offset.Zero else Offset(x / distance, y / distance)
 }
 
-private fun DrawScope.toOffsets(corners: List<CornerPointer>): List<Offset>? {
+private fun DrawScope.toOffsets(corners: List<QrCorner>): List<Offset>? {
   if (corners.size < 4) return null
   return corners.take(4).map { corner ->
     Offset(
@@ -251,7 +251,7 @@ private fun DrawScope.toOffsets(corners: List<CornerPointer>): List<Offset>? {
   }
 }
 
-private fun DrawScope.toOffsets(frameRect: FrameRect): List<Offset> =
+private fun DrawScope.toOffsets(frameRect: QrRect): List<Offset> =
   listOf(
     Offset(frameRect.left.dp.toPx(), frameRect.top.dp.toPx()),
     Offset(frameRect.right.dp.toPx(), frameRect.top.dp.toPx()),
