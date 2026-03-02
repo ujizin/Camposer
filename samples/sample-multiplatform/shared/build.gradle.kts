@@ -33,7 +33,16 @@ kotlin {
       dependsOn(commonMain.get())
     }
     androidMain.configure { dependsOn(nonJvmMain) }
-    iosMain.configure   { dependsOn(nonJvmMain) }
+
+    // iosMain is an intermediate source set for iOS-specific actuals.
+    // It depends on nonJvmMain so iOS targets also get MOKO + code-scanner.
+    // iosArm64Main / iosX64Main / iosSimulatorArm64Main → iosMain → nonJvmMain → commonMain
+    val iosMain by creating {
+      dependsOn(nonJvmMain)
+    }
+    getByName("iosX64Main") { dependsOn(iosMain) }
+    getByName("iosArm64Main") { dependsOn(iosMain) }
+    getByName("iosSimulatorArm64Main") { dependsOn(iosMain) }
 
     commonMain.dependencies {
       implementation(libs.bundles.compose.kmp)
