@@ -39,6 +39,7 @@ kotlin {
       implementation(libs.bundles.compose.kmp)
       implementation(libs.compose.material3)
       implementation(libs.jetbrains.lifecycle.viewmodel)
+      implementation(libs.jetbrains.lifecycle.runtime.compose)
       implementation(libs.jetbrains.navigation3.ui)
       implementation(libs.compose.coil3)
 
@@ -68,6 +69,7 @@ kotlin {
 
     jvmMain.dependencies {
       implementation(libs.compose.desktop.current)
+      implementation(libs.javacv)
     }
   }
 }

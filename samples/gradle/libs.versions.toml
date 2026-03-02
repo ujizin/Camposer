@@ -27,6 +27,7 @@ multiplatform-nav3-ui = "1.0.0-alpha06"
 moko-permissions = "0.20.1"
 coil3 = "3.3.0"
 filekit = "0.12.0"
+javacv = "1.5.10"
 
 [libraries]
 
@@ -59,6 +60,7 @@ accompanist-permissions = { module = "com.google.accompanist:accompanist-permiss
 cloudy = { module = "com.github.skydoves:cloudy", version.ref = "cloudy" }
 
 jetbrains-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "kmp-lifecycle" }
+jetbrains-lifecycle-runtime-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "kmp-lifecycle" }
 jetbrains-navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "multiplatform-nav3-ui" }
 
 moko-permissions = { module = "dev.icerock.moko:permissions", version.ref = "moko-permissions" }
@@ -73,6 +75,7 @@ coil-video = { module = "io.coil-kt:coil-video", version.ref = "coil" }
 kotlinx-io = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kotlinx-io" }
 filekit-core = { module = "io.github.vinceglb:filekit-core", version.ref = "filekit" }
 filekit-dialogs = { module = "io.github.vinceglb:filekit-dialogs", version.ref = "filekit" }
+javacv = { module = "org.bytedeco:javacv", version.ref = "javacv" }
 
 ## KMP Compose
 compose-desktop-current = { module = "org.jetbrains.compose.desktop:desktop-jvm", version.ref = "compose-multiplatform" }
