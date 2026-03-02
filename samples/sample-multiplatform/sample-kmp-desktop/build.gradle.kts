@@ -12,7 +12,7 @@ kotlin {
   sourceSets {
     jvmMain.dependencies {
       implementation(project(":sample-multiplatform:shared"))
-      implementation(libs.compose.desktop.current)
+      implementation(compose.desktop.currentOs)
     }
   }
 }
