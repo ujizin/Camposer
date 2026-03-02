@@ -92,11 +92,6 @@ fun CameraScreen(
 
   LaunchedEffect(Unit, uiState.camSelector) {
     cameraViewModel.initializeOrientationStrategy()
-    with(cameraViewModel.cameraController) {
-//      setZoomRatio(10F)
-//      setFlashMode(FlashMode.On)
-//      setTorchEnabled(true)
-    }
   }
 
   LaunchedEffect(uiState.orientationStrategy) {

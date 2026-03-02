@@ -76,7 +76,7 @@ class CameraViewModel : ViewModel() {
           FileKit.saveVideoToGallery(file = PlatformFile(videoPath))
         }
       } else if (result is CaptureResult.Error) {
-        throw result.throwable
+        println("Recording error: ${result.throwable.message}")
       }
     }
   }

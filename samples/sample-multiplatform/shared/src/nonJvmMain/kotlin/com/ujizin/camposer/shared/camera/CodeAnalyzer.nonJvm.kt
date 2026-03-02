@@ -14,7 +14,7 @@ actual fun rememberPlatformCodeAnalyzer(
   onDetected: (text: String, rect: QrRect, corners: List<QrCorner>) -> Unit,
 ): ImageAnalyzer? = cameraSession.rememberCodeImageAnalyzer(
   codeTypes = listOf(CodeType.QRCode),
-  onError = {},
+  onError = { error -> println("Code scanner error: ${error.message}") },
   codeAnalyzerListener = { result ->
     onDetected(
       result.text,
