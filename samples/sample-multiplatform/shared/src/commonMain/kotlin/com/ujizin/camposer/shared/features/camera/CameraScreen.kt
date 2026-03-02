@@ -22,9 +22,8 @@ import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationEventHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
 import com.ujizin.camposer.CameraPreview
-import com.ujizin.camposer.codescanner.CodeType
-import com.ujizin.camposer.codescanner.rememberCodeImageAnalyzer
 import com.ujizin.camposer.lifecycle.compose.collectStateWithLifecycle
+import com.ujizin.camposer.shared.camera.rememberPlatformCodeAnalyzer
 import com.ujizin.camposer.session.rememberCameraSession
 import com.ujizin.camposer.shared.features.camera.components.BottomActionBar
 import com.ujizin.camposer.shared.features.camera.components.CameraSettingsOverlay
@@ -62,10 +61,9 @@ fun CameraScreen(
   val minZoom = cameraInfoState.minZoom
   val maxZoom = cameraInfoState.maxZoom
 
-  val codeImageAnalyzer = cameraSession.rememberCodeImageAnalyzer(
-    codeTypes = listOf(CodeType.QRCode),
-    onError = {},
-    codeAnalyzerListener = cameraViewModel::onCodeAnalyzed,
+  val codeImageAnalyzer = rememberPlatformCodeAnalyzer(
+    cameraSession = cameraSession,
+    onDetected = { text, rect, corners -> cameraViewModel.onCodeAnalyzed(text, rect, corners) },
   )
 
   val camFormat = remember(
