@@ -7,12 +7,11 @@ import javax.imageio.ImageIO
 
 public actual suspend fun getFirstFrameVideo(filename: String): ByteArray {
   val grabber = FFmpegFrameGrabber(filename)
-  grabber.start()
   return try {
+    grabber.start()
     val converter = Java2DFrameConverter()
-    val frame = grabber.grabImage()
-    val buffered = converter.convert(frame)
-      ?: return ByteArray(0)
+    val frame = grabber.grabImage() ?: return ByteArray(0)
+    val buffered = converter.convert(frame) ?: return ByteArray(0)
     val out = ByteArrayOutputStream()
     ImageIO.write(buffered, "jpeg", out)
     out.toByteArray()
