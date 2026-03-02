@@ -11,12 +11,8 @@ kotlin {
     namespace = "com.ujizin.camposer.shared"
     compileSdk = 36
     minSdk = 23
-
     androidResources { enable = true }
-
-    withHostTestBuilder {
-    }
-
+    withHostTestBuilder { }
     withDeviceTestBuilder {
       sourceSetTreeName = "test"
     }.configure {
@@ -24,27 +20,21 @@ kotlin {
     }
   }
 
+  jvm()
+
   val xcfName = "sharedKit"
-
-  iosX64 {
-    binaries.framework {
-      baseName = xcfName
-    }
-  }
-
-  iosArm64 {
-    binaries.framework {
-      baseName = xcfName
-    }
-  }
-
-  iosSimulatorArm64 {
-    binaries.framework {
-      baseName = xcfName
-    }
-  }
+  iosX64 { binaries.framework { baseName = xcfName } }
+  iosArm64 { binaries.framework { baseName = xcfName } }
+  iosSimulatorArm64 { binaries.framework { baseName = xcfName } }
 
   sourceSets {
+    // --- intermediate source set: Android + iOS only (MOKO, code-scanner) ---
+    val nonJvmMain by creating {
+      dependsOn(commonMain.get())
+    }
+    androidMain.configure { dependsOn(nonJvmMain) }
+    iosMain.configure   { dependsOn(nonJvmMain) }
+
     commonMain.dependencies {
       implementation(libs.bundles.compose.kmp)
       implementation(libs.compose.material3)
@@ -52,16 +42,8 @@ kotlin {
       implementation(libs.jetbrains.navigation3.ui)
       implementation(libs.compose.coil3)
 
-      // Camposer
+      // Camposer (has JVM target now)
       implementation(libs.camposer)
-      implementation(libs.camposer.code.scanner)
-
-      // Permissions
-      api(libs.moko.permissions)
-      api(libs.moko.permissions.compose)
-
-      implementation(libs.moko.permissions.camera)
-      implementation(libs.moko.permissions.microphone)
 
       implementation(libs.kotlinx.io)
 
@@ -71,14 +53,21 @@ kotlin {
       implementation(libs.compose.resources)
     }
 
-    commonTest.dependencies {
+    // code-scanner + MOKO only on android + ios
+    nonJvmMain.dependencies {
+      implementation(libs.camposer.code.scanner)
+      api(libs.moko.permissions)
+      api(libs.moko.permissions.compose)
+      implementation(libs.moko.permissions.camera)
+      implementation(libs.moko.permissions.microphone)
     }
 
     androidMain.dependencies {
       implementation(libs.compose.ui.tooling)
     }
 
-    iosMain.dependencies {
+    jvmMain.dependencies {
+      implementation(libs.compose.desktop.current)
     }
   }
 }
