@@ -15,23 +15,24 @@ public actual class CameraInfo internal constructor(
     _state.update { getCurrentState() }
   }
 
-  private fun getCurrentState(): CameraInfoState = CameraInfoState(
-    isZoomSupported = jvmCameraInfo.isZoomSupported,
-    isExposureSupported = jvmCameraInfo.isExposureSupported,
-    minZoom = jvmCameraInfo.minZoom,
-    maxZoom = jvmCameraInfo.maxZoom,
-    minExposure = jvmCameraInfo.minExposure,
-    maxExposure = jvmCameraInfo.maxExposure,
-    isFlashSupported = jvmCameraInfo.isFlashSupported,
-    isFlashAvailable = jvmCameraInfo.isFlashSupported,
-    isTorchSupported = false,
-    isTorchAvailable = false,
-    isZeroShutterLagSupported = false,
-    isVideoStabilizationSupported = false,
-    isFocusSupported = false,
-    minFPS = jvmCameraInfo.minFPS,
-    maxFPS = jvmCameraInfo.maxFPS,
-    photoFormats = emptyList(),
-    videoFormats = emptyList(),
-  )
+  private fun getCurrentState(): CameraInfoState =
+    CameraInfoState(
+      isZoomSupported = jvmCameraInfo.isZoomSupported,
+      isExposureSupported = jvmCameraInfo.isExposureSupported,
+      minZoom = jvmCameraInfo.minZoom,
+      maxZoom = jvmCameraInfo.maxZoom,
+      minExposure = jvmCameraInfo.minExposure,
+      maxExposure = jvmCameraInfo.maxExposure,
+      isFlashSupported = jvmCameraInfo.isFlashSupported,
+      isFlashAvailable = jvmCameraInfo.isFlashSupported,
+      isTorchSupported = false,
+      isTorchAvailable = false,
+      isZeroShutterLagSupported = false,
+      isVideoStabilizationSupported = false,
+      isFocusSupported = false,
+      minFPS = jvmCameraInfo.minFPS,
+      maxFPS = jvmCameraInfo.maxFPS,
+      photoFormats = emptyList(),
+      videoFormats = emptyList(),
+    )
 }

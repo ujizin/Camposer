@@ -6,7 +6,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
 internal class CamFormatTest {
-
   @Test
   fun `default constructor stores empty configs`() {
     val format = CamFormat()

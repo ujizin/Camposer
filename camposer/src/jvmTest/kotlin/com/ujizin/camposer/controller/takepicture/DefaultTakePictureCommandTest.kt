@@ -10,7 +10,6 @@ import kotlin.test.Test
 import kotlin.test.assertTrue
 
 internal class DefaultTakePictureCommandTest {
-
   private fun buildCommand(): DefaultTakePictureCommand {
     val capture = FakeJvmCameraCapture()
     val engine = CameraEngineImpl(

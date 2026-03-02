@@ -29,10 +29,12 @@ public actual class CamFormat actual constructor(
           capture.set(CAP_PROP_FPS, config.fps.toDouble())
           onFrameRateChanged(config.fps)
         }
+
         is ResolutionConfig -> {
           capture.set(CAP_PROP_FRAME_WIDTH, config.width.toDouble())
           capture.set(CAP_PROP_FRAME_HEIGHT, config.height.toDouble())
         }
+
         else -> {
           // AspectRatioConfig, VideoStabilizationConfig, and other configs
           // are not applicable to JVM camera capture — no-op.

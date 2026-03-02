@@ -70,7 +70,10 @@ internal actual fun CameraPreviewImpl(
   }
 }
 
-private fun DrawScope.drawCameraFrame(bitmap: ImageBitmap, scaleType: ScaleType) {
+private fun DrawScope.drawCameraFrame(
+  bitmap: ImageBitmap,
+  scaleType: ScaleType,
+) {
   val canvasWidth = size.width
   val canvasHeight = size.height
   val bitmapWidth = bitmap.width.toFloat()

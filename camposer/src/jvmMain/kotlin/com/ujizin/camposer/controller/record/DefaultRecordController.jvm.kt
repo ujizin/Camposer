@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.update
 internal actual class DefaultRecordController(
   private val cameraEngine: CameraEngine,
 ) : RecordController {
-
   private val _isMuted = MutableStateFlow(false)
   actual override val isMuted: StateFlow<Boolean> get() = _isMuted
 

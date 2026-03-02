@@ -7,7 +7,6 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 internal class JvmCameraSessionTest {
-
   @Test
   fun `session initializes successfully with a working capture`() {
     val controller = CameraController()

@@ -5,7 +5,6 @@ import kotlin.test.Test
 import kotlin.test.assertTrue
 
 internal class ImageAnalyzerTest {
-
   @Test
   fun `analyzer callback is called with frame`() {
     var called = false

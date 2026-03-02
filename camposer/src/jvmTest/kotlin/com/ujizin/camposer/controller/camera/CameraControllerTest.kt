@@ -5,7 +5,6 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 
 internal class CameraControllerTest {
-
   @Test
   fun `controller can be constructed`() {
     val controller = CameraController()

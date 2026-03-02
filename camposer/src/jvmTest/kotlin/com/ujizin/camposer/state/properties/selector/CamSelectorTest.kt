@@ -6,7 +6,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
 internal class CamSelectorTest {
-
   @Test
   fun `Back maps to device index 0`() {
     assertEquals(0, CamSelector.Back.deviceIndex)

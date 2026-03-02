@@ -5,7 +5,6 @@ import kotlin.test.Test
 import kotlin.test.assertFalse
 
 internal class CameraInfoTest {
-
   private fun makeCameraInfo(openResult: Boolean = true): CameraInfo {
     val fakeCapture = FakeJvmCameraCapture(openResult)
     val jvmCameraInfo = JvmCameraInfo(fakeCapture)

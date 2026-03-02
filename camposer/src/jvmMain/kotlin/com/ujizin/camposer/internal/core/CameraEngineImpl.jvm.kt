@@ -31,7 +31,6 @@ internal actual class CameraEngineImpl(
   override val capture: JvmCameraCapture,
   private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : JvmCameraEngine {
-
   actual override val cameraState: CameraState = CameraState(
     cameraInfo = cameraInfo,
     dispatcher = dispatcher,

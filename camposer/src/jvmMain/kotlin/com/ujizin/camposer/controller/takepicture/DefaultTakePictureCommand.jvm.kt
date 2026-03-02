@@ -11,7 +11,6 @@ import java.io.File
 internal actual class DefaultTakePictureCommand private constructor(
   private val cameraEngine: JvmCameraEngine,
 ) : TakePictureCommand {
-
   internal constructor(cameraEngine: CameraEngine) : this(
     cameraEngine = cameraEngine as JvmCameraEngine,
   )

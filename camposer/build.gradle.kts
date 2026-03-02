@@ -80,7 +80,8 @@ kotlin {
     jvmMain.dependencies {
       implementation(libs.javacv)
       val javacvVersion = libs.versions.javacv.get()
-      listOf("linux-x86_64", "macosx-arm64", "macosx-x86_64", "windows-x86_64").forEach { platform ->
+      val jvmPlatforms = listOf("linux-x86_64", "macosx-arm64", "macosx-x86_64", "windows-x86_64")
+      jvmPlatforms.forEach { platform ->
         implementation("org.bytedeco:opencv:4.9.0-$javacvVersion:$platform")
         implementation("org.bytedeco:openblas:0.3.26-$javacvVersion:$platform")
         implementation("org.bytedeco:ffmpeg:6.1.1-$javacvVersion:$platform")

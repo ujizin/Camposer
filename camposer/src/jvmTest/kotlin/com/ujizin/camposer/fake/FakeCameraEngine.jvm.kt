@@ -12,12 +12,13 @@ import org.bytedeco.opencv.opencv_core.Mat
 private fun buildEngine(
   cameraTest: FakeCameraTest,
   testDispatcher: CoroutineDispatcher,
-): CameraEngineImpl = CameraEngineImpl(
-  cameraController = cameraTest.cameraController,
-  cameraInfo = cameraTest.cameraInfo,
-  capture = FakeJvmCameraCapture(),
-  dispatcher = testDispatcher,
-).also { impl -> cameraTest.fakeEngine = impl }
+): CameraEngineImpl =
+  CameraEngineImpl(
+    cameraController = cameraTest.cameraController,
+    cameraInfo = cameraTest.cameraInfo,
+    capture = FakeJvmCameraCapture(),
+    dispatcher = testDispatcher,
+  ).also { impl -> cameraTest.fakeEngine = impl }
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal actual class FakeCameraEngine actual constructor(

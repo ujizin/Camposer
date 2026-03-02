@@ -5,7 +5,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
 internal class CameraIdTest {
-
   @Test
   fun `equality is based on deviceId`() {
     val id1 = CameraId("0")

@@ -9,7 +9,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 internal class CameraEngineImplTest {
-
   private fun buildEngine(): CameraEngineImpl {
     val capture = FakeJvmCameraCapture()
     val controller = CameraController()

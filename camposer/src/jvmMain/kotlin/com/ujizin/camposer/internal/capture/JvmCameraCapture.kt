@@ -22,7 +22,10 @@ internal interface JvmCameraCapture {
   fun read(mat: Mat): Boolean
 
   /** Sets a VideoCapture property (CAP_PROP_* constants). */
-  fun set(propId: Int, value: Double): Boolean
+  fun set(
+    propId: Int,
+    value: Double,
+  ): Boolean
 
   /** Gets a VideoCapture property value. */
   fun get(propId: Int): Double
