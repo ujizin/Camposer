@@ -134,6 +134,10 @@ public final class com/ujizin/camposer/info/CameraInfoState {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/ujizin/camposer/lifecycle/compose/CameraInfoLifecycleExt_jvmKt {
+	public static final fun collectStateWithLifecycle (Lcom/ujizin/camposer/info/CameraInfo;Lkotlin/coroutines/CoroutineContext;Landroidx/compose/runtime/Composer;II)Landroidx/compose/runtime/State;
+}
+
 public final class com/ujizin/camposer/manager/CameraDevice {
 	public static final field $stable I
 	public fun equals (Ljava/lang/Object;)Z
