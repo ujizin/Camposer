@@ -28,6 +28,7 @@ moko-permissions = "0.20.1"
 coil3 = "3.3.0"
 filekit = "0.12.0"
 javacv = "1.5.10"
+kotlinx-coroutines = "1.10.2"
 
 [libraries]
 
@@ -76,6 +77,7 @@ kotlinx-io = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "
 filekit-core = { module = "io.github.vinceglb:filekit-core", version.ref = "filekit" }
 filekit-dialogs = { module = "io.github.vinceglb:filekit-dialogs", version.ref = "filekit" }
 javacv = { module = "org.bytedeco:javacv", version.ref = "javacv" }
+kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 
 ## KMP Compose
 compose-desktop-current = { module = "org.jetbrains.compose.desktop:desktop-jvm", version.ref = "compose-multiplatform" }
