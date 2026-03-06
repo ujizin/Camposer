@@ -4,6 +4,7 @@ import com.ujizin.camposer.CaptureResult
 import com.ujizin.camposer.internal.core.CameraEngine
 import com.ujizin.camposer.internal.core.JvmCameraEngine
 import org.bytedeco.javacpp.BytePointer
+import org.bytedeco.opencv.global.opencv_core.flip
 import org.bytedeco.opencv.global.opencv_imgcodecs.imencode
 import org.bytedeco.opencv.opencv_core.Mat
 import java.io.File
@@ -25,7 +26,7 @@ internal actual class DefaultTakePictureCommand private constructor(
     }
 
     try {
-      val bytes = encodeToJpegBytes(mat)
+      val bytes = encodeToJpegBytes(applyMirror(mat))
       onImageCaptured(CaptureResult.Success(bytes))
     } catch (e: Exception) {
       onImageCaptured(CaptureResult.Error(e))
@@ -45,7 +46,7 @@ internal actual class DefaultTakePictureCommand private constructor(
     }
 
     try {
-      val bytes = encodeToJpegBytes(mat)
+      val bytes = encodeToJpegBytes(applyMirror(mat))
       val file = File(filename)
       file.parentFile?.mkdirs()
       file.writeBytes(bytes)
@@ -53,6 +54,13 @@ internal actual class DefaultTakePictureCommand private constructor(
     } catch (e: Exception) {
       onImageCaptured(CaptureResult.Error(e))
     }
+  }
+
+  private fun applyMirror(mat: Mat): Mat {
+    if (!cameraEngine.isMirrorEnabled()) return mat
+    val flipped = Mat()
+    flip(mat, flipped, 1)
+    return flipped
   }
 
   private fun encodeToJpegBytes(mat: Mat): ByteArray {
