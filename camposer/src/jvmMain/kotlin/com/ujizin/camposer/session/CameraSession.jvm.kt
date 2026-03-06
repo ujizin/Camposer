@@ -116,15 +116,7 @@ public actual class CameraSession internal constructor(
 
           jvmEngine.currentMat = mat.clone()
 
-          val frameMat = if (cameraEngine.isMirrorEnabled()) {
-            val flipped = Mat()
-            opencv_core.flip(mat, flipped, 1)
-            flipped
-          } else {
-            mat
-          }
-
-          val bitmap = frameMat.toImageBitmap()
+          val bitmap = mat.toImageBitmap()
           _currentFrame.update { bitmap }
 
           if (state.isImageAnalyzerEnabled.value) {
