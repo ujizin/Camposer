@@ -24,8 +24,6 @@ import com.ujizin.camposer.state.properties.selector.CamPosition
 import com.ujizin.camposer.state.properties.selector.CamSelector
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import org.bytedeco.opencv.opencv_core.Mat
 
 internal actual class CameraEngineImpl(
   actual override val cameraController: CameraController,
@@ -38,10 +36,9 @@ internal actual class CameraEngineImpl(
     dispatcher = dispatcher,
   )
 
-  override var currentMat: Mat? = null
-
   private val sessionTopologyApplier = SessionTopologyApplier(
     cameraState = cameraState,
+    capture = capture,
   )
 
   private val previewApplier = PreviewApplier(
@@ -50,6 +47,7 @@ internal actual class CameraEngineImpl(
 
   private val analyzerApplier = AnalyzerApplier(
     cameraState = cameraState,
+    capture = capture,
   )
 
   private val exposureZoomApplier = ExposureZoomApplier(
@@ -69,6 +67,10 @@ internal actual class CameraEngineImpl(
     exposureZoomApplier,
     videoApplier,
   )
+
+  init {
+      appliers.forEach(CameraStateApplier::onCameraInitialized)
+  }
 
   actual override fun updateCaptureMode(captureMode: CaptureMode) {
     if (cameraState.captureMode.value == captureMode) return

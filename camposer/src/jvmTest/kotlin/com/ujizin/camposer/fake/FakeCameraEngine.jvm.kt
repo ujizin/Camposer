@@ -12,13 +12,18 @@ import org.bytedeco.opencv.opencv_core.Mat
 private fun buildEngine(
   cameraTest: FakeCameraTest,
   testDispatcher: CoroutineDispatcher,
-): CameraEngineImpl =
-  CameraEngineImpl(
+): CameraEngineImpl {
+  val capture = FakeJvmCameraCapture()
+  // Pre-populate currentMat with a 1×1 BGR frame so takePicture works in tests
+  // without waiting for the asynchronous frame loop to produce the first frame.
+  capture.currentMat = Mat(1, 1, CV_8UC3)
+  return CameraEngineImpl(
     cameraController = cameraTest.cameraController,
     cameraInfo = cameraTest.cameraInfo,
-    capture = FakeJvmCameraCapture(),
+    capture = capture,
     dispatcher = testDispatcher,
   ).also { impl -> cameraTest.fakeEngine = impl }
+}
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal actual class FakeCameraEngine actual constructor(
@@ -27,12 +32,6 @@ internal actual class FakeCameraEngine actual constructor(
 ) : JvmCameraEngine by buildEngine(cameraTest, testDispatcher) {
   override val hasRecordingError: Boolean get() = cameraTest.hasErrorInRecording
 
-  init {
-    // Pre-populate currentMat with a 1×1 BGR frame so takePicture works in tests
-    // without waiting for the asynchronous frame loop to produce the first frame.
-    currentMat = Mat(1, 1, CV_8UC3)
-  }
-
   /**
    * Override the delegated method so that setting an analyzer immediately triggers one
    * analysis cycle with the pre-populated frame.  This avoids a race between the test
@@ -40,6 +39,6 @@ internal actual class FakeCameraEngine actual constructor(
    */
   actual override fun updateImageAnalyzer(imageAnalyzer: ImageAnalyzer?) {
     cameraTest.fakeEngine?.updateImageAnalyzer(imageAnalyzer)
-    imageAnalyzer?.analyze(currentMat ?: return)
+    imageAnalyzer?.analyze(capture.currentMat ?: return)
   }
 }

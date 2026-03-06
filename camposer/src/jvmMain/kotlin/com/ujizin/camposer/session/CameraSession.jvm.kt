@@ -15,27 +15,10 @@ import com.ujizin.camposer.internal.capture.JvmCameraCaptureImpl
 import com.ujizin.camposer.internal.core.CameraEngine
 import com.ujizin.camposer.internal.core.CameraEngineImpl
 import com.ujizin.camposer.internal.core.JvmCameraEngine
-import com.ujizin.camposer.internal.extensions.toImageBitmap
 import com.ujizin.camposer.internal.utils.Logger
 import com.ujizin.camposer.state.CameraState
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.newSingleThreadContext
-import org.bytedeco.opencv.global.opencv_core
-import org.bytedeco.opencv.opencv_core.Mat
 
-@OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
 @Stable
 public actual class CameraSession internal constructor(
   internal actual val cameraEngine: CameraEngine,
@@ -52,13 +35,11 @@ public actual class CameraSession internal constructor(
   public actual var isStreaming: Boolean by mutableStateOf(false)
     internal set
 
-  private val cameraDispatcher = newSingleThreadContext("CameraIO")
-  private val sessionScope = CoroutineScope(cameraDispatcher + SupervisorJob())
+  private val jvmCapture: JvmCameraCapture
+    get() = (cameraEngine as JvmCameraEngine).capture
 
-  private val _currentFrame = MutableStateFlow<ImageBitmap?>(null)
-  public val currentFrame: StateFlow<ImageBitmap?> = _currentFrame.asStateFlow()
-
-  private var frameLoopJob: Job? = null
+  public val currentFrame: StateFlow<ImageBitmap?>
+    get() = jvmCapture.currentFrame
 
   public constructor(controller: CameraController) : this(
     controller = controller,
@@ -82,8 +63,8 @@ public actual class CameraSession internal constructor(
 
   private fun setupCamera() =
     runCatching {
-      val jvmEngine = cameraEngine as JvmCameraEngine
-      val success = jvmEngine.capture.open(state.camSelector.value.deviceIndex)
+      val capture = jvmCapture
+      val success = capture.open(state.camSelector.value.deviceIndex)
       if (!success) {
         error("Failed to open camera device at index ${state.camSelector.value.deviceIndex}")
       }
@@ -95,47 +76,18 @@ public actual class CameraSession internal constructor(
       )
 
       isInitialized = true
-      startFrameLoop(jvmEngine)
+      capture.startStreaming()
     }.onFailure { error ->
       isInitialized = false
       hasInitializationError = true
       Logger.error("Failed to initialize camera session", error)
     }
 
-  private fun startFrameLoop(jvmEngine: JvmCameraEngine) {
-    frameLoopJob = sessionScope.launch {
-      isStreaming = true
-      val mat = Mat()
-      try {
-        while (isActive) {
-          val read = jvmEngine.capture.read(mat)
-          if (!read || mat.empty()) {
-            delay(16)
-            continue
-          }
-
-          jvmEngine.currentMat = mat.clone()
-
-          val bitmap = mat.toImageBitmap()
-          _currentFrame.update { bitmap }
-
-          if (state.isImageAnalyzerEnabled.value) {
-            state.imageAnalyzer.value?.analyze(mat)
-          }
-        }
-      } finally {
-        isStreaming = false
-      }
-    }
-  }
-
   public actual fun retryInitialization() {
     if (!hasInitializationError) return
 
     hasInitializationError = false
     isInitialized = false
-    frameLoopJob?.cancel()
-    frameLoopJob = null
 
     setupCamera()
   }
@@ -147,13 +99,9 @@ public actual class CameraSession internal constructor(
 
   internal fun dispose() {
     isStreaming = false
-    frameLoopJob?.cancel()
-    frameLoopJob = null
-    val jvmEngine = cameraEngine as? JvmCameraEngine
-    jvmEngine?.capture?.release()
+    jvmCapture.release()
     state.dispose()
     controller.dispose()
-    sessionScope.cancel()
-    cameraDispatcher.close()
+    (jvmCapture as? JvmCameraCaptureImpl)?.dispose()
   }
 }

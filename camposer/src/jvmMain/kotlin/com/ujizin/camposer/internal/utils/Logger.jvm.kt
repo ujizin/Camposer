@@ -3,12 +3,17 @@ package com.ujizin.camposer.internal.utils
 /**
  * JVM implementation of Camposer logger.
  * Writes debug output to stdout and errors to stderr.
- * Note: debug logging is unconditional on JVM desktop (no release-build stripping equivalent).
+ * Debug logging is gated by the `camposer.debug` system property.
  */
 internal actual object Logger {
   private const val TAG = "Camposer"
 
+  private val isDebugEnabled: Boolean by lazy {
+    System.getProperty("camposer.debug")?.toBooleanStrictOrNull() ?: false
+  }
+
   actual fun d(message: String) {
+    if (!isDebugEnabled) return
     println("[$TAG] DEBUG: $message")
   }
 

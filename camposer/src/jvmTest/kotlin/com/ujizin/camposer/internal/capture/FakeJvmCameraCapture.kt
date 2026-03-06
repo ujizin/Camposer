@@ -1,5 +1,8 @@
 package com.ujizin.camposer.internal.capture
 
+import androidx.compose.ui.graphics.ImageBitmap
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.bytedeco.opencv.global.opencv_videoio.CAP_PROP_EXPOSURE
 import org.bytedeco.opencv.global.opencv_videoio.CAP_PROP_FPS
 import org.bytedeco.opencv.global.opencv_videoio.CAP_PROP_ZOOM
@@ -22,15 +25,26 @@ internal class FakeJvmCameraCapture(
   override fun get(propId: Int): Double =
     when (propId) {
       CAP_PROP_ZOOM -> 10.0
-
-      // simulate 10x optical zoom range
       CAP_PROP_EXPOSURE -> -3.0
-
-      // simulate supported exposure compensation
       CAP_PROP_FPS -> 30.0
-
       else -> 0.0
     }
 
   override fun release() {}
+
+  override fun startStreaming() {}
+
+  override suspend fun stopStreaming() {}
+
+  private val _currentFrame = MutableStateFlow<ImageBitmap?>(null)
+  override val currentFrame: StateFlow<ImageBitmap?> = _currentFrame
+
+  private val _isStreaming = MutableStateFlow(false)
+  override val isStreaming: StateFlow<Boolean> = _isStreaming
+
+  override var currentMat: Mat? = null
+
+  override fun addFrameListener(listener: (Mat) -> Unit) {}
+
+  override fun removeFrameListener(listener: (Mat) -> Unit) {}
 }

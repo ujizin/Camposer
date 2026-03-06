@@ -104,6 +104,10 @@ kotlin {
   }
 }
 
+tasks.named("allTests") {
+  dependsOn("connectedAndroidTest")
+}
+
 dokka {
   moduleName.set("Camposer")
 }

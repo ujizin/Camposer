@@ -17,7 +17,7 @@ internal actual class DefaultTakePictureCommand private constructor(
   )
 
   actual override fun takePicture(onImageCaptured: (CaptureResult<ByteArray>) -> Unit) {
-    val mat = cameraEngine.currentMat
+    val mat = cameraEngine.capture.currentMat
     if (mat == null || mat.empty()) {
       onImageCaptured(
         CaptureResult.Error(IllegalStateException("No camera frame available")),
@@ -37,7 +37,7 @@ internal actual class DefaultTakePictureCommand private constructor(
     filename: String,
     onImageCaptured: (CaptureResult<String>) -> Unit,
   ) {
-    val mat = cameraEngine.currentMat
+    val mat = cameraEngine.capture.currentMat
     if (mat == null || mat.empty()) {
       onImageCaptured(
         CaptureResult.Error(IllegalStateException("No camera frame available")),
