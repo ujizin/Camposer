@@ -5,7 +5,7 @@ import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.properties.MirrorMode
 import com.ujizin.camposer.state.properties.mode
 
-internal class PreviewApplier(
+internal actual class PreviewApplier(
   private val cameraState: CameraState,
   private val cameraXController: CameraXController,
 ) : CameraStateApplier {

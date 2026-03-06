@@ -23,7 +23,7 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import platform.AVFoundation.AVCaptureOutput
 
-internal class SessionTopologyApplier(
+internal actual class SessionTopologyApplier(
   private val cameraState: CameraState,
   private val cameraInfo: CameraInfo,
   private val iOSCameraController: IOSCameraController,

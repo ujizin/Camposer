@@ -1,31 +1,30 @@
 package com.ujizin.camposer.internal.core.applier
 
-import com.ujizin.camposer.internal.core.ios.IOSCameraController
+import com.ujizin.camposer.internal.capture.JvmCameraCapture
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.properties.FlashMode
-import com.ujizin.camposer.state.properties.mode
+import org.bytedeco.opencv.global.opencv_videoio.CAP_PROP_EXPOSURE
+import org.bytedeco.opencv.global.opencv_videoio.CAP_PROP_ZOOM
 
 internal actual class ExposureZoomApplier(
   private val cameraState: CameraState,
-  private val iOSCameraController: IOSCameraController,
+  private val capture: JvmCameraCapture,
 ) : CameraStateApplier {
   fun applyFlashMode(flashMode: FlashMode) {
-    iOSCameraController.setFlashMode(flashMode.mode)
     cameraState.updateFlashMode(flashMode)
   }
 
   fun applyTorchEnabled(isTorchEnabled: Boolean) {
-    iOSCameraController.setTorchEnabled(isTorchEnabled)
     cameraState.updateTorchEnabled(isTorchEnabled)
   }
 
   fun applyExposureCompensation(exposureCompensation: Float) {
-    iOSCameraController.setExposureCompensation(exposureCompensation)
+    capture.set(CAP_PROP_EXPOSURE, exposureCompensation.toDouble())
     cameraState.updateExposureCompensation(exposureCompensation)
   }
 
   fun applyZoomRatio(zoomRatio: Float) {
-    iOSCameraController.setZoomRatio(zoomRatio)
+    capture.set(CAP_PROP_ZOOM, zoomRatio.toDouble())
     cameraState.updateZoomRatio(zoomRatio)
   }
 }

@@ -13,7 +13,7 @@ import com.ujizin.camposer.state.properties.mode
 import com.ujizin.camposer.state.properties.selector.CamSelector
 import com.ujizin.camposer.state.properties.value
 
-internal class SessionTopologyApplier(
+internal actual class SessionTopologyApplier(
   private val cameraState: CameraState,
   private val cameraInfo: CameraInfo,
   private val cameraXController: CameraXController,

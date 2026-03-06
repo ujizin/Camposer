@@ -12,7 +12,7 @@ import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import com.ujizin.camposer.state.properties.fallback
 import com.ujizin.camposer.state.properties.mode
 
-internal class VideoApplier(
+internal actual class VideoApplier(
   private val cameraState: CameraState,
   private val cameraInfo: CameraInfo,
   private val cameraXController: CameraXController,

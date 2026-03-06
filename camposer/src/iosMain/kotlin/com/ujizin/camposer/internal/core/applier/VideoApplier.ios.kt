@@ -8,7 +8,7 @@ import com.ujizin.camposer.state.properties.highResolutionEnabled
 import com.ujizin.camposer.state.properties.quality
 import com.ujizin.camposer.state.properties.value
 
-internal class VideoApplier(
+internal actual class VideoApplier(
   private val cameraState: CameraState,
   private val iOSCameraController: IOSCameraController,
 ) : CameraStateApplier {

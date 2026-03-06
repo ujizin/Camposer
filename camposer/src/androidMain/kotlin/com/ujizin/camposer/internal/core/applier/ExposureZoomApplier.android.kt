@@ -7,7 +7,7 @@ import com.ujizin.camposer.state.properties.FlashMode
 import com.ujizin.camposer.state.properties.mode
 import kotlin.math.roundToInt
 
-internal class ExposureZoomApplier(
+internal actual class ExposureZoomApplier(
   private val cameraState: CameraState,
   private val cameraXController: CameraXController,
 ) : CameraStateApplier {
