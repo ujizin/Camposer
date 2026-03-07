@@ -11,7 +11,32 @@ import org.bytedeco.opencv.opencv_core.Mat
 internal class FakeJvmCameraCapture(
   private val openResult: Boolean = true,
 ) : JvmCameraCapture {
-  override fun open(deviceIndex: Int): Boolean = openResult
+  private val setCallCounts = mutableMapOf<Int, Int>()
+  private val lastSetValues = mutableMapOf<Int, Double>()
+  private val frameListeners = mutableSetOf<(Mat) -> Unit>()
+
+  internal var openCalls: Int = 0
+    private set
+
+  internal var releaseCalls: Int = 0
+    private set
+
+  internal var startStreamingCalls: Int = 0
+    private set
+
+  internal var stopStreamingCalls: Int = 0
+    private set
+
+  internal var addFrameListenerCalls: Int = 0
+    private set
+
+  internal var removeFrameListenerCalls: Int = 0
+    private set
+
+  override fun open(deviceIndex: Int): Boolean {
+    openCalls++
+    return openResult
+  }
 
   override val isOpen: Boolean get() = openResult
 
@@ -20,7 +45,11 @@ internal class FakeJvmCameraCapture(
   override fun set(
     propId: Int,
     value: Double,
-  ): Boolean = true
+  ): Boolean {
+    setCallCounts[propId] = (setCallCounts[propId] ?: 0) + 1
+    lastSetValues[propId] = value
+    return true
+  }
 
   override fun get(propId: Int): Double =
     when (propId) {
@@ -30,11 +59,17 @@ internal class FakeJvmCameraCapture(
       else -> 0.0
     }
 
-  override fun release() {}
+  override fun release() {
+    releaseCalls++
+  }
 
-  override fun startStreaming() {}
+  override fun startStreaming() {
+    startStreamingCalls++
+  }
 
-  override suspend fun stopStreaming() {}
+  override suspend fun stopStreaming() {
+    stopStreamingCalls++
+  }
 
   private val _currentFrame = MutableStateFlow<ImageBitmap?>(null)
   override val currentFrame: StateFlow<ImageBitmap?> = _currentFrame
@@ -44,7 +79,19 @@ internal class FakeJvmCameraCapture(
 
   override var currentMat: Mat? = null
 
-  override fun addFrameListener(listener: (Mat) -> Unit) {}
+  override fun addFrameListener(listener: (Mat) -> Unit) {
+    addFrameListenerCalls++
+    frameListeners += listener
+  }
 
-  override fun removeFrameListener(listener: (Mat) -> Unit) {}
+  override fun removeFrameListener(listener: (Mat) -> Unit) {
+    removeFrameListenerCalls++
+    frameListeners -= listener
+  }
+
+  internal fun setCallCount(propId: Int): Int = setCallCounts[propId] ?: 0
+
+  internal fun lastSetValue(propId: Int): Double? = lastSetValues[propId]
+
+  internal fun frameListenerCount(): Int = frameListeners.size
 }
