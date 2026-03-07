@@ -13,11 +13,11 @@ internal actual class AnalyzerApplier(
     cameraState.imageAnalyzer.value?.analyze(mat)
   }
 
-  fun applyImageAnalyzer(imageAnalyzer: ImageAnalyzer?) {
+  actual fun applyImageAnalyzer(imageAnalyzer: ImageAnalyzer?) {
     cameraState.updateImageAnalyzer(imageAnalyzer)
   }
 
-  fun applyImageAnalyzerEnabled(isImageAnalyzerEnabled: Boolean) {
+  actual fun applyImageAnalyzerEnabled(isImageAnalyzerEnabled: Boolean) {
     if (isImageAnalyzerEnabled) {
       capture.addFrameListener(frameListener)
     } else {

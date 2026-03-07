@@ -11,12 +11,12 @@ internal actual class AnalyzerApplier(
   private val cameraState: CameraState,
   private val cameraXController: CameraXController,
 ) : CameraStateApplier {
-  fun applyImageAnalyzer(imageAnalyzer: ImageAnalyzer?) {
+  actual fun applyImageAnalyzer(imageAnalyzer: ImageAnalyzer?) {
     setImageAnalyzer(imageAnalyzer)
     cameraState.updateImageAnalyzer(imageAnalyzer)
   }
 
-  fun applyImageAnalyzerEnabled(isImageAnalyzerEnabled: Boolean) {
+  actual fun applyImageAnalyzerEnabled(isImageAnalyzerEnabled: Boolean) {
     setImageAnalyzerEnabled(
       captureMode = cameraState.captureMode.value,
       isImageAnalyzerEnabled = isImageAnalyzerEnabled,

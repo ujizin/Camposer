@@ -8,14 +8,14 @@ internal actual class AnalyzerApplier(
 ) : CameraStateApplier {
   private var previousAnalyzer: ImageAnalyzer? = cameraState.imageAnalyzer.value
 
-  fun applyImageAnalyzer(imageAnalyzer: ImageAnalyzer?) {
+  actual fun applyImageAnalyzer(imageAnalyzer: ImageAnalyzer?) {
     disposeImageAnalyzer(previousAnalyzer)
     setImageAnalyzer(imageAnalyzer)
     previousAnalyzer = imageAnalyzer
     cameraState.updateImageAnalyzer(imageAnalyzer)
   }
 
-  fun applyImageAnalyzerEnabled(isImageAnalyzerEnabled: Boolean) {
+  actual fun applyImageAnalyzerEnabled(isImageAnalyzerEnabled: Boolean) {
     setImageAnalyzerEnabled(isImageAnalyzerEnabled)
     cameraState.updateImageAnalyzerEnabled(isImageAnalyzerEnabled)
   }

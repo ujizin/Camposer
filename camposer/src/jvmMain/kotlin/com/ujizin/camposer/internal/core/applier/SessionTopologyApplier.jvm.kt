@@ -20,11 +20,11 @@ internal actual class SessionTopologyApplier(
 
   private var camSelectorJob: Job? = null
 
-  fun applyCaptureMode(captureMode: CaptureMode) {
+  actual fun applyCaptureMode(captureMode: CaptureMode) {
     cameraState.updateCaptureMode(captureMode)
   }
 
-  fun applyCamSelector(camSelector: CamSelector) {
+  actual fun applyCamSelector(camSelector: CamSelector) {
     camSelectorJob?.cancel()
     camSelectorJob = lockedLaunch {
       if (cameraState.camSelector.value == camSelector) return@lockedLaunch
@@ -44,7 +44,7 @@ internal actual class SessionTopologyApplier(
     }
   }
 
-  fun applyCamFormat(camFormat: CamFormat) {
+  actual fun applyCamFormat(camFormat: CamFormat) {
     cameraState.updateCamFormat(camFormat)
   }
 

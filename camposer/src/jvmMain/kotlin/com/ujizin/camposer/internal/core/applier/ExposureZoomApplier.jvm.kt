@@ -10,20 +10,20 @@ internal actual class ExposureZoomApplier(
   private val cameraState: CameraState,
   private val capture: JvmCameraCapture,
 ) : CameraStateApplier {
-  fun applyFlashMode(flashMode: FlashMode) {
+  actual fun applyFlashMode(flashMode: FlashMode) {
     cameraState.updateFlashMode(flashMode)
   }
 
-  fun applyTorchEnabled(isTorchEnabled: Boolean) {
+  actual fun applyTorchEnabled(isTorchEnabled: Boolean) {
     cameraState.updateTorchEnabled(isTorchEnabled)
   }
 
-  fun applyExposureCompensation(exposureCompensation: Float) {
+  actual fun applyExposureCompensation(exposureCompensation: Float) {
     capture.set(CAP_PROP_EXPOSURE, exposureCompensation.toDouble())
     cameraState.updateExposureCompensation(exposureCompensation)
   }
 
-  fun applyZoomRatio(zoomRatio: Float) {
+  actual fun applyZoomRatio(zoomRatio: Float) {
     capture.set(CAP_PROP_ZOOM, zoomRatio.toDouble())
     cameraState.updateZoomRatio(zoomRatio)
   }

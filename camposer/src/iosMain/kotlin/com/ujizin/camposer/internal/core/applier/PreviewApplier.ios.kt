@@ -2,6 +2,7 @@ package com.ujizin.camposer.internal.core.applier
 
 import com.ujizin.camposer.internal.core.ios.IOSCameraController
 import com.ujizin.camposer.state.CameraState
+import com.ujizin.camposer.state.properties.MirrorMode
 import com.ujizin.camposer.state.properties.ScaleType
 import com.ujizin.camposer.state.properties.gravity
 
@@ -13,8 +14,16 @@ internal actual class PreviewApplier(
     applyScaleType(cameraState.scaleType.value)
   }
 
-  fun applyScaleType(scaleType: ScaleType) {
+  actual fun applyScaleType(scaleType: ScaleType) {
     iOSCameraController.setPreviewGravity(scaleType.gravity)
     cameraState.updateScaleType(scaleType)
+  }
+
+  actual fun applyFocusOnTapEnabled(isFocusOnTapEnabled: Boolean) {
+    cameraState.updateFocusOnTapEnabled(isFocusOnTapEnabled)
+  }
+
+  actual fun applyMirrorMode(mirrorMode: MirrorMode) {
+    cameraState.updateMirrorMode(mirrorMode)
   }
 }

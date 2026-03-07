@@ -9,22 +9,22 @@ internal actual class ExposureZoomApplier(
   private val cameraState: CameraState,
   private val iOSCameraController: IOSCameraController,
 ) : CameraStateApplier {
-  fun applyFlashMode(flashMode: FlashMode) {
+  actual fun applyFlashMode(flashMode: FlashMode) {
     iOSCameraController.setFlashMode(flashMode.mode)
     cameraState.updateFlashMode(flashMode)
   }
 
-  fun applyTorchEnabled(isTorchEnabled: Boolean) {
+  actual fun applyTorchEnabled(isTorchEnabled: Boolean) {
     iOSCameraController.setTorchEnabled(isTorchEnabled)
     cameraState.updateTorchEnabled(isTorchEnabled)
   }
 
-  fun applyExposureCompensation(exposureCompensation: Float) {
+  actual fun applyExposureCompensation(exposureCompensation: Float) {
     iOSCameraController.setExposureCompensation(exposureCompensation)
     cameraState.updateExposureCompensation(exposureCompensation)
   }
 
-  fun applyZoomRatio(zoomRatio: Float) {
+  actual fun applyZoomRatio(zoomRatio: Float) {
     iOSCameraController.setZoomRatio(zoomRatio)
     cameraState.updateZoomRatio(zoomRatio)
   }

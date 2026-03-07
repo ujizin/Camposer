@@ -10,16 +10,16 @@ internal actual class VideoApplier(
   private val cameraState: CameraState,
   private val capture: JvmCameraCapture,
 ) : CameraStateApplier {
-  fun applyImageCaptureStrategy(imageCaptureStrategy: ImageCaptureStrategy) {
+  actual fun applyImageCaptureStrategy(imageCaptureStrategy: ImageCaptureStrategy) {
     cameraState.updateImageCaptureStrategy(imageCaptureStrategy)
   }
 
-  fun applyFrameRate(frameRate: Int) {
+  actual fun applyFrameRate(frameRate: Int) {
     capture.set(CAP_PROP_FPS, frameRate.toDouble())
     cameraState.updateFrameRate(frameRate)
   }
 
-  fun applyVideoStabilizationMode(videoStabilizationMode: VideoStabilizationMode) {
+  actual fun applyVideoStabilizationMode(videoStabilizationMode: VideoStabilizationMode) {
     cameraState.updateVideoStabilizationMode(videoStabilizationMode)
   }
 }

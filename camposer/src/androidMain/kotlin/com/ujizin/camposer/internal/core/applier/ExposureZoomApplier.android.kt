@@ -41,22 +41,22 @@ internal actual class ExposureZoomApplier(
     hasPaused = true
   }
 
-  fun applyFlashMode(flashMode: FlashMode) {
+  actual fun applyFlashMode(flashMode: FlashMode) {
     cameraXController.imageCaptureFlashMode = flashMode.mode
     cameraState.updateFlashMode(flashMode)
   }
 
-  fun applyTorchEnabled(isTorchEnabled: Boolean) {
+  actual fun applyTorchEnabled(isTorchEnabled: Boolean) {
     cameraXController.enableTorch(isTorchEnabled)
     cameraState.updateTorchEnabled(isTorchEnabled)
   }
 
-  fun applyExposureCompensation(exposureCompensation: Float) {
+  actual fun applyExposureCompensation(exposureCompensation: Float) {
     cameraXController.setExposureCompensationIndex(exposureCompensation.roundToInt())
     cameraState.updateExposureCompensation(exposureCompensation)
   }
 
-  fun applyZoomRatio(zoomRatio: Float) {
+  actual fun applyZoomRatio(zoomRatio: Float) {
     cameraXController.setZoomRatio(zoomRatio)
     cameraState.updateZoomRatio(zoomRatio)
   }

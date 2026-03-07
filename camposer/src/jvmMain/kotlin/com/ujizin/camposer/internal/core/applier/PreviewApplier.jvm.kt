@@ -12,15 +12,15 @@ internal actual class PreviewApplier(
     cameraState.updateMirrorMode(MirrorMode.Off)
   }
 
-  fun applyMirrorMode(mirrorMode: MirrorMode) {
+  actual fun applyMirrorMode(mirrorMode: MirrorMode) {
     cameraState.updateMirrorMode(mirrorMode)
   }
 
-  fun applyScaleType(scaleType: ScaleType) {
+  actual fun applyScaleType(scaleType: ScaleType) {
     cameraState.updateScaleType(scaleType)
   }
 
-  fun applyFocusOnTapEnabled(isFocusOnTapEnabled: Boolean) {
+  actual fun applyFocusOnTapEnabled(isFocusOnTapEnabled: Boolean) {
     cameraState.updateFocusOnTapEnabled(isFocusOnTapEnabled)
   }
 }

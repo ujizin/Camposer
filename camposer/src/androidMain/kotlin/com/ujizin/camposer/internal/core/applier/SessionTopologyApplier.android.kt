@@ -23,7 +23,7 @@ internal actual class SessionTopologyApplier(
     applyCamSelector(cameraState.camSelector.value)
   }
 
-  fun applyCaptureMode(captureMode: CaptureMode) {
+  actual fun applyCaptureMode(captureMode: CaptureMode) {
     cameraXController.setEnabledUseCases(
       getUseCases(
         mode = captureMode,
@@ -34,14 +34,14 @@ internal actual class SessionTopologyApplier(
     cameraState.updateCaptureMode(captureMode)
   }
 
-  fun applyCamSelector(camSelector: CamSelector) {
+  actual fun applyCamSelector(camSelector: CamSelector) {
     cameraXController.cameraSelector = camSelector.selector
     cameraInfo.rebind()
     resetConfig()
     cameraState.updateCamSelector(camSelector)
   }
 
-  fun applyCamFormat(camFormat: CamFormat) {
+  actual fun applyCamFormat(camFormat: CamFormat) {
     camFormat.applyConfigs(
       cameraInfo = cameraInfo,
       controller = cameraXController,

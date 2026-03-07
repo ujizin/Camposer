@@ -21,17 +21,17 @@ internal actual class VideoApplier(
     cameraState.updateFrameRate(cameraXController.videoCaptureTargetFrameRate.upper)
   }
 
-  fun applyImageCaptureStrategy(imageCaptureStrategy: ImageCaptureStrategy) {
+  actual fun applyImageCaptureStrategy(imageCaptureStrategy: ImageCaptureStrategy) {
     setImageCaptureStrategy(imageCaptureStrategy)
     cameraState.updateImageCaptureStrategy(imageCaptureStrategy)
   }
 
-  fun applyFrameRate(frameRate: Int) {
+  actual fun applyFrameRate(frameRate: Int) {
     setFrameRate(frameRate)
     cameraState.updateFrameRate(frameRate)
   }
 
-  fun applyVideoStabilizationMode(videoStabilizationMode: VideoStabilizationMode) {
+  actual fun applyVideoStabilizationMode(videoStabilizationMode: VideoStabilizationMode) {
     setVideoStabilizationMode(videoStabilizationMode)
     cameraState.updateVideoStabilizationMode(videoStabilizationMode)
   }
