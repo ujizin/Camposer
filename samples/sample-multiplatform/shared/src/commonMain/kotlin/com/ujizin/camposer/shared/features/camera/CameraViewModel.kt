@@ -23,6 +23,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -41,6 +43,16 @@ class CameraViewModel : ViewModel() {
   private var recordingTimerJob: Job? = null
   private var clearQrFeedbackJob: Job? = null
 
+  init {
+      cameraController.isRunning
+        .onEach { isInitialized ->
+          if (!isInitialized) return@onEach
+          _uiState.update {
+            it.copy(mirrorMode = cameraController.state?.mirrorMode?.value ?: it.mirrorMode)
+          }
+        }
+        .launchIn(viewModelScope)
+  }
   fun initializeOrientationStrategy() {
     cameraController.setOrientationStrategy(_uiState.value.orientationStrategy)
   }
