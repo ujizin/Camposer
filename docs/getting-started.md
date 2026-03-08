@@ -1,5 +1,7 @@
 # Getting Started
 
+!!! platform "Supported on Android, iOS and Desktop platforms"
+
 ## Permissions
 
 Before using Camposer, you must request Camera permission, and Audio/Microphone permission if recording video.

@@ -5,7 +5,7 @@
     <p class="camposer-hero__eyebrow">Camposer</p>
     <p class="camposer-hero__title">Kotlin Multiplatform Camera Library</p>
     <p class="camposer-hero__description">
-        Camposer is built with Jetpack Compose and gives you a modern camera stack for Android and iOS:
+        Camposer is built with Jetpack Compose and gives you a modern camera stack for Android, iOS and Desktop (JVM):
         photo capture, video recording, flash/torch controls, zoom, focus, stabilization, and analyzers.
     </p>
 </div>
@@ -16,8 +16,9 @@ Camposer is a **Kotlin Multiplatform** library supporting:
 
 | Platform | Status |
 |----------|--------|
-|  **Android** | ✅ Supported
-|  **iOS** | ✅ Supported
+| **Android** | ✅ Supported |
+| **iOS** | ✅ Supported |
+| **Desktop (JVM)** | ✅ Supported |
 
 ## Features
 

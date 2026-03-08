@@ -1,5 +1,7 @@
 # Mirror Mode
 
+!!! platform "Supported on Android, iOS and Desktop platforms"
+
 To enable mirror mode, configure it through the `CameraController`. The following options are available:
 
 - **MirrorMode.On**: Always enabled

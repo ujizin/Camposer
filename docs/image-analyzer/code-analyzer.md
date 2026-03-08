@@ -1,5 +1,7 @@
 # Code Analyzer (Code Scan)
 
+!!! platform-limited "Supported on Android and iOS platforms"
+
 ## Code scan
 
 Camposer supports barcode and QR code scanning via an add-on library.

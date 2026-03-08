@@ -1,5 +1,7 @@
 # Image Capture Strategy
 
+!!! platform-limited "Supported on Android and iOS platforms"
+
 The imageCaptureStrategy parameter defines how the camera optimizes the photo capture process, balancing between speed and image quality.
 
 ## Available Strategies

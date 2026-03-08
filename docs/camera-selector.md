@@ -1,5 +1,7 @@
 # Camera Selector
 
+!!! platform "Supported on Android, iOS and Desktop platforms"
+
 ## Introduction
 
 The Camera Selector module provides a simple interface to switch between available cameras. Two predefined selectors are available:

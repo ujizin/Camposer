@@ -1,5 +1,7 @@
 # Orientation Strategy
 
+!!! platform-limited "Supported on Android and iOS platforms"
+
 The Output Orientation strategy determines how captured media (images or videos) is rotated. 
 
 It defines whether rotation is applied via metadata (e.g., EXIF tags) or by physically rotating the pixels, based on different sources of truth.

@@ -1,5 +1,7 @@
 # Image Analyzer (Custom)
 
+!!! platform "Supported on Android, iOS and Desktop platforms"
+
 ## Introduction
 If you need to implement a custom image analyzer, for example, using TensorFlow or other ML frameworks, you can extend Camposer’s built-in analyzer. 
 

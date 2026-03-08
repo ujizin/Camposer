@@ -1,5 +1,7 @@
 # Zoom
 
+!!! platform "Supported on Android, iOS and Desktop platforms"
+
 ## Zoom support
 
 Zoom can be initialized and managed as state within Compose. The following example demonstrates how to set up and control zoom using `CameraController`:

@@ -1,5 +1,7 @@
 # Scale Type
 
+!!! platform "Supported on Android, iOS and Desktop platforms"
+
 ## Introduction
 
 Camposer supports customizing how the camera preview content is scaled within its container using the scaleType property.

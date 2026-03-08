@@ -1,5 +1,7 @@
 # Camera Controller
 
+!!! platform "Supported on Android, iOS and Desktop platforms"
+
 ## Introduction
 
 The Camera Controller provides functionality for taking pictures and recording videos, separating these actions from UI state management. By using a controller, you can manage camera operations independently of the CameraPreview composable.

@@ -1,5 +1,7 @@
 # Flash Mode & Torch
 
+!!! platform-limited "Supported on Android and iOS platforms"
+
 ## Introduction
 
 To configure flash mode, you need to use the `CameraController`. This ensures stability and prevents bugs or crashes when camera configuration changes.

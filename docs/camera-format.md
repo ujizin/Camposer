@@ -1,5 +1,7 @@
 # Camera Format
 
+!!! platform-limited "Supported on Android and iOS platforms"
+
 ## Introduction
 
 Camera Format defines the output configuration for resolution, aspect ratio, frame rate (FPS), and video stabilization.
@@ -67,3 +69,29 @@ The camera format uses a scoring and fallback mechanism. Based on the example ab
 
 !!! info
     Support for some configurations on Android depends on CameraX. Having these features available in the device’s native camera does not necessarily mean they are supported by CameraX.
+
+## Runtime Configuration
+
+In addition to configuring format via `CamFormat` at session startup, you can update frame rate and video stabilization at runtime using `CameraController`:
+
+```kotlin
+val cameraController = remember { CameraController() }
+val cameraSession = rememberCameraSession(cameraController)
+
+// Change frame rate at runtime (must be within the camera’s supported range)
+val frameRateResult = cameraController.setVideoFrameRate(60)
+
+// Change video stabilization mode at runtime
+val stabilizationResult = cameraController.setVideoStabilizationEnabled(VideoStabilizationMode.Standard)
+```
+
+You can query the camera’s supported frame-rate range before calling `setVideoFrameRate`:
+
+```kotlin
+import com.ujizin.camposer.lifecycle.compose.collectStateWithLifecycle
+
+val cameraInfoState by cameraSession.info.collectStateWithLifecycle()
+val minFPS = cameraInfoState.minFPS
+val maxFPS = cameraInfoState.maxFPS
+```
+

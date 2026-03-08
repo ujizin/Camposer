@@ -1,5 +1,7 @@
 # Recording video
 
+!!! platform-limited "Supported on Android and iOS platforms"
+
 The CameraController provides full functionality for recording videos, saving them to a specified file path (String).
 
 ## File Path

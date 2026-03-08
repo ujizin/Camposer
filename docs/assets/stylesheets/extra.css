@@ -230,11 +230,12 @@ select:focus-visible,
 .md-typeset h1 {
   letter-spacing: -0.02em;
   font-weight: 800;
+  margin: 16px 0;
   color: var(--camposer-heading-1);
 }
 
 .md-typeset h2 {
-  margin-top: 2.1rem;
+  margin-top: 0.8rem;
   padding-bottom: 0.35rem;
   border-bottom: 1px solid var(--camposer-panel-border);
 }
@@ -484,4 +485,51 @@ select:focus-visible,
     box-shadow: none;
     background: transparent;
   }
+}
+
+/* ── Platform support admonitions ─────────────────────────────────────────── */
+
+:root {
+  --md-admonition-icon--platform: url('data:image/svg+xml;charset=utf-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z%22/></svg>');
+}
+
+/* platform / platform-limited — green checkmark badge */
+.md-typeset .admonition.platform,
+.md-typeset details.platform,
+.md-typeset .admonition.platform-limited,
+.md-typeset details.platform-limited {
+  border-color: #2e7d32;
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+}
+
+.md-typeset .platform > .admonition-title,
+.md-typeset .platform > summary,
+.md-typeset .platform-limited > .admonition-title,
+.md-typeset .platform-limited > summary {
+  background-color: rgba(46, 125, 50, 0.1);
+  border-radius: 10px;
+}
+
+.md-typeset .platform > .admonition-title::before,
+.md-typeset .platform > summary::before,
+.md-typeset .platform-limited > .admonition-title::before,
+.md-typeset .platform-limited > summary::before {
+  background-color: #2e7d32;
+  -webkit-mask-image: var(--md-admonition-icon--platform);
+  mask-image: var(--md-admonition-icon--platform);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .platform > .admonition-title,
+[data-md-color-scheme="slate"] .md-typeset .platform > summary,
+[data-md-color-scheme="slate"] .md-typeset .platform-limited > .admonition-title,
+[data-md-color-scheme="slate"] .md-typeset .platform-limited > summary {
+  background-color: rgba(46, 125, 50, 0.2);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .platform > .admonition-title::before,
+[data-md-color-scheme="slate"] .md-typeset .platform > summary::before,
+[data-md-color-scheme="slate"] .md-typeset .platform-limited > .admonition-title::before,
+[data-md-color-scheme="slate"] .md-typeset .platform-limited > summary::before {
+  background-color: #66bb6a;
 }

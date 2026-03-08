@@ -1,5 +1,7 @@
 # Focus on Tap
 
+!!! platform-limited "Supported on Android and iOS platforms"
+
 ## Introduction
 
 Focus on Tap is enabled by default in Camposer on supported devices. Users can tap the camera preview to focus at a specific point.

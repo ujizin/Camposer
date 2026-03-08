@@ -1,5 +1,7 @@
 # Camera Session
 
+!!! platform "Supported on Android, iOS and Desktop platforms"
+
 ## Introduction
 
 `CameraSession` is the central component that manages the camera lifecycle and provides access to the camera's state, information, and controller. It serves as the main bridge between the UI and the camera hardware.

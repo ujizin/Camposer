@@ -1,5 +1,7 @@
 # Exposure Compensation
 
+!!! platform "Supported on Android, iOS and Desktop platforms"
+
 The exposureCompensation parameter allows you to manually adjust the camera’s exposure level, controlling how bright or dark the preview and captured images appear.
 
 This value is represented as a Float, and its valid range depends on the active camera.

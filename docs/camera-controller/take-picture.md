@@ -1,5 +1,7 @@
 # Taking Picture
 
+!!! platform "Supported on Android, iOS and Desktop platforms"
+
 The CameraController provides functionality for taking pictures.
 
 ## ByteArray

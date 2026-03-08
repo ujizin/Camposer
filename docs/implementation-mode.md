@@ -1,5 +1,7 @@
 # Implementation Mode
 
+!!! platform-limited "Supported on Android platform only"
+
 ## Introduction
 
 The implementationMode property affects **Android only**. It determines how the camera preview is rendered:

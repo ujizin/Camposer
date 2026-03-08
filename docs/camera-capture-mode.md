@@ -1,5 +1,7 @@
 # Capture Mode
 
+!!! platform "Supported on Android, iOS and Desktop platforms"
+
 The `captureMode` parameter defines the current operating mode of the camera, either photo capture or video recording.
 
 Camposer provides two available modes:
