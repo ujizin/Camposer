@@ -49,7 +49,7 @@ internal class CameraEngineImplTest {
   }
 
   @Test
-  fun `given out-of-range zoom values when updating zoom ratio then value is clamped to camera bounds`() {
+  fun `given out-of-range zoom values when updating zoom ratio then value is clamped`() {
     // Given
     val (engine, capture) = buildEngine()
 
@@ -69,7 +69,7 @@ internal class CameraEngineImplTest {
   }
 
   @Test
-  fun `given out-of-range exposure values when updating exposure compensation then value is clamped to camera bounds`() {
+  fun `given out-of-range exposure values when updating exposure then value is clamped`() {
     // Given
     val (engine, capture) = buildEngine()
 
@@ -89,7 +89,7 @@ internal class CameraEngineImplTest {
   }
 
   @Test
-  fun `given same zoom value when updating zoom ratio then no additional capture set call is made`() {
+  fun `given same zoom value when updating zoom ratio then no extra capture set call is made`() {
     // Given
     val (engine, capture) = buildEngine()
 
@@ -107,7 +107,7 @@ internal class CameraEngineImplTest {
   }
 
   @Test
-  fun `given analyzer set when toggling analyzer enabled then listener attaches once and is removed when disabled`() {
+  fun `given analyzer set when toggling enabled then listener is attached and removed correctly`() {
     // Given
     val (engine, capture) = buildEngine()
     engine.updateImageAnalyzer(ImageAnalyzer { })

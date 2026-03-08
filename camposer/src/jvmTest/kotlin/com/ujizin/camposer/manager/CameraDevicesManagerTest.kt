@@ -78,8 +78,11 @@ internal class CameraDevicesManagerTest {
         dispatcher = dispatcher,
         pollIntervalMs = 1000L,
         cameraDeviceDiscoverer = CameraDeviceDiscoverer {
-          if (callCount++ == 0) CameraDeviceState.Devices(listOf(fakeCameraDevice(id = "1")))
-          else CameraDeviceState.Initial
+          if (callCount++ == 0) {
+            CameraDeviceState.Devices(listOf(fakeCameraDevice(id = "1")))
+          } else {
+            CameraDeviceState.Initial
+          }
         },
       )
 

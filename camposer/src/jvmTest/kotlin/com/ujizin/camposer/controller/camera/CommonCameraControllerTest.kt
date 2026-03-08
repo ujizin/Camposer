@@ -88,7 +88,7 @@ internal class CommonCameraControllerTest {
   }
 
   @Test
-  fun `given out-of-range frame rate when setting video frame rate then result is failure and state is unchanged`() {
+  fun `given out-of-range frame rate when setting video frame rate then result is failure`() {
     // Given
     val (controller, engine, capture) = buildHarness()
     controller.onSessionStarted()
@@ -117,7 +117,7 @@ internal class CommonCameraControllerTest {
   }
 
   @Test
-  fun `given pending flash on when flash becomes unsupported before session start then flash remains off`() {
+  fun `given pending flash on when flash becomes unsupported before session then flash is off`() {
     // Given
     val (controller, engine, _, cameraInfo, fakeCameraInfo) = buildHarness()
 
