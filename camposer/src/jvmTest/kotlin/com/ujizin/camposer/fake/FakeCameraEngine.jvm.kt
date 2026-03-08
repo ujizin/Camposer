@@ -30,8 +30,6 @@ internal actual class FakeCameraEngine actual constructor(
   private val cameraTest: FakeCameraTest,
   testDispatcher: CoroutineDispatcher,
 ) : JvmCameraEngine by buildEngine(cameraTest, testDispatcher) {
-  override val hasRecordingError: Boolean get() = cameraTest.hasErrorInRecording
-
   /**
    * Override the delegated method so that setting an analyzer immediately triggers one
    * analysis cycle with the pre-populated frame.  This avoids a race between the test

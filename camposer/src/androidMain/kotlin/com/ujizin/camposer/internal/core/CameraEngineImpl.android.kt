@@ -25,7 +25,8 @@ internal class CameraEngineImpl(
   override val cameraInfo: CameraInfo,
   override val cameraXController: CameraXController,
   private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-) : CameraEngineCore(), AndroidCameraEngine {
+) : CameraEngineCore(),
+  AndroidCameraEngine {
   override val mainExecutor: Executor
     get() = cameraXController.mainExecutor
 

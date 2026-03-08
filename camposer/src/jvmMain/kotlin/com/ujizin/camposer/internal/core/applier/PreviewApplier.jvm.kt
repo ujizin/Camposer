@@ -7,7 +7,6 @@ import com.ujizin.camposer.state.properties.ScaleType
 internal actual class PreviewApplier(
   private val cameraState: CameraState,
 ) : CameraStateApplier {
-
   override fun onCameraInitialized() {
     cameraState.updateMirrorMode(MirrorMode.Off)
   }

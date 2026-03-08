@@ -29,4 +29,3 @@ internal object OpenCvCameraDeviceDiscoverer : CameraDeviceDiscoverer {
     return if (devices.isEmpty()) CameraDeviceState.Initial else CameraDeviceState.Devices(devices)
   }
 }
-

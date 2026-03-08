@@ -25,6 +25,9 @@ public actual class CameraSession internal constructor(
   public actual val controller: CameraController = cameraEngine.cameraController,
   public actual val info: CameraInfo = cameraEngine.cameraInfo,
   public actual val state: CameraState = cameraEngine.cameraState,
+  private val recordControllerFactory: (CameraEngine) -> DefaultRecordController = { engine ->
+    DefaultRecordController(engine)
+  },
 ) {
   public actual var isInitialized: Boolean by mutableStateOf(false)
     private set
@@ -34,6 +37,8 @@ public actual class CameraSession internal constructor(
 
   public actual var isStreaming: Boolean by mutableStateOf(false)
     internal set
+
+  private var recordController: DefaultRecordController? = null
 
   private val jvmCapture: JvmCameraCapture
     get() = (cameraEngine as JvmCameraEngine).capture
@@ -69,8 +74,10 @@ public actual class CameraSession internal constructor(
         error("Failed to open camera device at index ${state.camSelector.value.deviceIndex}")
       }
 
+      val rc = recordControllerFactory(cameraEngine)
+      recordController = rc
       controller.initialize(
-        recordController = DefaultRecordController(cameraEngine),
+        recordController = rc,
         takePictureCommand = DefaultTakePictureCommand(cameraEngine),
         cameraEngine = cameraEngine,
       )
@@ -86,6 +93,8 @@ public actual class CameraSession internal constructor(
   public actual fun retryInitialization() {
     if (!hasInitializationError) return
 
+    recordController?.dispose()
+    recordController = null
     hasInitializationError = false
     isInitialized = false
 
@@ -102,6 +111,7 @@ public actual class CameraSession internal constructor(
     jvmCapture.release()
     state.dispose()
     controller.dispose()
+    recordController?.dispose()
     (jvmCapture as? JvmCameraCaptureImpl)?.dispose()
   }
 }

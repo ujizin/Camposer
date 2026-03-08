@@ -26,7 +26,8 @@ internal class CameraEngineImpl(
   override val iOSCameraController: IOSCameraController,
   override val cameraInfo: CameraInfo,
   private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-) : CameraEngineCore(), IOSCameraEngine {
+) : CameraEngineCore(),
+  IOSCameraEngine {
   override val cameraState = CameraState(
     cameraInfo = cameraInfo,
     dispatcher = dispatcher,
