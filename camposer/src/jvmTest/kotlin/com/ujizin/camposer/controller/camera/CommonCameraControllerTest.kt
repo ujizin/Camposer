@@ -7,6 +7,7 @@ import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.info.FakeJvmCameraInfo
 import com.ujizin.camposer.internal.capture.FakeJvmCameraCapture
 import com.ujizin.camposer.internal.core.CameraEngineImpl
+import com.ujizin.camposer.state.properties.FlashMode
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,13 +26,16 @@ internal class CommonCameraControllerTest {
     val controller: CameraController,
     val engine: CameraEngineImpl,
     val capture: FakeJvmCameraCapture,
+    val cameraInfo: CameraInfo,
+    val fakeCameraInfo: FakeJvmCameraInfo,
   )
 
   private fun buildHarness(): Harness {
     val dispatcher = UnconfinedTestDispatcher()
     val controller = CameraController(dispatcher)
     val capture = FakeJvmCameraCapture()
-    val info = CameraInfo(FakeJvmCameraInfo())
+    val fakeCameraInfo = FakeJvmCameraInfo()
+    val info = CameraInfo(fakeCameraInfo)
     val engine = CameraEngineImpl(
       cameraController = controller,
       cameraInfo = info,
@@ -49,52 +53,84 @@ internal class CommonCameraControllerTest {
       controller = controller,
       engine = engine,
       capture = capture,
+      cameraInfo = info,
+      fakeCameraInfo = fakeCameraInfo,
     )
   }
 
   @Test
-  fun `pending zoom and exposure are applied after onSessionStarted`() {
+  fun `given pending zoom and exposure when session starts then pending values are applied once`() {
+    // Given
     val (controller, engine, capture) = buildHarness()
 
     controller.setZoomRatio(4f)
     controller.setExposureCompensation(2f)
 
+    // And: nothing applied to capture yet (values are pending)
     assertEquals(0, capture.setCallCount(CAP_PROP_ZOOM))
     assertEquals(0, capture.setCallCount(CAP_PROP_EXPOSURE))
 
+    // When
     controller.onSessionStarted()
 
+    // Then
     assertEquals(4f, engine.cameraState.zoomRatio.value)
     assertEquals(2f, engine.cameraState.exposureCompensation.value)
     assertEquals(1, capture.setCallCount(CAP_PROP_ZOOM))
     assertEquals(1, capture.setCallCount(CAP_PROP_EXPOSURE))
 
+    // When
     controller.onSessionStarted()
+
+    // Then
     assertEquals(1, capture.setCallCount(CAP_PROP_ZOOM))
     assertEquals(1, capture.setCallCount(CAP_PROP_EXPOSURE))
   }
 
   @Test
-  fun `setVideoFrameRate fails when frame rate is outside camera range`() {
+  fun `given out-of-range frame rate when setting video frame rate then result is failure and state is unchanged`() {
+    // Given
     val (controller, engine, capture) = buildHarness()
     controller.onSessionStarted()
 
+    // When
     val result = controller.setVideoFrameRate(100)
 
+    // Then
     assertTrue(result.isFailure)
     assertEquals(-1, engine.cameraState.frameRate.value)
     assertEquals(0, capture.setCallCount(CAP_PROP_FPS))
   }
 
   @Test
-  fun `setVideoStabilizationEnabled fails when unsupported`() {
+  fun `given unsupported stabilization when setting video stabilization then result is failure`() {
+    // Given
     val (controller, engine, _) = buildHarness()
     controller.onSessionStarted()
 
+    // When
     val result = controller.setVideoStabilizationEnabled(VideoStabilizationMode.Standard)
 
+    // Then
     assertTrue(result.isFailure)
     assertEquals(VideoStabilizationMode.Off, engine.cameraState.videoStabilizationMode.value)
+  }
+
+  @Test
+  fun `given pending flash on when flash becomes unsupported before session start then flash remains off`() {
+    // Given
+    val (controller, engine, _, cameraInfo, fakeCameraInfo) = buildHarness()
+
+    val pendingResult = controller.setFlashMode(FlashMode.On)
+    assertTrue(pendingResult.isSuccess) // flash was stored as pending
+    fakeCameraInfo.isFlashSupported = false
+    cameraInfo.rebind()
+
+    // When
+    controller.onSessionStarted()
+
+    // Then
+    assertEquals(FlashMode.Off, engine.cameraState.flashMode.value)
   }
 
   private class FakeRecordController : RecordController {

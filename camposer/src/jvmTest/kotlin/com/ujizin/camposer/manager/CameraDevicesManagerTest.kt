@@ -16,33 +16,42 @@ import kotlin.test.assertIs
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class CameraDevicesManagerTest {
   @Test
-  fun `initial state is Initial`() {
-    // Use a very long poll interval to avoid racing
+  fun `given manager created when no poll has run then initial state is Initial`() {
+    // Given
+    // Use a very long poll interval to avoid racing.
     val manager =
       CameraDevicesManager(
         dispatcher = Dispatchers.Unconfined,
         pollIntervalMs = Long.MAX_VALUE,
         cameraDeviceDiscoverer = FakeCameraDeviceDiscoverer(CameraDeviceState.Initial),
       )
-    // After construction, before any poll, state should be Initial
+
+    // Then
     assertIs<CameraDeviceState.Initial>(manager.cameraDevicesState.value)
     manager.release()
   }
 
   @Test
-  fun `release does not throw`() {
+  fun `given manager created when release is called then no exception is thrown`() {
+    // Given
     val manager =
       CameraDevicesManager(
         dispatcher = Dispatchers.Unconfined,
         pollIntervalMs = Long.MAX_VALUE,
         cameraDeviceDiscoverer = FakeCameraDeviceDiscoverer(CameraDeviceState.Initial),
       )
+
+    // When
     manager.release()
+
+    // Then
+    // No exception is thrown.
   }
 
   @Test
-  fun `poll updates state to Devices when discoverer returns cameras`() =
+  fun `given discoverer returns devices when polling runs then state becomes Devices`() =
     runTest {
+      // Given
       val dispatcher = StandardTestDispatcher(testScheduler)
       val expected = CameraDeviceState.Devices(listOf(fakeCameraDevice(id = "0")))
       val manager = CameraDevicesManager(
@@ -51,15 +60,18 @@ internal class CameraDevicesManagerTest {
         cameraDeviceDiscoverer = FakeCameraDeviceDiscoverer(expected),
       )
 
+      // When
       runCurrent()
 
+      // Then
       assertEquals(expected, manager.cameraDevicesState.value)
       manager.release()
     }
 
   @Test
-  fun `poll updates state back to Initial when discoverer result changes`() =
+  fun `given discoverer result changes when next poll runs then state updates back to Initial`() =
     runTest {
+      // Given
       val dispatcher = StandardTestDispatcher(testScheduler)
       var callCount = 0
       val manager = CameraDevicesManager(
@@ -71,13 +83,49 @@ internal class CameraDevicesManagerTest {
         },
       )
 
+      // When
       runCurrent()
+
+      // Then
       assertIs<CameraDeviceState.Devices>(manager.cameraDevicesState.value)
 
+      // When
       advanceTimeBy(1_000L)
       runCurrent()
+
+      // Then
       assertIs<CameraDeviceState.Initial>(manager.cameraDevicesState.value)
       manager.release()
+    }
+
+  @Test
+  fun `given manager released when time advances then no further polling occurs`() =
+    runTest {
+      // Given
+      val dispatcher = StandardTestDispatcher(testScheduler)
+      var discoverCalls = 0
+      val manager = CameraDevicesManager(
+        dispatcher = dispatcher,
+        pollIntervalMs = 1000L,
+        cameraDeviceDiscoverer = CameraDeviceDiscoverer {
+          discoverCalls++
+          CameraDeviceState.Initial
+        },
+      )
+
+      // When
+      runCurrent()
+
+      // Then
+      assertEquals(1, discoverCalls)
+
+      // When
+      manager.release()
+      advanceTimeBy(1_000L)
+      runCurrent()
+
+      // Then
+      assertEquals(1, discoverCalls)
     }
 
   private fun fakeCameraDevice(id: String): CameraDevice =
