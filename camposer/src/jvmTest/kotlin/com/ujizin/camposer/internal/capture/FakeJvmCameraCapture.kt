@@ -10,6 +10,7 @@ import org.bytedeco.opencv.opencv_core.Mat
 
 internal class FakeJvmCameraCapture(
   private val openResult: Boolean = true,
+  private val fpsOverride: Double? = null,
 ) : JvmCameraCapture {
   private val setCallCounts = mutableMapOf<Int, Int>()
   private val lastSetValues = mutableMapOf<Int, Double>()
@@ -55,7 +56,7 @@ internal class FakeJvmCameraCapture(
     when (propId) {
       CAP_PROP_ZOOM -> 10.0
       CAP_PROP_EXPOSURE -> -3.0
-      CAP_PROP_FPS -> 30.0
+      CAP_PROP_FPS -> fpsOverride ?: 30.0
       else -> 0.0
     }
 
