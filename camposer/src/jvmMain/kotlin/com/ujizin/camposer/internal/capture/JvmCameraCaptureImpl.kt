@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
 import org.bytedeco.opencv.opencv_core.Mat
 import org.bytedeco.opencv.opencv_videoio.VideoCapture
+import java.util.concurrent.CopyOnWriteArrayList
 
 @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
 internal class JvmCameraCaptureImpl : JvmCameraCapture {
@@ -35,7 +36,7 @@ internal class JvmCameraCaptureImpl : JvmCameraCapture {
 
   override var currentMat: Mat? = null
 
-  private val frameListeners = mutableListOf<(Mat) -> Unit>()
+  private val frameListeners = CopyOnWriteArrayList<(Mat) -> Unit>()
 
   override fun addFrameListener(listener: (Mat) -> Unit) {
     frameListeners.add(listener)

@@ -90,6 +90,10 @@ internal class FakeJvmCameraCapture(
     frameListeners -= listener
   }
 
+  internal fun dispatchFrame(mat: Mat = Mat()) {
+    frameListeners.toList().forEach { it.invoke(mat) }
+  }
+
   internal fun setCallCount(propId: Int): Int = setCallCounts[propId] ?: 0
 
   internal fun lastSetValue(propId: Int): Double? = lastSetValues[propId]

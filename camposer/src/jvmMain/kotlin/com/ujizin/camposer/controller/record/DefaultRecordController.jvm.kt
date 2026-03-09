@@ -25,6 +25,14 @@ internal actual class DefaultRecordController(
   },
   private val audioFactory: () -> JvmAudioCapture = { JvmAudioCapture() },
 ) : RecordController {
+  private data class ActiveRecording(
+    val filename: String,
+    val callback: (CaptureResult<String>) -> Unit,
+    val videoRecorder: JvmVideoRecorder?,
+    val audioCapture: JvmAudioCapture?,
+  )
+
+  private val stateLock = Any()
   private val _isMuted = MutableStateFlow(false)
   actual override val isMuted: StateFlow<Boolean> = _isMuted
 
@@ -43,7 +51,9 @@ internal actual class DefaultRecordController(
     filename: String,
     onVideoCaptured: (CaptureResult<String>) -> Unit,
   ) {
-    if (_isRecording.value) return
+    synchronized(stateLock) {
+      if (_isRecording.value) return
+    }
 
     val video = videoRecorderFactory(filename, engine.capture)
     val audio = audioFactory()
@@ -66,47 +76,72 @@ internal actual class DefaultRecordController(
       return
     }
 
-    videoRecorder = video
-    audioCapture = audio
-    pendingFilename = filename
-    pendingCallback = onVideoCaptured
+    synchronized(stateLock) {
+      videoRecorder = video
+      audioCapture = audio
+      pendingFilename = filename
+      pendingCallback = onVideoCaptured
+    }
 
     engine.capture.addFrameListener(frameListener)
     _isRecording.update { true }
   }
 
   private val frameListener: (Mat) -> Unit = { mat ->
-    videoRecorder?.record(mat)
+    val recorder = synchronized(stateLock) { videoRecorder }
+    if (recorder != null) {
+      try {
+        recorder.record(mat)
+      } catch (e: Exception) {
+        failRecording(e)
+      }
+    }
   }
 
   actual override fun stopRecording(): Result<Boolean> {
-    val filename = pendingFilename
-      ?: return Result.failure(IllegalStateException("Not recording"))
-    val callback = pendingCallback
-      ?: return Result.failure(IllegalStateException("Not recording"))
+    val activeRecording =
+      takeActiveRecording()
+        ?: return Result.failure(IllegalStateException("Not recording"))
 
     engine.capture.removeFrameListener(frameListener)
-    audioCapture?.stop()
-    audioCapture = null
-
+    activeRecording.audioCapture?.stop()
     return try {
-      videoRecorder?.stop()
-      clear()
-      callback(CaptureResult.Success(filename))
+      activeRecording.videoRecorder?.stop()
+      activeRecording.callback(CaptureResult.Success(activeRecording.filename))
       Result.success(true)
     } catch (e: Exception) {
-      clear()
-      callback(CaptureResult.Error(e))
+      activeRecording.callback(CaptureResult.Error(e))
       Result.failure(e)
     }
   }
 
-  private fun clear() {
-    videoRecorder = null
-    pendingFilename = null
-    pendingCallback = null
-    _isRecording.update { false }
-    _isMuted.update { false }
+  private fun takeActiveRecording(): ActiveRecording? =
+    synchronized(stateLock) {
+      val filename = pendingFilename ?: return@synchronized null
+      val callback = pendingCallback ?: return@synchronized null
+      val activeRecording = ActiveRecording(filename, callback, videoRecorder, audioCapture)
+      videoRecorder = null
+      audioCapture = null
+      pendingFilename = null
+      pendingCallback = null
+      _isRecording.update { false }
+      _isMuted.update { false }
+      activeRecording
+    }
+
+  private fun failRecording(error: Exception) {
+    val activeRecording = takeActiveRecording() ?: return
+    engine.capture.removeFrameListener(frameListener)
+    activeRecording.audioCapture?.stop()
+
+    var finalError = error
+    try {
+      activeRecording.videoRecorder?.stop()
+    } catch (stopError: Exception) {
+      finalError.addSuppressed(stopError)
+    }
+
+    activeRecording.callback(CaptureResult.Error(finalError))
   }
 
   actual override fun pauseRecording(): Result<Boolean> =
@@ -117,7 +152,7 @@ internal actual class DefaultRecordController(
 
   actual override fun muteRecording(isMuted: Boolean): Result<Boolean> {
     _isMuted.update { isMuted }
-    audioCapture?.mute(isMuted)
+    synchronized(stateLock) { audioCapture }?.mute(isMuted)
     return Result.success(true)
   }
 
