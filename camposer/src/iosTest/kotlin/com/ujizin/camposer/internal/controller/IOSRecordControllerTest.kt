@@ -124,8 +124,7 @@ private class TestIOSCameraController(
     onRunningChanged: (Boolean) -> Unit,
   ) = error("Unused in test")
 
-  override fun getCurrentPosition(): AVCaptureDevicePosition =
-    AVCaptureDevicePositionUnspecified
+  override fun getCurrentPosition(): AVCaptureDevicePosition = AVCaptureDevicePositionUnspecified
 
   override fun getCurrentDeviceOrientation(): AVCaptureVideoOrientation =
     AVCaptureVideoOrientationPortrait
@@ -141,8 +140,7 @@ private class TestIOSCameraController(
   override fun setVideoStabilization(mode: AVCaptureVideoStabilizationMode) =
     error("Unused in test")
 
-  override fun isVideoStabilizationSupported(mode: AVCaptureVideoStabilizationMode): Boolean =
-    false
+  override fun isVideoStabilizationSupported(mode: AVCaptureVideoStabilizationMode): Boolean = false
 
   override fun setDeviceFormat(format: AVCaptureDeviceFormat) = error("Unused in test")
 
