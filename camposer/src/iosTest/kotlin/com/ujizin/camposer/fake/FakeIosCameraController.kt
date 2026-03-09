@@ -116,12 +116,10 @@ class FakeIosCameraController : IOSCameraController {
   override fun start(
     captureOutput: AVCaptureOutput,
     device: AVCaptureDevice,
-    isMuted: Boolean,
     onRunningChanged: (Boolean) -> Unit,
   ) {
     fakeOutputs.add(captureOutput)
     fakeCaptureDevice = device
-    setAudioEnabled(!isMuted)
     onRunningChanged(true)
   }
 
@@ -235,6 +233,7 @@ class FakeIosCameraController : IOSCameraController {
     filename: String,
     onVideoCaptured: (Result<String>) -> Unit,
   ) {
+    setAudioEnabled(!mutableFakeIsMuted.value)
     mutableFakeIsRecording.update { true }
 
     if (fakeErrorInRecording) {
@@ -250,6 +249,7 @@ class FakeIosCameraController : IOSCameraController {
   override fun pauseRecording(): Result<Boolean> = Result.success(true)
 
   override fun stopRecording(): Result<Boolean> {
+    setAudioEnabled(false)
     mutableFakeIsRecording.update { false }
     mutableFakeIsMuted.update { false }
     return Result.success(true)
@@ -257,6 +257,9 @@ class FakeIosCameraController : IOSCameraController {
 
   override fun muteRecording(isMuted: Boolean): Result<Boolean> {
     mutableFakeIsMuted.update { isMuted }
+    if (mutableFakeIsRecording.value) {
+      setAudioEnabled(!isMuted)
+    }
     return Result.success(true)
   }
 
