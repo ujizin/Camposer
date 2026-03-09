@@ -108,7 +108,6 @@ public actual class CameraSession internal constructor(
     iosCameraController.start(
       captureOutput = state.captureMode.value.output,
       device = iosCameraController.getCaptureDevice(state.camSelector.value),
-      isMuted = controller.isMuted.value,
       onRunningChanged = { isStreaming = it },
     )
 

@@ -49,7 +49,6 @@ public interface IOSCameraController {
   public fun start(
     captureOutput: AVCaptureOutput,
     device: AVCaptureDevice,
-    isMuted: Boolean,
     onRunningChanged: (Boolean) -> Unit,
   )
 

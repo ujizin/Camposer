@@ -191,14 +191,12 @@ public class DefaultIOSCameraController internal constructor(
   override fun start(
     captureOutput: AVCaptureOutput,
     device: AVCaptureDevice,
-    isMuted: Boolean,
     onRunningChanged: (Boolean) -> Unit,
   ): Unit =
     dispatch_async(cameraQueue) {
       captureSession.beginConfiguration()
 
       setCaptureDevice(device)
-      setAudioEnabled(!isMuted)
       captureSession.tryAddOutput(captureOutput)
       captureSession.commitConfiguration()
 
