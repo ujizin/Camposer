@@ -65,10 +65,11 @@ internal class IOSRecordController(
           error != null -> Result.failure(ErrorRecordVideoException(error))
           else -> Result.success(filename)
         }
-        cameraController.setAudioEnabled(false)
+
+        if (_isRecording.value) {
+          clearRecord()
+        }
         onVideoCaptured(result)
-        _isRecording.update { false }
-        _isMuted.update { false }
         videoDelegate = null
       }
     }.apply { videoDelegate = this }
@@ -94,9 +95,7 @@ internal class IOSRecordController(
 
   fun stop(): Result<Boolean> {
     videoRecordOutput?.stopRecording() ?: return Result.failure(VideoOutputNotFoundException())
-    cameraController.setAudioEnabled(false)
-    _isRecording.update { false }
-    _isMuted.update { false }
+    clearRecord()
     return Result.success(true)
   }
 
@@ -106,5 +105,11 @@ internal class IOSRecordController(
       cameraController.setAudioEnabled(!isMuted)
     }
     return Result.success(true)
+  }
+
+  private fun clearRecord() {
+    cameraController.setAudioEnabled(false)
+    _isRecording.update { false }
+    _isMuted.update { false }
   }
 }
