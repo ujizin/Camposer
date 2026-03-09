@@ -24,7 +24,7 @@ internal class JvmAudioCapture(
   val isMuted: StateFlow<Boolean> = _isMuted
 
   // Throws if the audio device cannot be opened.
-  fun start(
+  internal fun start(
     scope: CoroutineScope,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
     onSamples: (ShortBuffer) -> Unit,
@@ -53,7 +53,7 @@ internal class JvmAudioCapture(
     }
   }
 
-  fun stop() {
+  internal fun stop() {
     captureJob?.cancel()
     captureJob = null
     line?.stop()
@@ -61,7 +61,7 @@ internal class JvmAudioCapture(
     line = null
   }
 
-  fun mute(muted: Boolean) {
+  internal fun mute(muted: Boolean) {
     _isMuted.value = muted
   }
 }
