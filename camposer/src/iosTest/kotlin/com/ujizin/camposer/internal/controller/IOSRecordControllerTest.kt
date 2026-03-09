@@ -20,8 +20,10 @@ import platform.AVFoundation.AVCaptureSession
 import platform.AVFoundation.AVCaptureVideoOrientation
 import platform.AVFoundation.AVCaptureVideoOrientationPortrait
 import platform.AVFoundation.AVCaptureVideoStabilizationMode
+import platform.AVFoundation.AVErrorRecordingSuccessfullyFinishedKey
 import platform.AVFoundation.AVLayerVideoGravity
 import platform.CoreGraphics.CGPoint
+import platform.Foundation.NSError
 import platform.Foundation.NSURL
 import platform.UIKit.UIColor
 import platform.UIKit.UIView
@@ -62,6 +64,35 @@ internal class IOSRecordControllerTest {
     assertFalse(recordController.isRecording.value)
     assertFalse(recordController.isMuted.value)
   }
+
+  @Test
+  fun test_recording_stopped_error_is_ignored_when_avfoundation_marks_file_playable() {
+    val output = TestMovieFileOutput()
+    val cameraController = TestIOSCameraController(output)
+    val recordController = IOSRecordController(cameraController)
+    var capturedResult: Result<String>? = null
+
+    recordController.start(
+      filename = "/video/video.mp4",
+      videoOrientation = AVCaptureVideoOrientationPortrait,
+      isMirrorEnabled = false,
+      onVideoCaptured = { capturedResult = it },
+    )
+
+    output.finishRecording(
+      error = NSError.errorWithDomain(
+        domain = "AVFoundationErrorDomain",
+        code = -11818,
+        userInfo = mapOf(AVErrorRecordingSuccessfullyFinishedKey to true),
+      ),
+    )
+
+    val result = checkNotNull(capturedResult)
+    assertTrue(result.isSuccess)
+    assertEquals("/video/video.mp4", result.getOrNull())
+    assertFalse(recordController.isRecording.value)
+    assertFalse(recordController.isMuted.value)
+  }
 }
 
 private class TestMovieFileOutput : AVCaptureMovieFileOutput() {
@@ -76,12 +107,12 @@ private class TestMovieFileOutput : AVCaptureMovieFileOutput() {
     delegate = recordingDelegate
   }
 
-  fun finishRecording() {
+  fun finishRecording(error: NSError? = null) {
     delegate?.captureOutput(
       output = this as AVCaptureFileOutput,
       didFinishRecordingToOutputFileAtURL = checkNotNull(recordedUrl),
       fromConnections = emptyList<Any>(),
-      error = null,
+      error = error,
     )
   }
 }
