@@ -15,6 +15,7 @@ import platform.AVFoundation.AVCaptureFileOutputRecordingDelegateProtocol
 import platform.AVFoundation.AVCaptureMovieFileOutput
 import platform.AVFoundation.AVCaptureSession
 import platform.AVFoundation.AVCaptureVideoOrientation
+import platform.AVFoundation.AVErrorRecordingSuccessfullyFinishedKey
 import platform.AVFoundation.AVMediaTypeVideo
 import platform.Foundation.NSError
 import platform.Foundation.NSURL
@@ -62,6 +63,7 @@ internal class IOSRecordController(
         error: NSError?,
       ) {
         val result = when {
+          error.isRecordingStoppedAfterSuccessfulFinish() -> Result.success(filename)
           error != null -> Result.failure(ErrorRecordVideoException(error))
           else -> Result.success(filename)
         }
@@ -111,5 +113,11 @@ internal class IOSRecordController(
     cameraController.setAudioEnabled(false)
     _isRecording.update { false }
     _isMuted.update { false }
+  }
+
+  private fun NSError?.isRecordingStoppedAfterSuccessfulFinish(): Boolean {
+    val error = this ?: return false
+    val wasMarkedPlayable = error.userInfo[AVErrorRecordingSuccessfullyFinishedKey] as? Boolean
+    return wasMarkedPlayable == true
   }
 }

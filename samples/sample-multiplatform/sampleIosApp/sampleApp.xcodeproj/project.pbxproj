@@ -72,9 +72,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		B1A100000000000000000400 /* sampleApp */ = {
+		B1A100000000000000000400 /* Camposer KMP */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B1A100000000000000000700 /* Build configuration list for PBXNativeTarget "sampleApp" */;
+			buildConfigurationList = B1A100000000000000000700 /* Build configuration list for PBXNativeTarget "Camposer KMP" */;
 			buildPhases = (
 				B1A100000000000000000500 /* Compile Kotlin Framework */,
 				B1A100000000000000000301 /* Sources */,
@@ -85,7 +85,7 @@
 			);
 			dependencies = (
 			);
-			name = sampleApp;
+			name = "Camposer KMP";
 			productName = sampleApp;
 			productReference = B1A100000000000000000100 /* sampleApp.app */;
 			productType = "com.apple.product-type.application";
@@ -118,7 +118,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B1A100000000000000000400 /* sampleApp */,
+				B1A100000000000000000400 /* Camposer KMP */,
 			);
 		};
 /* End PBXProject section */
@@ -293,7 +293,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 287955VW5G;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = sampleApp/Info.plist;
@@ -346,7 +346,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		B1A100000000000000000700 /* Build configuration list for PBXNativeTarget "sampleApp" */ = {
+		B1A100000000000000000700 /* Build configuration list for PBXNativeTarget "Camposer KMP" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B1A100000000000000000802 /* Debug */,
