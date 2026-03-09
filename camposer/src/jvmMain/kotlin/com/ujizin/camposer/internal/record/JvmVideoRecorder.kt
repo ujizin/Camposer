@@ -126,4 +126,18 @@ internal class JvmVideoRecorder(
       null -> suppressed
       else -> apply { addSuppressed(suppressed) }
     }
+
+  internal fun interface Factory {
+    fun create(
+      filename: String,
+      capture: JvmCameraCapture,
+    ): JvmVideoRecorder
+  }
+
+  internal companion object : Factory {
+    override fun create(
+      filename: String,
+      capture: JvmCameraCapture,
+    ): JvmVideoRecorder = JvmVideoRecorder(filename, capture)
+  }
 }

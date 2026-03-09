@@ -1,7 +1,6 @@
 package com.ujizin.camposer.controller.record
 
 import com.ujizin.camposer.CaptureResult
-import com.ujizin.camposer.internal.capture.JvmCameraCapture
 import com.ujizin.camposer.internal.core.CameraEngine
 import com.ujizin.camposer.internal.core.JvmCameraEngine
 import com.ujizin.camposer.internal.record.JvmAudioCapture
@@ -17,12 +16,7 @@ import org.bytedeco.opencv.opencv_core.Mat
 
 internal actual class DefaultRecordController(
   private val cameraEngine: CameraEngine,
-  private val videoRecorderFactory: (
-    String,
-    JvmCameraCapture,
-  ) -> JvmVideoRecorder = { filename, capture ->
-    JvmVideoRecorder(filename, capture)
-  },
+  private val videoRecorderFactory: JvmVideoRecorder.Factory = JvmVideoRecorder,
   private val audioFactory: () -> JvmAudioCapture = { JvmAudioCapture() },
 ) : RecordController {
   private data class ActiveRecording(
@@ -55,7 +49,7 @@ internal actual class DefaultRecordController(
       if (_isRecording.value) return
     }
 
-    val video = videoRecorderFactory(filename, engine.capture)
+    val video = videoRecorderFactory.create(filename, engine.capture)
     val audio = audioFactory()
 
     // Audio starts before video intentionally. If audio delivers samples before

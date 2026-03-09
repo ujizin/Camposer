@@ -8,7 +8,6 @@ import com.ujizin.camposer.fake.NoOpAudioDeviceSelector
 import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.info.FakeJvmCameraInfo
 import com.ujizin.camposer.internal.capture.FakeJvmCameraCapture
-import com.ujizin.camposer.internal.capture.JvmCameraCapture
 import com.ujizin.camposer.internal.core.CameraEngineImpl
 import com.ujizin.camposer.internal.record.FrameRecorderBridge
 import com.ujizin.camposer.internal.record.JvmAudioCapture
@@ -108,8 +107,8 @@ internal class CommonCameraControllerTest {
     )
   }
 
-  private fun defaultVideoRecorderFactory(): (String, JvmCameraCapture) -> JvmVideoRecorder =
-    { filename, cap ->
+  private fun defaultVideoRecorderFactory(): JvmVideoRecorder.Factory =
+    JvmVideoRecorder.Factory { filename, cap ->
       JvmVideoRecorder(
         filename = filename,
         capture = cap,
