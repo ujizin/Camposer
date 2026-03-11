@@ -41,6 +41,8 @@ internal class IOSRecordControllerTest {
     val recordController = IOSRecordController(cameraController)
     var callbackCount = 0
 
+    assertFalse(cameraController.isAudioEnabled)
+
     recordController.start(
       filename = "/video/video.mp4",
       videoOrientation = AVCaptureVideoOrientationPortrait,
@@ -48,18 +50,18 @@ internal class IOSRecordControllerTest {
       onVideoCaptured = { callbackCount++ },
     )
 
-    assertEquals(listOf(true), cameraController.audioEnabledCalls)
+    assertTrue(cameraController.isAudioEnabled)
     assertTrue(recordController.isRecording.value)
 
     recordController.stop()
 
-    assertEquals(listOf(true, false), cameraController.audioEnabledCalls)
+    assertFalse(cameraController.isAudioEnabled)
     assertFalse(recordController.isRecording.value)
     assertFalse(recordController.isMuted.value)
 
     output.finishRecording()
 
-    assertEquals(listOf(true, false), cameraController.audioEnabledCalls)
+    assertFalse(cameraController.isAudioEnabled)
     assertEquals(1, callbackCount)
     assertFalse(recordController.isRecording.value)
     assertFalse(recordController.isMuted.value)
@@ -79,6 +81,10 @@ internal class IOSRecordControllerTest {
       onVideoCaptured = { capturedResult = it },
     )
 
+    assertTrue(cameraController.isAudioEnabled)
+    assertTrue(recordController.isRecording.value)
+    assertFalse(recordController.isMuted.value)
+
     output.finishRecording(
       error = NSError.errorWithDomain(
         domain = "AVFoundationErrorDomain",
@@ -92,6 +98,7 @@ internal class IOSRecordControllerTest {
     assertEquals("/video/video.mp4", result.getOrNull())
     assertFalse(recordController.isRecording.value)
     assertFalse(recordController.isMuted.value)
+    assertFalse(cameraController.isAudioEnabled)
   }
 }
 
@@ -121,7 +128,8 @@ private class TestMovieFileOutput : AVCaptureMovieFileOutput() {
 private class TestIOSCameraController(
   movieFileOutput: AVCaptureMovieFileOutput,
 ) : IOSCameraController {
-  val audioEnabledCalls = mutableListOf<Boolean>()
+  internal var isAudioEnabled: Boolean = false
+    private set
 
   override val captureSession: AVCaptureSession = AVCaptureSession().apply {
     addOutput(movieFileOutput)
@@ -144,7 +152,8 @@ private class TestIOSCameraController(
   override val isTorchAvailable: Boolean = false
   override val hasTorch: Boolean = false
 
-  override val isMuted: StateFlow<Boolean> = MutableStateFlow(false)
+  private val _isMuted = MutableStateFlow(false)
+  override val isMuted: StateFlow<Boolean> = _isMuted
   override val isRecording: StateFlow<Boolean> = MutableStateFlow(false)
 
   override fun isZeroShutterLagSupported(output: AVCaptureOutput): Boolean = false
@@ -184,7 +193,7 @@ private class TestIOSCameraController(
   override fun setCaptureDevice(device: AVCaptureDevice) = error("Unused in test")
 
   override fun setAudioEnabled(isEnabled: Boolean) {
-    audioEnabledCalls += isEnabled
+    isAudioEnabled = isEnabled
   }
 
   override fun setFocusPoint(focusPoint: CValue<CGPoint>) = error("Unused in test")
@@ -237,7 +246,10 @@ private class TestIOSCameraController(
 
   override fun stopRecording(): Result<Boolean> = error("Unused in test")
 
-  override fun muteRecording(isMuted: Boolean): Result<Boolean> = error("Unused in test")
+  override fun muteRecording(isMuted: Boolean): Result<Boolean> {
+    _isMuted.value = isMuted
+    return Result.success(isMuted)
+  }
 
   override fun release() = Unit
 }
