@@ -19,3 +19,4 @@ local.properties
 buildSrc/.kotlin
 docs/api
 site
+.worktrees/
