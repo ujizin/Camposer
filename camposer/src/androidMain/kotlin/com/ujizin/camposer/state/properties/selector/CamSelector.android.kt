@@ -1,7 +1,6 @@
 package com.ujizin.camposer.state.properties.selector
 
 import android.annotation.SuppressLint
-import androidx.camera.camera2.internal.Camera2CameraInfoImpl
 import androidx.camera.core.CameraInfo
 import androidx.camera.core.CameraSelector
 import androidx.compose.runtime.Stable
@@ -52,7 +51,7 @@ public actual class CamSelector {
           }
         }
 
-        val lensFilter = cameraInfos.filterIsInstance<Camera2CameraInfoImpl>().filter { info ->
+        val lensFilter = cameraInfos.filter { info ->
           camPosition.value == info.lensFacing
         }
 

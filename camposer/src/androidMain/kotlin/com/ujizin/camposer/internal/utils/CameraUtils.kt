@@ -9,9 +9,9 @@ import android.os.Build
 import android.util.Log
 import android.util.Size
 import android.util.SizeF
-import androidx.camera.camera2.internal.Camera2CameraInfoImpl
+import androidx.camera.camera2.interop.Camera2CameraInfo
+import androidx.camera.camera2.interop.ExperimentalCamera2Interop
 import androidx.camera.core.CameraInfo
-import androidx.camera.core.ExperimentalSessionConfig
 import androidx.camera.core.FocusMeteringAction
 import androidx.camera.core.SurfaceOrientedMeteringPointFactory
 import androidx.camera.core.impl.CameraInfoInternal
@@ -49,7 +49,6 @@ internal object CameraUtils {
     )
   }
 
-  @OptIn(ExperimentalSessionConfig::class)
   fun getVideoResolutions(cameraInfo: CameraInfo?): List<CameraData> {
     if (cameraInfo !is CameraInfoInternal) {
       Log.w(TAG, "Camera info is not a CameraInfoInternal")
@@ -74,12 +73,13 @@ internal object CameraUtils {
     )
   }
 
+  @OptIn(ExperimentalCamera2Interop::class)
   internal fun getMinFov(info: CameraInfo): Float {
-    return (info as Camera2CameraInfoImpl)
-      .cameraCharacteristicsMap
-      .mapNotNull { (_, characteristics) ->
-        val sensorSize = characteristics.get(SENSOR_INFO_PHYSICAL_SIZE) ?: return@mapNotNull null
-        val focalLengths = characteristics.get(LENS_INFO_AVAILABLE_FOCAL_LENGTHS)
+    return getAllCamera2CameraInfos(info)
+      .mapNotNull { camera2Info ->
+        val sensorSize = camera2Info.getCameraCharacteristic(SENSOR_INFO_PHYSICAL_SIZE)
+          ?: return@mapNotNull null
+        val focalLengths = camera2Info.getCameraCharacteristic(LENS_INFO_AVAILABLE_FOCAL_LENGTHS)
           ?: return@mapNotNull null
 
         getFOV(focalLengths = focalLengths, sensorSize = sensorSize)
@@ -87,12 +87,13 @@ internal object CameraUtils {
       ?.toFloat() ?: 100F
   }
 
+  @OptIn(ExperimentalCamera2Interop::class)
   internal fun getCamLensTypes(info: CameraInfo): List<CamLensType> {
-    return (info as Camera2CameraInfoImpl)
-      .cameraCharacteristicsMap
-      .map { (_, characteristics) ->
-        val sensorSize = characteristics.get(SENSOR_INFO_PHYSICAL_SIZE) ?: return@map Wide
-        val focalLengths = characteristics.get(LENS_INFO_AVAILABLE_FOCAL_LENGTHS)
+    return getAllCamera2CameraInfos(info)
+      .map { camera2Info ->
+        val sensorSize = camera2Info.getCameraCharacteristic(SENSOR_INFO_PHYSICAL_SIZE)
+          ?: return@map Wide
+        val focalLengths = camera2Info.getCameraCharacteristic(LENS_INFO_AVAILABLE_FOCAL_LENGTHS)
           ?: return@map Wide
 
         val fov = getFOV(focalLengths, sensorSize)
@@ -102,6 +103,14 @@ internal object CameraUtils {
           else -> Telephoto
         }
       }.distinct()
+  }
+
+  @OptIn(ExperimentalCamera2Interop::class)
+  private fun getAllCamera2CameraInfos(info: CameraInfo): List<Camera2CameraInfo> {
+    val physicalCameraInfos = info.physicalCameraInfos.mapNotNull { physicalInfo ->
+      runCatching { Camera2CameraInfo.from(physicalInfo) }.getOrNull()
+    }
+    return physicalCameraInfos.ifEmpty { listOf(Camera2CameraInfo.from(info)) }
   }
 
   private fun getFOV(
