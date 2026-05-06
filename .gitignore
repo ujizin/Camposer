@@ -22,3 +22,4 @@ site
 
 # AI agent review output
 .agents/reviews/*
+.worktrees/
