@@ -30,57 +30,56 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import com.ujizin.camposer.extensions.compatMainExecutor
 import java.util.concurrent.Executor
+import kotlin.properties.Delegates
 
 /**
- * A wrapper class for [CameraController] that implements [CameraXController].
+ * Wrapper over [CameraController] implementing [CameraXController].
  *
- * This class serves as an abstraction layer over CameraX's `CameraController`,
- * allowing for easier testing and decoupling of the camera implementation details
- * from the rest of the application. It delegates functionality to an underlying
- * `CameraController` instance while adhering to the `CameraXController` interface contract.
- *
- * Session-level configuration (resolution selectors, quality, frame rate, mirror mode,
- * camera selector, capture mode, enabled use cases) is managed internally through
- * [SessionConfig] via [CameraController.setSessionConfig]. Changes are batched during
- * unbind/bind cycles and applied atomically.
+ * Session-level configuration is managed through [SessionConfig] via
+ * [CameraController.setSessionConfig]. Changes are batched during unbind/bind
+ * cycles and applied atomically.
  */
 internal class CameraXControllerWrapper(
   context: Context,
 ) : CameraXController {
   override val lifecycleOwner = (context as LifecycleOwner)
-
   override val contentResolver: ContentResolver = context.contentResolver
-
   override val mainExecutor = context.compatMainExecutor
 
-  private val cameraXController by lazy {
-    LifecycleCameraController(context)
-  }
+  private val cameraXController by lazy { LifecycleCameraController(context) }
 
-  // Session config state — stored locally and applied via setSessionConfig()
-  private var _previewResolutionSelector: ResolutionSelector? = null
-  private var _imageCaptureResolutionSelector: ResolutionSelector? = null
-  private var _imageAnalysisResolutionSelector: ResolutionSelector? = null
-  private var _videoCaptureQualitySelector: QualitySelector = Recorder.DEFAULT_QUALITY_SELECTOR
-  private var _videoCaptureTargetFrameRate: Range<Int> = Range(0, 0)
-  private var _videoCaptureMirrorMode: Int = MirrorMode.MIRROR_MODE_OFF
-  private var _cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-  private var _imageCaptureMode: Int = ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY
-  private var enabledUseCasesState: Int =
-    CameraController.IMAGE_CAPTURE or CameraController.IMAGE_ANALYSIS
+  // Session config state — stored locally and rebuilt via applySessionConfig()
+  override var previewResolutionSelector: ResolutionSelector? by sessionProp(null)
+  override var imageCaptureResolutionSelector: ResolutionSelector? by sessionProp(null)
+  override var imageAnalysisResolutionSelector: ResolutionSelector? by sessionProp(null)
+  override var videoCaptureQualitySelector: QualitySelector by sessionProp(
+    Recorder.DEFAULT_QUALITY_SELECTOR,
+  )
+  override var videoCaptureTargetFrameRate: Range<Int> by sessionProp(Range(0, 0))
+  override var videoCaptureMirrorMode: Int by sessionProp(MirrorMode.MIRROR_MODE_OFF)
+  override var cameraSelector: CameraSelector by sessionProp(CameraSelector.DEFAULT_BACK_CAMERA)
+  override var imageCaptureMode: Int by sessionProp(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+  private var enabledUseCasesState: Int by sessionProp(
+    CameraController.IMAGE_CAPTURE or CameraController.IMAGE_ANALYSIS,
+  )
 
   // Analyzer state — re-applied when ImageAnalysis instance is rebuilt
   private var pendingAnalyzer: ImageAnalysis.Analyzer? = null
   private var pendingAnalyzerExecutor: Executor? = null
   private var currentImageAnalysis: ImageAnalysis? = null
 
-  // Batching: unbind() starts batch mode; bindToLifecycle() ends it and applies session config
-  private var isBatching = false
   private var isBound = false
 
+  private fun <T> sessionProp(initial: T) =
+    Delegates.observable(initial) { _, _, _ -> requestSessionUpdate() }
+
   private fun requestSessionUpdate() {
-    if (!isBatching && isBound) applySessionConfig()
+    if (isBound) applySessionConfig()
   }
+
+  private fun isUseCaseEnabled(useCase: Int) = enabledUseCasesState and useCase != 0
+
+  private fun onMain(block: () -> Unit) = mainExecutor.execute(block)
 
   private fun applySessionConfig() {
     val useCases = mutableListOf<UseCase>()
@@ -88,124 +87,61 @@ internal class CameraXControllerWrapper(
     // Preview is mandatory in SessionConfig
     useCases += Preview
       .Builder()
+      .setTargetFrameRate(videoCaptureTargetFrameRate)
       .apply {
-        _previewResolutionSelector?.let { setResolutionSelector(it) }
+        previewResolutionSelector?.let { setResolutionSelector(it) }
       }.build()
 
-    if (enabledUseCasesState and CameraController.IMAGE_CAPTURE != 0) {
+    if (isUseCaseEnabled(CameraController.IMAGE_CAPTURE)) {
       useCases += ImageCapture
         .Builder()
         .apply {
-          setCaptureMode(_imageCaptureMode)
-          _imageCaptureResolutionSelector?.let { setResolutionSelector(it) }
+          setCaptureMode(imageCaptureMode)
+          imageCaptureResolutionSelector?.let { setResolutionSelector(it) }
         }.build()
     }
 
-    if (enabledUseCasesState and CameraController.VIDEO_CAPTURE != 0) {
-      val recorder = Recorder
-        .Builder()
-        .setQualitySelector(_videoCaptureQualitySelector)
-        .build()
+    if (isUseCaseEnabled(CameraController.VIDEO_CAPTURE)) {
+      val recorder = Recorder.Builder().setQualitySelector(videoCaptureQualitySelector).build()
       useCases += VideoCapture
         .Builder(recorder)
-        .setMirrorMode(_videoCaptureMirrorMode)
+        .setMirrorMode(videoCaptureMirrorMode)
         .apply {
-          if (_videoCaptureTargetFrameRate.upper > 0) {
-            setTargetFrameRate(_videoCaptureTargetFrameRate)
-          }
+          imageCaptureResolutionSelector?.let { setResolutionSelector(it) }
+          if (videoCaptureTargetFrameRate.upper > 0) setTargetFrameRate(videoCaptureTargetFrameRate)
         }.build()
     }
 
-    if (enabledUseCasesState and CameraController.IMAGE_ANALYSIS != 0) {
+    if (isUseCaseEnabled(CameraController.IMAGE_ANALYSIS)) {
       val imageAnalysis = ImageAnalysis
         .Builder()
         .apply {
-          _imageAnalysisResolutionSelector?.let { setResolutionSelector(it) }
+          imageAnalysisResolutionSelector?.let { setResolutionSelector(it) }
         }.build()
-      pendingAnalyzer?.let { analyzer ->
-        imageAnalysis.setAnalyzer(pendingAnalyzerExecutor ?: mainExecutor, analyzer)
+      pendingAnalyzer?.let {
+        imageAnalysis.setAnalyzer(
+          pendingAnalyzerExecutor ?: mainExecutor,
+          it,
+        )
       }
       currentImageAnalysis = imageAnalysis
       useCases += imageAnalysis
     } else {
       currentImageAnalysis = null
     }
-
-    val sessionConfig = SessionConfig.Builder(useCases).build()
-    cameraXController.setSessionConfig(sessionConfig, _cameraSelector)
+    cameraXController.setSessionConfig(SessionConfig.Builder(useCases).build(), cameraSelector)
   }
-
-  // Session-config properties: store locally + trigger rebuild
-  override var previewResolutionSelector: ResolutionSelector?
-    get() = _previewResolutionSelector
-    set(value) {
-      _previewResolutionSelector = value
-      requestSessionUpdate()
-    }
-
-  override var imageCaptureResolutionSelector: ResolutionSelector?
-    get() = _imageCaptureResolutionSelector
-    set(value) {
-      _imageCaptureResolutionSelector = value
-      requestSessionUpdate()
-    }
-
-  override var imageAnalysisResolutionSelector: ResolutionSelector?
-    get() = _imageAnalysisResolutionSelector
-    set(value) {
-      _imageAnalysisResolutionSelector = value
-      requestSessionUpdate()
-    }
-
-  override var videoCaptureQualitySelector: QualitySelector
-    get() = _videoCaptureQualitySelector
-    set(value) {
-      _videoCaptureQualitySelector = value
-      requestSessionUpdate()
-    }
-
-  override var videoCaptureTargetFrameRate: Range<Int>
-    get() = _videoCaptureTargetFrameRate
-    set(value) {
-      _videoCaptureTargetFrameRate = value
-      requestSessionUpdate()
-    }
-
-  override var videoCaptureMirrorMode: Int
-    get() = _videoCaptureMirrorMode
-    set(value) {
-      _videoCaptureMirrorMode = value
-      requestSessionUpdate()
-    }
-
-  override var cameraSelector: CameraSelector
-    get() = _cameraSelector
-    set(value) {
-      _cameraSelector = value
-      requestSessionUpdate()
-    }
-
-  override var imageCaptureMode: Int
-    get() = _imageCaptureMode
-    set(value) {
-      _imageCaptureMode = value
-      requestSessionUpdate()
-    }
 
   override fun setEnabledUseCases(useCases: Int) {
     enabledUseCasesState = useCases
-    requestSessionUpdate()
   }
 
   // Runtime properties: still allowed by CameraX when SessionConfig is active
   override var imageCaptureFlashMode: Int
     get() = cameraXController.imageCaptureFlashMode
     set(value) {
-      // CameraX throws if SessionConfig is active without ImageCapture (e.g. video-only mode)
-      if (enabledUseCasesState and CameraController.IMAGE_CAPTURE == 0) return
-      mainExecutor.execute {
-        cameraXController.imageCaptureFlashMode = value
-      }
+      if (!isUseCaseEnabled(CameraController.IMAGE_CAPTURE)) return
+      onMain { cameraXController.imageCaptureFlashMode = value }
     }
 
   override var isPinchToZoomEnabled: Boolean
@@ -233,7 +169,6 @@ internal class CameraXControllerWrapper(
 
   override fun unbind() {
     cameraXController.unbind()
-    isBatching = true
     isBound = false
   }
 
@@ -242,7 +177,6 @@ internal class CameraXControllerWrapper(
       cameraXController.bindToLifecycle(lifecycle)
       isBound = true
     }
-    isBatching = false
     applySessionConfig()
   }
 
@@ -266,23 +200,17 @@ internal class CameraXControllerWrapper(
     currentImageAnalysis?.setAnalyzer(executor, analyzer)
   }
 
-  override fun enableTorch(isTorchEnabled: Boolean) {
-    mainExecutor.execute {
-      cameraXController.enableTorch(isTorchEnabled)
-    }
-  }
+  override fun enableTorch(isTorchEnabled: Boolean) =
+    onMain { cameraXController.enableTorch(isTorchEnabled) }
 
-  override fun setExposureCompensationIndex(exposureCompensationIndex: Int) {
-    mainExecutor.execute {
-      cameraXController.cameraControl?.setExposureCompensationIndex(exposureCompensationIndex)
+  override fun setExposureCompensationIndex(exposureCompensationIndex: Int) =
+    onMain {
+      cameraXController.cameraControl?.setExposureCompensationIndex(
+        exposureCompensationIndex,
+      )
     }
-  }
 
-  override fun setZoomRatio(zoomRatio: Float) {
-    mainExecutor.execute {
-      cameraXController.setZoomRatio(zoomRatio)
-    }
-  }
+  override fun setZoomRatio(zoomRatio: Float) = onMain { cameraXController.setZoomRatio(zoomRatio) }
 
   override fun takePicture(
     outputFileOptions: ImageCapture.OutputFileOptions,
