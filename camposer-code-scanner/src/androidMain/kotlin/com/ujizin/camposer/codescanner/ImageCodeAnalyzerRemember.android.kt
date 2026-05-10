@@ -27,15 +27,6 @@ public actual fun CameraSession.rememberCodeImageAnalyzer(
   DisposableEffect(codeAnalyzer) { onDispose { codeAnalyzer.release() } }
 
   return remember(codeAnalyzer) {
-    // Pre-register the analyzer with the raw controller before bindToLifecycle() so that
-    // mAnalysisAnalyzer is set for CameraController.updatePreviewViewTransform(). This
-    // enables COORDINATE_SYSTEM_VIEW_REFERENCED support (required by MlKitAnalyzer).
-    runCatching {
-      cameraXController.setImageAnalysisAnalyzer(
-        CameraXExecutors.ioExecutor(),
-        codeAnalyzer.analyzer,
-      )
-    }
     ImageAnalyzer(
       controller = cameraXController,
       analyzer = codeAnalyzer.analyzer,
