@@ -41,6 +41,8 @@ import java.util.concurrent.Executor
 
 internal class FakeCameraXController : CameraXController {
   override var videoCaptureMirrorMode: Int = 0
+  override var isVideoStabilizationEnabled: Boolean = false
+  override var isPreviewStabilizationEnabled: Boolean = false
   override var isTapToFocusEnabled: Boolean = false
   override var isPinchToZoomEnabled: Boolean = false
   override var previewResolutionSelector: ResolutionSelector? = null
