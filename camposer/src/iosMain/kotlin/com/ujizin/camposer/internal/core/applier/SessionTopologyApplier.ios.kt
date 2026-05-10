@@ -26,7 +26,7 @@ import platform.AVFoundation.AVCaptureMovieFileOutput
 import platform.AVFoundation.AVCaptureOutput
 import platform.AVFoundation.AVCapturePhotoOutput
 
-internal class SessionTopologyApplier(
+internal actual class SessionTopologyApplier(
   private val cameraState: CameraState,
   private val cameraInfo: CameraInfo,
   private val iOSCameraController: IOSCameraController,
@@ -36,7 +36,7 @@ internal class SessionTopologyApplier(
   private var captureModeJob: Job? = null
   private var camSelectorJob: Job? = null
 
-  fun applyCaptureMode(captureMode: CaptureMode) {
+  actual fun applyCaptureMode(captureMode: CaptureMode) {
     captureModeJob?.cancel()
     captureModeJob = lockedLaunch {
       if (cameraState.captureMode.value == captureMode) return@lockedLaunch
@@ -47,7 +47,7 @@ internal class SessionTopologyApplier(
     }
   }
 
-  fun applyCamSelector(camSelector: CamSelector) {
+  actual fun applyCamSelector(camSelector: CamSelector) {
     camSelectorJob?.cancel()
     camSelectorJob = lockedLaunch {
       if (cameraState.camSelector.value == camSelector) return@lockedLaunch
@@ -77,7 +77,7 @@ internal class SessionTopologyApplier(
     cameraState.updateCamSelector(camSelector)
   }
 
-  fun applyCamFormat(camFormat: CamFormat) {
+  actual fun applyCamFormat(camFormat: CamFormat) {
     cameraState.launch {
       setCamFormat(
         camFormat = camFormat,
