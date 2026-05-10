@@ -60,6 +60,8 @@ internal class CameraXControllerWrapper(
   )
   override var videoCaptureTargetFrameRate: Range<Int> by sessionProp(Range(0, 0))
   override var videoCaptureMirrorMode: Int by sessionProp(MirrorMode.MIRROR_MODE_OFF)
+  override var isVideoStabilizationEnabled: Boolean by sessionProp(false)
+  override var isPreviewStabilizationEnabled: Boolean by sessionProp(false)
   override var cameraSelector: CameraSelector by sessionProp(CameraSelector.DEFAULT_BACK_CAMERA)
   override var imageCaptureMode: Int by sessionProp(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
   private var enabledUseCasesState: Int by sessionProp(
@@ -91,7 +93,9 @@ internal class CameraXControllerWrapper(
     useCases += Preview
       .Builder()
       .setTargetFrameRate(videoCaptureTargetFrameRate)
-      .apply {
+      .setPreviewStabilizationEnabled(
+        isPreviewStabilizationEnabled && isUseCaseEnabled(CameraController.VIDEO_CAPTURE),
+      ).apply {
         previewResolutionSelector?.let { setResolutionSelector(it) }
       }.build()
 
@@ -109,6 +113,7 @@ internal class CameraXControllerWrapper(
       useCases += VideoCapture
         .Builder(recorder)
         .setMirrorMode(videoCaptureMirrorMode)
+        .setVideoStabilizationEnabled(isVideoStabilizationEnabled)
         .apply {
           imageCaptureResolutionSelector?.let { setResolutionSelector(it) }
           if (videoCaptureTargetFrameRate.upper > 0) setTargetFrameRate(videoCaptureTargetFrameRate)

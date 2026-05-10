@@ -26,6 +26,8 @@ internal interface CameraXController {
   val contentResolver: ContentResolver
   val mainExecutor: Executor
   var videoCaptureMirrorMode: Int
+  var isVideoStabilizationEnabled: Boolean
+  var isPreviewStabilizationEnabled: Boolean
   var isTapToFocusEnabled: Boolean
   var isPinchToZoomEnabled: Boolean
 
