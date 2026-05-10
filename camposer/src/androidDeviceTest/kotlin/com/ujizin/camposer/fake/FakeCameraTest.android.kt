@@ -7,6 +7,7 @@ import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.FlashMode
 import com.ujizin.camposer.state.properties.ImageAnalyzer
 import com.ujizin.camposer.state.properties.ImageCaptureStrategy
+import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import com.ujizin.camposer.state.properties.fallback
 import com.ujizin.camposer.state.properties.format.CamFormat
 import com.ujizin.camposer.state.properties.mode
@@ -101,5 +102,19 @@ internal actual class FakeCameraTest(
 
   actual fun assertIsRecording(expected: Boolean) {
     assertEquals(expected, cameraXController.isRecording)
+  }
+
+  actual fun assertVideoStabilization(expected: VideoStabilizationMode) {
+    val isVideoStabilizationEnabled = expected != VideoStabilizationMode.Off
+    val isPreviewStabilizationEnabled = when (expected) {
+      VideoStabilizationMode.Cinematic,
+      VideoStabilizationMode.CinematicExtended,
+      VideoStabilizationMode.CinematicExtendedEnhanced,
+      -> true
+
+      else -> false
+    }
+    assertEquals(isVideoStabilizationEnabled, cameraXController.isVideoStabilizationEnabled)
+    assertEquals(isPreviewStabilizationEnabled, cameraXController.isPreviewStabilizationEnabled)
   }
 }

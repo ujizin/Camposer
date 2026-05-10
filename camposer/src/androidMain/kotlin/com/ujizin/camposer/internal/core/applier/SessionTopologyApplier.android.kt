@@ -92,6 +92,16 @@ internal class SessionTopologyApplier(
   }
 
   private fun setVideoStabilizationMode(videoStabilizationMode: VideoStabilizationMode) {
-    // TODO CameraX controller does not support yet :(
+    val isVideoStabilizationEnabled = videoStabilizationMode != VideoStabilizationMode.Off
+    val isPreviewStabilizationEnabled = when (videoStabilizationMode) {
+      VideoStabilizationMode.Cinematic,
+      VideoStabilizationMode.CinematicExtended,
+      VideoStabilizationMode.CinematicExtendedEnhanced,
+      -> true
+
+      else -> false
+    }
+    cameraXController.isVideoStabilizationEnabled = isVideoStabilizationEnabled
+    cameraXController.isPreviewStabilizationEnabled = isPreviewStabilizationEnabled
   }
 }
