@@ -12,7 +12,7 @@ import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import com.ujizin.camposer.state.properties.fallback
 import com.ujizin.camposer.state.properties.mode
 
-internal class VideoApplier(
+internal actual class VideoApplier(
   private val cameraState: CameraState,
   private val cameraInfo: CameraInfo,
   private val cameraXController: CameraXController,
@@ -21,17 +21,17 @@ internal class VideoApplier(
     cameraState.updateFrameRate(cameraXController.videoCaptureTargetFrameRate.upper)
   }
 
-  fun applyImageCaptureStrategy(imageCaptureStrategy: ImageCaptureStrategy) {
+  actual fun applyImageCaptureStrategy(imageCaptureStrategy: ImageCaptureStrategy) {
     setImageCaptureStrategy(imageCaptureStrategy)
     cameraState.updateImageCaptureStrategy(imageCaptureStrategy)
   }
 
-  fun applyFrameRate(frameRate: Int) {
+  actual fun applyFrameRate(frameRate: Int) {
     setFrameRate(frameRate)
     cameraState.updateFrameRate(frameRate)
   }
 
-  fun applyVideoStabilizationMode(videoStabilizationMode: VideoStabilizationMode) {
+  actual fun applyVideoStabilizationMode(videoStabilizationMode: VideoStabilizationMode) {
     setVideoStabilizationMode(videoStabilizationMode)
     cameraState.updateVideoStabilizationMode(videoStabilizationMode)
   }
