@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import platform.AVFoundation.AVCaptureDeviceFormat
 import platform.AVFoundation.AVCaptureOutput
+import platform.AVFoundation.AVCaptureVideoStabilizationModeStandard
 
 public actual class CameraInfo internal constructor(
   private val controller: IOSCameraController,
@@ -43,7 +44,9 @@ public actual class CameraInfo internal constructor(
         isTorchSupported = controller.hasTorch,
         isTorchAvailable = controller.isTorchAvailable,
         isZeroShutterLagSupported = controller.isZeroShutterLagSupported(output),
-        isVideoStabilizationSupported = videoFormats.isVideoStabilizationSupported(),
+        isVideoStabilizationSupported = controller.isVideoStabilizationSupported(
+          mode = AVCaptureVideoStabilizationModeStandard,
+        ),
         isFocusSupported = controller.isFocusSupported,
         minFPS = minFps,
         maxFPS = maxFps,
