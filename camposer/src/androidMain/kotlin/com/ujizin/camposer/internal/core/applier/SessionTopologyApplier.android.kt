@@ -13,7 +13,7 @@ import com.ujizin.camposer.state.properties.mode
 import com.ujizin.camposer.state.properties.selector.CamSelector
 import com.ujizin.camposer.state.properties.value
 
-internal class SessionTopologyApplier(
+internal actual class SessionTopologyApplier(
   private val cameraState: CameraState,
   private val cameraInfo: CameraInfo,
   private val cameraXController: CameraXController,
@@ -23,7 +23,7 @@ internal class SessionTopologyApplier(
     applyCamSelector(cameraState.camSelector.value)
   }
 
-  fun applyCaptureMode(captureMode: CaptureMode) {
+  actual fun applyCaptureMode(captureMode: CaptureMode) {
     cameraXController.setEnabledUseCases(
       getUseCases(
         mode = captureMode,
@@ -34,14 +34,14 @@ internal class SessionTopologyApplier(
     cameraState.updateCaptureMode(captureMode)
   }
 
-  fun applyCamSelector(camSelector: CamSelector) {
+  actual fun applyCamSelector(camSelector: CamSelector) {
     cameraXController.cameraSelector = camSelector.selector
     cameraInfo.rebind()
     resetConfig()
     cameraState.updateCamSelector(camSelector)
   }
 
-  fun applyCamFormat(camFormat: CamFormat) {
+  actual fun applyCamFormat(camFormat: CamFormat) {
     camFormat.applyConfigs(
       cameraInfo = cameraInfo,
       controller = cameraXController,
