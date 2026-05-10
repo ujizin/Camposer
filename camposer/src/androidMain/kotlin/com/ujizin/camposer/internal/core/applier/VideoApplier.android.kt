@@ -51,6 +51,15 @@ internal class VideoApplier(
   }
 
   private fun setVideoStabilizationMode(videoStabilizationMode: VideoStabilizationMode) {
-    // TODO CameraX controller does not support yet :(
+    cameraXController.isVideoStabilizationEnabled =
+      videoStabilizationMode != VideoStabilizationMode.Off
+    cameraXController.isPreviewStabilizationEnabled = when (videoStabilizationMode) {
+      VideoStabilizationMode.Cinematic,
+      VideoStabilizationMode.CinematicExtended,
+      VideoStabilizationMode.CinematicExtendedEnhanced,
+      -> true
+
+      else -> false
+    }
   }
 }

@@ -6,6 +6,7 @@ import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.FlashMode
 import com.ujizin.camposer.state.properties.ImageAnalyzer
 import com.ujizin.camposer.state.properties.ImageCaptureStrategy
+import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import com.ujizin.camposer.state.properties.format.CamFormat
 import com.ujizin.camposer.state.properties.highResolutionEnabled
 import com.ujizin.camposer.state.properties.mode
@@ -13,6 +14,7 @@ import com.ujizin.camposer.state.properties.output
 import com.ujizin.camposer.state.properties.quality
 import com.ujizin.camposer.state.properties.selector.CamSelector
 import com.ujizin.camposer.state.properties.selector.value
+import com.ujizin.camposer.state.properties.value
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlin.test.assertEquals
@@ -124,5 +126,9 @@ internal actual class FakeCameraTest(
 
   actual fun assertIsRecording(expected: Boolean) {
     assertEquals(expected, fakeIosCameraController.isRecording.value)
+  }
+
+  actual fun assertVideoStabilization(expected: VideoStabilizationMode) {
+    assertEquals(expected.value, fakeIosCameraController.fakeVideoStabilizationMode)
   }
 }
