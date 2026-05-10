@@ -3,9 +3,10 @@ package com.ujizin.camposer.internal.core.applier
 import com.ujizin.camposer.internal.core.camerax.CameraXController
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.properties.MirrorMode
+import com.ujizin.camposer.state.properties.ScaleType
 import com.ujizin.camposer.state.properties.mode
 
-internal class PreviewApplier(
+internal actual class PreviewApplier(
   private val cameraState: CameraState,
   private val cameraXController: CameraXController,
 ) : CameraStateApplier {
@@ -17,12 +18,16 @@ internal class PreviewApplier(
     applyMirrorMode(cameraState.mirrorMode.value)
   }
 
-  fun applyMirrorMode(mirrorMode: MirrorMode) {
+  actual fun applyScaleType(scaleType: ScaleType) {
+    cameraState.updateScaleType(scaleType)
+  }
+
+  actual fun applyMirrorMode(mirrorMode: MirrorMode) {
     cameraXController.videoCaptureMirrorMode = mirrorMode.mode
     cameraState.updateMirrorMode(mirrorMode)
   }
 
-  fun applyFocusOnTapEnabled(isFocusOnTapEnabled: Boolean) {
+  actual fun applyFocusOnTapEnabled(isFocusOnTapEnabled: Boolean) {
     cameraXController.isTapToFocusEnabled = isFocusOnTapEnabled
     cameraState.updateFocusOnTapEnabled(isFocusOnTapEnabled)
   }
