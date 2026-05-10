@@ -1,6 +1,7 @@
 package com.ujizin.camposer.state.properties
 
 import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.impl.utils.executor.CameraXExecutors
 import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.view.CameraController
 import androidx.compose.runtime.Stable
@@ -59,6 +60,13 @@ public actual class ImageAnalyzer(
     }
 
   init {
+    // Pre-register the analyzer with the raw controller before bindToLifecycle() so that
+    // mAnalysisAnalyzer is set for CameraController.updatePreviewViewTransform(). This
+    // enables COORDINATE_SYSTEM_VIEW_REFERENCED support (required by MlKitAnalyzer).
+    runCatching {
+      controller.setImageAnalysisAnalyzer(CameraXExecutors.ioExecutor(), analyzer)
+    }
+
     updateCamera(
       imageAnalysisBackpressureStrategy,
       resolutionSelector,
