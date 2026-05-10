@@ -1,6 +1,7 @@
 package com.ujizin.camposer.fake
 
 import com.ujizin.camposer.controller.camera.CameraController
+import com.ujizin.camposer.copy
 import com.ujizin.camposer.info.AndroidCameraInfo
 import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.state.properties.CaptureMode
