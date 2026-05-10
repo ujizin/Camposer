@@ -6,6 +6,11 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 internal class CameraVideoStabilizationTest : CameraSessionTest() {
+  override fun initCameraSession() {
+    super.initCameraSession()
+    cameraTest.isVideoStabilizationSupported = true
+  }
+
   @Test
   fun test_videoStabilization_standard() =
     runTest {

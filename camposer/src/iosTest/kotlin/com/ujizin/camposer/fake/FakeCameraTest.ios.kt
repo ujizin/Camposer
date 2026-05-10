@@ -57,6 +57,10 @@ internal actual class FakeCameraTest(
       fakeIosCameraController.fakeIsZSLSupported = value
     }
 
+  actual var isVideoStabilizationSupported: Boolean
+    get() = cameraInfo.state.value.isVideoStabilizationSupported
+    set(_) = Unit
+
   actual fun assertCamSelector(expected: CamSelector) {
     assertEquals(
       expected = expected.camPosition.value,

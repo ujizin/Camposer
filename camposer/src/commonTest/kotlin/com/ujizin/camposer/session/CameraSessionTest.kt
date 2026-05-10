@@ -33,7 +33,7 @@ internal abstract class CameraSessionTest {
   /**
    * optional, useful if it needs to start cameraSession eagerly
    * */
-  protected fun initCameraSession() {
+  protected open fun initCameraSession() {
     cameraSession.onSessionStarted()
   }
 
