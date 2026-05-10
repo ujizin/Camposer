@@ -7,16 +7,16 @@ import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.ImageAnalyzer
 import com.ujizin.camposer.state.properties.value
 
-internal class AnalyzerApplier(
+internal actual class AnalyzerApplier(
   private val cameraState: CameraState,
   private val cameraXController: CameraXController,
 ) : CameraStateApplier {
-  fun applyImageAnalyzer(imageAnalyzer: ImageAnalyzer?) {
+  actual fun applyImageAnalyzer(imageAnalyzer: ImageAnalyzer?) {
     setImageAnalyzer(imageAnalyzer)
     cameraState.updateImageAnalyzer(imageAnalyzer)
   }
 
-  fun applyImageAnalyzerEnabled(isImageAnalyzerEnabled: Boolean) {
+  actual fun applyImageAnalyzerEnabled(isImageAnalyzerEnabled: Boolean) {
     setImageAnalyzerEnabled(
       captureMode = cameraState.captureMode.value,
       isImageAnalyzerEnabled = isImageAnalyzerEnabled,
