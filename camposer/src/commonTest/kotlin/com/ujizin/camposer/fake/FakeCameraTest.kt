@@ -24,6 +24,8 @@ internal expect class FakeCameraTest(
 
   var isZSLSupported: Boolean
 
+  var isVideoStabilizationSupported: Boolean
+
   var hasErrorInRecording: Boolean
 
   fun assertCamSelector(expected: CamSelector)

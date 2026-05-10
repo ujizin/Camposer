@@ -54,6 +54,12 @@ internal actual class FakeCameraTest(
       cameraXController.isZSLSupported = value
     }
 
+  actual var isVideoStabilizationSupported: Boolean
+    get() = cameraInfo.state.value.isVideoStabilizationSupported
+    set(value) {
+      cameraInfo.updateStateForTesting { it.copy(isVideoStabilizationSupported = value) }
+    }
+
   actual var hasErrorInRecording: Boolean
     get() = cameraXController.hasErrorInRecording
     set(value) {
