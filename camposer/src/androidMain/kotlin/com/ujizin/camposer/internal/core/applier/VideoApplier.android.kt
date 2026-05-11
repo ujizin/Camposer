@@ -11,6 +11,7 @@ import com.ujizin.camposer.state.properties.ImageCaptureStrategy.MinLatency
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import com.ujizin.camposer.state.properties.fallback
 import com.ujizin.camposer.state.properties.mode
+import com.ujizin.camposer.state.properties.toAndroidStabilizationFlags
 
 internal actual class VideoApplier(
   private val cameraState: CameraState,
@@ -51,15 +52,9 @@ internal actual class VideoApplier(
   }
 
   private fun setVideoStabilizationMode(videoStabilizationMode: VideoStabilizationMode) {
-    cameraXController.isVideoStabilizationEnabled =
-      videoStabilizationMode != VideoStabilizationMode.Off
-    cameraXController.isPreviewStabilizationEnabled = when (videoStabilizationMode) {
-      VideoStabilizationMode.Cinematic,
-      VideoStabilizationMode.CinematicExtended,
-      VideoStabilizationMode.CinematicExtendedEnhanced,
-      -> true
-
-      else -> false
-    }
+    val (isVideoStabilizationEnabled, isPreviewStabilizationEnabled) =
+      videoStabilizationMode.toAndroidStabilizationFlags()
+    cameraXController.isVideoStabilizationEnabled = isVideoStabilizationEnabled
+    cameraXController.isPreviewStabilizationEnabled = isPreviewStabilizationEnabled
   }
 }
