@@ -13,6 +13,7 @@ import com.ujizin.camposer.state.properties.fallback
 import com.ujizin.camposer.state.properties.format.CamFormat
 import com.ujizin.camposer.state.properties.mode
 import com.ujizin.camposer.state.properties.selector.CamSelector
+import com.ujizin.camposer.state.properties.toAndroidStabilizationFlags
 import com.ujizin.camposer.state.properties.value
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -112,15 +113,8 @@ internal actual class FakeCameraTest(
   }
 
   actual fun assertVideoStabilization(expected: VideoStabilizationMode) {
-    val isVideoStabilizationEnabled = expected != VideoStabilizationMode.Off
-    val isPreviewStabilizationEnabled = when (expected) {
-      VideoStabilizationMode.Cinematic,
-      VideoStabilizationMode.CinematicExtended,
-      VideoStabilizationMode.CinematicExtendedEnhanced,
-      -> true
-
-      else -> false
-    }
+    val (isVideoStabilizationEnabled, isPreviewStabilizationEnabled) =
+      expected.toAndroidStabilizationFlags()
     assertEquals(isVideoStabilizationEnabled, cameraXController.isVideoStabilizationEnabled)
     assertEquals(isPreviewStabilizationEnabled, cameraXController.isPreviewStabilizationEnabled)
   }
