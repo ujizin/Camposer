@@ -110,7 +110,8 @@ internal object CameraUtils {
     val physicalCameraInfos = info.physicalCameraInfos.mapNotNull { physicalInfo ->
       runCatching { Camera2CameraInfo.from(physicalInfo) }.getOrNull()
     }
-    return physicalCameraInfos.ifEmpty { listOf(Camera2CameraInfo.from(info)) }
+    val logicalCameraInfo = runCatching { Camera2CameraInfo.from(info) }.getOrNull()
+    return physicalCameraInfos.ifEmpty { listOfNotNull(logicalCameraInfo) }
   }
 
   private fun getFOV(
