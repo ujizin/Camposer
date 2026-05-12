@@ -40,13 +40,6 @@ public fun CameraSession.rememberImageAnalyzer(
   analyze: ImageAnalysis.Analyzer,
 ): ImageAnalyzer =
   remember(this) {
-    // Pre-register the analyzer with the wrapper before bindToLifecycle() so that
-    // CameraXControllerWrapper can set mAnalysisAnalyzer on the raw CameraController
-    // (requires mSessionConfig == null, which holds before the first setSessionConfig() call).
-    cameraXControllerWrapper.setImageAnalysisAnalyzer(
-      cameraXControllerWrapper.mainExecutor,
-      analyze,
-    )
     ImageAnalyzer(
       cameraXController,
       imageAnalysisBackpressureStrategy,
