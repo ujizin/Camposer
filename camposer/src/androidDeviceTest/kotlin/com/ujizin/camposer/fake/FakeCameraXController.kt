@@ -195,6 +195,8 @@ internal class FakeCameraXController : CameraXController {
     analyzer.analyze(dummyImageProxy)
   }
 
+  override fun isUseCaseEnabled(useCase: Int): Boolean = useCases and useCase != 0
+
   override fun setEnabledUseCases(useCases: Int) {
     this.useCases = useCases
   }
