@@ -111,7 +111,7 @@ public actual class CameraSession internal constructor(
       )
 
       cameraXControllerWrapper.onInitialize {
-        info.rebind()
+        info.updateInfo()
         androidCameraEngine.onCameraInitialized()
         isInitialized = true
       }

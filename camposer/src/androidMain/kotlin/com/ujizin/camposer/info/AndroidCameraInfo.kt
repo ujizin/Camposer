@@ -2,6 +2,7 @@ package com.ujizin.camposer.info
 
 import androidx.annotation.OptIn
 import androidx.camera.core.ExperimentalZeroShutterLag
+import androidx.camera.view.CameraController.VIDEO_CAPTURE
 import com.ujizin.camposer.internal.core.camerax.CameraXController
 import com.ujizin.camposer.internal.utils.CameraUtils
 import com.ujizin.camposer.state.properties.CameraData
@@ -28,6 +29,9 @@ internal class AndroidCameraInfo(
 
   internal val isFlashSupported: Boolean
     get() = controller.cameraInfo?.hasFlashUnit() ?: false
+
+  internal val isFlashAvailable: Boolean
+    get() = isFlashSupported && !controller.isUseCaseEnabled(VIDEO_CAPTURE)
 
   internal val isExposureSupported: Boolean
     get() = controller.cameraInfo?.exposureState?.isExposureCompensationSupported ?: false

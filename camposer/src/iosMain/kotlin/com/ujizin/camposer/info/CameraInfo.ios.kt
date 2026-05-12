@@ -25,7 +25,7 @@ public actual class CameraInfo internal constructor(
     get() = (state.value.photoFormats + state.value.videoFormats).distinct()
 
   @OptIn(ExperimentalForeignApi::class)
-  internal fun rebind(output: AVCaptureOutput) {
+  internal fun updateInfo(output: AVCaptureOutput) {
     val (minFps, maxFps) = controller.fpsRange
     val (minZoom, maxZoom) = controller.zoomRange
     val (minExposure, maxExposure) = controller.exposureCompensationRange

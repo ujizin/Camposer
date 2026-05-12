@@ -30,13 +30,14 @@ internal actual class SessionTopologyApplier(
         isImageAnalyzerEnabled = cameraState.isImageAnalyzerEnabled.value,
       ),
     )
-    resetPartialConfig()
+    cameraInfo.updateInfo()
+    resetConfig()
     cameraState.updateCaptureMode(captureMode)
   }
 
   actual fun applyCamSelector(camSelector: CamSelector) {
     cameraXController.cameraSelector = camSelector.selector
-    cameraInfo.rebind()
+    cameraInfo.updateInfo()
     resetConfig()
     cameraState.updateCamSelector(camSelector)
   }

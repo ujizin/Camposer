@@ -79,8 +79,6 @@ internal class CameraXControllerWrapper(
     if (isBound) applySessionConfig()
   }
 
-  private fun isUseCaseEnabled(useCase: Int) = enabledUseCasesState and useCase != 0
-
   private fun onMain(block: () -> Unit) = mainExecutor.execute(block)
 
   private fun applySessionConfig() {
@@ -136,6 +134,8 @@ internal class CameraXControllerWrapper(
     }
     cameraXController.setSessionConfig(SessionConfig.Builder(useCases).build(), cameraSelector)
   }
+
+  override fun isUseCaseEnabled(useCase: Int) = enabledUseCasesState and useCase != 0
 
   override fun setEnabledUseCases(useCases: Int) {
     enabledUseCasesState = useCases
