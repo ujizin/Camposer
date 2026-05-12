@@ -78,7 +78,7 @@ public actual class CameraSession internal constructor(
         setCaptureDevice(
           device = iosCameraController.getCaptureDevice(state.camSelector.value),
         )
-        info.rebind(state.captureMode.value.output)
+        info.updateInfo(state.captureMode.value.output)
         isInitialized = true
       }
     }.onFailure { error ->

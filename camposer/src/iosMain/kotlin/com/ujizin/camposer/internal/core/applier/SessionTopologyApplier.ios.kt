@@ -90,7 +90,7 @@ internal actual class SessionTopologyApplier(
     camFormat.applyConfigs(
       cameraInfo = cameraInfo,
       iosCameraController = iOSCameraController,
-      onDeviceFormatUpdated = { cameraInfo.rebind(output = captureMode.output) },
+      onDeviceFormatUpdated = { cameraInfo.updateInfo(output = captureMode.output) },
       onStabilizationModeChanged = {
         setVideoStabilizationMode(it)
         cameraState.updateVideoStabilizationMode(it)
@@ -134,7 +134,7 @@ internal actual class SessionTopologyApplier(
   }
 
   private fun resetConfig(captureOutput: AVCaptureOutput) {
-    cameraInfo.rebind(output = captureOutput)
+    cameraInfo.updateInfo(output = captureOutput)
     val cameraInfoState = cameraInfo.state.value
 
     setZoomRatio(cameraInfoState.minZoom)
