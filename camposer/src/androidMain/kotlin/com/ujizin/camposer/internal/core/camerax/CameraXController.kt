@@ -60,7 +60,9 @@ internal interface CameraXController {
     analyzer: ImageAnalysis.Analyzer,
   )
 
-  fun isUseCaseEnabled(@CameraController.UseCases useCase: Int): Boolean
+  fun isUseCaseEnabled(
+    @CameraController.UseCases useCase: Int,
+  ): Boolean
 
   fun setEnabledUseCases(useCases: Int)
 
