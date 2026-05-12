@@ -11,6 +11,7 @@ import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import com.ujizin.camposer.state.properties.format.CamFormat
 import com.ujizin.camposer.state.properties.mode
 import com.ujizin.camposer.state.properties.selector.CamSelector
+import com.ujizin.camposer.state.properties.toAndroidStabilizationFlags
 import com.ujizin.camposer.state.properties.value
 
 internal actual class SessionTopologyApplier(
@@ -93,15 +94,8 @@ internal actual class SessionTopologyApplier(
   }
 
   private fun setVideoStabilizationMode(videoStabilizationMode: VideoStabilizationMode) {
-    val isVideoStabilizationEnabled = videoStabilizationMode != VideoStabilizationMode.Off
-    val isPreviewStabilizationEnabled = when (videoStabilizationMode) {
-      VideoStabilizationMode.Cinematic,
-      VideoStabilizationMode.CinematicExtended,
-      VideoStabilizationMode.CinematicExtendedEnhanced,
-      -> true
-
-      else -> false
-    }
+    val (isVideoStabilizationEnabled, isPreviewStabilizationEnabled) =
+      videoStabilizationMode.toAndroidStabilizationFlags()
     cameraXController.isVideoStabilizationEnabled = isVideoStabilizationEnabled
     cameraXController.isPreviewStabilizationEnabled = isPreviewStabilizationEnabled
   }
