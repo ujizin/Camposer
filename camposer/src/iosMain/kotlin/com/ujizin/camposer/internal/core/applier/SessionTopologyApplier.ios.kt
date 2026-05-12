@@ -140,7 +140,7 @@ internal actual class SessionTopologyApplier(
   }
 
   private fun resetConfig(captureOutput: AVCaptureOutput) {
-    cameraInfo.rebind(output = captureOutput)
+    cameraInfo.updateInfo(output = captureOutput)
     val cameraInfoState = cameraInfo.state.value
 
     setZoomRatio(cameraInfoState.minZoom)

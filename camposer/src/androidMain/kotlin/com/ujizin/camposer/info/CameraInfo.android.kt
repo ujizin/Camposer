@@ -13,12 +13,13 @@ public actual class CameraInfo internal constructor(
   private val _state = MutableStateFlow(getCurrentState())
   public actual val state: StateFlow<CameraInfoState> = _state.asStateFlow()
 
-  internal fun rebind() {
+  internal fun updateInfo() {
     _state.update { getCurrentState() }
   }
 
   private fun getCurrentState(): CameraInfoState {
     val isFlashSupported = cameraInfo.isFlashSupported
+    val isFlashAvailable = cameraInfo.isFlashAvailable
     val photoFormats = cameraInfo.photoFormats
     val videoFormats = cameraInfo.videoFormats
     return CameraInfoState(
@@ -29,7 +30,7 @@ public actual class CameraInfo internal constructor(
       minExposure = cameraInfo.minExposure,
       maxExposure = cameraInfo.maxExposure,
       isFlashSupported = isFlashSupported,
-      isFlashAvailable = isFlashSupported,
+      isFlashAvailable = isFlashAvailable,
       isTorchSupported = isFlashSupported,
       isTorchAvailable = isFlashSupported,
       isZeroShutterLagSupported = cameraInfo.isZeroShutterLagSupported,
