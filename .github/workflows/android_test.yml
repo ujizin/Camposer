@@ -84,6 +84,7 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-window -no-boot-anim -camera-back emulated -camera-front emulated -gpu swiftshader_indirect -metrics-collection
           disable-animations: false
+          emulator-boot-timeout: 300
           script: echo "Generated AVD snapshot for caching."
 
       - name: Run android tests
@@ -97,4 +98,5 @@ jobs:
           disable-animations: true
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -no-boot-anim -no-metrics -camera-back emulated -camera-front emulated -gpu swiftshader_indirect
+          emulator-boot-timeout: 300
           script: ./gradlew connectedAndroidTest --stacktrace
