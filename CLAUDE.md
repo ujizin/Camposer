@@ -82,3 +82,54 @@ State changes are applied to the camera through dedicated applier classes rather
 - `samples/sample-multiplatform/` — KMP sample demonstrating full feature set
 
 Both samples are the best reference for correct public API usage.
+
+## Test Strategy
+
+**No standalone JVM test runner** — `commonTest` compiles into each platform target (Android and iOS). There is no desktop/JVM target on this branch.
+
+| Source set | Needs | Speed | Run when |
+|---|---|---|---|
+| `commonTest` via iOS | Xcode + simulator | ~2-3 min | Fastest smoke test on macOS |
+| `commonTest` via Android | Android emulator | ~5-10 min | Full pre-PR verification |
+| `androidDeviceTest` | Android emulator | ~5-10 min | Android-specific logic changed |
+| `iosTest` | Xcode + simulator | ~2-3 min | iOS-specific logic changed |
+
+**Fastest smoke test (macOS):** `./gradlew iosSimulatorArm64Test`
+
+## Fake Infrastructure Pattern
+
+Test fakes use `expect/actual` across **three files each**. When adding or changing a method anywhere in this chain, all three platform files must be updated or the build fails.
+
+### CameraEngine (production code)
+1. `camposer/src/commonMain/kotlin/com/ujizin/camposer/internal/core/CameraEngine.kt` — interface
+2. `camposer/src/androidMain/kotlin/com/ujizin/camposer/internal/core/AndroidCameraEngine.kt` — Android impl
+3. `camposer/src/iosMain/kotlin/com/ujizin/camposer/internal/core/IOSCameraEngine.kt` — iOS impl
+
+### FakeCameraEngine (test infrastructure)
+1. `camposer/src/commonTest/kotlin/com/ujizin/camposer/fake/FakeCameraEngine.kt` — `expect` declaration
+2. `camposer/src/androidDeviceTest/kotlin/com/ujizin/camposer/fake/FakeCameraEngine.android.kt` — `actual` impl
+3. `camposer/src/iosTest/kotlin/com/ujizin/camposer/fake/FakeCameraEngine.ios.kt` — `actual` impl
+
+Same three-file pattern applies to `FakeCameraTest` and `FakeCameraSession`.
+
+**Missing any platform file = build failure.**
+
+## Verification Checklist
+
+Run **after every change** (fast, ~1-2 min — no device needed):
+
+```bash
+./gradlew spotlessApply    # fix formatting
+./gradlew checkLegacyAbi   # verify no accidental public API breakage
+./gradlew build            # full build, all platforms
+```
+
+Run **before PR or when platform-specific logic changes** (slow, device/simulator required):
+
+```bash
+./gradlew iosSimulatorArm64Test   # macOS: fastest test run (~2-3 min)
+./gradlew connectedAndroidTest    # required if Android-specific logic changed
+
+# Only if public API intentionally changed:
+./gradlew updateLegacyAbi
+```
