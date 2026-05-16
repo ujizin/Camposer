@@ -19,3 +19,6 @@ local.properties
 buildSrc/.kotlin
 docs/api
 site
+
+# AI agent review output
+.agents/reviews/*

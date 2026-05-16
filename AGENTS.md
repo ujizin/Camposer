@@ -95,4 +95,4 @@ camposer/src/
 |----------|------|
 | Architecture, codemap, invariants | [ARCHITECTURE.md](ARCHITECTURE.md) |
 | Adding a camera property | [.agents/docs/camera-properties.md](.agents/docs/camera-properties.md) |
-
+| Local code review command | [.agents/commands/local-code-review.md](.agents/commands/local-code-review.md) — `/local-code-review [base-branch]` |
