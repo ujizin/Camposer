@@ -54,5 +54,6 @@ public class CameraDevice internal constructor(
   }
 
   override fun toString(): String =
-    "CameraDevice(cameraId=$cameraId, name=$name, position=$position, lensType=$lensType, fov=$fov, videoData=$videoData)"
+    "CameraDevice(cameraId=$cameraId, name=$name, position=$position, " +
+      "lensType=$lensType, fov=$fov, videoData=$videoData)"
 }

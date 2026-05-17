@@ -15,7 +15,7 @@ coroutines = "1.11.0"
 compose-multiplatform = "1.11.1"
 binary-compatibility-validator = "0.18.1"
 asm = "9.6" # keep in sync with binary-compatibility-validator's ASM requirement
-detekt = "1.23.7"
+detekt = "1.23.8"
 maven-publish = "0.36.0"
 
 # Camposer scanner

@@ -13,6 +13,8 @@ import platform.UIKit.UIInterfaceOrientationPortrait
 import platform.UIKit.UIInterfaceOrientationPortraitUpsideDown
 import kotlin.math.abs
 
+private const val MOTION_UPDATE_INTERVAL = 0.2
+
 internal class OrientationManager {
   private val motionManager = CMMotionManager()
 
@@ -22,7 +24,7 @@ internal class OrientationManager {
   @OptIn(ExperimentalForeignApi::class)
   fun start() {
     if (!motionManager.isDeviceMotionAvailable()) return
-    motionManager.deviceMotionUpdateInterval = 0.2
+    motionManager.deviceMotionUpdateInterval = MOTION_UPDATE_INTERVAL
     motionManager.startDeviceMotionUpdatesToQueue(NSOperationQueue.mainQueue()) { motion, _ ->
       memScoped {
         motion?.gravity?.placeTo(this)?.pointed?.let { g ->

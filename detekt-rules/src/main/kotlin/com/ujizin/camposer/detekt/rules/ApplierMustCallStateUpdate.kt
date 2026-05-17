@@ -8,6 +8,7 @@ import io.gitlab.arturbosch.detekt.api.Issue
 import io.gitlab.arturbosch.detekt.api.Rule
 import io.gitlab.arturbosch.detekt.api.Severity
 import org.jetbrains.kotlin.com.intellij.psi.util.PsiTreeUtil
+import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 import org.jetbrains.kotlin.psi.KtNamedFunction
@@ -36,9 +37,11 @@ class ApplierMustCallStateUpdate(
 
     if (!function.name.orEmpty().startsWith("apply")) return
     if (function.containingClassOrObject?.name?.endsWith("Applier") != true) return
+    if (!function.hasBody()) return
+    if (function.containingClassOrObject?.hasModifier(KtTokens.EXPECT_KEYWORD) == true) return
 
     val hasStateUpdate = PsiTreeUtil
-      .findChildrenOfType(function.bodyExpression, KtCallExpression::class.java)
+      .findChildrenOfType(function, KtCallExpression::class.java)
       .any { call ->
         val dotExpr = call.parent as? KtDotQualifiedExpression ?: return@any false
         val receiverText = dotExpr.receiverExpression.text

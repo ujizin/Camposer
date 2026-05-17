@@ -33,6 +33,20 @@ import kotlin.math.min
 @SuppressLint("RestrictedApi")
 internal object CameraUtils {
   private const val TAG = "CamUtils"
+  private const val DEFAULT_MIN_FOV = 100F
+  private const val FOCUS_CENTER = 0.5f
+  private const val RESOLUTION_QCIF = 176 * 144
+  private const val RESOLUTION_QVGA = 320 * 240
+  private const val RESOLUTION_CIF = 352 * 288
+  private const val RESOLUTION_VGA = 640 * 480
+  private const val RESOLUTION_480P = 720 * 480
+  private const val RESOLUTION_720P = 1280 * 720
+  private const val RESOLUTION_1080P = 1920 * 1080
+  private const val RESOLUTION_2K = 2048 * 1080
+  private const val RESOLUTION_QHD = 2560 * 1440
+  private const val RESOLUTION_2160P = 3840 * 2160
+  private const val RESOLUTION_4KDCI = 4096 * 2160
+  private const val RESOLUTION_8KUHD = 7680 * 4320
 
   fun getPhotoResolutions(cameraInfo: CameraInfo?): List<CameraData> {
     if (cameraInfo !is CameraInfoInternal) {
@@ -84,7 +98,7 @@ internal object CameraUtils {
 
         getFOV(focalLengths = focalLengths, sensorSize = sensorSize)
       }.minOrNull()
-      ?.toFloat() ?: 100F
+      ?.toFloat() ?: DEFAULT_MIN_FOV
   }
 
   @OptIn(ExperimentalCamera2Interop::class)
@@ -165,7 +179,10 @@ internal object CameraUtils {
   }
 
   internal fun createFocusMetering(): FocusMeteringAction {
-    val point = SurfaceOrientedMeteringPointFactory(1.0f, 1.0f).createPoint(0.5f, 0.5f)
+    val point = SurfaceOrientedMeteringPointFactory(
+      1.0f,
+      1.0f,
+    ).createPoint(FOCUS_CENTER, FOCUS_CENTER)
     return FocusMeteringAction.Builder(point).build()
   }
 
@@ -251,18 +268,18 @@ internal object CameraUtils {
 
   private fun getResolutionForCamcorderProfileQuality(camcorderProfile: Int): Int =
     when (camcorderProfile) {
-      CamcorderProfile.QUALITY_QCIF -> 176 * 144
-      CamcorderProfile.QUALITY_QVGA -> 320 * 240
-      CamcorderProfile.QUALITY_CIF -> 352 * 288
-      CamcorderProfile.QUALITY_VGA -> 640 * 480
-      CamcorderProfile.QUALITY_480P -> 720 * 480
-      CamcorderProfile.QUALITY_720P -> 1280 * 720
-      CamcorderProfile.QUALITY_1080P -> 1920 * 1080
-      CamcorderProfile.QUALITY_2K -> 2048 * 1080
-      CamcorderProfile.QUALITY_QHD -> 2560 * 1440
-      CamcorderProfile.QUALITY_2160P -> 3840 * 2160
-      CamcorderProfile.QUALITY_4KDCI -> 4096 * 2160
-      CamcorderProfile.QUALITY_8KUHD -> 7680 * 4320
+      CamcorderProfile.QUALITY_QCIF -> RESOLUTION_QCIF
+      CamcorderProfile.QUALITY_QVGA -> RESOLUTION_QVGA
+      CamcorderProfile.QUALITY_CIF -> RESOLUTION_CIF
+      CamcorderProfile.QUALITY_VGA -> RESOLUTION_VGA
+      CamcorderProfile.QUALITY_480P -> RESOLUTION_480P
+      CamcorderProfile.QUALITY_720P -> RESOLUTION_720P
+      CamcorderProfile.QUALITY_1080P -> RESOLUTION_1080P
+      CamcorderProfile.QUALITY_2K -> RESOLUTION_2K
+      CamcorderProfile.QUALITY_QHD -> RESOLUTION_QHD
+      CamcorderProfile.QUALITY_2160P -> RESOLUTION_2160P
+      CamcorderProfile.QUALITY_4KDCI -> RESOLUTION_4KDCI
+      CamcorderProfile.QUALITY_8KUHD -> RESOLUTION_8KUHD
       else -> throw Error("Invalid CamcorderProfile \"$camcorderProfile\"!")
     }
 }

@@ -1,12 +1,8 @@
-# General detekt config — applied to all source sets.
-# NoPlatformImportInCommonMain is inactive here because it only makes sense
-# for commonMain files (run via the :module:detektCommonMain task).
+# Detekt config — applied to all source sets.
 
 camposer:
   CameraEngineNotInPublicApi:
     active: true
-  NoPlatformImportInCommonMain:
-    active: false
   IdempotencyGuardRequired:
     active: true
   ApplierMustCallStateUpdate:
@@ -16,6 +12,9 @@ style:
   # IdempotencyGuardRequired enforces early returns; ReturnCount would flag them.
   ReturnCount:
     active: false
+
+  MagicNumber:
+    ignoreRanges: true
 
 naming:
   # @Composable functions use PascalCase by Compose convention.

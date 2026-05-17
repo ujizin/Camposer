@@ -11,7 +11,8 @@ import kotlinx.coroutines.flow.StateFlow
  * managing the audio state (mute/unmute).
  *
  * Note: This interface defines the underlying contract for recording operations.
- * For standard usage in an application, please use the implementation provided by [com.ujizin.camposer.controller.camera.CameraController].
+ * For standard usage in an application, please use the implementation provided by
+ * [com.ujizin.camposer.controller.camera.CameraController].
  */
 public interface RecordController {
   public val isMuted: StateFlow<Boolean>

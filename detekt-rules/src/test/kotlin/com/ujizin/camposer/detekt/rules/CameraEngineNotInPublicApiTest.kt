@@ -48,6 +48,16 @@ class CameraEngineNotInPublicApiTest {
   }
 
   @Test
+  fun `flags CameraEngine as public function parameter type`() {
+    val code = """
+            class Foo {
+                fun configure(engine: CameraEngine) = Unit
+            }
+    """.trimIndent()
+    assertEquals(1, rule.lint(code).size)
+  }
+
+  @Test
   fun `does not flag CameraEngine in private function parameter`() {
     val code = """
             class Foo {

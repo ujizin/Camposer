@@ -70,4 +70,51 @@ class ApplierMustCallStateUpdateTest {
     """.trimIndent()
     assertEquals(0, rule.lint(code).size)
   }
+
+  @Test
+  fun `does not flag abstract apply function in interface`() {
+    val code = """
+            interface SessionTopologyApplier {
+                fun applyCaptureMode(captureMode: CaptureMode)
+                fun applyCamSelector(camSelector: CamSelector)
+            }
+    """.trimIndent()
+    assertEquals(0, rule.lint(code).size)
+  }
+
+  @Test
+  fun `does not flag apply function in expect class`() {
+    val code = """
+            expect class SessionTopologyApplier : CameraStateApplier {
+                fun applyCaptureMode(captureMode: CaptureMode)
+                fun applyCamSelector(camSelector: CamSelector)
+            }
+    """.trimIndent()
+    assertEquals(0, rule.lint(code).size)
+  }
+
+  @Test
+  fun `flags apply function with block body and no cameraState update call`() {
+    val code = """
+            class ExposureZoomApplier {
+                fun applyFlashMode(flashMode: FlashMode) {
+                    controller.setFlashMode(flashMode)
+                }
+            }
+    """.trimIndent()
+    assertEquals(1, rule.lint(code).size)
+  }
+
+  @Test
+  fun `does not flag apply function with block body that calls cameraState update`() {
+    val code = """
+            class ExposureZoomApplier {
+                fun applyFlashMode(flashMode: FlashMode) {
+                    controller.setFlashMode(flashMode)
+                    cameraState.updateFlashMode(flashMode)
+                }
+            }
+    """.trimIndent()
+    assertEquals(0, rule.lint(code).size)
+  }
 }

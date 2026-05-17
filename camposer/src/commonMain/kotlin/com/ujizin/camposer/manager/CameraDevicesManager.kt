@@ -13,7 +13,8 @@ import kotlinx.coroutines.flow.StateFlow
  * Being an `expect` class, it has platform-specific implementations (e.g., using `CameraManager` on Android)
  * to handle the low-level details of device discovery.
  *
- * @property cameraDevicesState A [StateFlow] emitting the current [CameraDeviceState], representing the status of available cameras.
+ * @property cameraDevicesState A [StateFlow] emitting the current [CameraDeviceState],
+ * representing the status of available cameras.
  * @see rememberCameraDeviceState for a composable way to observe this state.
  */
 internal expect class CameraDevicesManager {

@@ -11,6 +11,13 @@ import com.ujizin.camposer.state.properties.format.config.VideoStabilizationConf
 import kotlin.math.abs
 import kotlin.math.pow
 
+private const val RESOLUTION_NORMALIZATION = 1000F
+private const val MEGAPIXEL_DIVISOR = 1_000_000.0
+private const val FPS_PARTIAL_MATCH_PENALTY = 0.5F
+private const val STABILIZATION_SCORE_MAX = 0.6F
+private const val STABILIZATION_SCORE_DENOMINATOR = 10F
+private const val STABILIZATION_SCORE_OFFSET = 0.1F
+
 internal object CameraFormatPicker {
   internal fun getBestFormatByOrder(
     configs: List<CameraFormatConfig>,
@@ -58,7 +65,7 @@ internal object CameraFormatPicker {
       } * weight
     }
 
-    score -= (format.width.toLong() * format.height.toLong()).toDouble() / 1_000_000.0
+    score -= (format.width.toLong() * format.height.toLong()).toDouble() / MEGAPIXEL_DIVISOR
 
     return score
   }
@@ -74,7 +81,9 @@ internal object CameraFormatPicker {
   private fun getResolutionDistance(
     format: CameraData,
     desired: ResolutionConfig,
-  ): Float = (abs(format.width - desired.width) + abs(format.height - desired.height)) / 1000F
+  ): Float =
+    (abs(format.width - desired.width) + abs(format.height - desired.height)) /
+      RESOLUTION_NORMALIZATION
 
   private fun getFpsDistance(
     format: CameraData,
@@ -85,7 +94,7 @@ internal object CameraFormatPicker {
     return when {
       fps in minFps..maxFps -> when {
         minFps == fps || maxFps == fps -> 0F
-        else -> 0.5F
+        else -> FPS_PARTIAL_MATCH_PENALTY
       }
 
       fps < minFps -> (minFps - fps).toFloat()
@@ -100,10 +109,22 @@ internal object CameraFormatPicker {
   ): Float {
     val modes = format.videoStabilizationModes ?: return 1F
     return when {
-      desiredMode == null -> if (modes.any { it != VideoStabilizationMode.Off }) 0F else 1F
-      modes.contains(desiredMode) -> (modes.size / 10F).coerceAtMost(0.6F) - 0.1F
-      modes.any { it != VideoStabilizationMode.Off } -> 0.5F
-      else -> 1.0F
+      desiredMode == null -> {
+        if (modes.any { it != VideoStabilizationMode.Off }) 0F else 1F
+      }
+
+      modes.contains(desiredMode) -> {
+        (modes.size / STABILIZATION_SCORE_DENOMINATOR).coerceAtMost(STABILIZATION_SCORE_MAX) -
+          STABILIZATION_SCORE_OFFSET
+      }
+
+      modes.any { it != VideoStabilizationMode.Off } -> {
+        FPS_PARTIAL_MATCH_PENALTY
+      }
+
+      else -> {
+        1.0F
+      }
     }
   }
 

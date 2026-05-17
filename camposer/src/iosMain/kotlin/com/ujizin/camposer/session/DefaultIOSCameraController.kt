@@ -84,6 +84,8 @@ import platform.foundation.NSKeyValueObservingProtocol
 
 @OptIn(ExperimentalForeignApi::class)
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+private const val CENTER = 0.5
+
 public class DefaultIOSCameraController internal constructor(
   override val captureSession: AVCaptureSession,
   internal val previewManager: PreviewManager,
@@ -170,6 +172,7 @@ public class DefaultIOSCameraController internal constructor(
   private val completeFocusObserver = object : NSObject() {
     @OptIn(BetaInteropApi::class)
     @ObjCAction
+    @Suppress("UnusedParameter")
     private fun onFocusCompleted(notification: NSNotification?) = onFocusCompleted()
   }
 
@@ -341,7 +344,7 @@ public class DefaultIOSCameraController internal constructor(
   private fun onFocusCompleted() {
     val captureDevice = _captureDeviceInput?.device ?: return
     captureDevice.withConfigurationLock {
-      val centerFocusPoint = CGPointMake(0.5, 0.5)
+      val centerFocusPoint = CGPointMake(CENTER, CENTER)
       if (isFocusPointOfInterestSupported()) {
         focusPointOfInterest = centerFocusPoint
         focusMode = AVCaptureFocusModeContinuousAutoFocus
