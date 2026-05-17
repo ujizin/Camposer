@@ -11,3 +11,13 @@ camposer:
     active: true
   ApplierMustCallStateUpdate:
     active: true
+
+style:
+  # IdempotencyGuardRequired enforces early returns; ReturnCount would flag them.
+  ReturnCount:
+    active: false
+
+naming:
+  # @Composable functions use PascalCase by Compose convention.
+  FunctionNaming:
+    active: false
