@@ -15,11 +15,14 @@ import org.jetbrains.kotlin.psi.KtReturnExpression
 import org.jetbrains.kotlin.psi.psiUtil.containingClassOrObject
 
 /**
- * Every `update*()` override in `CameraEngineImpl` must contain an idempotency guard:
+ * Every `update*()` override in `CameraEngineCore` must contain an idempotency guard:
  * an `if (...) return` that prevents re-applying a value that is already current.
  *
  * Without this guard, state and hardware may be written redundantly on every
  * composition recomposition, causing jank and spurious camera reconfiguration.
+ *
+ * Note: guards live in `CameraEngineCore` (commonMain abstract class), not in the
+ * `CameraEngineImpl` expect/actual which has no bodies.
  */
 class IdempotencyGuardRequired(
   config: Config = Config.empty,
@@ -27,7 +30,7 @@ class IdempotencyGuardRequired(
   override val issue = Issue(
     id = javaClass.simpleName,
     severity = Severity.Defect,
-    description = "update*() override in CameraEngineImpl is missing an idempotency guard " +
+    description = "update*() override in CameraEngineCore is missing an idempotency guard " +
       "(if (cameraState.x.value == x) return).",
     debt = Debt.TEN_MINS,
   )
@@ -37,9 +40,7 @@ class IdempotencyGuardRequired(
 
     if (!function.name.orEmpty().startsWith("update")) return
     if (!function.hasModifier(KtTokens.OVERRIDE_KEYWORD)) return
-    if (function.containingClassOrObject?.name != "CameraEngineImpl") return
-    // expect declarations have no body — guards live in actual (platform) impls
-    if (function.bodyExpression == null) return
+    if (function.containingClassOrObject?.name != "CameraEngineCore") return
 
     val hasGuard = PsiTreeUtil
       .findChildrenOfType(function.bodyExpression, KtIfExpression::class.java)
@@ -53,7 +54,7 @@ class IdempotencyGuardRequired(
         CodeSmell(
           issue,
           Entity.from(function),
-          "Function '${function.name}' in CameraEngineImpl is missing an idempotency guard. " +
+          "Function '${function.name}' in CameraEngineCore is missing an idempotency guard. " +
             "Add: if (cameraState.<property>.value == <param>) return",
         ),
       )
