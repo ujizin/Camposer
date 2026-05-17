@@ -125,29 +125,10 @@ Agent commands live in `.agents/commands/`. Claude Code auto-discovers them as `
 
 ## Fake Infrastructure Pattern
 
-Test fakes use `expect/actual` split across **3 files each**. Missing any file causes a build failure.
+**Missing any platform file = build failure.** Each fake is split across 3 files (see [ARCHITECTURE.md § Cross-Cutting Concerns](ARCHITECTURE.md)):
 
-| Fake | commonTest (expect) | androidDeviceTest (actual) | iosTest (actual) |
-|------|--------------------|-----------------------------|-----------------|
-| `FakeCameraEngine` | `camposer/src/commonTest/.../fake/FakeCameraEngine.kt` | `camposer/src/androidDeviceTest/.../fake/FakeCameraEngine.android.kt` | `camposer/src/iosTest/.../fake/FakeCameraEngine.ios.kt` |
+- `camposer/src/commonTest/.../fake/FakeCameraEngine.kt` (expect)
+- `camposer/src/androidDeviceTest/.../fake/FakeCameraEngine.android.kt` (actual)
+- `camposer/src/iosTest/.../fake/FakeCameraEngine.ios.kt` (actual)
 
-**Missing any platform file = build failure.** Always add all 3 files when creating or extending a fake.
-
-The same 3-file pattern applies to `CameraEngine` itself (source, not test):
-- `camposer/src/commonMain/.../internal/core/CameraEngine.kt` (interface)
-- `camposer/src/androidMain/.../internal/core/CameraEngineImpl.android.kt` (actual)
-- `camposer/src/iosMain/.../internal/core/CameraEngineImpl.ios.kt` (actual)
-
-## Pre-PR Verification Checklist
-
-Run in order before opening a PR:
-
-```bash
-./gradlew spotlessApply                         # 1. fix formatting
-./gradlew checkLegacyAbi                        # 2. verify no accidental public API breakage
-./gradlew :camposer:detektCommonMain            # 3. KMP architecture rules on commonMain
-./gradlew build                                 # 4. full build, all platforms
-./gradlew iosSimulatorArm64Test                 # 5. run tests (macOS)
-# 6. only if public API changed intentionally:
-./gradlew updateLegacyAbi
-```
+Always create/update all 3 when adding or changing a fake.
