@@ -51,6 +51,9 @@ jobs:
       - name: Detekt
         run: ./gradlew detekt :camposer:detektCommonMain :camposer-code-scanner:detektCommonMain
 
+      - name: Module graph check
+        run: ./gradlew checkModuleGraph
+
   abi_check:
     name: API check
     runs-on: macos-26
