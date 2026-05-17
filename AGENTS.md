@@ -95,7 +95,7 @@ camposer/src/
 |----------|------|
 | Architecture, codemap, invariants | [ARCHITECTURE.md](ARCHITECTURE.md) |
 | Adding a camera property | [.agents/docs/camera-properties.md](.agents/docs/camera-properties.md) |
-| Writing unit tests | [.agents/skills/unit-tests/SKILL.md](.agents/skills/unit-tests/SKILL.md) |
+| Writing unit tests | [.agents/skills/unit-test-writer/SKILL.md](.agents/skills/unit-test-writer/SKILL.md) |
 
 ## Commands
 
