@@ -108,3 +108,46 @@ Agent commands live in `.agents/commands/`. Claude Code auto-discovers them as `
 | `/local-code-review [base-branch]` | Review changes against Camposer's KMP invariants |
 | `/pr-creator [base-branch]` | Create PR using the project template |
 | `/release-notes <tag>` | Tag + publish GitHub release with formatted notes |
+
+## Test Strategy
+
+| Source set | Requires | Speed | When to run |
+|------------|----------|-------|-------------|
+| `commonTest` | compiles into each platform — no standalone JVM runner | — | always via platform tasks |
+| `iosSimulatorArm64Test` | macOS + Xcode | ~2-3 min | fastest smoke test on macOS |
+| `androidDeviceTest` | running emulator or device | ~5-10 min | when Android-specific logic changes |
+
+**No standalone JVM test runner.** `commonTest` code is compiled into the platform test binary; you cannot run it directly with `./gradlew test`. The fastest smoke test on macOS is:
+
+```bash
+./gradlew iosSimulatorArm64Test
+```
+
+## Fake Infrastructure Pattern
+
+Test fakes use `expect/actual` split across **3 files each**. Missing any file causes a build failure.
+
+| Fake | commonTest (expect) | androidDeviceTest (actual) | iosTest (actual) |
+|------|--------------------|-----------------------------|-----------------|
+| `FakeCameraEngine` | `camposer/src/commonTest/.../fake/FakeCameraEngine.kt` | `camposer/src/androidDeviceTest/.../fake/FakeCameraEngine.android.kt` | `camposer/src/iosTest/.../fake/FakeCameraEngine.ios.kt` |
+
+**Missing any platform file = build failure.** Always add all 3 files when creating or extending a fake.
+
+The same 3-file pattern applies to `CameraEngine` itself (source, not test):
+- `camposer/src/commonMain/.../internal/core/CameraEngine.kt` (interface)
+- `camposer/src/androidMain/.../internal/core/CameraEngineImpl.android.kt` (actual)
+- `camposer/src/iosMain/.../internal/core/CameraEngineImpl.ios.kt` (actual)
+
+## Pre-PR Verification Checklist
+
+Run in order before opening a PR:
+
+```bash
+./gradlew spotlessApply                         # 1. fix formatting
+./gradlew checkLegacyAbi                        # 2. verify no accidental public API breakage
+./gradlew :camposer:detektCommonMain            # 3. KMP architecture rules on commonMain
+./gradlew build                                 # 4. full build, all platforms
+./gradlew iosSimulatorArm64Test                 # 5. run tests (macOS)
+# 6. only if public API changed intentionally:
+./gradlew updateLegacyAbi
+```
