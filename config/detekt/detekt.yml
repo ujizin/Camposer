@@ -7,3 +7,7 @@ camposer:
     active: true
   NoPlatformImportInCommonMain:
     active: false
+  IdempotencyGuardRequired:
+    active: true
+  ApplierMustCallStateUpdate:
+    active: true
