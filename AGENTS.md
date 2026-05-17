@@ -99,10 +99,10 @@ camposer/src/
 
 ## Commands
 
-Agent commands live in `.agents/commands/`. Claude Code discovers them as `/` slash commands; Codex uses `$` prefix.
+Agent commands live in `.agents/commands/`. Claude Code auto-discovers them as `/` slash commands. Other agents: invoke by name (e.g. "use local-code-review").
 
 | Command | Description |
 |---------|-------------|
-| `/local-code-review [base-branch]` · `$local-code-review` | Review changes against Camposer's KMP invariants |
-| `/pr-creator [base-branch]` · `$pr-creator` | Create PR using the project template |
-| `/release-notes <tag>` · `$release-notes` | Tag + publish GitHub release with formatted notes |
+| `/local-code-review [base-branch]` | Review changes against Camposer's KMP invariants |
+| `/pr-creator [base-branch]` | Create PR using the project template |
+| `/release-notes <tag>` | Tag + publish GitHub release with formatted notes |
