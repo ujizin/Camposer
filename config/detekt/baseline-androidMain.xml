@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>CyclomaticComplexMethod:CameraXControllerWrapper.kt$CameraXControllerWrapper$private fun applySessionConfig()</ID>
+    <ID>InvalidPackageDeclaration:CameraStateExtensions.kt$package com.ujizin.camposer.extensions</ID>
+    <ID>InvalidPackageDeclaration:ContextExtensions.kt$package com.ujizin.camposer.extensions</ID>
+    <ID>InvalidPackageDeclaration:PreviewViewExtensions.kt$package com.ujizin.camposer.extensions</ID>
+    <ID>LongMethod:CameraPreview.android.kt$@Composable internal actual fun CameraPreviewImpl( modifier: Modifier, cameraSession: CameraSession, camSelector: CamSelector, captureMode: CaptureMode, camFormat: CamFormat, imageCaptureStrategy: ImageCaptureStrategy, scaleType: ScaleType, imageAnalyzer: ImageAnalyzer?, implementationMode: ImplementationMode, isImageAnalysisEnabled: Boolean, isFocusOnTapEnabled: Boolean, isPinchToZoomEnabled: Boolean, previewBackgroundColor: Color, onTapFocus: (Offset) -> Unit, onSwitchCamera: (ImageBitmap) -> Unit, content: @Composable (() -> Unit), )</ID>
+    <ID>LongParameterList:CameraPreview.android.kt$( modifier: Modifier, cameraSession: CameraSession, camSelector: CamSelector, captureMode: CaptureMode, camFormat: CamFormat, imageCaptureStrategy: ImageCaptureStrategy, scaleType: ScaleType, imageAnalyzer: ImageAnalyzer?, implementationMode: ImplementationMode, isImageAnalysisEnabled: Boolean, isFocusOnTapEnabled: Boolean, isPinchToZoomEnabled: Boolean, previewBackgroundColor: Color, onTapFocus: (Offset) -> Unit, onSwitchCamera: (ImageBitmap) -> Unit, content: @Composable (() -> Unit), )</ID>
+    <ID>MagicNumber:AndroidCameraInfo.kt$AndroidCameraInfo$30</ID>
+    <ID>MagicNumber:CamFormat.android.kt$CamFormat$1080</ID>
+    <ID>MagicNumber:CamFormat.android.kt$CamFormat$1280</ID>
+    <ID>MagicNumber:CamFormat.android.kt$CamFormat$1920</ID>
+    <ID>MagicNumber:CamFormat.android.kt$CamFormat$2160</ID>
+    <ID>MagicNumber:CamFormat.android.kt$CamFormat$3840</ID>
+    <ID>MagicNumber:CamFormat.android.kt$CamFormat$480</ID>
+    <ID>MagicNumber:CamFormat.android.kt$CamFormat$720</ID>
+    <ID>MagicNumber:CamLensType.android.kt$61F</ID>
+    <ID>MagicNumber:CamLensType.android.kt$94F</ID>
+    <ID>MagicNumber:CameraUtils.kt$CameraUtils$0.5f</ID>
+    <ID>MagicNumber:CameraUtils.kt$CameraUtils$100F</ID>
+    <ID>MagicNumber:CameraUtils.kt$CameraUtils$1080</ID>
+    <ID>MagicNumber:CameraUtils.kt$CameraUtils$1280</ID>
+    <ID>MagicNumber:CameraUtils.kt$CameraUtils$144</ID>
+    <ID>MagicNumber:CameraUtils.kt$CameraUtils$1440</ID>
+    <ID>MagicNumber:CameraUtils.kt$CameraUtils$176</ID>
+    <ID>MagicNumber:CameraUtils.kt$CameraUtils$1920</ID>
+    <ID>MagicNumber:CameraUtils.kt$CameraUtils$2048</ID>
+    <ID>MagicNumber:CameraUtils.kt$CameraUtils$2160</ID>
+    <ID>MagicNumber:CameraUtils.kt$CameraUtils$240</ID>
+    <ID>MagicNumber:CameraUtils.kt$CameraUtils$2560</ID>
+    <ID>MagicNumber:CameraUtils.kt$CameraUtils$288</ID>
+    <ID>MagicNumber:CameraUtils.kt$CameraUtils$320</ID>
+    <ID>MagicNumber:CameraUtils.kt$CameraUtils$352</ID>
+    <ID>MagicNumber:CameraUtils.kt$CameraUtils$3840</ID>
+    <ID>MagicNumber:CameraUtils.kt$CameraUtils$4096</ID>
+    <ID>MagicNumber:CameraUtils.kt$CameraUtils$4320</ID>
+    <ID>MagicNumber:CameraUtils.kt$CameraUtils$480</ID>
+    <ID>MagicNumber:CameraUtils.kt$CameraUtils$640</ID>
+    <ID>MagicNumber:CameraUtils.kt$CameraUtils$720</ID>
+    <ID>MagicNumber:CameraUtils.kt$CameraUtils$7680</ID>
+    <ID>MatchingDeclarationName:AnalyzerApplier.android.kt$AnalyzerApplier : CameraStateApplier</ID>
+    <ID>MatchingDeclarationName:CamFormat.android.kt$CamFormat</ID>
+    <ID>MatchingDeclarationName:CamSelector.android.kt$CamSelector</ID>
+    <ID>MatchingDeclarationName:CameraController.android.kt$CameraController : AndroidCameraController</ID>
+    <ID>MatchingDeclarationName:CameraControllerContract.android.kt$CameraControllerContract : AndroidRecordControllerAndroidTakePictureCommand</ID>
+    <ID>MatchingDeclarationName:CameraDevicesManager.android.kt$CameraDevicesManager</ID>
+    <ID>MatchingDeclarationName:CameraEngineImpl.android.kt$CameraEngineImpl : CameraEngineCoreAndroidCameraEngine</ID>
+    <ID>MatchingDeclarationName:CameraId.android.kt$CameraId</ID>
+    <ID>MatchingDeclarationName:CameraInfo.android.kt$CameraInfo</ID>
+    <ID>MatchingDeclarationName:CameraSession.android.kt$CameraSession</ID>
+    <ID>MatchingDeclarationName:DefaultRecordController.android.kt$DefaultRecordController : AndroidRecordController</ID>
+    <ID>MatchingDeclarationName:DefaultTakePictureCommand.android.kt$DefaultTakePictureCommand : AndroidTakePictureCommand</ID>
+    <ID>MatchingDeclarationName:ExposureZoomApplier.android.kt$ExposureZoomApplier : CameraStateApplier</ID>
+    <ID>MatchingDeclarationName:ImageAnalyzer.android.kt$ImageAnalyzer</ID>
+    <ID>MatchingDeclarationName:Logger.android.kt$Logger</ID>
+    <ID>MatchingDeclarationName:PreviewApplier.android.kt$PreviewApplier : CameraStateApplier</ID>
+    <ID>MatchingDeclarationName:SessionTopologyApplier.android.kt$SessionTopologyApplier : CameraStateApplier</ID>
+    <ID>MatchingDeclarationName:VideoApplier.android.kt$VideoApplier : CameraStateApplier</ID>
+    <ID>MaxLineLength:CameraSession.android.kt$CameraSession$*</ID>
+    <ID>MaxLineLength:ImageAnalysisBackpressureStrategy.kt$ImageAnalysisBackpressureStrategy.BlockProducer$*</ID>
+    <ID>NoNameShadowing:CameraUtils.kt$CameraUtils$maxFps</ID>
+    <ID>NoNameShadowing:DefaultRecordController.android.kt$DefaultRecordController$result</ID>
+    <ID>SpreadOperator:CamFormat.android.kt$CamFormat$(*Default.configs.toTypedArray())</ID>
+    <ID>TooGenericExceptionCaught:CameraUtils.kt$CameraUtils$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DefaultRecordController.android.kt$DefaultRecordController$exception: Exception</ID>
+    <ID>TooGenericExceptionCaught:DefaultTakePictureCommand.android.kt$DefaultTakePictureCommand$exception: Exception</ID>
+    <ID>TooGenericExceptionThrown:CameraUtils.kt$CameraUtils$throw Error("Invalid CamcorderProfile \"$camcorderProfile\"!")</ID>
+    <ID>TooManyFunctions:CameraUtils.kt$CameraUtils</ID>
+    <ID>TooManyFunctions:CameraXController.kt$CameraXController</ID>
+    <ID>TooManyFunctions:CameraXControllerWrapper.kt$CameraXControllerWrapper : CameraXController</ID>
+    <ID>TooManyFunctions:SessionTopologyApplier.android.kt$SessionTopologyApplier : CameraStateApplier</ID>
+    <ID>UnreachableCode:CameraUtils.kt$CameraUtils$getFOV(focalLengths = focalLengths, sensorSize = sensorSize)</ID>
+    <ID>UnreachableCode:CameraUtils.kt$CameraUtils$val focalLengths = camera2Info.getCameraCharacteristic(LENS_INFO_AVAILABLE_FOCAL_LENGTHS) ?: return@map Wide</ID>
+    <ID>UnreachableCode:CameraUtils.kt$CameraUtils$val focalLengths = camera2Info.getCameraCharacteristic(LENS_INFO_AVAILABLE_FOCAL_LENGTHS) ?: return@mapNotNull null</ID>
+    <ID>UnreachableCode:CameraUtils.kt$CameraUtils$val fov = getFOV(focalLengths, sensorSize)</ID>
+    <ID>UnreachableCode:CameraUtils.kt$CameraUtils$val sensorSize = camera2Info.getCameraCharacteristic(SENSOR_INFO_PHYSICAL_SIZE) ?: return@map Wide</ID>
+    <ID>UnreachableCode:CameraUtils.kt$CameraUtils$val sensorSize = camera2Info.getCameraCharacteristic(SENSOR_INFO_PHYSICAL_SIZE) ?: return@mapNotNull null</ID>
+    <ID>UnreachableCode:CameraUtils.kt$CameraUtils$when { fov > UltraWide.minFov -> UltraWide fov > Wide.minFov -> Wide else -> Telephoto }</ID>
+  </CurrentIssues>
+</SmellBaseline>
