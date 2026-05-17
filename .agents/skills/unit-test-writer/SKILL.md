@@ -1,5 +1,5 @@
 ---
-name: unit-tests
+name: unit-test-writer
 description: Use when writing or extending unit tests for Camposer — covers test infrastructure, fake classes, naming conventions, and patterns for both simple (Type A) and hardware-applied (Type B) camera properties.
 ---
 
