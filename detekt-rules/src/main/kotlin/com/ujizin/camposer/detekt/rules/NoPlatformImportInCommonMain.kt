@@ -17,37 +17,39 @@ import org.jetbrains.kotlin.psi.KtImportDirective
  *
  * Only applied to the `commonMain` source set via the `detektCommonMain` task.
  */
-class NoPlatformImportInCommonMain(config: Config = Config.empty) : Rule(config) {
+class NoPlatformImportInCommonMain(
+  config: Config = Config.empty,
+) : Rule(config) {
+  override val issue = Issue(
+    id = javaClass.simpleName,
+    severity = Severity.Defect,
+    description = "Platform-specific imports are forbidden in commonMain. " +
+      "Use expect/actual or inject via interface.",
+    debt = Debt.TWENTY_MINS,
+  )
 
-    override val issue = Issue(
-        id = javaClass.simpleName,
-        severity = Severity.Defect,
-        description = "Platform-specific imports are forbidden in commonMain. Use expect/actual or inject via interface.",
-        debt = Debt.TWENTY_MINS,
-    )
+  private val blockedPrefixes = listOf(
+    "androidx.camera",
+    "platform.", // Kotlin/Native iOS framework interop
+    "UIKit",
+    "AVFoundation",
+    "CoreMedia",
+    "CoreVideo",
+    "CoreGraphics",
+  )
 
-    private val blockedPrefixes = listOf(
-        "androidx.camera",
-        "platform.",        // Kotlin/Native iOS framework interop
-        "UIKit",
-        "AVFoundation",
-        "CoreMedia",
-        "CoreVideo",
-        "CoreGraphics",
-    )
-
-    override fun visitImportDirective(importDirective: KtImportDirective) {
-        super.visitImportDirective(importDirective)
-        val importPath = importDirective.importedFqName?.asString() ?: return
-        if (blockedPrefixes.any { importPath.startsWith(it) }) {
-            report(
-                CodeSmell(
-                    issue,
-                    Entity.from(importDirective),
-                    "Platform import '$importPath' is not allowed in commonMain. " +
-                        "Use expect/actual or inject the abstraction through an interface.",
-                ),
-            )
-        }
+  override fun visitImportDirective(importDirective: KtImportDirective) {
+    super.visitImportDirective(importDirective)
+    val importPath = importDirective.importedFqName?.asString() ?: return
+    if (blockedPrefixes.any { importPath.startsWith(it) }) {
+      report(
+        CodeSmell(
+          issue,
+          Entity.from(importDirective),
+          "Platform import '$importPath' is not allowed in commonMain. " +
+            "Use expect/actual or inject the abstraction through an interface.",
+        ),
+      )
     }
+  }
 }
