@@ -15,6 +15,7 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for full codemap, data flow diagrams, and
 ```bash
 make spotlessApply         # ./gradlew spotlessApply — fix formatting (required before commit)
 make checkLegacyAbi        # ./gradlew checkLegacyAbi — verify no accidental public API breakage
+make detekt                # ./gradlew detekt :camposer:detektCommonMain — KMP architecture rules
 make build                 # ./gradlew build — full build, all platforms
 make iosTest               # ./gradlew iosSimulatorArm64Test — fastest test run (~2-3 min, macOS)
 make androidTest           # ./gradlew connectedAndroidTest — requires running emulator or device
@@ -41,6 +42,7 @@ make updateLegacyAbi       # ./gradlew updateLegacyAbi — only after intentiona
 
 - Run `./gradlew spotlessApply` before committing
 - Run `./gradlew checkLegacyAbi` when touching any public class or function
+- Run `./gradlew :camposer:detektCommonMain` when touching any `commonMain` file
 - Update all **3 files** when modifying `CameraEngine`, `FakeCameraEngine`, `FakeCameraTest`, or `FakeCameraSession` (expect + androidDeviceTest actual + iosTest actual)
 - Mark every new public declaration with `public` — explicit API mode is enforced
 - Delegate hardware writes through the applier that owns that concern
