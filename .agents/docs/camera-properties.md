@@ -10,7 +10,7 @@ how to classify a new one, and how to implement it correctly across all layers.
 
 Every property follows the same three-layer model:
 
-```
+```text
 [ Property Type (enum/value) ]
           │ defined in commonMain
           ▼
@@ -100,7 +100,7 @@ Tests use fake implementations of the engine layer. These fakes use the same `ex
 pattern as the production code, which means **every interface change requires updating three
 files**:
 
-```
+```text
 commonTest/kotlin/.../fake/FakeCameraEngine.kt          ← expect declaration
 androidDeviceTest/kotlin/.../fake/FakeCameraEngine.android.kt  ← Android actual
 iosTest/kotlin/.../fake/FakeCameraEngine.ios.kt         ← iOS actual
@@ -193,7 +193,7 @@ Type B includes all Type A steps plus the applier layer and (if needed) platform
 
 **Full call chain for reference** (FlashMode example):
 
-```
+```text
 CameraEngine.updateFlashMode(FlashMode.On)
   → CameraEngineImpl.updateFlashMode()  [actual, Android]
     → ExposureZoomApplier.applyFlashMode(FlashMode.On)

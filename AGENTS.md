@@ -57,7 +57,7 @@ make updateLegacyAbi       # ./gradlew updateLegacyAbi — only after intentiona
 
 ## Key Files
 
-```
+```text
 camposer/src/
   commonMain/kotlin/com/ujizin/camposer/
     CameraPreview.kt                     Root @Composable

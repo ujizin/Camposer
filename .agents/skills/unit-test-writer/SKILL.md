@@ -50,7 +50,7 @@ internal class CameraScaleTypeTest : CameraSessionTest() {
         ScaleType.entries.forEach { scaleType ->
             updateSession(scaleType = scaleType)
 
-            assertEquals(cameraSession.state.scaleType.value, scaleType)
+            assertEquals(scaleType, cameraSession.state.scaleType.value)
         }
     }
 }
@@ -114,7 +114,7 @@ fun test_preview_zoom_change() = runTest {
     cameraSession.controller.setZoomRatio(expected)
 
     cameraTest.assertZoomRatio(expected)
-    assertEquals(cameraSession.state.zoomRatio.value, expected)
+    assertEquals(expected, cameraSession.state.zoomRatio.value)
 }
 ```
 
