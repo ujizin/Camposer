@@ -28,10 +28,10 @@ public actual class CamFormat
     public actual val configs: List<CameraFormatConfig> = configs.toList()
 
     private val qualitySelectorSizes = mapOf(
-      Quality.UHD.toQualitySelector() to 3840 * 2160,
-      Quality.FHD.toQualitySelector() to 1920 * 1080,
-      Quality.HD.toQualitySelector() to 1280 * 720,
-      Quality.SD.toQualitySelector() to 720 * 480,
+      Quality.UHD.toQualitySelector() to AREA_UHD,
+      Quality.FHD.toQualitySelector() to AREA_FHD,
+      Quality.HD.toQualitySelector() to AREA_HD,
+      Quality.SD.toQualitySelector() to AREA_SD,
     )
 
     @VisibleForTesting(PRIVATE)
@@ -113,5 +113,10 @@ public actual class CamFormat
 
     actual override fun toString(): String = "CamFormat(configs=$configs)"
 
-    public actual companion object
+    public actual companion object {
+      private const val AREA_UHD = 3840 * 2160
+      private const val AREA_FHD = 1920 * 1080
+      private const val AREA_HD = 1280 * 720
+      private const val AREA_SD = 720 * 480
+    }
   }

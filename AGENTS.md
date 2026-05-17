@@ -53,7 +53,7 @@ make updateLegacyAbi       # ./gradlew updateLegacyAbi — only after intentiona
 - Add CameraX or AVFoundation imports to `commonMain`
 - Expose `CameraEngine` through any public type — it is always internal
 - Call platform APIs directly from `CameraEngineImpl` — delegate to an applier
-- Skip the idempotency guard (`if (cameraState.x.value == x) return`) in engine impls
+- Skip the idempotency guard (`if (cameraState.x.value == x) return`) in `CameraEngineCore` (commonMain)
 - Add platform-specific mapping extensions (`.mode`, `.avValue`) to `commonMain`
 - Add or remove public API without running `checkLegacyAbi`
 
