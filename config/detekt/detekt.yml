@@ -1,0 +1,9 @@
+# General detekt config — applied to all source sets.
+# NoPlatformImportInCommonMain is inactive here because it only makes sense
+# for commonMain files (run via the :module:detektCommonMain task).
+
+camposer:
+  CameraEngineNotInPublicApi:
+    active: true
+  NoPlatformImportInCommonMain:
+    active: false
