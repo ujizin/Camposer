@@ -33,8 +33,9 @@ class CameraEngineNotInPublicApi(
   override fun visitNamedFunction(function: KtNamedFunction) {
     super.visitNamedFunction(function)
     if (function.isNonPublic()) return
-    val returnType = function.typeReference?.text ?: return
-    if ("CameraEngine" in returnType) {
+    val returnType = function.typeReference?.text ?: ""
+    val paramTypes = function.valueParameters.mapNotNull { it.typeReference?.text }
+    if ("CameraEngine" in returnType || paramTypes.any { "CameraEngine" in it }) {
       report(CodeSmell(issue, Entity.from(function), issue.description))
     }
   }

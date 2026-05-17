@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>LongParameterList:CameraPreview.ios.kt$( modifier: Modifier, cameraSession: CameraSession, camSelector: CamSelector, captureMode: CaptureMode, camFormat: CamFormat, imageCaptureStrategy: ImageCaptureStrategy, scaleType: ScaleType, imageAnalyzer: ImageAnalyzer?, implementationMode: ImplementationMode, isImageAnalysisEnabled: Boolean, isFocusOnTapEnabled: Boolean, isPinchToZoomEnabled: Boolean, previewBackgroundColor: Color, onTapFocus: (Offset) -> Unit, onSwitchCamera: (ImageBitmap) -> Unit, content: @Composable () -> Unit, )</ID>
+    <ID>SpreadOperator:CamFormat.ios.kt$CamFormat$(*Default.configs.toTypedArray())</ID>
+    <ID>TooManyFunctions:DefaultIOSCameraController.kt$DefaultIOSCameraController : IOSCameraController</ID>
+    <ID>TooManyFunctions:IOSCameraController.kt$IOSCameraController</ID>
+    <ID>TooManyFunctions:SessionTopologyApplier.ios.kt$SessionTopologyApplier : CameraStateApplier</ID>
+  </CurrentIssues>
+</SmellBaseline>

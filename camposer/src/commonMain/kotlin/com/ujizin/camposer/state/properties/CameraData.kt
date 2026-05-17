@@ -87,7 +87,8 @@ public class CameraData internal constructor(
   }
 
   override fun toString(): String =
-    "CameraData(width=$width, height=$height, minFps=$minFps, maxFps=$maxFps, isVideoStabilizationSupported=$videoStabilizationModes, isFocusSupported=$isFocusSupported)"
+    "CameraData(width=$width, height=$height, minFps=$minFps, maxFps=$maxFps, " +
+      "isVideoStabilizationSupported=$videoStabilizationModes, isFocusSupported=$isFocusSupported)"
 
   internal companion object {
     internal const val DEVICE_FORMAT = "device_format"

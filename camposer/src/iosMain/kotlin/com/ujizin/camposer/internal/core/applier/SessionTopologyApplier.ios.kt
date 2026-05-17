@@ -36,6 +36,8 @@ internal actual class SessionTopologyApplier(
   private var captureModeJob: Job? = null
   private var camSelectorJob: Job? = null
 
+  // State update happens inside applyCaptureModeInternal via lockedLaunch delegate.
+  @Suppress("ApplierMustCallStateUpdate")
   actual fun applyCaptureMode(captureMode: CaptureMode) {
     captureModeJob?.cancel()
     captureModeJob = lockedLaunch {
@@ -47,6 +49,8 @@ internal actual class SessionTopologyApplier(
     }
   }
 
+  // State update happens inside applyCamSelectorInternal via lockedLaunch delegate.
+  @Suppress("ApplierMustCallStateUpdate")
   actual fun applyCamSelector(camSelector: CamSelector) {
     camSelectorJob?.cancel()
     camSelectorJob = lockedLaunch {
