@@ -43,7 +43,7 @@ subprojects {
 
     configure<io.gitlab.arturbosch.detekt.extensions.DetektExtension> {
       config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
-      buildUponDefaultConfig = false
+      buildUponDefaultConfig = true
     }
 
     tasks.register<io.gitlab.arturbosch.detekt.Detekt>("detektCommonMain") {
@@ -51,7 +51,8 @@ subprojects {
       group = "verification"
       setSource(fileTree("src/commonMain/kotlin"))
       config.setFrom(files("$rootDir/config/detekt/detekt-common.yml"))
-      buildUponDefaultConfig = false
+      buildUponDefaultConfig = true
+      baseline = file("$rootDir/config/detekt/baseline-commonMain.xml")
       reports {
         html.required.set(false)
         xml.required.set(false)
@@ -59,10 +60,25 @@ subprojects {
       }
     }
 
+    tasks.register<io.gitlab.arturbosch.detekt.DetektCreateBaselineTask>("detektBaselineCommonMain") {
+      description = "Creates detekt baseline for commonMain source set."
+      group = "verification"
+      setSource(fileTree("src/commonMain/kotlin"))
+      config.setFrom(files("$rootDir/config/detekt/detekt-common.yml"))
+      buildUponDefaultConfig = true
+      baseline = file("$rootDir/config/detekt/baseline-commonMain.xml")
+    }
+
     afterEvaluate {
       tasks.named<io.gitlab.arturbosch.detekt.Detekt>("detektAndroidMain") {
         config.setFrom(files("$rootDir/config/detekt/detekt-android.yml"))
-        buildUponDefaultConfig = false
+        buildUponDefaultConfig = true
+        baseline = file("$rootDir/config/detekt/baseline-androidMain.xml")
+      }
+      tasks.named<io.gitlab.arturbosch.detekt.DetektCreateBaselineTask>("detektBaselineAndroidMain") {
+        config.setFrom(files("$rootDir/config/detekt/detekt-android.yml"))
+        buildUponDefaultConfig = true
+        baseline = file("$rootDir/config/detekt/baseline-androidMain.xml")
       }
     }
   }

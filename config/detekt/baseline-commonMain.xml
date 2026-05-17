@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>CyclomaticComplexMethod:CameraInfoState.kt$CameraInfoState$override fun equals(other: Any?): Boolean</ID>
+    <ID>LongParameterList:CameraData.kt$CameraData$( public val width: Int, public val height: Int, public val isFocusSupported: Boolean = false, public val minFps: Int? = null, public val maxFps: Int? = null, public val videoStabilizationModes: List&lt;VideoStabilizationMode>? = null, internal val metadata: HashMap&lt;String, Any> = hashMapOf(), )</ID>
+    <ID>LongParameterList:CameraDevice.kt$CameraDevice$( public val cameraId: CameraId, public val name: String, public val position: CamPosition, public val fov: Float, public val lensType: List&lt;CamLensType>, public val photoData: List&lt;CameraData>, public val videoData: List&lt;CameraData>, )</ID>
+    <ID>LongParameterList:CameraInfoState.kt$CameraInfoState$( public val isZoomSupported: Boolean = false, public val isExposureSupported: Boolean = false, public val minZoom: Float = 1F, public val maxZoom: Float = 1F, public val minExposure: Float = 0F, public val maxExposure: Float = 0F, public val isFlashSupported: Boolean = false, public val isFlashAvailable: Boolean = false, public val isTorchSupported: Boolean = false, public val isTorchAvailable: Boolean = false, public val isZeroShutterLagSupported: Boolean = false, public val isVideoStabilizationSupported: Boolean = false, public val isFocusSupported: Boolean = false, public val minFPS: Int = -1, public val maxFPS: Int = -1, public val photoFormats: List&lt;CameraData> = emptyList(), public val videoFormats: List&lt;CameraData> = emptyList(), )</ID>
+    <ID>LongParameterList:CameraPreview.kt$( modifier: Modifier = Modifier, bitmap: ImageBitmap?, isCameraIdle: Boolean, onPreviewStreamChanged: () -> Unit, onResetBitmap: () -> Unit, switchCameraContent: @Composable (ImageBitmap) -> Unit, )</ID>
+    <ID>LongParameterList:CameraPreview.kt$( modifier: Modifier = Modifier, cameraSession: CameraSession, camSelector: CamSelector = cameraSession.state.camSelector.value, captureMode: CaptureMode = cameraSession.state.captureMode.value, captureStrategy: ImageCaptureStrategy = cameraSession.state.imageCaptureStrategy.value, scaleType: ScaleType = cameraSession.state.scaleType.value, imageAnalyzer: ImageAnalyzer? = null, camFormat: CamFormat = cameraSession.state.camFormat.value, implementationMode: ImplementationMode = cameraSession.state.implementationMode.value, isImageAnalysisEnabled: Boolean = imageAnalyzer != null, isFocusOnTapEnabled: Boolean = cameraSession.state.isFocusOnTapEnabled.value, isPinchToZoomEnabled: Boolean = cameraSession.state.isPinchToZoomEnabled.value, previewBackgroundColor: Color = Color.Unspecified, onPreviewStreamChanged: () -> Unit = {}, switchCameraContent: @Composable (ImageBitmap) -> Unit = {}, onFocus: suspend (onComplete: () -> Unit) -> Unit = { onComplete -> delay(1000L) onComplete() }, focusTapContent: @Composable () -> Unit = { SquareCornerFocus() }, content: @Composable BoxScope.() -> Unit = {}, )</ID>
+    <ID>LongParameterList:CameraPreview.kt$( modifier: Modifier = Modifier, cameraSession: CameraSession, camSelector: CamSelector, captureMode: CaptureMode, camFormat: CamFormat, imageCaptureStrategy: ImageCaptureStrategy, scaleType: ScaleType, imageAnalyzer: ImageAnalyzer?, implementationMode: ImplementationMode, isImageAnalysisEnabled: Boolean, isFocusOnTapEnabled: Boolean, isPinchToZoomEnabled: Boolean, previewBackgroundColor: Color, onTapFocus: (Offset) -> Unit, onSwitchCamera: (ImageBitmap) -> Unit, content: @Composable () -> Unit = {}, )</ID>
+    <ID>LongParameterList:CameraState.kt$( camSelector: CamSelector, captureMode: CaptureMode, scaleType: ScaleType, isImageAnalysisEnabled: Boolean, imageAnalyzer: ImageAnalyzer?, implementationMode: ImplementationMode, isFocusOnTapEnabled: Boolean, imageCaptureStrategy: ImageCaptureStrategy, camFormat: CamFormat, isPinchToZoomEnabled: Boolean, )</ID>
+    <ID>MagicNumber:AspectRatioConfig.kt$AspectRatioConfig$1.3F</ID>
+    <ID>MagicNumber:AspectRatioConfig.kt$AspectRatioConfig$1.4F</ID>
+    <ID>MagicNumber:AspectRatioConfig.kt$AspectRatioConfig$1.7F</ID>
+    <ID>MagicNumber:AspectRatioConfig.kt$AspectRatioConfig$1.8F</ID>
+    <ID>MagicNumber:CameraFormatPicker.kt$CameraFormatPicker$0.1F</ID>
+    <ID>MagicNumber:CameraFormatPicker.kt$CameraFormatPicker$0.5F</ID>
+    <ID>MagicNumber:CameraFormatPicker.kt$CameraFormatPicker$0.6F</ID>
+    <ID>MagicNumber:CameraFormatPicker.kt$CameraFormatPicker$1000F</ID>
+    <ID>MagicNumber:CameraFormatPicker.kt$CameraFormatPicker$10F</ID>
+    <ID>MagicNumber:CameraFormatPicker.kt$CameraFormatPicker$1_000_000.0</ID>
+    <ID>MagicNumber:CameraPreview.kt$1000L</ID>
+    <ID>MaxLineLength:CameraData.kt$CameraData$"CameraData(width=$width, height=$height, minFps=$minFps, maxFps=$maxFps, isVideoStabilizationSupported=$videoStabilizationModes, isFocusSupported=$isFocusSupported)"</ID>
+    <ID>MaxLineLength:CameraDevice.kt$CameraDevice$"CameraDevice(cameraId=$cameraId, name=$name, position=$position, lensType=$lensType, fov=$fov, videoData=$videoData)"</ID>
+    <ID>MaxLineLength:CameraDevicesManager.kt$CameraDevicesManager$*</ID>
+    <ID>MaxLineLength:RecordController.kt$RecordController$*</ID>
+    <ID>MaxLineLength:TakePictureCommand.kt$TakePictureCommand$*</ID>
+    <ID>TooManyFunctions:CameraController.kt$CameraController : CameraControllerContract</ID>
+    <ID>TooManyFunctions:CameraEngine.kt$CameraEngine</ID>
+    <ID>TooManyFunctions:CameraEngineCore.kt$CameraEngineCore : CameraEngine</ID>
+    <ID>TooManyFunctions:CameraEngineImpl.kt$CameraEngineImpl : CameraEngine</ID>
+    <ID>TooManyFunctions:CameraState.kt$CameraState</ID>
+    <ID>TooManyFunctions:CommonCameraController.kt$CommonCameraController&lt;RC : RecordController, TPC : TakePictureCommand> : CameraControllerContract</ID>
+    <ID>UnusedParameter:CameraPreview.kt$modifier: Modifier = Modifier</ID>
+    <ID>UnusedPrivateProperty:CamFormat.kt$CamFormat$vararg configs: CameraFormatConfig</ID>
+    <ID>UnusedPrivateProperty:CamSelector.kt$CamSelector$cameraDevice: CameraDevice</ID>
+    <ID>UnusedPrivateProperty:CameraController.kt$CameraController$dispatcher: CoroutineDispatcher</ID>
+  </CurrentIssues>
+</SmellBaseline>
