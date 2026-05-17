@@ -95,5 +95,14 @@ camposer/src/
 |----------|------|
 | Architecture, codemap, invariants | [ARCHITECTURE.md](ARCHITECTURE.md) |
 | Adding a camera property | [.agents/docs/camera-properties.md](.agents/docs/camera-properties.md) |
-| Local code review command | [.agents/commands/local-code-review.md](.agents/commands/local-code-review.md) — `/local-code-review [base-branch]` |
 | Writing unit tests | [.agents/skills/unit-tests/SKILL.md](.agents/skills/unit-tests/SKILL.md) |
+
+## Commands
+
+Agent commands live in `.agents/commands/`. Claude Code discovers them as `/` slash commands; Codex uses `$` prefix.
+
+| Command | Description |
+|---------|-------------|
+| `/local-code-review [base-branch]` · `$local-code-review` | Review changes against Camposer's KMP invariants |
+| `/pr-creator [base-branch]` · `$pr-creator` | Create PR using the project template |
+| `/release-notes <tag>` · `$release-notes` | Tag + publish GitHub release with formatted notes |
