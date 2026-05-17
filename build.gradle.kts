@@ -73,6 +73,13 @@ subprojects {
         txt.required.set(false)
       }
     }
+
+    afterEvaluate {
+      tasks.named<io.gitlab.arturbosch.detekt.Detekt>("detektAndroidMain") {
+        config.setFrom(files("$rootDir/config/detekt/detekt-android.yml"))
+        buildUponDefaultConfig = false
+      }
+    }
   }
 
   apply(

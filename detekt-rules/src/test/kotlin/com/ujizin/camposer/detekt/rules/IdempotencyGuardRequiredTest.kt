@@ -8,9 +8,9 @@ class IdempotencyGuardRequiredTest {
   private val rule = IdempotencyGuardRequired()
 
   @Test
-  fun `flags update function in CameraEngineImpl with no guard`() {
+  fun `flags update function in CameraEngineCore with no guard`() {
     val code = """
-            class CameraEngineImpl {
+            class CameraEngineCore {
                 override fun updateFlashMode(flashMode: FlashMode) {
                     applier.applyFlashMode(flashMode)
                 }
@@ -22,7 +22,7 @@ class IdempotencyGuardRequiredTest {
   @Test
   fun `does not flag update function with if-return guard`() {
     val code = """
-            class CameraEngineImpl {
+            class CameraEngineCore {
                 override fun updateFlashMode(flashMode: FlashMode) {
                     if (cameraState.flashMode.value == flashMode) return
                     applier.applyFlashMode(flashMode)
@@ -35,7 +35,7 @@ class IdempotencyGuardRequiredTest {
   @Test
   fun `does not flag update function where guard comes after clamping logic`() {
     val code = """
-            class CameraEngineImpl {
+            class CameraEngineCore {
                 override fun updateZoomRatio(zoomRatio: Float) {
                     val clamped = zoomRatio.coerceIn(0f, 10f)
                     if (cameraState.zoomRatio.value == clamped) return
@@ -47,7 +47,7 @@ class IdempotencyGuardRequiredTest {
   }
 
   @Test
-  fun `does not flag update function outside CameraEngineImpl`() {
+  fun `does not flag update function outside CameraEngineCore`() {
     val code = """
             class SomeOtherClass {
                 override fun updateFlashMode(flashMode: FlashMode) {
@@ -59,42 +59,7 @@ class IdempotencyGuardRequiredTest {
   }
 
   @Test
-  fun `does not flag non-update function in CameraEngineImpl`() {
-    val code = """
-            class CameraEngineImpl {
-                fun onCameraInitialized() {
-                    appliers.forEach { it.onCameraInitialized() }
-                }
-            }
-    """.trimIndent()
-    assertEquals(0, rule.lint(code).size)
-  }
-
-  @Test
-  fun `does flag update function in CameraEngineImpl with no guard even without expect keyword`() {
-    // lint() has no real file path so commonMain path filter does not apply — still flags
-    val code = """
-            class CameraEngineImpl {
-                override fun updateFlashMode(flashMode: FlashMode) {
-                    applier.applyFlashMode(flashMode)
-                }
-            }
-    """.trimIndent()
-    assertEquals(1, rule.lint(code).size)
-  }
-
-  @Test
-  fun `does not flag update function with no body (expect declaration)`() {
-    val code = """
-            class CameraEngineImpl {
-                override fun updateFlashMode(flashMode: FlashMode)
-            }
-    """.trimIndent()
-    assertEquals(0, rule.lint(code).size)
-  }
-
-  @Test
-  fun `does not flag update function in expect class`() {
+  fun `does not flag CameraEngineImpl (expect class, no bodies)`() {
     val code = """
             expect class CameraEngineImpl {
                 override fun updateFlashMode(flashMode: FlashMode)
@@ -104,9 +69,21 @@ class IdempotencyGuardRequiredTest {
   }
 
   @Test
-  fun `does not flag isMirrorEnabled in CameraEngineImpl`() {
+  fun `does not flag non-update function in CameraEngineCore`() {
     val code = """
-            class CameraEngineImpl {
+            class CameraEngineCore {
+                fun onCameraInitialized() {
+                    appliers.forEach { it.onCameraInitialized() }
+                }
+            }
+    """.trimIndent()
+    assertEquals(0, rule.lint(code).size)
+  }
+
+  @Test
+  fun `does not flag isMirrorEnabled in CameraEngineCore`() {
+    val code = """
+            class CameraEngineCore {
                 fun isMirrorEnabled(): Boolean = true
             }
     """.trimIndent()

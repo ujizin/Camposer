@@ -1,0 +1,12 @@
+# Detekt config for androidMain source set (detektAndroidMain task).
+# ApplierMustCallStateUpdate checks that applier impls call cameraState.update*().
+
+camposer:
+  CameraEngineNotInPublicApi:
+    active: false
+  NoPlatformImportInCommonMain:
+    active: false
+  IdempotencyGuardRequired:
+    active: false
+  ApplierMustCallStateUpdate:
+    active: true
