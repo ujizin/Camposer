@@ -48,6 +48,9 @@ jobs:
       - name: Spotless check
         run: ./gradlew spotlessCheck
 
+      - name: Detekt
+        run: ./gradlew detekt :camposer:detektCommonMain :camposer-code-scanner:detektCommonMain
+
   abi_check:
     name: API check
     runs-on: macos-26
