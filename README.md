@@ -9,6 +9,7 @@
   <img alt="Static Badge" src="https://img.shields.io/badge/Platform-Android-3DDC84?logo=android">
   <img alt="Static Badge" src="https://img.shields.io/badge/Platform-iOS-F5F5F7?logo=ios"> <br/>
   <a href="https://androidweekly.net/issues/issue-546"><img src="https://androidweekly.net/issues/issue-546/badge"/></a>
+  <a href="https://ujizin.github.io/Camposer/"><img src="https://img.shields.io/badge/docs-MkDocs-526CFE?logo=materialformkdocs&logoColor=white"/></a>
 </p>
 
 <p align="center">📸 A Compose Multiplatform camera library for taking photos, recording videos, controlling flash/torch, zooming, and more.</p>
