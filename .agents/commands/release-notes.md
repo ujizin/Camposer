@@ -26,13 +26,14 @@ If it exists, stop and report the conflict.
 ### 2. Find the previous tag
 
 ```bash
-git tag --sort=-version:refname | head -2
+git tag --sort=-version:refname | head -1
 ```
 
-The most recent existing tag is the base for the changelog range.
+If no tags exist, this is an initial release — skip the comparison range and collect all merged PRs from the repository start (see Step 3).
 
 ### 3. Collect merged PRs since the previous tag
 
+If a previous tag exists:
 ```bash
 gh pr list \
   --state merged \
@@ -42,9 +43,21 @@ gh pr list \
   --limit 50
 ```
 
-If that fails, fall back to commit log:
+If no previous tag (initial release):
 ```bash
+gh pr list \
+  --state merged \
+  --base main \
+  --json number,title,author,url \
+  --limit 100
+```
+
+If `gh pr list` fails, fall back to commit log:
+```bash
+# With previous tag:
 git log <prev-tag>...HEAD --oneline --merges
+# Initial release:
+git log --oneline --merges
 ```
 
 ### 4. Determine release type
@@ -65,6 +78,8 @@ Standard release:
 
 **Full Changelog**: https://github.com/ujizin/Camposer/compare/<prev-tag>...<new-tag>
 ```
+
+For an initial release, omit the compare URL or link to the full commit history.
 
 Breaking / major release:
 ```markdown

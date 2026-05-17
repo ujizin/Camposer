@@ -116,7 +116,7 @@ For enum values used in hardware writes, verify `when` expressions in platform m
 
 Save to `.agents/reviews/review-YYYY-MM-DD.md`:
 
-```markdown
+````markdown
 # Code Review: <branch-name>
 
 **Date:** <YYYY-MM-DD>
@@ -147,7 +147,7 @@ Save to `.agents/reviews/review-YYYY-MM-DD.md`:
 
 ---
 
-## Checklist
+## Review Checklist
 
 - [x] KMP expect/actual completeness
 - [x] Architectural invariants
@@ -160,6 +160,6 @@ Save to `.agents/reviews/review-YYYY-MM-DD.md`:
 ## Verdict
 
 <One-line assessment: "Ready to merge", "Needs fixes before merge", etc.>
-```
+````
 
 If no findings, omit the Findings section. A clean review is a valid outcome.

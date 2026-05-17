@@ -7,7 +7,7 @@ using KMP's `expect/actual` mechanism as the primary abstraction tool.
 
 ## High-Level Architecture
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │  User Code                                                   │
 └──────────────────────┬──────────────────────────────────────┘
@@ -39,18 +39,19 @@ using KMP's `expect/actual` mechanism as the primary abstraction tool.
 
 **Setting change** (e.g. user switches flash mode):
 
-```
-CameraState.flashMode.value = FlashMode.On
-  → CameraEngineImpl collects the StateFlow
-    → delegates to PreviewApplier (or relevant applier)
+```text
+controller.setFlashMode(FlashMode.On)
+  → CameraEngine.updateFlashMode(FlashMode.On)
+    → CameraEngineImpl delegates to ExposureZoomApplier
       → applier calls platform API
         Android: CameraXController.enableTorch() / setFlashMode()
         iOS:     AVCaptureDevice.flashMode / torchMode
+      → cameraState.updateFlashMode(FlashMode.On)  [state write — always last]
 ```
 
 **Still capture** (`takePicture`):
 
-```
+```text
 CameraController.takePicture(executor, callback)
   → DefaultTakePictureCommand.execute()
     → platform TakePictureCommand (actual)
@@ -62,7 +63,7 @@ CameraController.takePicture(executor, callback)
 
 **Video recording** (`startRecording` / `stopRecording`):
 
-```
+```text
 CameraController.startRecording(...)
   → DefaultRecordController.startRecording()
     → platform RecordController (actual)
@@ -138,7 +139,7 @@ adding or removing public API without updating the baseline breaks the build.
 
 ## Boundaries
 
-```
+```text
 commonMain          ──── shared: interfaces, state, composables, applier contracts
 androidMain / iosMain ── platform: hardware access, actual impls, applier impls
 commonTest          ──── unit tests via expect/actual fakes (no hardware)
@@ -153,7 +154,7 @@ The boundary between public and internal is enforced by explicit API mode + ABI 
 
 Key files only — not exhaustive. Paths relative to `camposer/src/`.
 
-```
+```text
 commonMain/kotlin/com/ujizin/camposer/
   CameraPreview.kt                          Root composable, camera UI entry point
   session/
