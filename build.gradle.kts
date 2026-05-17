@@ -14,6 +14,10 @@ plugins {
   alias(libs.plugins.binary.compatibility.validator)
 }
 
+apiValidation {
+  ignoredProjects += "detekt-rules"
+}
+
 dokka {
   dokkaPublications.html {
     moduleName.set("Camposer")
