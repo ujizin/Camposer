@@ -8,6 +8,7 @@ plugins {
   alias(libs.plugins.kotlin.multiplatform.library) apply false
   alias(libs.plugins.spotless) apply false
   alias(libs.plugins.maven.publish) apply false
+  alias(libs.plugins.detekt) apply false
   alias(libs.plugins.gradle.nexus)
   alias(libs.plugins.kotlin.serialization)
   alias(libs.plugins.dokka)
@@ -32,6 +33,32 @@ dokka {
 
 
 subprojects {
+  pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform") {
+    apply(plugin = rootProject.libs.plugins.detekt.get().pluginId)
+
+    dependencies {
+      "detektPlugins"(project(":detekt-rules"))
+    }
+
+    configure<io.gitlab.arturbosch.detekt.extensions.DetektExtension> {
+      config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
+      buildUponDefaultConfig = false
+    }
+
+    tasks.register<io.gitlab.arturbosch.detekt.Detekt>("detektCommonMain") {
+      description = "Detekt with KMP-strict rules on commonMain source set."
+      group = "verification"
+      setSource(fileTree("src/commonMain/kotlin"))
+      config.setFrom(files("$rootDir/config/detekt/detekt-common.yml"))
+      buildUponDefaultConfig = false
+      reports {
+        html.required.set(false)
+        xml.required.set(false)
+        txt.required.set(false)
+      }
+    }
+  }
+
   apply(
     plugin =
       rootProject.libs.plugins.spotless

@@ -1,0 +1,8 @@
+# Strict detekt config — applied only to commonMain via detektCommonMain task.
+# Both KMP architecture rules are active.
+
+camposer:
+  CameraEngineNotInPublicApi:
+    active: true
+  NoPlatformImportInCommonMain:
+    active: true
