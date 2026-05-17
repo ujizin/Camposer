@@ -19,6 +19,23 @@ apiValidation {
   ignoredProjects += "detekt-rules"
 }
 
+tasks.register("checkModuleGraph") {
+  group = "verification"
+  description = "Asserts :camposer never depends on :camposer-code-scanner (dependency inversion guard)."
+  doLast {
+    val violations =
+      project(":camposer")
+        .configurations
+        .flatMap { config -> config.dependencies.filterIsInstance<ProjectDependency>() }
+        .filter { it.name == "camposer-code-scanner" }
+
+    check(violations.isEmpty()) {
+      ":camposer must not depend on :camposer-code-scanner. " +
+        "The allowed direction is :camposer-code-scanner → :camposer."
+    }
+  }
+}
+
 dokka {
   dokkaPublications.html {
     moduleName.set("Camposer")
