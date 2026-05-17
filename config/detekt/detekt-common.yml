@@ -1,7 +1,6 @@
-# Strict detekt config — applied only to commonMain via detektCommonMain task.
-# Only commonMain-specific rules are active here.
-# IdempotencyGuardRequired and ApplierMustCallStateUpdate target platform impls
-# (androidMain/iosMain) and run via the regular detekt task instead.
+# Detekt config for commonMain source set (detektCommonMain task).
+# IdempotencyGuardRequired targets CameraEngineCore which lives in commonMain.
+# ApplierMustCallStateUpdate targets androidMain/iosMain appliers — see detekt-android.yml.
 
 camposer:
   CameraEngineNotInPublicApi:
@@ -9,6 +8,6 @@ camposer:
   NoPlatformImportInCommonMain:
     active: true
   IdempotencyGuardRequired:
-    active: false
+    active: true
   ApplierMustCallStateUpdate:
     active: false
