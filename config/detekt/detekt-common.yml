@@ -1,8 +1,14 @@
 # Strict detekt config — applied only to commonMain via detektCommonMain task.
-# Both KMP architecture rules are active.
+# Only commonMain-specific rules are active here.
+# IdempotencyGuardRequired and ApplierMustCallStateUpdate target platform impls
+# (androidMain/iosMain) and run via the regular detekt task instead.
 
 camposer:
   CameraEngineNotInPublicApi:
     active: true
   NoPlatformImportInCommonMain:
     active: true
+  IdempotencyGuardRequired:
+    active: false
+  ApplierMustCallStateUpdate:
+    active: false
