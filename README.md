@@ -11,7 +11,7 @@
   <a href="https://androidweekly.net/issues/issue-546"><img src="https://androidweekly.net/issues/issue-546/badge"/></a>
 </p>
 
-<p align="center">📸 A multiplatform camera library built with Jetpack Compose for taking photos, recording videos, controlling flash/torch, zooming, and more.</p>
+<p align="center">📸 A Compose Multiplatform camera library for taking photos, recording videos, controlling flash/torch, zooming, and more.</p>
 <br>
 <p align="center">
 <img src="https://user-images.githubusercontent.com/51065868/201734193-053dd4f5-c9cb-4a62-9692-1a62264911a5.gif" width="175"/> <img src="https://user-images.githubusercontent.com/51065868/201736304-f1f1b5fa-3f3d-4c12-9d40-a790e0d4d82b.gif" width="175"/>
