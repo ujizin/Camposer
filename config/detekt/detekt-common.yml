@@ -11,3 +11,11 @@ camposer:
     active: true
   ApplierMustCallStateUpdate:
     active: false
+
+style:
+  ReturnCount:
+    active: false
+
+naming:
+  FunctionNaming:
+    active: false
