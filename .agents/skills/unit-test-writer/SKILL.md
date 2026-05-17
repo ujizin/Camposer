@@ -9,6 +9,8 @@ Camposer tests run in `commonTest` against fake implementations of the camera en
 
 ## Test Infrastructure
 
+For full fake class details, file paths, and the 3-file rule see [reference/FAKE_PATTERNS.md](../reference/FAKE_PATTERNS.md).
+
 | Class | Role |
 |-------|------|
 | `CameraSessionTest` | Abstract base class — provides `cameraSession`, `cameraTest`, `controller`, `initCameraSession()`, `updateSession()` |
