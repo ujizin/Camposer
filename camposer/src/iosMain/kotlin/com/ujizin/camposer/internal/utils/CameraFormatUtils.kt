@@ -15,6 +15,8 @@ import platform.CoreMedia.CMVideoDimensions
 import platform.CoreMedia.CMVideoFormatDescriptionGetDimensions
 import platform.UIKit.UIDevice
 
+private const val IOS_16 = 16.0
+
 @OptIn(ExperimentalForeignApi::class)
 internal object CameraFormatUtils {
   fun getPhotoFormats(formats: List<AVCaptureDeviceFormat>): List<CameraData> =
@@ -22,7 +24,7 @@ internal object CameraFormatUtils {
       memScoped {
         val fallback = format.highResolutionStillImageDimensions.placeTo(this).pointed
 
-        val dimen = if (UIDevice.systemVersion >= 16.0) {
+        val dimen = if (UIDevice.systemVersion >= IOS_16) {
           format.supportedMaxPhotoDimensions
             .filterIsInstance<CMVideoDimensions>()
             .maxByOrNull { it.width * it.height } ?: fallback

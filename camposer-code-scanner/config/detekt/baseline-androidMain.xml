@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>SpreadOperator:ImageCodeAnalyzer.android.kt$ImageCodeAnalyzer$(format, *moreFormats)</ID>
+    <ID>UnusedPrivateProperty:ImageCodeAnalyzer.android.kt$ImageCodeAnalyzer$private val onFailure: (Throwable) -> Unit</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -14,7 +14,7 @@ camerax = "1.7.0-alpha01"
 coroutines = "1.10.2"
 compose-multiplatform = "1.10.2"
 binary-compatibility-validator = "0.18.1"
-detekt = "1.23.7"
+detekt = "1.23.8"
 maven-publish = "0.36.0"
 
 # Camposer scanner

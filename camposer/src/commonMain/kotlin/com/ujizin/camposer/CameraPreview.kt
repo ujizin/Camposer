@@ -28,6 +28,8 @@ import com.ujizin.camposer.ui.focus.FocusTap
 import com.ujizin.camposer.ui.focus.SquareCornerFocus
 import kotlinx.coroutines.delay
 
+private const val DEFAULT_FOCUS_DELAY_MS = 1000L
+
 /**
  * Creates a Camera Preview's composable.
  *
@@ -71,7 +73,7 @@ public fun CameraPreview(
   onPreviewStreamChanged: () -> Unit = {},
   switchCameraContent: @Composable (ImageBitmap) -> Unit = {},
   onFocus: suspend (onComplete: () -> Unit) -> Unit = { onComplete ->
-    delay(1000L)
+    delay(DEFAULT_FOCUS_DELAY_MS)
     onComplete()
   },
   focusTapContent: @Composable () -> Unit = { SquareCornerFocus() },
@@ -139,7 +141,9 @@ private fun CameraSwitchContent(
 
   LaunchedEffect(bitmap) { onPreviewStreamChanged() }
 
-  switchCameraContent(bitmap)
+  Box(modifier = modifier) {
+    switchCameraContent(bitmap)
+  }
 }
 
 @Composable

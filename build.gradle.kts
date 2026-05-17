@@ -50,9 +50,9 @@ subprojects {
       description = "Detekt with KMP-strict rules on commonMain source set."
       group = "verification"
       setSource(fileTree("src/commonMain/kotlin"))
-      config.setFrom(files("$rootDir/config/detekt/detekt-common.yml"))
+      config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
       buildUponDefaultConfig = true
-      baseline = file("$rootDir/config/detekt/baseline-commonMain.xml")
+      baseline = file("$projectDir/config/detekt/baseline-commonMain.xml")
       reports {
         html.required.set(false)
         xml.required.set(false)
@@ -64,21 +64,50 @@ subprojects {
       description = "Creates detekt baseline for commonMain source set."
       group = "verification"
       setSource(fileTree("src/commonMain/kotlin"))
-      config.setFrom(files("$rootDir/config/detekt/detekt-common.yml"))
+      config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
       buildUponDefaultConfig = true
-      baseline = file("$rootDir/config/detekt/baseline-commonMain.xml")
+      baseline = file("$projectDir/config/detekt/baseline-commonMain.xml")
+    }
+
+    if (file("src/iosMain/kotlin").exists()) {
+      tasks.register<io.gitlab.arturbosch.detekt.Detekt>("detektIosMain") {
+        description = "Detekt with KMP-strict rules on iosMain source set."
+        group = "verification"
+        setSource(fileTree("src/iosMain/kotlin"))
+        config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
+        buildUponDefaultConfig = true
+        baseline = file("$projectDir/config/detekt/baseline-iosMain.xml")
+        reports {
+          html.required.set(false)
+          xml.required.set(false)
+          txt.required.set(false)
+        }
+      }
+
+      tasks.register<io.gitlab.arturbosch.detekt.DetektCreateBaselineTask>("detektBaselineIosMain") {
+        description = "Creates detekt baseline for iosMain source set."
+        group = "verification"
+        setSource(fileTree("src/iosMain/kotlin"))
+        config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
+        buildUponDefaultConfig = true
+        baseline = file("$projectDir/config/detekt/baseline-iosMain.xml")
+      }
     }
 
     afterEvaluate {
       tasks.named<io.gitlab.arturbosch.detekt.Detekt>("detektAndroidMain") {
-        config.setFrom(files("$rootDir/config/detekt/detekt-android.yml"))
-        buildUponDefaultConfig = true
-        baseline = file("$rootDir/config/detekt/baseline-androidMain.xml")
+        baseline = file("$projectDir/config/detekt/baseline-androidMain.xml")
       }
       tasks.named<io.gitlab.arturbosch.detekt.DetektCreateBaselineTask>("detektBaselineAndroidMain") {
-        config.setFrom(files("$rootDir/config/detekt/detekt-android.yml"))
-        buildUponDefaultConfig = true
-        baseline = file("$rootDir/config/detekt/baseline-androidMain.xml")
+        baseline = file("$projectDir/config/detekt/baseline-androidMain.xml")
+      }
+      tasks.named("detekt") {
+        dependsOn("detektCommonMain", "detektAndroidMain")
+        if (tasks.findByName("detektIosMain") != null) dependsOn("detektIosMain")
+      }
+      tasks.named("detektBaseline") {
+        dependsOn("detektBaselineCommonMain", "detektBaselineAndroidMain")
+        if (tasks.findByName("detektBaselineIosMain") != null) dependsOn("detektBaselineIosMain")
       }
     }
   }
