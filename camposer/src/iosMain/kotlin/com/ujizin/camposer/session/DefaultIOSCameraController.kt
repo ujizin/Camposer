@@ -83,8 +83,6 @@ import platform.darwin.NSObject
 import platform.darwin.dispatch_async
 import platform.foundation.NSKeyValueObservingProtocol
 
-@OptIn(ExperimentalForeignApi::class)
-@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 private const val CENTER = 0.5
 
 public class DefaultIOSCameraController internal constructor(

@@ -24,10 +24,10 @@ import org.jetbrains.kotlin.psi.psiUtil.containingClassOrObject
  * Note: guards live in `CameraEngineCore` (commonMain abstract class), not in the
  * `CameraEngineImpl` expect/actual which has no bodies.
  */
-class IdempotencyGuardRequired(
+public class IdempotencyGuardRequired(
   config: Config = Config.empty,
 ) : Rule(config) {
-  override val issue = Issue(
+  override val issue: Issue = Issue(
     id = javaClass.simpleName,
     severity = Severity.Defect,
     description = "update*() override in CameraEngineCore is missing an idempotency guard " +

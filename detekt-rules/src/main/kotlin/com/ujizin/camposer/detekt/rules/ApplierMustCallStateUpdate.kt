@@ -12,6 +12,7 @@ import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 import org.jetbrains.kotlin.psi.KtNamedFunction
+import org.jetbrains.kotlin.psi.KtSafeQualifiedExpression
 import org.jetbrains.kotlin.psi.psiUtil.containingClassOrObject
 
 /**
@@ -21,10 +22,10 @@ import org.jetbrains.kotlin.psi.psiUtil.containingClassOrObject
  * Appliers own the hardware write AND the state write. Missing the state
  * write means the in-memory state drifts from actual hardware state.
  */
-class ApplierMustCallStateUpdate(
+public class ApplierMustCallStateUpdate(
   config: Config = Config.empty,
 ) : Rule(config) {
-  override val issue = Issue(
+  override val issue: Issue = Issue(
     id = javaClass.simpleName,
     severity = Severity.Defect,
     description = "apply*() method in an Applier class must call cameraState.update*() " +
@@ -43,10 +44,14 @@ class ApplierMustCallStateUpdate(
     val hasStateUpdate = PsiTreeUtil
       .findChildrenOfType(function, KtCallExpression::class.java)
       .any { call ->
-        val dotExpr = call.parent as? KtDotQualifiedExpression ?: return@any false
-        val receiverText = dotExpr.receiverExpression.text
+        val receiverText = when (val parent = call.parent) {
+          is KtDotQualifiedExpression -> parent.receiverExpression.text
+          is KtSafeQualifiedExpression -> parent.receiverExpression.text
+          else -> return@any false
+        }
         val callName = call.calleeExpression?.text.orEmpty()
-        receiverText == "cameraState" && callName.startsWith("update")
+        (receiverText == "cameraState" || receiverText.endsWith(".cameraState")) &&
+          callName.startsWith("update")
       }
 
     if (!hasStateUpdate) {
