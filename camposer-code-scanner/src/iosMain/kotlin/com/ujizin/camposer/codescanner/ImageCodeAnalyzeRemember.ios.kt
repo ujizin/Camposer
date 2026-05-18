@@ -19,7 +19,6 @@ public actual fun CameraSession.rememberCodeImageAnalyzer(
       val codeAnalyzerDelegate =
         ImageCodeAnalyzer(
           cameraController.previewLayer,
-          codeTypes,
           codeAnalyzerListener,
         )
 
