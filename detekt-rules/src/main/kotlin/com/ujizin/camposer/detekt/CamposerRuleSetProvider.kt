@@ -7,7 +7,7 @@ import io.gitlab.arturbosch.detekt.api.Config
 import io.gitlab.arturbosch.detekt.api.RuleSet
 import io.gitlab.arturbosch.detekt.api.RuleSetProvider
 
-class CamposerRuleSetProvider : RuleSetProvider {
+public class CamposerRuleSetProvider : RuleSetProvider {
   override val ruleSetId: String = "camposer"
 
   override fun instance(config: Config): RuleSet =

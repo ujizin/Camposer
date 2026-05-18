@@ -6,6 +6,8 @@ on:
     paths:
       - 'camposer/**'
       - 'camposer-code-scanner/**'
+      - 'detekt-rules/**'
+      - 'config/detekt/**'
       - '.github/workflows/**'
       - 'gradle/**'
       - 'gradle.properties'
@@ -16,6 +18,8 @@ on:
     paths:
       - 'camposer/**'
       - 'camposer-code-scanner/**'
+      - 'detekt-rules/**'
+      - 'config/detekt/**'
       - '.github/workflows/**'
       - 'gradle/**'
       - 'gradle.properties'
