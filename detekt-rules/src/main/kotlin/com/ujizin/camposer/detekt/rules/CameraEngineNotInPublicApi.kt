@@ -8,8 +8,11 @@ import io.gitlab.arturbosch.detekt.api.Issue
 import io.gitlab.arturbosch.detekt.api.Rule
 import io.gitlab.arturbosch.detekt.api.Severity
 import org.jetbrains.kotlin.lexer.KtTokens
+import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.KtProperty
+import org.jetbrains.kotlin.psi.psiUtil.containingClassOrObject
+import org.jetbrains.kotlin.psi.psiUtil.getStrictParentOfType
 
 /**
  * Blocks `CameraEngine` from appearing in public function signatures or public properties.
@@ -19,10 +22,10 @@ import org.jetbrains.kotlin.psi.KtProperty
  *
  * Applied to all source sets via the default `detekt` task.
  */
-class CameraEngineNotInPublicApi(
+public class CameraEngineNotInPublicApi(
   config: Config = Config.empty,
 ) : Rule(config) {
-  override val issue = Issue(
+  override val issue: Issue = Issue(
     id = javaClass.simpleName,
     severity = Severity.Defect,
     description = "CameraEngine must never be exposed through a public type. " +
@@ -32,7 +35,7 @@ class CameraEngineNotInPublicApi(
 
   override fun visitNamedFunction(function: KtNamedFunction) {
     super.visitNamedFunction(function)
-    if (function.isNonPublic()) return
+    if (function.isEffectivelyNonPublic()) return
     val returnType = function.typeReference?.text ?: ""
     val paramTypes = function.valueParameters.mapNotNull { it.typeReference?.text }
     if ("CameraEngine" in returnType || paramTypes.any { "CameraEngine" in it }) {
@@ -42,12 +45,18 @@ class CameraEngineNotInPublicApi(
 
   override fun visitProperty(property: KtProperty) {
     super.visitProperty(property)
-    if (property.isNonPublic()) return
+    if (property.isEffectivelyNonPublic()) return
     val typeRef = property.typeReference?.text ?: return
     if ("CameraEngine" in typeRef) {
       report(CodeSmell(issue, Entity.from(property), issue.description))
     }
   }
+
+  private fun KtNamedFunction.isEffectivelyNonPublic(): Boolean =
+    isNonPublic() || enclosingClasses().any { it.isNonPublicContainer() }
+
+  private fun KtProperty.isEffectivelyNonPublic(): Boolean =
+    isNonPublic() || enclosingClasses().any { it.isNonPublicContainer() }
 
   private fun KtNamedFunction.isNonPublic() =
     hasModifier(KtTokens.INTERNAL_KEYWORD) ||
@@ -55,6 +64,17 @@ class CameraEngineNotInPublicApi(
       hasModifier(KtTokens.PROTECTED_KEYWORD)
 
   private fun KtProperty.isNonPublic() =
+    hasModifier(KtTokens.INTERNAL_KEYWORD) ||
+      hasModifier(KtTokens.PRIVATE_KEYWORD) ||
+      hasModifier(KtTokens.PROTECTED_KEYWORD)
+
+  private fun KtNamedFunction.enclosingClasses() =
+    generateSequence(containingClassOrObject) { it.getStrictParentOfType<KtClassOrObject>() }
+
+  private fun KtProperty.enclosingClasses() =
+    generateSequence(containingClassOrObject) { it.getStrictParentOfType<KtClassOrObject>() }
+
+  private fun KtClassOrObject.isNonPublicContainer() =
     hasModifier(KtTokens.INTERNAL_KEYWORD) ||
       hasModifier(KtTokens.PRIVATE_KEYWORD) ||
       hasModifier(KtTokens.PROTECTED_KEYWORD)

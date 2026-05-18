@@ -2,6 +2,10 @@ plugins {
   kotlin("jvm")
 }
 
+kotlin {
+  explicitApi()
+}
+
 dependencies {
   compileOnly(libs.detekt.api)
   testImplementation(libs.detekt.test)
