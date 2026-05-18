@@ -1,7 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <SmellBaseline>
   <ManuallySuppressedIssues/>
-  <CurrentIssues>
-    <ID>UnusedPrivateProperty:ImageCodeAnalyzer.ios.kt$ImageCodeAnalyzer$private val types: List&lt;CodeType></ID>
-  </CurrentIssues>
+  <CurrentIssues/>
 </SmellBaseline>
