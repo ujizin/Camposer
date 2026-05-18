@@ -16,7 +16,6 @@ import platform.darwin.NSObject
 
 internal actual class ImageCodeAnalyzer(
   private val previewLayer: AVCaptureVideoPreviewLayer,
-  private val types: List<CodeType>,
   private val codeAnalyzerListener: CodeAnalyzerListener,
 ) {
   @OptIn(ExperimentalForeignApi::class)
