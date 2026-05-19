@@ -1,0 +1,77 @@
+name: Coverage
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'camposer/**'
+      - 'camposer-code-scanner/**'
+      - '.github/workflows/coverage.yml'
+      - 'gradle/**'
+      - 'gradle.properties'
+      - '*.gradle.kts'
+      - 'scripts/parse_coverage.py'
+  pull_request:
+    branches: [ '*' ]
+    paths:
+      - 'camposer/**'
+      - 'camposer-code-scanner/**'
+      - '.github/workflows/coverage.yml'
+      - 'gradle/**'
+      - 'gradle.properties'
+      - '*.gradle.kts'
+      - 'scripts/parse_coverage.py'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6.0.1
+
+      - uses: actions/setup-java@v5.1.0
+        with:
+          distribution: zulu
+          java-version: 21
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Run JVM host tests (common + Android logic)
+        # Android SDK stubs cause ~half the tests to fail on JVM — non-blocking.
+        # The JaCoCo .exec file is written even when tests fail.
+        run: >
+          ./gradlew
+          :camposer:testAndroidHostTest
+          :camposer-code-scanner:testAndroidHostTest
+          --continue
+        continue-on-error: true
+
+      - name: Generate JaCoCo XML reports
+        run: >
+          ./gradlew
+          :camposer:jacocoHostTestReport
+          :camposer-code-scanner:jacocoHostTestReport
+
+      - name: Compute unified coverage
+        id: coverage
+        run: |
+          JSON=$(python3 scripts/parse_coverage.py \
+            "**/reports/jacoco/jacocoHostTestReport/*.xml")
+          echo "json=$JSON" >> "$GITHUB_OUTPUT"
+
+      - name: Update Gist badge
+        if: github.ref == 'refs/heads/main'
+        uses: schneegans/dynamic-badges-action@v1.7.0
+        with:
+          auth: ${{ secrets.GIST_TOKEN }}
+          gistID: ${{ secrets.GIST_ID }}
+          filename: camposer-coverage.json
+          label: coverage
+          message: ${{ fromJson(steps.coverage.outputs.json).message }}
+          color: ${{ fromJson(steps.coverage.outputs.json).color }}
