@@ -11,6 +11,7 @@ plugins {
   alias(libs.plugins.dokka)
   alias(libs.plugins.compose.multiplatform)
   alias(libs.plugins.compose.compiler)
+  jacoco
 }
 
 extra.apply {
@@ -63,13 +64,6 @@ kotlin {
       val CMFormat by cinterops.creating
       val NSKeyValueObserving by cinterops.creating
     }
-    if (iosTarget.name == "iosSimulatorArm64") {
-      iosTarget.compilations.getByName("test").compileTaskProvider.configure {
-        compilerOptions {
-          freeCompilerArgs.add("-coverage")
-        }
-      }
-    }
   }
 
   sourceSets {
@@ -107,4 +101,21 @@ kotlin {
 
 dokka {
   moduleName.set("Camposer")
+}
+
+// Report from Gradle JaCoCo agent output (runs alongside Kover's agent on testAndroidHostTest).
+tasks.register<JacocoReport>("jacocoHostTestReport") {
+  mustRunAfter("testAndroidHostTest")
+  executionData.setFrom(layout.buildDirectory.file("jacoco/testAndroidHostTest.exec"))
+  classDirectories.setFrom(
+    fileTree(layout.buildDirectory.dir("classes/kotlin/android/main")) {
+      exclude("**/BuildConfig.class", "androidx/**")
+    },
+  )
+  sourceDirectories.setFrom(files("src/commonMain/kotlin", "src/androidMain/kotlin"))
+  reports {
+    xml.required.set(true)
+    html.required.set(false)
+    csv.required.set(false)
+  }
 }
