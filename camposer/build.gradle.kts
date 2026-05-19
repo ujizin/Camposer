@@ -91,7 +91,6 @@ kotlin {
 
     getByName("androidHostTest").dependencies {
       implementation(kotlin("test"))
-      implementation(libs.robolectric)
       implementation(libs.androidx.test.core)
     }
 
