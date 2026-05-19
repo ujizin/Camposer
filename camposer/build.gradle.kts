@@ -107,6 +107,7 @@ dokka {
 tasks.register<JacocoReport>("jacocoHostTestReport") {
   mustRunAfter("testAndroidHostTest")
   executionData.setFrom(layout.buildDirectory.file("jacoco/testAndroidHostTest.exec"))
+  onlyIf { executionData.files.any { it.exists() } }
   classDirectories.setFrom(
     fileTree(layout.buildDirectory.dir("classes/kotlin/android/main")) {
       exclude("**/BuildConfig.class", "androidx/**")
