@@ -16,6 +16,7 @@ compose-multiplatform = "1.10.2"
 binary-compatibility-validator = "0.18.1"
 detekt = "1.23.8"
 kover = "0.9.1"
+robolectric = "4.14.1"
 maven-publish = "0.36.0"
 
 # Camposer scanner
@@ -39,6 +40,7 @@ androidx-test-core = { module = "androidx.test:core-ktx", version.ref = "android
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-test" }
 androidx-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "androidx-arch-core" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 
 detekt-api  = { module = "io.gitlab.arturbosch.detekt:detekt-api",  version.ref = "detekt" }
 detekt-test = { module = "io.gitlab.arturbosch.detekt:detekt-test", version.ref = "detekt" }
@@ -72,3 +74,4 @@ binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibil
 maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publish" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+kover-aggregation = { id = "org.jetbrains.kotlinx.kover.aggregation", version.ref = "kover" }

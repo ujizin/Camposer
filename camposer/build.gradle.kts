@@ -43,6 +43,8 @@ kotlin {
     compileSdk = Config.compileSdk
     minSdk = Config.minSdk
 
+    withHostTestBuilder {}
+
     withDeviceTestBuilder {
       sourceSetTreeName = "test"
       androidResources.enable = true
@@ -61,6 +63,13 @@ kotlin {
       val CMFormat by cinterops.creating
       val NSKeyValueObserving by cinterops.creating
     }
+    if (iosTarget.name == "iosSimulatorArm64") {
+      iosTarget.compilations.getByName("test").compileTaskProvider.configure {
+        compilerOptions {
+          freeCompilerArgs.add("-coverage")
+        }
+      }
+    }
   }
 
   sourceSets {
@@ -78,6 +87,12 @@ kotlin {
     commonTest.dependencies {
       implementation(kotlin("test"))
       implementation(libs.kotlinx.coroutines.test)
+    }
+
+    getByName("androidHostTest").dependencies {
+      implementation(kotlin("test"))
+      implementation(libs.robolectric)
+      implementation(libs.androidx.test.core)
     }
 
     getByName("androidDeviceTest").dependencies {
