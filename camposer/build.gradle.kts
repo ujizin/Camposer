@@ -23,6 +23,8 @@ extra.apply {
 apply(from = "$rootDir/scripts/publish-module.gradle")
 
 kotlin {
+  applyDefaultHierarchyTemplate()
+
   targets.configureEach {
     compilations.configureEach {
       compileTaskProvider.configure {
