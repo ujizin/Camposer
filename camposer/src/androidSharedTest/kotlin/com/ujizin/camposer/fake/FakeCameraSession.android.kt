@@ -7,4 +7,6 @@ internal actual fun createCameraSession(
   fakeCameraTest: FakeCameraTest,
   testDispatcher: CoroutineDispatcher,
   autoStart: Boolean,
-) = CameraSession(cameraEngine = FakeCameraEngine(fakeCameraTest, testDispatcher))
+) = CameraSession(cameraEngine = FakeCameraEngine(fakeCameraTest, testDispatcher)).apply {
+  if (autoStart) startCamera()
+}

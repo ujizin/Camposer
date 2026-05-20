@@ -19,8 +19,11 @@ actual fun createFakeImageAnalyzer(
       controller = LifecycleCameraController(context),
       imageAnalysisBackpressureStrategy = ImageAnalysisBackpressureStrategy.KeepOnlyLatest,
       analyzer = {
-        block()
-        it.close()
+        try {
+          block()
+        } finally {
+          it.close()
+        }
       },
     )
   }
