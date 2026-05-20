@@ -1,10 +1,10 @@
-"""Parse JaCoCo XML reports and emit a shields.io endpoint JSON.
+"""Parse Kover XML reports and emit a shields.io endpoint JSON.
 
 Usage:
     python3 scripts/parse_coverage.py <glob-pattern>
 
 Example:
-    python3 scripts/parse_coverage.py "**/reports/jacoco/jacocoHostTestReport/*.xml"
+    python3 scripts/parse_coverage.py "build/reports/kover/report.xml"
 
 Output (stdout):
     {"schemaVersion":1,"label":"coverage","message":"42.3%","color":"yellow"}
@@ -16,8 +16,8 @@ import sys
 import xml.etree.ElementTree as ET
 
 
-def parse_jacoco_xmls(pattern: str) -> tuple[int, int]:
-    """Sum LINE counters from report-level <counter> in each JaCoCo XML."""
+def parse_kover_xmls(pattern: str) -> tuple[int, int]:
+    """Sum LINE counters from report-level <counter> in each Kover XML."""
     covered, missed = 0, 0
     paths = glob.glob(pattern, recursive=True)
     if not paths:
@@ -37,7 +37,7 @@ def main() -> None:
         print("Usage: parse_coverage.py <glob-pattern>", file=sys.stderr)
         sys.exit(1)
 
-    covered, missed = parse_jacoco_xmls(sys.argv[1])
+    covered, missed = parse_kover_xmls(sys.argv[1])
     total = covered + missed
     pct = round(covered / total * 100, 1) if total else 0.0
 

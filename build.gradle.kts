@@ -9,6 +9,7 @@ plugins {
   alias(libs.plugins.spotless) apply false
   alias(libs.plugins.maven.publish) apply false
   alias(libs.plugins.detekt) apply false
+  alias(libs.plugins.kover)
   alias(libs.plugins.gradle.nexus)
   alias(libs.plugins.kotlin.serialization)
   alias(libs.plugins.dokka)
@@ -17,6 +18,28 @@ plugins {
 
 apiValidation {
   ignoredProjects += "detekt-rules"
+}
+
+kover {
+  reports {
+    filters {
+      excludes {
+        classes("androidx.*", "*.BuildConfig")
+      }
+    }
+    verify {
+      rule {
+        bound {
+          minValue = 60
+        }
+      }
+    }
+  }
+}
+
+dependencies {
+  kover(project(":camposer"))
+  kover(project(":camposer-code-scanner"))
 }
 
 

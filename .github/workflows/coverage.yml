@@ -42,27 +42,16 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v4
 
-      - name: Run JVM host tests (common + Android logic)
-        # Android SDK stubs cause ~half the tests to fail on JVM — non-blocking.
-        # The JaCoCo .exec file is written even when tests fail.
-        run: >
-          ./gradlew
-          :camposer:testAndroidHostTest
-          :camposer-code-scanner:testAndroidHostTest
-          --continue
+      - name: Generate Kover XML report
+        # testAndroidHostTest ignoreFailures=true in build — Android SDK stubs cause
+        # ~half the tests to fail on JVM; real bugs are caught by connectedAndroidTest.
+        run: ./gradlew koverXmlReport
         continue-on-error: true
 
-      - name: Generate JaCoCo XML reports
-        run: >
-          ./gradlew
-          :camposer:jacocoHostTestReport
-          :camposer-code-scanner:jacocoHostTestReport
-
-      - name: Compute unified coverage
+      - name: Compute coverage
         id: coverage
         run: |
-          JSON=$(python3 scripts/parse_coverage.py \
-            "**/reports/jacoco/jacocoHostTestReport/*.xml")
+          JSON=$(python3 scripts/parse_coverage.py "build/reports/kover/report.xml")
           echo "json=$JSON" >> "$GITHUB_OUTPUT"
 
       - name: Update Gist badge
