@@ -51,11 +51,13 @@ jobs:
       - name: Compute coverage
         id: coverage
         run: |
-          JSON=$(python3 scripts/parse_coverage.py "build/reports/kover/report.xml")
+          REPORT="build/reports/kover/report.xml"
+          test -f "$REPORT"
+          JSON=$(python3 scripts/parse_coverage.py "$REPORT")
           echo "json=$JSON" >> "$GITHUB_OUTPUT"
 
       - name: Update Gist badge
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' && steps.coverage.outcome == 'success'
         uses: schneegans/dynamic-badges-action@v1.7.0
         with:
           auth: ${{ secrets.GIST_TOKEN }}

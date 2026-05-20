@@ -11,6 +11,7 @@ import androidx.camera.core.ExposureState
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY
+import androidx.camera.core.TorchState
 import androidx.camera.core.ZoomState
 import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.video.FileDescriptorOutputOptions
@@ -124,8 +125,7 @@ internal class FakeCameraXController : CameraXController {
   override val contentResolver: ContentResolver
     get() = TODO("Fake Won't be implemented")
 
-  override val mainExecutor: Executor
-    get() = Executors.newSingleThreadExecutor()
+  override val mainExecutor: Executor = Executors.newSingleThreadExecutor()
 
   // Custom LiveData that always returns the current fakeZoomRatio without any thread restriction.
   // getValue() is overridden so callers can read .value safely from any thread in tests.
@@ -152,7 +152,8 @@ internal class FakeCameraXController : CameraXController {
 
       override fun hasFlashUnit(): Boolean = hasFlashUnit
 
-      override fun getTorchState(): LiveData<Int?> = MutableLiveData(imageCaptureFlashMode)
+      override fun getTorchState(): LiveData<Int?> =
+        MutableLiveData(if (isTorchEnabled) TorchState.ON else TorchState.OFF)
 
       override fun getZoomState(): LiveData<ZoomState> = this@FakeCameraXController.zoomState
 

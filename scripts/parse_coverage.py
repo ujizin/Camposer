@@ -21,7 +21,7 @@ def parse_kover_xmls(pattern: str) -> tuple[int, int]:
     covered, missed = 0, 0
     paths = glob.glob(pattern, recursive=True)
     if not paths:
-        return 0, 0
+        raise FileNotFoundError(f"No coverage reports matched: {pattern}")
     for path in paths:
         root = ET.parse(path).getroot()
         # findall fetches only direct children of <report> — the report-level aggregate
@@ -37,7 +37,11 @@ def main() -> None:
         print("Usage: parse_coverage.py <glob-pattern>", file=sys.stderr)
         sys.exit(1)
 
-    covered, missed = parse_kover_xmls(sys.argv[1])
+    try:
+        covered, missed = parse_kover_xmls(sys.argv[1])
+    except FileNotFoundError as exc:
+        print(str(exc), file=sys.stderr)
+        sys.exit(2)
     total = covered + missed
     pct = round(covered / total * 100, 1) if total else 0.0
 
