@@ -112,6 +112,6 @@ dokka {
 }
 
 // JVM host tests fail on Android SDK stubs — expected, real bugs caught by connectedAndroidTest.
-tasks.withType<Test>().configureEach {
+tasks.withType<Test>().matching { it.name.contains("androidHostTest") }.configureEach {
   ignoreFailures = true
 }

@@ -27,6 +27,7 @@ internal class FakeRecordingWrapper(
   }
 
   override fun stop() {
+    isRunning = false
     isRecording = false
     onRecord()
   }

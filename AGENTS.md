@@ -43,7 +43,7 @@ make updateLegacyAbi       # ./gradlew updateLegacyAbi — only after intentiona
 - Run `./gradlew spotlessApply` before committing
 - Run `./gradlew checkLegacyAbi` when touching any public class or function
 - Run `./gradlew :camposer:detektCommonMain` when touching any `commonMain` file
-- Update all **3 files** when modifying `CameraEngine`, `FakeCameraEngine`, `FakeCameraTest`, or `FakeCameraSession` (expect + androidDeviceTest actual + iosTest actual)
+- Update all **3 files** when modifying `CameraEngine`, `FakeCameraEngine`, `FakeCameraTest`, or `FakeCameraSession` (expect + androidSharedTest actual + iosTest actual)
 - Mark every new public declaration with `public` — explicit API mode is enforced
 - Delegate hardware writes through the applier that owns that concern
 - Write state (`cameraState.update*()`) **after** the hardware write in appliers
