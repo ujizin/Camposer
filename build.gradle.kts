@@ -24,7 +24,22 @@ kover {
   reports {
     filters {
       excludes {
-        classes("androidx.*", "*.BuildConfig")
+        classes(
+          "androidx.**",
+          "*.BuildConfig",
+          "**.ComposableSingletons*",
+          "**.*_androidKt*",
+          "com.ujizin.camposer.ui.**",
+          "com.ujizin.camposer.error.**",
+          "com.ujizin.camposer.extensions.**",
+          "com.ujizin.camposer.internal.utils.Logger",
+          "com.ujizin.camposer.internal.core.camerax.CameraXControllerWrapper",
+          "com.ujizin.camposer.internal.LifecycleStateKt",
+          // PinchToZoomController — gesture/touch, requires Android runtime
+          "com.ujizin.camposer.internal.zoom.PinchToZoomController*",
+          // Compose lifecycle extensions
+          "com.ujizin.camposer.lifecycle.**",
+        )
       }
     }
     verify {
