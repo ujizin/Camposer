@@ -44,6 +44,7 @@ internal class FakeCameraXController : CameraXController {
   override var previewResolutionSelector: ResolutionSelector? = null
   override var imageCaptureResolutionSelector: ResolutionSelector? = null
   override var imageAnalysisResolutionSelector: ResolutionSelector? = null
+
   private var _videoCaptureQualitySelector: QualitySelector? = null
   override var videoCaptureQualitySelector: QualitySelector
     get() = _videoCaptureQualitySelector
@@ -51,6 +52,7 @@ internal class FakeCameraXController : CameraXController {
     set(value) {
       _videoCaptureQualitySelector = value
     }
+
   override var cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
   override var videoCaptureTargetFrameRate: Range<Int> = Range(0, 0)
   override var imageCaptureFlashMode: Int = ImageCapture.FLASH_MODE_OFF
@@ -125,22 +127,20 @@ internal class FakeCameraXController : CameraXController {
   override val mainExecutor: Executor
     get() = Executors.newSingleThreadExecutor()
 
-  private val fakeZoomState = MutableLiveData<ZoomState>()
+  // Custom LiveData that always returns the current fakeZoomRatio without any thread restriction.
+  // getValue() is overridden so callers can read .value safely from any thread in tests.
+  override val zoomState: LiveData<ZoomState> = object : LiveData<ZoomState>() {
+    override fun getValue(): ZoomState =
+      object : ZoomState {
+        override fun getZoomRatio(): Float = fakeZoomRatio
 
-  override val zoomState: LiveData<ZoomState>
-    get() = fakeZoomState.also {
-      if (it.value == null) {
-        it.value = object : ZoomState {
-          override fun getZoomRatio(): Float = fakeZoomRatio
+        override fun getMinZoomRatio(): Float = fakeMinZoom
 
-          override fun getMinZoomRatio(): Float = fakeMinZoom
+        override fun getMaxZoomRatio(): Float = fakeMaxZoom
 
-          override fun getMaxZoomRatio(): Float = fakeMaxZoom
-
-          override fun getLinearZoom(): Float = fakeZoomRatio
-        }
+        override fun getLinearZoom(): Float = fakeZoomRatio
       }
-    }
+  }
 
   override val cameraInfo: CameraInfo
     get() = object : CameraInfo {
@@ -219,15 +219,6 @@ internal class FakeCameraXController : CameraXController {
 
   override fun setZoomRatio(zoomRatio: Float) {
     fakeZoomRatio = zoomRatio
-    fakeZoomState.value = object : ZoomState {
-      override fun getZoomRatio(): Float = fakeZoomRatio
-
-      override fun getMinZoomRatio(): Float = fakeMinZoom
-
-      override fun getMaxZoomRatio(): Float = fakeMaxZoom
-
-      override fun getLinearZoom(): Float = fakeZoomRatio
-    }
   }
 
   override fun startRecording(
