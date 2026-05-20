@@ -20,6 +20,9 @@ buildSrc/.kotlin
 docs/api
 site
 
+# IDE compiled output
+**/bin/
+
 # AI agent review output
 .agents/reviews/*
 .worktrees/
