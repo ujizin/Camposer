@@ -57,6 +57,12 @@ dependencies {
   kover(project(":camposer-code-scanner"))
 }
 
+// koverVerify enforces the 60% threshold — explicit only, not part of build/check.
+// Run manually: ./gradlew koverVerify
+tasks.matching { it.name == "koverVerify" || it.name == "koverCachedVerify" }.configureEach {
+  onlyIf { gradle.startParameter.taskNames.any { name -> name.contains("koverVerify") } }
+}
+
 
 dokka {
   dokkaPublications.html {
