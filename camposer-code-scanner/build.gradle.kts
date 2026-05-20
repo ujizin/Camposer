@@ -75,6 +75,10 @@ kotlin {
       }
     }
 
+    getByName("androidHostTest").dependencies {
+      implementation(kotlin("test"))
+    }
+
     commonTest.dependencies {
       implementation(kotlin("test"))
     }
@@ -85,7 +89,8 @@ dokka {
   moduleName.set("Camposer Code Scanner")
 }
 
-// JVM host tests fail on Android SDK stubs — expected, real bugs caught by connectedAndroidTest.
+// JVM host tests: CodeTypeAndroidTest passes (ML Kit constants are plain ints).
+// Other host tests may fail on Android SDK stubs — real behavior caught by connectedAndroidTest.
 tasks.withType<Test>().matching { it.name.contains("androidHostTest") }.configureEach {
   ignoreFailures = true
 }
