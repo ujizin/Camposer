@@ -112,9 +112,12 @@ dokka {
 }
 
 // JVM host tests fail on Android SDK stubs — expected, real bugs caught by connectedAndroidTest.
-tasks.withType<Test>().matching { it.name.contains("androidHostTest") }.configureEach {
-  ignoreFailures = true
-}
+// AndroidUnitTest (AGP type) is targeted by name since withType<Test> may not match AGP subtypes.
+tasks
+  .matching { it.name.contains("androidHostTest") || it.name.contains("AndroidHostTest") }
+  .configureEach {
+    (this as? AbstractTestTask)?.ignoreFailures = true
+  }
 // allTests aggregates all test reports — skip during build/check to avoid JVM stub failures.
 // Run explicitly for a full report: ./gradlew :camposer:allTests
 tasks.matching { it.name == "allTests" }.configureEach {
