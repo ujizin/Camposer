@@ -143,6 +143,7 @@ adding or removing public API without updating the baseline breaks the build.
 commonMain          ──── shared: interfaces, state, composables, applier contracts
 androidMain / iosMain ── platform: hardware access, actual impls, applier impls
 commonTest          ──── unit tests via expect/actual fakes (no hardware)
+androidSharedTest   ──── Android actual fakes (shared by androidHostTest JVM + androidDeviceTest)
 androidDeviceTest   ──── instrumented tests (real or emulated Android hardware)
 iosTest             ──── iOS unit tests (simulator)
 ```
@@ -213,7 +214,8 @@ iosMain/kotlin/com/ujizin/camposer/
 
 **KMP expect/actual** is used for `CameraSession`, `CameraEngineImpl`, and all test fakes
 (`FakeCameraEngine`, `FakeCameraTest`, `FakeCameraSession`). Adding a method to any of these
-requires updating three files: the common `expect` declaration plus both platform `actual` impls.
+requires updating three files: the common `expect` declaration, the Android actual in
+`androidSharedTest`, and the iOS actual in `iosTest`.
 
 **Coroutines** drive all async state. `CameraState` properties are `MutableStateFlow`. Platform
 engines collect them on appropriate dispatchers. No callbacks cross the public API boundary.

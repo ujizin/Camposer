@@ -83,14 +83,20 @@ kotlin {
       implementation(libs.kotlinx.coroutines.test)
     }
 
-    getByName("androidHostTest").dependencies {
+    // Shared actual implementations for both androidHostTest (JVM) and androidDeviceTest (Android).
+    // New camera properties only need a single Android fake here — no duplication required.
+    val androidSharedTest by creating {
+      dependsOn(commonTest.get())
+    }
+    getByName("androidHostTest").dependsOn(androidSharedTest)
+    getByName("androidDeviceTest").dependsOn(androidSharedTest)
+
+    androidSharedTest.dependencies {
       implementation(kotlin("test"))
       implementation(libs.androidx.test.core)
     }
 
     getByName("androidDeviceTest").dependencies {
-      implementation(kotlin("test"))
-      implementation(libs.androidx.test.core)
       implementation(libs.androidx.test.rules)
       implementation(libs.androidx.core.testing)
       implementation(libs.compose.ui.test)
