@@ -8,7 +8,7 @@
   <img src="https://img.shields.io/maven-metadata/v.svg?color=dark-green&label=Maven%20Central&metadataUrl=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fio%2Fgithub%2Fujizin%2Fcamposer%2Fmaven-metadata.xml"/></a>
   <img alt="Static Badge" src="https://img.shields.io/badge/Platform-Android-3DDC84?logo=android">
   <img alt="Static Badge" src="https://img.shields.io/badge/Platform-iOS-F5F5F7?logo=ios">
-  <img src="https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/ujizin/<GIST_ID>/raw/camposer-coverage.json"> <br/>
+  <img src="https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/ujizin/7b76bb70421869e6e04ff79e69b2706e/raw/camposer-coverage.json"> <br/>
   <a href="https://androidweekly.net/issues/issue-546"><img src="https://androidweekly.net/issues/issue-546/badge"/></a>
   <a href="https://ujizin.github.io/Camposer/"><img src="https://img.shields.io/badge/docs-MkDocs-526CFE?logo=materialformkdocs&logoColor=white"/></a>
 </p>
