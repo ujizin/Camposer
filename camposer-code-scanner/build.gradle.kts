@@ -89,13 +89,3 @@ dokka {
   moduleName.set("Camposer Code Scanner")
 }
 
-// JVM host tests: CodeTypeAndroidTest passes (ML Kit constants are plain ints).
-// Other host tests may fail on Android SDK stubs — real behavior caught by connectedAndroidTest.
-tasks
-  .withType<Test>()
-  .matching {
-    it.name.contains("androidHostTest") ||
-      it.name.contains("AndroidHostTest")
-  }.configureEach {
-    ignoreFailures = true
-  }
