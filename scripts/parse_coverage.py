@@ -1,4 +1,4 @@
-"""Parse Kover XML reports and emit a shields.io endpoint JSON.
+"""Parse Kover XML reports and emit the line-coverage percentage.
 
 Usage:
     python3 scripts/parse_coverage.py <glob-pattern>
@@ -7,11 +7,10 @@ Example:
     python3 scripts/parse_coverage.py "build/reports/kover/report.xml"
 
 Output (stdout):
-    {"schemaVersion":1,"label":"coverage","message":"42.3%","color":"yellow"}
+    42.3
 """
 
 import glob
-import json
 import sys
 import xml.etree.ElementTree as ET
 
@@ -44,14 +43,7 @@ def main() -> None:
         sys.exit(2)
     total = covered + missed
     pct = round(covered / total * 100, 1) if total else 0.0
-
-    color = "brightgreen" if pct >= 80 else "yellow" if pct >= 60 else "red"
-    print(json.dumps({
-        "schemaVersion": 1,
-        "label": "coverage",
-        "message": f"{pct}%",
-        "color": color,
-    }))
+    print(pct)
 
 
 if __name__ == "__main__":
