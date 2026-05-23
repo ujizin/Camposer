@@ -82,6 +82,10 @@ kotlin {
     commonTest.dependencies {
       implementation(kotlin("test"))
     }
+
+    getByName("androidDeviceTest").dependencies {
+      implementation(libs.androidx.test.rules)
+    }
   }
 }
 
