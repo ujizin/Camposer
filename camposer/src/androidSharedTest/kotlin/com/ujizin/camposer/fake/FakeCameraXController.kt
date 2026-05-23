@@ -34,7 +34,6 @@ import com.ujizin.camposer.internal.core.camerax.CameraXController
 import com.ujizin.camposer.internal.core.camerax.RecordEvent
 import com.ujizin.camposer.internal.core.camerax.RecordingWrapper
 import java.util.concurrent.Executor
-import java.util.concurrent.Executors
 
 internal class FakeCameraXController : CameraXController {
   override var videoCaptureMirrorMode: Int = 0
@@ -125,7 +124,7 @@ internal class FakeCameraXController : CameraXController {
   override val contentResolver: ContentResolver
     get() = TODO("Fake Won't be implemented")
 
-  override val mainExecutor: Executor = Executors.newSingleThreadExecutor()
+  override val mainExecutor: Executor = Executor { it.run() }
 
   // Custom LiveData that always returns the current fakeZoomRatio without any thread restriction.
   // getValue() is overridden so callers can read .value safely from any thread in tests.
