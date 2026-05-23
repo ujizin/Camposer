@@ -92,4 +92,3 @@ kotlin {
 dokka {
   moduleName.set("Camposer Code Scanner")
 }
-
