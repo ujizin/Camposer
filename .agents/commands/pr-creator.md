@@ -18,15 +18,30 @@ If no argument was provided, use `main` as the base branch.
    git diff <base>...HEAD                   # full diff for summary
    ```
 
-2. **Read the PR template** from `.github/pull_request_template.md`.
+2. **Read the PR template** from `.github/pull_request_template.md` using the Read tool.
+   Store its exact section headers — you must reproduce every one of them verbatim.
 
-3. **Fill in the template** based on the diff and commit history:
-   - **Summary:** 2-3 sentences describing what the PR does and why.
-   - **Type of change:** Check the appropriate box(es).
-   - **Checklist:** Check items that are already satisfied based on the diff. Leave unchecked items that the author must verify manually (test results, ABI check, etc.).
-   - **Testing notes:** Describe what changed and which platforms are affected.
+3. **Compose the body** by filling in every section from the template, preserving all section headers exactly as they appear in the file. Rules:
+   - **Summary:** describe the change and motivation. Never skip or leave as a comment.
+   - **Type of change:** check all that apply. At least one must be checked.
+   - **Checklist:** check only items the diff confirms. Never pre-check items that require running commands (build, ABI check) unless you have seen evidence they passed.
+   - **Testing notes:** name platforms (Android, iOS) and test method. Never leave this blank or as a comment.
 
-4. **Check if remote branch exists:**
+4. **Write the body to a temp file** using the Write tool:
+   ```
+   /tmp/camposer_pr_body.md
+   ```
+   This makes the body explicit and verifiable before the PR is created.
+
+5. **Validate** — before creating the PR, confirm all four section headers appear in `/tmp/camposer_pr_body.md`:
+   - `## Summary`
+   - `## Type of change`
+   - `## Checklist`
+   - `## Testing notes`
+
+   If any are missing, fix the file before proceeding.
+
+6. **Check if remote branch exists:**
    ```bash
    git ls-remote --heads origin $(git rev-parse --abbrev-ref HEAD)
    ```
@@ -35,12 +50,12 @@ If no argument was provided, use `main` as the base branch.
    git push -u origin HEAD
    ```
 
-5. **Create the PR:**
+7. **Create the PR:**
    ```bash
    gh pr create \
      --base <base-branch> \
      --title "<title>" \
-     --body "<filled-template>"
+     --body-file /tmp/camposer_pr_body.md
    ```
 
    Title format: `<type>(<scope>): <short description>` — follow Conventional Commits.
@@ -49,11 +64,12 @@ If no argument was provided, use `main` as the base branch.
    - `fix(ios): correct AVFoundation flash mode mapping`
    - `refactor: extract PinchToZoom into shared applier`
 
-6. **Print the PR URL** after creation.
+8. **Print the PR URL** after creation.
 
 ## Rules
 
-- Never skip the template — always use `.github/pull_request_template.md` as the body base.
+- Never skip the template — always use `.github/pull_request_template.md` as the section source.
+- Always use `--body-file`, never `--body`. Body-file ensures no truncation or escaping issues.
 - Do not check items in the checklist that require running commands (tests, ABI) — leave those for the author unless you have evidence they passed.
 - If the diff touches `commonMain` files, always verify the "No CameraX / AVFoundation imports" checklist item by grepping the changed files.
 - If any `expect` declaration changed, check the KMP expect/actual item only if all 3 platform files are present in the diff.
