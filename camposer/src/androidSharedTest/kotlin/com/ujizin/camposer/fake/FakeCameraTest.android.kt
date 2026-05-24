@@ -115,4 +115,12 @@ internal actual class FakeCameraTest(
     assertEquals(isVideoStabilizationEnabled, cameraXController.isVideoStabilizationEnabled)
     assertEquals(isPreviewStabilizationEnabled, cameraXController.isPreviewStabilizationEnabled)
   }
+
+  actual fun assertTorchEnabled(expected: Boolean) {
+    assertEquals(expected, cameraXController.isTorchEnabled)
+  }
+
+  actual fun assertFrameRate(expected: Int) {
+    assertEquals(expected, cameraXController.lastSetFrameRate)
+  }
 }

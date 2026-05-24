@@ -135,4 +135,12 @@ internal actual class FakeCameraTest(
   actual fun assertVideoStabilization(expected: VideoStabilizationMode) {
     assertEquals(expected.value, fakeIosCameraController.fakeVideoStabilizationMode)
   }
+
+  actual fun assertTorchEnabled(expected: Boolean) {
+    assertEquals(expected, fakeIosCameraController.fakeTorchEnabled)
+  }
+
+  actual fun assertFrameRate(expected: Int) {
+    assertEquals(expected, fakeIosCameraController.fakeFrameRate)
+  }
 }
