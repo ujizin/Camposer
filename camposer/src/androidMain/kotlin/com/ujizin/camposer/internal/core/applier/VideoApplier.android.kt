@@ -1,6 +1,5 @@
 package com.ujizin.camposer.internal.core.applier
 
-import android.util.Range
 import androidx.annotation.OptIn
 import androidx.camera.core.ExperimentalZeroShutterLag
 import com.ujizin.camposer.info.CameraInfo
@@ -48,7 +47,7 @@ internal actual class VideoApplier(
   }
 
   private fun setFrameRate(frameRate: Int) {
-    cameraXController.videoCaptureTargetFrameRate = Range(frameRate, frameRate)
+    cameraXController.setVideoFrameRate(frameRate)
   }
 
   private fun setVideoStabilizationMode(videoStabilizationMode: VideoStabilizationMode) {

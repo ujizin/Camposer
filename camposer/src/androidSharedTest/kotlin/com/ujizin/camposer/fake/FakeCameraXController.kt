@@ -72,6 +72,9 @@ internal class FakeCameraXController : CameraXController {
   var isTorchEnabled: Boolean = false
     private set
 
+  var lastSetFrameRate: Int = -1
+    private set
+
   var isZSLSupported: Boolean = true
     internal set
 
@@ -203,6 +206,11 @@ internal class FakeCameraXController : CameraXController {
 
   override fun setEnabledUseCases(useCases: Int) {
     this.useCases = useCases
+  }
+
+  override fun setVideoFrameRate(frameRate: Int) {
+    lastSetFrameRate = frameRate
+    super.setVideoFrameRate(frameRate)
   }
 
   override fun enableTorch(isTorchEnabled: Boolean) {
