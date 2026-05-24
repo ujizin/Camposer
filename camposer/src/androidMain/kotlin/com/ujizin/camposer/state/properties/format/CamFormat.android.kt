@@ -27,29 +27,33 @@ public actual class CamFormat
 
     public actual val configs: List<CameraFormatConfig> = configs.toList()
 
-    private val qualitySelectorSizes = mapOf(
-      Quality.UHD.toQualitySelector() to AREA_UHD,
-      Quality.FHD.toQualitySelector() to AREA_FHD,
-      Quality.HD.toQualitySelector() to AREA_HD,
-      Quality.SD.toQualitySelector() to AREA_SD,
-    )
+    private val qualitySelectorSizes by lazy {
+      mapOf(
+        Quality.UHD.toQualitySelector() to AREA_UHD,
+        Quality.FHD.toQualitySelector() to AREA_FHD,
+        Quality.HD.toQualitySelector() to AREA_HD,
+        Quality.SD.toQualitySelector() to AREA_SD,
+      )
+    }
 
     @VisibleForTesting(PRIVATE)
-    internal val resolutionSelector = ResolutionSelector
-      .Builder()
-      .setResolutionFilter { sizes, _ ->
-        val formats = sizes.map { CameraData(it.width, it.height) }
-        val selectSize =
-          CameraFormatPicker
-            .getBestFormatByOrder(
-              formats = formats,
-              configs = configs.filter { it is ResolutionConfig || it is AspectRatioConfig },
-            )?.toSize()
+    internal val resolutionSelector by lazy {
+      ResolutionSelector
+        .Builder()
+        .setResolutionFilter { sizes, _ ->
+          val formats = sizes.map { CameraData(it.width, it.height) }
+          val selectSize =
+            CameraFormatPicker
+              .getBestFormatByOrder(
+                formats = formats,
+                configs = configs.filter { it is ResolutionConfig || it is AspectRatioConfig },
+              )?.toSize()
 
-        val selectedSizes = listOfNotNull(selectSize)
+          val selectedSizes = listOfNotNull(selectSize)
 
-        selectedSizes + (sizes - selectedSizes.toSet())
-      }.build()
+          selectedSizes + (sizes - selectedSizes.toSet())
+        }.build()
+    }
 
     internal fun applyConfigs(
       cameraInfo: CameraInfo,
