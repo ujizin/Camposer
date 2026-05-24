@@ -564,6 +564,129 @@ class CameraFormatPickerTest {
   }
 
   @Test
+  fun getBestFormatByOrder_respects_VideoStabilizationConfig_Cinematic_priority() {
+    val result = getBestFormatByOrder(
+      configs = listOf(VideoStabilizationConfig(VideoStabilizationMode.Cinematic)),
+      formats = cameraDataStabilizationList,
+    )
+
+    assertEquals(cameraDataVideoStabilizationHighCinematic, result)
+  }
+
+  @Test
+  fun getBestFormatByOrder_respects_VideoStabilizationConfig_CinematicExtended_priority() {
+    val result = getBestFormatByOrder(
+      configs = listOf(VideoStabilizationConfig(VideoStabilizationMode.CinematicExtended)),
+      formats = cameraDataStabilizationList,
+    )
+
+    assertEquals(cameraDataVideoStabilizationHighCinematic, result)
+  }
+
+  @Test
+  fun getBestFormatByOrder_VideoStabilizationConfig_Off_prefers_formats_with_stabilization() {
+    // Off is not in any format's modes — partial match (0.5) is still better than null modes (1F)
+    val result = getBestFormatByOrder(
+      configs = listOf(VideoStabilizationConfig(VideoStabilizationMode.Off)),
+      formats = cameraDataStabilizationList,
+    )
+
+    assertNotNull(result)
+    assertNotEquals(cameraDataHighResolution, result)
+  }
+
+  @Test
+  fun selectBestFormatByOrder_Stabilization_Cinematic_supported() {
+    var capturedMode: VideoStabilizationMode? = null
+
+    CameraFormatPicker.selectBestFormatByOrder(
+      configs = listOf(VideoStabilizationConfig(VideoStabilizationMode.Cinematic)),
+      formats = cameraDataStabilizationList,
+      onFormatChanged = { },
+      onFrameRateChanged = { },
+      onStabilizationModeChanged = { capturedMode = it },
+    )
+
+    assertEquals(VideoStabilizationMode.Cinematic, capturedMode)
+  }
+
+  @Test
+  fun selectBestFormatByOrder_Stabilization_CinematicExtended_supported() {
+    var capturedMode: VideoStabilizationMode? = null
+
+    CameraFormatPicker.selectBestFormatByOrder(
+      configs = listOf(VideoStabilizationConfig(VideoStabilizationMode.CinematicExtended)),
+      formats = cameraDataStabilizationList,
+      onFormatChanged = { },
+      onFrameRateChanged = { },
+      onStabilizationModeChanged = { capturedMode = it },
+    )
+
+    assertEquals(VideoStabilizationMode.CinematicExtended, capturedMode)
+  }
+
+  @Test
+  fun selectBestFormatByOrder_Stabilization_Standard_supported() {
+    var capturedMode: VideoStabilizationMode? = null
+
+    CameraFormatPicker.selectBestFormatByOrder(
+      configs = listOf(VideoStabilizationConfig(VideoStabilizationMode.Standard)),
+      formats = cameraDataStabilizationList,
+      onFormatChanged = { },
+      onFrameRateChanged = { },
+      onStabilizationModeChanged = { capturedMode = it },
+    )
+
+    assertEquals(VideoStabilizationMode.Standard, capturedMode)
+  }
+
+  @Test
+  fun selectBestFormatByOrder_Stabilization_default_VideoStabilizationConfig_uses_Standard() {
+    var capturedMode: VideoStabilizationMode? = null
+
+    CameraFormatPicker.selectBestFormatByOrder(
+      configs = listOf(VideoStabilizationConfig()), // default = Standard
+      formats = cameraDataStabilizationList,
+      onFormatChanged = { },
+      onFrameRateChanged = { },
+      onStabilizationModeChanged = { capturedMode = it },
+    )
+
+    assertEquals(VideoStabilizationMode.Standard, capturedMode)
+  }
+
+  @Test
+  fun selectBestFormatByOrder_Stabilization_Off_mode_returns_Off() {
+    var capturedMode: VideoStabilizationMode? = null
+
+    CameraFormatPicker.selectBestFormatByOrder(
+      configs = listOf(VideoStabilizationConfig(VideoStabilizationMode.Off)),
+      formats = cameraDataStabilizationList,
+      onFormatChanged = { },
+      onFrameRateChanged = { },
+      onStabilizationModeChanged = { capturedMode = it },
+    )
+
+    // Off is not in any format's mode list → getStabilizationModeByConfigs returns Off
+    assertEquals(VideoStabilizationMode.Off, capturedMode)
+  }
+
+  @Test
+  fun selectBestFormatByOrder_Stabilization_format_with_null_modes_returns_Off() {
+    var capturedMode: VideoStabilizationMode? = null
+
+    CameraFormatPicker.selectBestFormatByOrder(
+      configs = listOf(VideoStabilizationConfig(VideoStabilizationMode.Standard)),
+      formats = cameraDataStandardList, // null stabilization modes
+      onFormatChanged = { },
+      onFrameRateChanged = { },
+      onStabilizationModeChanged = { capturedMode = it },
+    )
+
+    assertEquals(VideoStabilizationMode.Off, capturedMode)
+  }
+
+  @Test
   fun getBestFormatByOrder_partial_match_scoring() {
     val formatExactMatch = CameraData(
       width = 1920,
