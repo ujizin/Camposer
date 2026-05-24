@@ -46,7 +46,9 @@ kotlin {
     compileSdk = Config.compileSdk
     minSdk = Config.minSdk
 
-    withHostTestBuilder {}
+    withHostTestBuilder {}.configure {
+      isReturnDefaultValues = true
+    }
 
     withDeviceTestBuilder {
       sourceSetTreeName = "test"
