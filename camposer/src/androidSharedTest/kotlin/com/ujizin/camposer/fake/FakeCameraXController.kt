@@ -267,7 +267,7 @@ internal class FakeCameraXController : CameraXController {
     mainExecutor: Executor,
     callback: ImageCapture.OnImageSavedCallback,
   ) {
-    val savedUri: Uri = outputFileOptions.file?.let { Uri.fromFile(it) } ?: Uri.EMPTY
+    val savedUri: Uri? = outputFileOptions.file?.let { Uri.fromFile(it) }
     callback.onImageSaved(ImageCapture.OutputFileResults(savedUri))
   }
 
