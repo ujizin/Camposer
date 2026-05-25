@@ -53,4 +53,25 @@ internal class CameraImageAnalyzerTest : CameraSessionTest() {
 
     assertFalse(cameraSession.state.isImageAnalyzerEnabled.value)
   }
+
+  @Test
+  fun test_preview_image_analyzer_null_to_null_is_idempotent() {
+    initCameraSession()
+
+    // initial state is null; setting null again must not crash (guard fires)
+    updateSession(imageAnalyzer = null, isImageAnalysisEnabled = false)
+
+    assertNull(cameraSession.state.imageAnalyzer.value)
+  }
+
+  @Test
+  fun test_preview_image_analyzer_cleared_reaches_applier() {
+    val imageAnalyzer = createFakeImageAnalyzer(cameraSession) {}
+    updateSession(imageAnalyzer = imageAnalyzer)
+
+    // now clear it — applyImageAnalyzer(null) is safe (no CameraX call, short-circuits)
+    updateSession(imageAnalyzer = null, isImageAnalysisEnabled = false)
+
+    assertNull(cameraSession.state.imageAnalyzer.value)
+  }
 }
