@@ -210,7 +210,6 @@ internal class FakeCameraXController : CameraXController {
 
   override fun setVideoFrameRate(frameRate: Int) {
     lastSetFrameRate = frameRate
-    super.setVideoFrameRate(frameRate)
   }
 
   override fun enableTorch(isTorchEnabled: Boolean) {
