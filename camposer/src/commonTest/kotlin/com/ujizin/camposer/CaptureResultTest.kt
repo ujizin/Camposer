@@ -4,6 +4,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
@@ -59,7 +60,8 @@ internal class CaptureResultTest {
 
   @Test
   fun test_success_with_null_data() {
-    val result = CaptureResult.Success<String?>(null)
+    val result: CaptureResult<String?> = CaptureResult.Success(null)
     assertTrue(result is CaptureResult.Success)
+    assertNull((result as CaptureResult.Success).data)
   }
 }

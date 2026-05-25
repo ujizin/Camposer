@@ -3,6 +3,7 @@ package com.ujizin.camposer.state.properties.selector
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
+import kotlin.test.assertTrue
 
 internal class CamSelectorAndroidTest {
   @Test
@@ -52,7 +53,7 @@ internal class CamSelectorAndroidTest {
   fun test_to_string_contains_position_and_lens() {
     val selector = CamSelector(CamPosition.Back, listOf(CamLensType.Wide))
     val str = selector.toString()
-    assert(str.contains("Back"))
-    assert(str.contains("Wide"))
+    assertTrue(str.contains("Back"))
+    assertTrue(str.contains("Wide"))
   }
 }
