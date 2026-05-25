@@ -50,6 +50,26 @@ internal class CameraExposureCompensationTest : CameraSessionTest() {
     assertFalse(cameraSession.info.state.value.isExposureSupported)
   }
 
+  @Test
+  fun test_preview_exposure_clamped_to_max_when_above_range() {
+    initCameraSession()
+    val cameraInfoState = cameraSession.info.state.value
+
+    controller.setExposureCompensation(cameraInfoState.maxExposure + 100F)
+
+    assertExposureCompensation(cameraInfoState.maxExposure)
+  }
+
+  @Test
+  fun test_preview_exposure_clamped_to_min_when_below_range() {
+    initCameraSession()
+    val cameraInfoState = cameraSession.info.state.value
+
+    controller.setExposureCompensation(cameraInfoState.minExposure - 100F)
+
+    assertExposureCompensation(cameraInfoState.minExposure)
+  }
+
   private fun assertExposureCompensation(exposureCompensation: Float) {
     cameraTest.assertExposureCompensation(exposureCompensation)
     assertEquals(cameraSession.state.exposureCompensation.value, exposureCompensation)
