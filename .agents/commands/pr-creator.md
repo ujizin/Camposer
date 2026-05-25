@@ -28,7 +28,7 @@ If no argument was provided, use `main` as the base branch.
    - **Testing notes:** name platforms (Android, iOS) and test method. Never leave this blank or as a comment.
 
 4. **Write the body to a temp file** using the Write tool:
-   ```
+   ```text
    /tmp/camposer_pr_body.md
    ```
    This makes the body explicit and verifiable before the PR is created.

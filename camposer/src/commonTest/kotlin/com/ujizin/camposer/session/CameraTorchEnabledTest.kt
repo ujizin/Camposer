@@ -19,7 +19,7 @@ internal class CameraTorchEnabledTest : CameraSessionTest() {
   @Test
   fun test_preview_torch_disabled_after_enabled() {
     initCameraSession()
-    controller.setTorchEnabled(true)
+    assertTrue(controller.setTorchEnabled(true).isSuccess)
 
     val result = controller.setTorchEnabled(false)
 
@@ -48,5 +48,7 @@ internal class CameraTorchEnabledTest : CameraSessionTest() {
     val result = controller.setTorchEnabled(false)
 
     assertTrue(result.isSuccess)
+    cameraTest.assertTorchEnabled(false)
+    assertFalse(cameraSession.state.isTorchEnabled.value)
   }
 }

@@ -2,6 +2,7 @@ package com.ujizin.camposer.codescanner
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
@@ -27,7 +28,8 @@ internal class CodeTypeNotSupportedExceptionTest {
 
   @Test
   fun is_exception_subtype() {
-    assertTrue(CodeTypeNotSupportedException(CodeType.QRCode) is Exception)
+    val ex: Any = CodeTypeNotSupportedException(CodeType.QRCode)
+    assertIs<Exception>(ex)
   }
 
   @Test

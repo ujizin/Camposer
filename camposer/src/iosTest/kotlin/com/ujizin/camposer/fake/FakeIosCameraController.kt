@@ -99,7 +99,7 @@ class FakeIosCameraController : IOSCameraController {
   override val isTorchAvailable: Boolean
     get() = fakeIsFlashSupported
   override val hasTorch: Boolean
-    get() = true
+    get() = fakeIsFlashSupported
 
   override val isExposureCompensationSupported: Boolean
     get() = fakeIsExposureSupported

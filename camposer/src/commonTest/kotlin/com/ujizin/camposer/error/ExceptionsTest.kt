@@ -3,6 +3,7 @@ package com.ujizin.camposer.error
 import com.ujizin.camposer.state.properties.CaptureMode
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 internal class ExceptionsTest {
@@ -28,7 +29,8 @@ internal class ExceptionsTest {
 
   @Test
   fun test_capture_mode_exception_is_exception() {
-    assertTrue(CaptureModeException(CaptureMode.Image) is Exception)
+    val ex: Any = CaptureModeException(CaptureMode.Image)
+    assertIs<Exception>(ex)
   }
 
   // ── RecordNotInitializedException ────────────────────────────────────────────
@@ -41,6 +43,7 @@ internal class ExceptionsTest {
 
   @Test
   fun test_record_not_initialized_exception_is_exception() {
-    assertTrue(RecordNotInitializedException() is Exception)
+    val ex: Any = RecordNotInitializedException()
+    assertIs<Exception>(ex)
   }
 }

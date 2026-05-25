@@ -25,6 +25,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class CameraFormatPickerTest {
   @Test
@@ -592,7 +593,7 @@ class CameraFormatPickerTest {
     )
 
     assertNotNull(result)
-    assertNotEquals(cameraDataHighResolution, result)
+    assertTrue(result.videoStabilizationModes?.isNotEmpty() == true)
   }
 
   @Test
