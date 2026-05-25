@@ -6,9 +6,8 @@ import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.ujizin.camposer.manager.CameraDeviceState
 import com.ujizin.camposer.manager.CameraDevicesManager
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withTimeout
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -32,7 +31,7 @@ internal class CameraDevicesManagerTest {
   fun test_state_transitions_to_devices_after_init() {
     val manager = CameraDevicesManager(context)
 
-    val state = runBlocking(Dispatchers.IO) {
+    val state = runTest {
       withTimeout(INIT_TIMEOUT) {
         manager.cameraDevicesState.first { it !is CameraDeviceState.Initial }
       }
@@ -46,7 +45,7 @@ internal class CameraDevicesManagerTest {
   fun test_devices_state_contains_at_least_one_camera() {
     val manager = CameraDevicesManager(context)
 
-    val state = runBlocking(Dispatchers.IO) {
+    val state = runTest {
       withTimeout(INIT_TIMEOUT) {
         manager.cameraDevicesState.first { it !is CameraDeviceState.Initial }
       }
