@@ -148,8 +148,10 @@ internal class CameraXControllerWrapper(
   override var imageCaptureFlashMode: Int
     get() = cameraXController.imageCaptureFlashMode
     set(value) {
-      if (!isUseCaseEnabled(CameraController.IMAGE_CAPTURE)) return
-      onMain { cameraXController.imageCaptureFlashMode = value }
+      onMain {
+        if (!isUseCaseEnabled(CameraController.IMAGE_CAPTURE)) return@onMain
+        cameraXController.imageCaptureFlashMode = value
+      }
     }
 
   override var isPinchToZoomEnabled: Boolean
