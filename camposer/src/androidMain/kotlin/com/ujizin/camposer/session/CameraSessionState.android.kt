@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.ujizin.camposer.CameraPreview
 import com.ujizin.camposer.controller.camera.CameraController
 import com.ujizin.camposer.state.properties.ImageAnalysisBackpressureStrategy
@@ -18,7 +19,8 @@ import com.ujizin.camposer.state.properties.ImageAnalyzer
 @Composable
 public actual fun rememberCameraSession(controller: CameraController): CameraSession {
   val context = LocalContext.current
-  val cameraSession = remember(controller) { CameraSession(context, controller) }
+  val lifecycleOwner = LocalLifecycleOwner.current
+  val cameraSession = remember(controller) { CameraSession(context, lifecycleOwner, controller) }
   DisposableEffect(cameraSession) { onDispose(cameraSession::dispose) }
   return cameraSession
 }

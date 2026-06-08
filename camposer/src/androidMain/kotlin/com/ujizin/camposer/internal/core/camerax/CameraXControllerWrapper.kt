@@ -23,7 +23,6 @@ import androidx.core.util.Consumer
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import com.ujizin.camposer.extensions.compatMainExecutor
-import com.ujizin.camposer.extensions.findLifecycleOwner
 import java.util.concurrent.Executor
 
 /**
@@ -36,9 +35,8 @@ import java.util.concurrent.Executor
  */
 internal class CameraXControllerWrapper(
   context: Context,
+  override val lifecycleOwner: LifecycleOwner,
 ) : CameraXController {
-  override val lifecycleOwner = context.findLifecycleOwner()
-
   override val contentResolver: ContentResolver = context.contentResolver
 
   override val mainExecutor = context.compatMainExecutor
