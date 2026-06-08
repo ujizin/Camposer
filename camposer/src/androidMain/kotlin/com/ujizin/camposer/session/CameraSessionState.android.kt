@@ -20,7 +20,8 @@ import com.ujizin.camposer.state.properties.ImageAnalyzer
 public actual fun rememberCameraSession(controller: CameraController): CameraSession {
   val context = LocalContext.current
   val lifecycleOwner = LocalLifecycleOwner.current
-  val cameraSession = remember(controller) { CameraSession(context, lifecycleOwner, controller) }
+  val cameraSession =
+    remember(controller, lifecycleOwner) { CameraSession(context, lifecycleOwner, controller) }
   DisposableEffect(cameraSession) { onDispose(cameraSession::dispose) }
   return cameraSession
 }
