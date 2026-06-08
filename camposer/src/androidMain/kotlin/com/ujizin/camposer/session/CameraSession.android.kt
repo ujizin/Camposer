@@ -63,11 +63,12 @@ public actual class CameraSession internal constructor(
 
   public constructor(
     context: Context,
+    lifecycleOwner: LifecycleOwner,
     cameraController: CameraController,
   ) : this(
     context = context,
     cameraController = cameraController,
-    cameraXController = CameraXControllerWrapper(context),
+    cameraXController = CameraXControllerWrapper(context, lifecycleOwner),
   )
 
   internal constructor(
