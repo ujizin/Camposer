@@ -37,7 +37,7 @@ jobs:
             target: default
           - api-level: 26
             arch: 'x86_64'
-            target: default
+            target: google_apis
           - api-level: 31
             arch: 'x86_64'
             target: google_apis
