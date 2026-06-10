@@ -73,7 +73,7 @@ For advanced use cases, you can also retrieve the list of available camera devic
 fun CameraPreviewScreen() {
   val controller = remember { CameraController() }
   val cameraSession = rememberCameraSession(controller)
-  val cameraDevicesState = rememberCameraDeviceState()
+  val cameraDevicesState by rememberCameraDeviceState()
   var camSelector by remember { mutableStateOf(CamSelector.Back) }
 
   LaunchedEffect(cameraDevicesState) {
