@@ -22,3 +22,7 @@ site
 
 # AI agent review output
 .agents/reviews/*
+.agents/settings.local.json
+
+# Git worktrees
+.worktrees
