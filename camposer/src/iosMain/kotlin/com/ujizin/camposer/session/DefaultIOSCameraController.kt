@@ -33,6 +33,7 @@ import platform.AVFoundation.AVCaptureExposureModeContinuousAutoExposure
 import platform.AVFoundation.AVCaptureFlashMode
 import platform.AVFoundation.AVCaptureFocusModeAutoFocus
 import platform.AVFoundation.AVCaptureFocusModeContinuousAutoFocus
+import platform.AVFoundation.AVCaptureInput
 import platform.AVFoundation.AVCaptureMovieFileOutput
 import platform.AVFoundation.AVCaptureOutput
 import platform.AVFoundation.AVCapturePhotoOutput
@@ -477,6 +478,10 @@ public class DefaultIOSCameraController internal constructor(
     runningObserver = null
     orientationListener.stop()
     _captureDeviceInput = null
+    withSessionConfiguration {
+      captureSession.outputs.forEach { captureSession.removeOutput(it as AVCaptureOutput) }
+      captureSession.inputs.forEach { captureSession.removeInput(it as AVCaptureInput) }
+    }
     captureSession.stopRunning()
     previewManager.detachView()
   }
