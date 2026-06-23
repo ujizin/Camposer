@@ -133,10 +133,6 @@ internal class CameraXControllerWrapper(
     cameraXController.takePicture(outputFileOptions, mainExecutor, callback)
   }
 
-  override fun unbind() {
-    cameraXController.unbind()
-  }
-
   override fun bindToLifecycle(lifecycle: LifecycleOwner) {
     cameraXController.bindToLifecycle(lifecycle)
   }
@@ -226,4 +222,8 @@ internal class CameraXControllerWrapper(
         { consumerEvent.accept(RecordEvent(it)) },
       ),
     )
+
+  override fun unbind() {
+    cameraXController.unbind()
+  }
 }

@@ -150,6 +150,5 @@ public actual class CameraSession internal constructor(
   internal fun dispose() {
     state.dispose()
     controller.dispose()
-    cameraXControllerWrapper.unbind()
   }
 }
