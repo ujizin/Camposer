@@ -58,8 +58,6 @@ public actual class CamFormat
       onStabilizationModeChanged: (VideoStabilizationMode) -> Unit,
     ) {
       with(controller) {
-        unbind()
-
         previewResolutionSelector = resolutionSelector
         imageCaptureResolutionSelector = resolutionSelector
         imageAnalysisResolutionSelector = resolutionSelector

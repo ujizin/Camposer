@@ -42,7 +42,7 @@ internal class CameraXControllerWrapper(
 
   override val mainExecutor = context.compatMainExecutor
 
-  private val cameraLifecycleOwner = CameraLifecycleOwner(lifecycleOwner)
+  private var cameraLifecycleOwner = CameraLifecycleOwner(lifecycleOwner)
 
   private val cameraXController by lazy {
     LifecycleCameraController(context)
@@ -136,11 +136,9 @@ internal class CameraXControllerWrapper(
     cameraXController.takePicture(outputFileOptions, mainExecutor, callback)
   }
 
-  // Always binds to child lifecycle regardless of caller's parameter.
-  // CameraXController interface requires the parameter, but we route all
-  // bindings through cameraLifecycleOwner so dispose() only tears down
-  // this session's use cases instead of triggering process-wide unbindAll().
   override fun bindToLifecycle(lifecycle: LifecycleOwner) {
+    dispose()
+    cameraLifecycleOwner = CameraLifecycleOwner(lifecycleOwner)
     cameraXController.bindToLifecycle(cameraLifecycleOwner)
   }
 

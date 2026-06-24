@@ -143,7 +143,6 @@ public actual class CameraSession internal constructor(
    * This is unusual to make in camerax controller, however to update the preview view or implementation mode, this needs to be made
    * */
   internal fun rebind(lifecycle: LifecycleOwner) {
-    cameraXControllerWrapper.unbind()
     cameraXControllerWrapper.bindToLifecycle(lifecycle)
   }
 

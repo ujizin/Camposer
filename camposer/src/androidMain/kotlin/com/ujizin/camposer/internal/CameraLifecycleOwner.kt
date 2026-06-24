@@ -40,7 +40,7 @@ internal class CameraLifecycleOwner(
 
   fun dispose() {
     parent.lifecycle.removeObserver(parentObserver)
-    if (registry.currentState != Lifecycle.State.DESTROYED) {
+    if (registry.currentState.isAtLeast(Lifecycle.State.CREATED)) {
       registry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     }
   }
