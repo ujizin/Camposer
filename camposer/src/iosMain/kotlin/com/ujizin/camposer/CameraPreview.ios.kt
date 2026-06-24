@@ -1,6 +1,7 @@
 package com.ujizin.camposer
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -47,39 +48,42 @@ internal actual fun CameraPreviewImpl(
   val backgroundColor = remember(previewBackgroundColor) {
     previewBackgroundColor.toUIColor()
   }
-  UIKitViewController(
-    modifier = modifier,
-    factory = {
-      CameraViewController(
-        cameraSession = cameraSession,
-        cameraViewDelegate = object : CameraViewDelegate {
-          override fun onFocusTap(
-            x: Float,
-            y: Float,
-          ): Unit =
-            with(density) {
-              onTapFocus(Offset(x.dp.toPx(), y.dp.toPx()))
-            }
-        },
-      )
-    },
-    update = { cameraViewController ->
-      val session = cameraViewController.cameraSession
-      session.updatePreviewBackgroundColor(backgroundColor)
-      session.update(
-        camSelector = camSelector,
-        captureMode = captureMode,
-        camFormat = camFormat,
-        scaleType = scaleType,
-        isImageAnalysisEnabled = isImageAnalysisEnabled,
-        imageAnalyzer = imageAnalyzer,
-        implementationMode = implementationMode,
-        isFocusOnTapEnabled = isFocusOnTapEnabled,
-        imageCaptureStrategy = imageCaptureStrategy,
-        isPinchToZoomEnabled = isPinchToZoomEnabled,
-      )
-    },
-  )
+
+  key(cameraSession) {
+    UIKitViewController(
+      modifier = modifier,
+      factory = {
+        CameraViewController(
+          cameraSession = cameraSession,
+          cameraViewDelegate = object : CameraViewDelegate {
+            override fun onFocusTap(
+              x: Float,
+              y: Float,
+            ): Unit =
+              with(density) {
+                onTapFocus(Offset(x.dp.toPx(), y.dp.toPx()))
+              }
+          },
+        )
+      },
+      update = { cameraViewController ->
+        val session = cameraViewController.cameraSession
+        session.updatePreviewBackgroundColor(backgroundColor)
+        session.update(
+          camSelector = camSelector,
+          captureMode = captureMode,
+          camFormat = camFormat,
+          scaleType = scaleType,
+          isImageAnalysisEnabled = isImageAnalysisEnabled,
+          imageAnalyzer = imageAnalyzer,
+          implementationMode = implementationMode,
+          isFocusOnTapEnabled = isFocusOnTapEnabled,
+          imageCaptureStrategy = imageCaptureStrategy,
+          isPinchToZoomEnabled = isPinchToZoomEnabled,
+        )
+      },
+    )
+  }
 
   content()
 }

@@ -2,15 +2,16 @@ package com.ujizin.camposer.internal.core.applier
 
 import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.internal.core.ios.IOSCameraController
+import com.ujizin.camposer.internal.extensions.firstIsInstanceOrNull
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.FlashMode
 import com.ujizin.camposer.state.properties.ImageCaptureStrategy
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
+import com.ujizin.camposer.state.properties.createOutput
 import com.ujizin.camposer.state.properties.format.CamFormat
 import com.ujizin.camposer.state.properties.highResolutionEnabled
 import com.ujizin.camposer.state.properties.mode
-import com.ujizin.camposer.state.properties.output
 import com.ujizin.camposer.state.properties.quality
 import com.ujizin.camposer.state.properties.selector.CamSelector
 import com.ujizin.camposer.state.properties.selector.getCaptureDevice
@@ -21,7 +22,9 @@ import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import platform.AVFoundation.AVCaptureMovieFileOutput
 import platform.AVFoundation.AVCaptureOutput
+import platform.AVFoundation.AVCapturePhotoOutput
 
 internal class SessionTopologyApplier(
   private val cameraState: CameraState,
@@ -57,8 +60,8 @@ internal class SessionTopologyApplier(
     captureMode: CaptureMode,
   ) {
     iOSCameraController.withSessionConfiguration {
-      iOSCameraController.removeOutput(previousCaptureMode.output)
-      iOSCameraController.addOutput(captureMode.output)
+      previousCaptureMode.findOutput()?.let { iOSCameraController.removeOutput(it) }
+      iOSCameraController.addOutput(captureMode.createOutput())
       updateConfig(captureMode = captureMode, captureModeChanged = true)
     }
     cameraState.updateCaptureMode(captureMode)
@@ -90,7 +93,9 @@ internal class SessionTopologyApplier(
     camFormat.applyConfigs(
       cameraInfo = cameraInfo,
       iosCameraController = iOSCameraController,
-      onDeviceFormatUpdated = { cameraInfo.rebind(output = captureMode.output) },
+      onDeviceFormatUpdated = {
+        captureMode.findOutput()?.let { cameraInfo.rebind(output = it) }
+      },
       onStabilizationModeChanged = {
         setVideoStabilizationMode(it)
         cameraState.updateVideoStabilizationMode(it)
@@ -157,7 +162,7 @@ internal class SessionTopologyApplier(
     captureModeChanged: Boolean = false,
     camSelectorChanged: Boolean = false,
   ) {
-    resetConfig(captureMode.output)
+    captureMode.findOutput()?.let { resetConfig(it) }
 
     if (captureModeChanged || camSelectorChanged) {
       setCamFormat(
@@ -166,6 +171,17 @@ internal class SessionTopologyApplier(
       )
     }
   }
+
+  private fun CaptureMode.findOutput(): AVCaptureOutput? =
+    when (this) {
+      CaptureMode.Image -> {
+        iOSCameraController.captureSession.outputs.firstIsInstanceOrNull<AVCapturePhotoOutput>()
+      }
+
+      CaptureMode.Video -> {
+        iOSCameraController.captureSession.outputs.firstIsInstanceOrNull<AVCaptureMovieFileOutput>()
+      }
+    }
 
   private fun lockedLaunch(block: suspend CoroutineScope.() -> Unit): Job =
     cameraState.launch {
