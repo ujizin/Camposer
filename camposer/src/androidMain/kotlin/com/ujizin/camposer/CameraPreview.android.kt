@@ -83,39 +83,38 @@ internal actual fun CameraPreviewImpl(
 
   LaunchedEffect(latestBitmap) { latestBitmap?.let(onSwitchCamera) }
 
-  LaunchedEffect(cameraSession) {
-    val previewView = cameraSession.previewView ?: return@LaunchedEffect
-    if (cameraSession.cameraXControllerWrapper.isCameraControllerEquals(
-        previewView.controller,
-      )
-    ) {
-      return@LaunchedEffect
-    }
-
-    previewView.onViewBind(
-      cameraSession = cameraSession,
-      lifecycleOwner = lifecycleOwner,
-      onTapFocus = {
-        val cameraInfoState = cameraSession.info.state.value
-        if (cameraInfoState.isFocusSupported &&
-          cameraSession.state.isFocusOnTapEnabled.value
-        ) {
-          onTapFocus(it + cameraOffset)
-        }
-      },
-    )
-  }
-
   AndroidView(
     modifier = modifier.onGloballyPositioned { cameraOffset = it.positionInParent() },
-    factory = {
-      PreviewView(it).apply {
+    factory = { context ->
+      PreviewView(context).apply {
         cameraSession.previewView = this
         this.scaleType = scaleType.type
         this.implementationMode = implementationMode.value
       }
     },
     update = { previewView ->
+      if (cameraSession.previewView !== previewView) {
+        cameraSession.previewView = previewView
+      }
+
+      if (!cameraSession.cameraXControllerWrapper.isCameraControllerEquals(
+          previewView.controller,
+        )
+      ) {
+        previewView.onViewBind(
+          cameraSession = cameraSession,
+          lifecycleOwner = lifecycleOwner,
+          onTapFocus = {
+            val cameraInfoState = cameraSession.info.state.value
+            if (cameraInfoState.isFocusSupported &&
+              cameraSession.state.isFocusOnTapEnabled.value
+            ) {
+              onTapFocus(it + cameraOffset)
+            }
+          },
+        )
+      }
+
       if (!cameraIsInitialized) return@AndroidView
       with(previewView) {
         if (this.scaleType != scaleType.type ||
