@@ -9,12 +9,12 @@ import com.ujizin.camposer.state.properties.ImageCaptureStrategy
 import com.ujizin.camposer.state.properties.format.CamFormat
 import com.ujizin.camposer.state.properties.highResolutionEnabled
 import com.ujizin.camposer.state.properties.mode
-import com.ujizin.camposer.state.properties.output
 import com.ujizin.camposer.state.properties.quality
 import com.ujizin.camposer.state.properties.selector.CamSelector
 import com.ujizin.camposer.state.properties.selector.value
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
+import platform.AVFoundation.AVCaptureMovieFileOutput
+import platform.AVFoundation.AVCapturePhotoOutput
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -63,10 +63,14 @@ internal actual class FakeCameraTest(
   }
 
   actual fun assertCaptureMode(expected: CaptureMode) {
-    val outputs = fakeIosCameraController.fakeOutputs
+    val lastOutput = fakeIosCameraController.fakeOutputs.lastOrNull()
+    val matchesType = when (expected) {
+      CaptureMode.Image -> lastOutput is AVCapturePhotoOutput
+      CaptureMode.Video -> lastOutput is AVCaptureMovieFileOutput
+    }
     assertTrue(
-      message = "Expected output to be $expected (${expected.output}), outputs: $outputs",
-      actual = outputs.contains(expected.output),
+      message = "Expected capture mode $expected, last output: $lastOutput",
+      actual = matchesType,
     )
   }
 

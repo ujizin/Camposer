@@ -16,7 +16,7 @@ import com.ujizin.camposer.internal.core.ios.IOSCameraController
 import com.ujizin.camposer.internal.utils.Logger
 import com.ujizin.camposer.manager.PreviewManager
 import com.ujizin.camposer.state.CameraState
-import com.ujizin.camposer.state.properties.output
+import com.ujizin.camposer.state.properties.createOutput
 import com.ujizin.camposer.state.properties.selector.getCaptureDevice
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
@@ -78,7 +78,7 @@ public actual class CameraSession internal constructor(
         setCaptureDevice(
           device = iosCameraController.getCaptureDevice(state.camSelector.value),
         )
-        info.rebind(state.captureMode.value.output)
+        info.rebind(state.captureMode.value.createOutput())
         isInitialized = true
       }
     }.onFailure { error ->
@@ -106,7 +106,7 @@ public actual class CameraSession internal constructor(
   @OptIn(ExperimentalForeignApi::class)
   internal fun startCamera() =
     iosCameraController.start(
-      captureOutput = state.captureMode.value.output,
+      captureOutput = state.captureMode.value.createOutput(),
       device = iosCameraController.getCaptureDevice(state.camSelector.value),
       onRunningChanged = { isStreaming = it },
     )
