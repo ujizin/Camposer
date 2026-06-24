@@ -82,6 +82,7 @@ import platform.UIKit.UIColor
 import platform.UIKit.UIView
 import platform.darwin.NSObject
 import platform.darwin.dispatch_async
+import platform.darwin.dispatch_sync
 import platform.foundation.NSKeyValueObservingProtocol
 
 @OptIn(ExperimentalForeignApi::class)
@@ -478,11 +479,13 @@ public class DefaultIOSCameraController internal constructor(
     runningObserver = null
     orientationListener.stop()
     _captureDeviceInput = null
-    withSessionConfiguration {
-      captureSession.outputs.forEach { captureSession.removeOutput(it as AVCaptureOutput) }
-      captureSession.inputs.forEach { captureSession.removeInput(it as AVCaptureInput) }
+    dispatch_sync(cameraQueue) {
+      withSessionConfiguration {
+        captureSession.outputs.forEach { captureSession.removeOutput(it as AVCaptureOutput) }
+        captureSession.inputs.forEach { captureSession.removeInput(it as AVCaptureInput) }
+      }
+      captureSession.stopRunning()
     }
-    captureSession.stopRunning()
     previewManager.detachView()
   }
 
