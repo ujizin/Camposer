@@ -97,5 +97,7 @@ internal interface CameraXController {
 
   fun bindToLifecycle(lifecycle: LifecycleOwner)
 
+  fun dispose()
+
   fun attachPreview(view: PreviewView)
 }

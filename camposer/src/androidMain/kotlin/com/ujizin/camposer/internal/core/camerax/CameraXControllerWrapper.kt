@@ -23,6 +23,7 @@ import androidx.core.util.Consumer
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import com.ujizin.camposer.extensions.compatMainExecutor
+import com.ujizin.camposer.internal.CameraLifecycleOwner
 import java.util.concurrent.Executor
 
 /**
@@ -40,6 +41,8 @@ internal class CameraXControllerWrapper(
   override val contentResolver: ContentResolver = context.contentResolver
 
   override val mainExecutor = context.compatMainExecutor
+
+  private val cameraLifecycleOwner = CameraLifecycleOwner(lifecycleOwner)
 
   private val cameraXController by lazy {
     LifecycleCameraController(context)
@@ -133,8 +136,12 @@ internal class CameraXControllerWrapper(
     cameraXController.takePicture(outputFileOptions, mainExecutor, callback)
   }
 
+  // Always binds to child lifecycle regardless of caller's parameter.
+  // CameraXController interface requires the parameter, but we route all
+  // bindings through cameraLifecycleOwner so dispose() only tears down
+  // this session's use cases instead of triggering process-wide unbindAll().
   override fun bindToLifecycle(lifecycle: LifecycleOwner) {
-    cameraXController.bindToLifecycle(lifecycle)
+    cameraXController.bindToLifecycle(cameraLifecycleOwner)
   }
 
   override fun attachPreview(view: PreviewView) {
@@ -225,5 +232,9 @@ internal class CameraXControllerWrapper(
 
   override fun unbind() {
     cameraXController.unbind()
+  }
+
+  override fun dispose() {
+    cameraLifecycleOwner.dispose()
   }
 }

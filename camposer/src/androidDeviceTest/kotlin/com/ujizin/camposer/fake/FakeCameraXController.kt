@@ -265,6 +265,10 @@ internal class FakeCameraXController : CameraXController {
     bindCount++
   }
 
+  override fun dispose() {
+    // no-op
+  }
+
   private fun createRecording(
     outputUri: Uri,
     consumerEvent: Consumer<RecordEvent>,
