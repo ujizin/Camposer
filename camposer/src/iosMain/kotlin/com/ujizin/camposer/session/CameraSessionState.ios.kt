@@ -8,6 +8,6 @@ import com.ujizin.camposer.controller.camera.CameraController
 @Composable
 public actual fun rememberCameraSession(controller: CameraController): CameraSession {
   val session = remember(controller) { CameraSession(controller) }
-  DisposableEffect(Unit) { onDispose(session::dispose) }
+  DisposableEffect(session) { onDispose(session::dispose) }
   return session
 }

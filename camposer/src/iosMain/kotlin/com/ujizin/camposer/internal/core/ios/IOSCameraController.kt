@@ -132,4 +132,6 @@ public interface IOSCameraController {
   public fun muteRecording(isMuted: Boolean): Result<Boolean>
 
   public fun release()
+
+  public fun detachPreviewLayer()
 }

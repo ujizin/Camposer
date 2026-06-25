@@ -77,8 +77,7 @@ class FakeIosCameraController : IOSCameraController {
 
   private var position: AVCaptureDevicePosition = AVCaptureDevicePositionUnspecified
 
-  override val captureSession: AVCaptureSession
-    get() = AVCaptureSession()
+  override val captureSession: AVCaptureSession = AVCaptureSession()
 
   override val captureDeviceInput: AVCaptureDeviceInput
     get() = TODO("Not yet implemented")
@@ -265,5 +264,9 @@ class FakeIosCameraController : IOSCameraController {
 
   override fun release() {
     isFakeReleased = true
+  }
+
+  override fun detachPreviewLayer() {
+    // no-op
   }
 }
