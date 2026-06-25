@@ -184,6 +184,7 @@ abstract interface com.ujizin.camposer.internal.core.ios/IOSCameraController { /
         abstract fun <get-zoomRange>(): kotlin/Pair<kotlin/Float, kotlin/Float> // com.ujizin.camposer.internal.core.ios/IOSCameraController.zoomRange.<get-zoomRange>|<get-zoomRange>(){}[0]
 
     abstract fun addOutput(platform.AVFoundation/AVCaptureOutput) // com.ujizin.camposer.internal.core.ios/IOSCameraController.addOutput|addOutput(platform.AVFoundation.AVCaptureOutput){}[0]
+    abstract fun detachPreviewLayer() // com.ujizin.camposer.internal.core.ios/IOSCameraController.detachPreviewLayer|detachPreviewLayer(){}[0]
     abstract fun getCaptureDevice(kotlin.collections/List<kotlin/String?>, kotlin/Long, kotlin/String? = ...): platform.AVFoundation/AVCaptureDevice? // com.ujizin.camposer.internal.core.ios/IOSCameraController.getCaptureDevice|getCaptureDevice(kotlin.collections.List<kotlin.String?>;kotlin.Long;kotlin.String?){}[0]
     abstract fun getCurrentDeviceOrientation(): kotlin/Long // com.ujizin.camposer.internal.core.ios/IOSCameraController.getCurrentDeviceOrientation|getCurrentDeviceOrientation(){}[0]
     abstract fun getCurrentPosition(): kotlin/Long // com.ujizin.camposer.internal.core.ios/IOSCameraController.getCurrentPosition|getCurrentPosition(){}[0]
@@ -440,6 +441,7 @@ final class com.ujizin.camposer.session/DefaultIOSCameraController : com.ujizin.
         final fun <get-zoomRange>(): kotlin/Pair<kotlin/Float, kotlin/Float> // com.ujizin.camposer.session/DefaultIOSCameraController.zoomRange.<get-zoomRange>|<get-zoomRange>(){}[0]
 
     final fun addOutput(platform.AVFoundation/AVCaptureOutput) // com.ujizin.camposer.session/DefaultIOSCameraController.addOutput|addOutput(platform.AVFoundation.AVCaptureOutput){}[0]
+    final fun detachPreviewLayer() // com.ujizin.camposer.session/DefaultIOSCameraController.detachPreviewLayer|detachPreviewLayer(){}[0]
     final fun getCaptureDevice(kotlin.collections/List<kotlin/String?>, kotlin/Long, kotlin/String?): platform.AVFoundation/AVCaptureDevice? // com.ujizin.camposer.session/DefaultIOSCameraController.getCaptureDevice|getCaptureDevice(kotlin.collections.List<kotlin.String?>;kotlin.Long;kotlin.String?){}[0]
     final fun getCurrentDeviceOrientation(): kotlin/Long // com.ujizin.camposer.session/DefaultIOSCameraController.getCurrentDeviceOrientation|getCurrentDeviceOrientation(){}[0]
     final fun getCurrentPosition(): kotlin/Long // com.ujizin.camposer.session/DefaultIOSCameraController.getCurrentPosition|getCurrentPosition(){}[0]
