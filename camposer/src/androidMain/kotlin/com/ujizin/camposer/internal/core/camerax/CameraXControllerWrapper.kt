@@ -138,7 +138,7 @@ internal class CameraXControllerWrapper(
 
   override fun bindToLifecycle(lifecycle: LifecycleOwner) {
     dispose()
-    cameraLifecycleOwner = CameraLifecycleOwner(lifecycleOwner)
+    cameraLifecycleOwner = CameraLifecycleOwner(lifecycle)
     cameraXController.bindToLifecycle(cameraLifecycleOwner)
   }
 
