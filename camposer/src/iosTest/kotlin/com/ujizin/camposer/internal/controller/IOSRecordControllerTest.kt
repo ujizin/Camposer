@@ -251,5 +251,7 @@ private class TestIOSCameraController(
     return Result.success(isMuted)
   }
 
+  override fun detachPreviewLayer() = Unit
+
   override fun release() = Unit
 }
