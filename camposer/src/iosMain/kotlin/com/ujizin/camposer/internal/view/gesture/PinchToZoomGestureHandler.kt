@@ -22,6 +22,7 @@ internal class PinchToZoomGestureHandler(
   @OptIn(BetaInteropApi::class)
   @ObjCAction
   internal fun onPinch(sender: UIPinchGestureRecognizer) {
+    if (!cameraSession.isStreaming) return
     if (!cameraSession.state.isPinchToZoomEnabled.value ||
       sender.state != UIGestureRecognizerStateChanged
     ) {
