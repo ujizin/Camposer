@@ -11,6 +11,8 @@ import platform.UIKit.UIColor
 import platform.UIKit.UIDeviceOrientationDidChangeNotification
 import platform.UIKit.UIView
 import platform.darwin.NSObjectProtocol
+import platform.darwin.dispatch_async
+import platform.darwin.dispatch_get_main_queue
 
 @OptIn(ExperimentalForeignApi::class)
 internal class PreviewManager(
@@ -24,21 +26,27 @@ internal class PreviewManager(
 
   private var orientationObserver: NSObjectProtocol? = null
 
-  internal fun start(avCaptureSession: AVCaptureSession) =
-    with(videoPreviewLayer) {
-      setSession(avCaptureSession)
+  internal fun start(avCaptureSession: AVCaptureSession) {
+    videoPreviewLayer.setSession(avCaptureSession)
+    dispatch_async(dispatch_get_main_queue()) {
+      updateOrientation()
     }
+  }
 
   internal fun attachView(view: UIView) =
     with(videoPreviewLayer) {
-      view.layer.addSublayer(this)
+      if (superlayer == null) {
+        view.layer.addSublayer(this)
+      }
       setFrame(view.bounds)
 
-      orientationObserver = notificationCenter.addObserverForName(
-        UIDeviceOrientationDidChangeNotification,
-        null,
-        null,
-      ) { updateOrientation() }
+      if (orientationObserver == null) {
+        orientationObserver = notificationCenter.addObserverForName(
+          UIDeviceOrientationDidChangeNotification,
+          null,
+          null,
+        ) { updateOrientation() }
+      }
 
       updateOrientation()
       setVideoGravity(currentGravity)
@@ -61,6 +69,7 @@ internal class PreviewManager(
 
   internal fun detachView() {
     orientationObserver?.let(notificationCenter::removeObserver)
+    orientationObserver = null
     videoPreviewLayer.removeFromSuperlayer()
   }
 }

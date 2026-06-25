@@ -12,7 +12,6 @@ import com.ujizin.camposer.internal.extensions.toDeviceInput
 import com.ujizin.camposer.internal.extensions.tryAddInput
 import com.ujizin.camposer.internal.extensions.tryAddOutput
 import com.ujizin.camposer.internal.extensions.withConfigurationLock
-import com.ujizin.camposer.internal.utils.DispatchQueue.cameraQueue
 import com.ujizin.camposer.manager.PreviewManager
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.COpaquePointer
@@ -81,8 +80,6 @@ import platform.Foundation.removeObserver
 import platform.UIKit.UIColor
 import platform.UIKit.UIView
 import platform.darwin.NSObject
-import platform.darwin.dispatch_async
-import platform.darwin.dispatch_sync
 import platform.foundation.NSKeyValueObservingProtocol
 
 @OptIn(ExperimentalForeignApi::class)
@@ -194,42 +191,41 @@ public class DefaultIOSCameraController internal constructor(
     captureOutput: AVCaptureOutput,
     device: AVCaptureDevice,
     onRunningChanged: (Boolean) -> Unit,
-  ): Unit =
-    dispatch_async(cameraQueue) {
-      captureSession.beginConfiguration()
+  ) {
+    captureSession.beginConfiguration()
 
-      setCaptureDevice(device)
-      captureSession.tryAddOutput(captureOutput)
-      captureSession.commitConfiguration()
+    setCaptureDevice(device)
+    captureSession.tryAddOutput(captureOutput)
+    captureSession.commitConfiguration()
 
-      previewManager.start(captureSession)
+    previewManager.start(captureSession)
 
-      runningObserver?.let {
-        captureSession.removeObserver(it, RUNNING_KEY_PATH)
-      }
-
-      val runningObserver = object : NSObject(), NSKeyValueObservingProtocol {
-        override fun observeValueForKeyPath(
-          keyPath: String?,
-          ofObject: Any?,
-          change: Map<Any?, *>?,
-          context: COpaquePointer?,
-        ) {
-          onRunningChanged(change?.get(NSKeyValueChangeNewKey) as? Boolean == true)
-        }
-      }.also { runningObserver = it }
-
-      captureSession.addObserver(
-        observer = runningObserver,
-        forKeyPath = RUNNING_KEY_PATH,
-        options = NSKeyValueObservingOptionNew,
-        context = null,
-      )
-
-      orientationListener.start()
-      captureSession.startRunning()
-      onRunningChanged(captureSession.isRunning())
+    runningObserver?.let {
+      captureSession.removeObserver(it, RUNNING_KEY_PATH)
     }
+
+    val runningObserver = object : NSObject(), NSKeyValueObservingProtocol {
+      override fun observeValueForKeyPath(
+        keyPath: String?,
+        ofObject: Any?,
+        change: Map<Any?, *>?,
+        context: COpaquePointer?,
+      ) {
+        onRunningChanged(change?.get(NSKeyValueChangeNewKey) as? Boolean == true)
+      }
+    }.also { runningObserver = it }
+
+    captureSession.addObserver(
+      observer = runningObserver,
+      forKeyPath = RUNNING_KEY_PATH,
+      options = NSKeyValueObservingOptionNew,
+      context = null,
+    )
+
+    orientationListener.start()
+    captureSession.startRunning()
+    onRunningChanged(captureSession.isRunning())
+  }
 
   override fun getCurrentDeviceOrientation(): AVCaptureVideoOrientation =
     orientationListener.currentOrientation
@@ -479,13 +475,14 @@ public class DefaultIOSCameraController internal constructor(
     runningObserver = null
     orientationListener.stop()
     _captureDeviceInput = null
-    dispatch_sync(cameraQueue) {
-      withSessionConfiguration {
-        captureSession.outputs.forEach { captureSession.removeOutput(it as AVCaptureOutput) }
-        captureSession.inputs.forEach { captureSession.removeInput(it as AVCaptureInput) }
-      }
-      captureSession.stopRunning()
+    withSessionConfiguration {
+      captureSession.outputs.forEach { captureSession.removeOutput(it as AVCaptureOutput) }
+      captureSession.inputs.forEach { captureSession.removeInput(it as AVCaptureInput) }
     }
+    captureSession.stopRunning()
+  }
+
+  override fun detachPreviewLayer() {
     previewManager.detachView()
   }
 

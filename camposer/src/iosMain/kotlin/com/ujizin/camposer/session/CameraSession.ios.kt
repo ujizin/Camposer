@@ -13,6 +13,7 @@ import com.ujizin.camposer.internal.core.CameraEngine
 import com.ujizin.camposer.internal.core.CameraEngineImpl
 import com.ujizin.camposer.internal.core.IOSCameraEngine
 import com.ujizin.camposer.internal.core.ios.IOSCameraController
+import com.ujizin.camposer.internal.utils.DispatchQueue.cameraQueue
 import com.ujizin.camposer.internal.utils.Logger
 import com.ujizin.camposer.manager.PreviewManager
 import com.ujizin.camposer.state.CameraState
@@ -24,6 +25,7 @@ import platform.AVFoundation.AVCaptureSession
 import platform.CoreGraphics.CGPoint
 import platform.UIKit.UIColor
 import platform.UIKit.UIView
+import platform.darwin.dispatch_async
 
 @OptIn(ExperimentalForeignApi::class)
 @Stable
@@ -104,12 +106,14 @@ public actual class CameraSession internal constructor(
   }
 
   @OptIn(ExperimentalForeignApi::class)
-  internal fun startCamera() =
+  internal fun startCamera() {
+    if (iosCameraController.captureSession.isRunning()) return
     iosCameraController.start(
       captureOutput = state.captureMode.value.createOutput(),
       device = iosCameraController.getCaptureDevice(state.camSelector.value),
       onRunningChanged = { isStreaming = it },
     )
+  }
 
   internal fun renderCamera(view: UIView) {
     iosCameraController.renderPreviewLayer(view = view)
@@ -126,9 +130,15 @@ public actual class CameraSession internal constructor(
     iosCameraController.setPreviewBackgroundColor(uiColor)
   }
 
+  internal fun detachView() {
+    iosCameraController.detachPreviewLayer()
+  }
+
   internal fun dispose() {
-    state.dispose()
-    controller.dispose()
-    iosCameraController.release()
+    dispatch_async(cameraQueue) {
+      state.dispose()
+      controller.dispose()
+      iosCameraController.release()
+    }
   }
 }

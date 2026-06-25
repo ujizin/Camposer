@@ -1,5 +1,6 @@
 package com.ujizin.camposer.internal.view
 
+import com.ujizin.camposer.internal.utils.DispatchQueue.cameraQueue
 import com.ujizin.camposer.internal.view.gesture.PinchToZoomGestureHandler
 import com.ujizin.camposer.internal.view.gesture.TapToFocusGestureHandler
 import com.ujizin.camposer.session.CameraSession
@@ -10,6 +11,7 @@ import platform.Foundation.NSNotificationCenter
 import platform.Foundation.NSSelectorFromString
 import platform.UIKit.UIApplicationDidBecomeActiveNotification
 import platform.UIKit.UIViewController
+import platform.darwin.dispatch_async
 
 @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
 internal class CameraViewController(
@@ -29,10 +31,16 @@ internal class CameraViewController(
 
   override fun viewDidLoad() {
     super.viewDidLoad()
-    observeAppLifecycle()
     addCameraGesturesRecognizer()
+  }
 
-    cameraSession.startCamera()
+  override fun viewWillAppear(animated: Boolean) {
+    super.viewWillAppear(animated)
+    observeAppLifecycle()
+    cameraSession.renderCamera(view)
+    dispatch_async(cameraQueue) {
+      cameraSession.startCamera()
+    }
   }
 
   override fun viewDidLayoutSubviews() {
@@ -57,12 +65,14 @@ internal class CameraViewController(
 
   @ObjCAction
   fun appDidBecomeActive() {
-    cameraSession.recoveryState()
+    dispatch_async(cameraQueue) {
+      cameraSession.recoveryState()
+    }
   }
 
   override fun viewDidDisappear(animated: Boolean) {
     NSNotificationCenter.defaultCenter.removeObserver(this)
-    cameraSession.dispose()
+    cameraSession.detachView()
     super.viewDidDisappear(animated)
   }
 }
