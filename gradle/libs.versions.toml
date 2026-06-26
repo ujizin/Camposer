@@ -2,17 +2,17 @@
 
 # Camposer libraries
 
-gradle = "9.0.1"
+gradle = "9.2.1"
 gradle-nexus = "2.0.0"
-spotless = "8.3.0"
+spotless = "8.7.0"
 ktlint = "1.8.0"
-kotlin = "2.3.10"
-dokka = "2.1.0"
+kotlin = "2.4.0"
+dokka = "2.2.0"
 androidx-test = "1.7.0"
 androidx-arch-core = "2.2.0"
 camerax = "1.5.3"
-coroutines = "1.10.2"
-compose-multiplatform = "1.10.2"
+coroutines = "1.11.0"
+compose-multiplatform = "1.11.1"
 binary-compatibility-validator = "0.18.1"
 maven-publish = "0.36.0"
 
