@@ -8,7 +8,7 @@ plugins {
 
 android {
   namespace = "com.ujizin.sample"
-  compileSdk = 36
+  compileSdk = 37
   defaultConfig {
     versionCode = 1
     versionName = "1.0.0"
