@@ -50,7 +50,7 @@ jobs:
 
   abi_check:
     name: API check
-    runs-on: macos-latest
+    runs-on: macos-26
     steps:
       - name: Check out code
         uses: actions/checkout@v6.0.1
@@ -71,7 +71,7 @@ jobs:
 
   build:
     name: Build
-    runs-on: macos-latest
+    runs-on: macos-26
     steps:
       - name: Check out code
         uses: actions/checkout@v6.0.1
