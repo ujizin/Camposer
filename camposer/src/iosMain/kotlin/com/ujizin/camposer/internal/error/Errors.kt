@@ -44,3 +44,6 @@ internal class VideoOutputNotFoundException : CameraException("Video output not 
 internal class PhotoOutputNotFoundException : CameraException("Photo output not found")
 
 internal class AudioInputNotFoundException : CameraException("Audio input not found")
+
+internal class MuteNotSupportedException :
+  CameraException("Mute recording is not supported on iOS")

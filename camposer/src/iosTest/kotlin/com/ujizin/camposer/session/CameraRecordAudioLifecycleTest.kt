@@ -7,10 +7,30 @@ import kotlin.test.assertTrue
 
 internal class CameraRecordAudioLifecycleTest : CameraSessionTest() {
   @Test
-  fun test_audio_input_is_only_enabled_while_recording() {
+  fun test_audio_input_is_enabled_when_switching_to_video_mode() {
+    assertFalse(cameraTest.fakeIosCameraController.fakeAudioEnabled)
+
     updateSession(captureMode = CaptureMode.Video)
 
+    assertTrue(cameraTest.fakeIosCameraController.fakeAudioEnabled)
+  }
+
+  @Test
+  fun test_audio_input_is_disabled_when_switching_to_image_mode() {
+    updateSession(captureMode = CaptureMode.Video)
+
+    assertTrue(cameraTest.fakeIosCameraController.fakeAudioEnabled)
+
+    updateSession(captureMode = CaptureMode.Image)
+
     assertFalse(cameraTest.fakeIosCameraController.fakeAudioEnabled)
+  }
+
+  @Test
+  fun test_audio_stays_enabled_during_recording_lifecycle() {
+    updateSession(captureMode = CaptureMode.Video)
+
+    assertTrue(cameraTest.fakeIosCameraController.fakeAudioEnabled)
 
     controller.startRecording("/video/video.mp4") { }
 
@@ -18,25 +38,16 @@ internal class CameraRecordAudioLifecycleTest : CameraSessionTest() {
 
     controller.stopRecording()
 
-    assertFalse(cameraTest.fakeIosCameraController.fakeAudioEnabled)
+    assertTrue(cameraTest.fakeIosCameraController.fakeAudioEnabled)
   }
 
   @Test
-  fun test_preconfigured_mute_is_preserved_when_recording_starts() {
+  fun test_mute_recording_returns_failure_on_ios() {
     updateSession(captureMode = CaptureMode.Video)
 
-    controller.muteRecording(true)
+    val result = controller.muteRecording(true)
 
-    assertTrue(controller.isMuted.value)
-
-    controller.startRecording("/video/video.mp4") { }
-
-    assertTrue(controller.isMuted.value)
-    assertFalse(cameraTest.fakeIosCameraController.fakeAudioEnabled)
-
-    controller.muteRecording(false)
-
+    assertTrue(result.isFailure)
     assertFalse(controller.isMuted.value)
-    assertTrue(cameraTest.fakeIosCameraController.fakeAudioEnabled)
   }
 }
