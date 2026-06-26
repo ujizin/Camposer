@@ -338,7 +338,8 @@ public class DefaultIOSCameraController internal constructor(
 
   @OptIn(BetaInteropApi::class)
   @ObjCAction
-  private fun onFocusCompleted(): Unit =
+  private fun onFocusCompleted() {
+    val captureDevice = _captureDeviceInput?.device ?: return
     captureDevice.withConfigurationLock {
       val centerFocusPoint = CGPointMake(0.5, 0.5)
       if (isFocusPointOfInterestSupported()) {
@@ -359,6 +360,7 @@ public class DefaultIOSCameraController internal constructor(
         `object` = null,
       )
     }
+  }
 
   override fun setTorchEnabled(isTorchEnabled: Boolean) {
     if (!captureDevice.hasTorch || !captureDevice.isTorchAvailable()) return

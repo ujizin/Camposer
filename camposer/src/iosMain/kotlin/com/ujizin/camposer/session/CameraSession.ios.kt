@@ -13,7 +13,6 @@ import com.ujizin.camposer.internal.core.CameraEngine
 import com.ujizin.camposer.internal.core.CameraEngineImpl
 import com.ujizin.camposer.internal.core.IOSCameraEngine
 import com.ujizin.camposer.internal.core.ios.IOSCameraController
-import com.ujizin.camposer.internal.utils.DispatchQueue.cameraQueue
 import com.ujizin.camposer.internal.utils.Logger
 import com.ujizin.camposer.manager.PreviewManager
 import com.ujizin.camposer.state.CameraState
@@ -26,6 +25,7 @@ import platform.CoreGraphics.CGPoint
 import platform.UIKit.UIColor
 import platform.UIKit.UIView
 import platform.darwin.dispatch_async
+import platform.darwin.dispatch_queue_create
 
 @OptIn(ExperimentalForeignApi::class)
 @Stable
@@ -37,6 +37,11 @@ public actual class CameraSession internal constructor(
   public actual val info: CameraInfo = cameraEngine.cameraInfo,
   public actual val state: CameraState = cameraEngine.cameraState,
 ) {
+  internal val cameraQueue = dispatch_queue_create(
+    label = "Camposer/camera_session_queue",
+    attr = null,
+  )
+
   @get:RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
   public val cameraController: DefaultIOSCameraController
     get() = iosCameraController as DefaultIOSCameraController

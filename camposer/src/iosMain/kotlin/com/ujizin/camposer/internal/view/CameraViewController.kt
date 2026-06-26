@@ -1,6 +1,5 @@
 package com.ujizin.camposer.internal.view
 
-import com.ujizin.camposer.internal.utils.DispatchQueue.cameraQueue
 import com.ujizin.camposer.internal.view.gesture.PinchToZoomGestureHandler
 import com.ujizin.camposer.internal.view.gesture.TapToFocusGestureHandler
 import com.ujizin.camposer.session.CameraSession
@@ -38,7 +37,7 @@ internal class CameraViewController(
     super.viewWillAppear(animated)
     observeAppLifecycle()
     cameraSession.renderCamera(view)
-    dispatch_async(cameraQueue) {
+    dispatch_async(cameraSession.cameraQueue) {
       cameraSession.startCamera()
     }
   }
@@ -65,7 +64,7 @@ internal class CameraViewController(
 
   @ObjCAction
   fun appDidBecomeActive() {
-    dispatch_async(cameraQueue) {
+    dispatch_async(cameraSession.cameraQueue) {
       cameraSession.recoveryState()
     }
   }
