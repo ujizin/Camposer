@@ -72,7 +72,6 @@ class FakeIosCameraController : IOSCameraController {
   var fakeIsZSLSupported: Boolean = true
     internal set
 
-  private val mutableFakeIsMuted = MutableStateFlow(false)
   private val mutableFakeIsRecording = MutableStateFlow(false)
 
   private var position: AVCaptureDevicePosition = AVCaptureDevicePositionUnspecified
@@ -106,6 +105,7 @@ class FakeIosCameraController : IOSCameraController {
   override val isFocusSupported: Boolean
     get() = fakeIsFocusSupported
 
+  private val mutableFakeIsMuted = MutableStateFlow(false)
   override val isMuted: StateFlow<Boolean> = mutableFakeIsMuted.asStateFlow()
 
   override val isRecording: StateFlow<Boolean> = mutableFakeIsRecording.asStateFlow()
@@ -232,7 +232,6 @@ class FakeIosCameraController : IOSCameraController {
     filename: String,
     onVideoCaptured: (Result<String>) -> Unit,
   ) {
-    setAudioEnabled(!mutableFakeIsMuted.value)
     mutableFakeIsRecording.update { true }
 
     if (fakeErrorInRecording) {
@@ -248,19 +247,12 @@ class FakeIosCameraController : IOSCameraController {
   override fun pauseRecording(): Result<Boolean> = Result.success(true)
 
   override fun stopRecording(): Result<Boolean> {
-    setAudioEnabled(false)
     mutableFakeIsRecording.update { false }
-    mutableFakeIsMuted.update { false }
     return Result.success(true)
   }
 
-  override fun muteRecording(isMuted: Boolean): Result<Boolean> {
-    mutableFakeIsMuted.update { isMuted }
-    if (mutableFakeIsRecording.value) {
-      setAudioEnabled(!isMuted)
-    }
-    return Result.success(true)
-  }
+  override fun muteRecording(isMuted: Boolean): Result<Boolean> =
+    Result.failure(UnsupportedOperationException("Mute recording is not supported on iOS"))
 
   override fun release() {
     isFakeReleased = true

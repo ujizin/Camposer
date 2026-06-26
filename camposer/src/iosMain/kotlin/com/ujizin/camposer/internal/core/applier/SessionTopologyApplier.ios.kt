@@ -62,6 +62,7 @@ internal class SessionTopologyApplier(
     iOSCameraController.withSessionConfiguration {
       previousCaptureMode.findOutput()?.let { iOSCameraController.removeOutput(it) }
       iOSCameraController.addOutput(captureMode.createOutput())
+      iOSCameraController.setAudioEnabled(captureMode == CaptureMode.Video)
       updateConfig(captureMode = captureMode, captureModeChanged = true)
     }
     cameraState.updateCaptureMode(captureMode)

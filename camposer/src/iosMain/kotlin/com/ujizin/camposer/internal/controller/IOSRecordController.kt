@@ -3,6 +3,7 @@ package com.ujizin.camposer.internal.controller
 import com.ujizin.camposer.internal.core.ios.IOSCameraController
 import com.ujizin.camposer.internal.error.CameraNotRunningException
 import com.ujizin.camposer.internal.error.ErrorRecordVideoException
+import com.ujizin.camposer.internal.error.MuteNotSupportedException
 import com.ujizin.camposer.internal.error.VideoOutputNotFoundException
 import com.ujizin.camposer.internal.extensions.firstIsInstanceOrNull
 import com.ujizin.camposer.internal.extensions.setMirrorEnabled
@@ -76,7 +77,6 @@ internal class IOSRecordController(
       }
     }.apply { videoDelegate = this }
 
-    cameraController.setAudioEnabled(!_isMuted.value)
     videoRecordOutput.startRecordingToOutputFileURL(
       outputFileURL = NSURL.fileURLWithPath(filename),
       recordingDelegate = videoDelegate,
@@ -101,18 +101,10 @@ internal class IOSRecordController(
     return Result.success(true)
   }
 
-  fun mute(isMuted: Boolean): Result<Boolean> {
-    _isMuted.update { isMuted }
-    if (_isRecording.value) {
-      cameraController.setAudioEnabled(!isMuted)
-    }
-    return Result.success(true)
-  }
+  fun mute(isMuted: Boolean): Result<Boolean> = Result.failure(MuteNotSupportedException())
 
   private fun clearRecord() {
-    cameraController.setAudioEnabled(false)
     _isRecording.update { false }
-    _isMuted.update { false }
   }
 
   private fun NSError?.isRecordingStoppedAfterSuccessfulFinish(): Boolean {

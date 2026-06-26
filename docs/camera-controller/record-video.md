@@ -57,6 +57,19 @@ cameraController.resumeRecording()
 
 - `resumeRecording` continues the same recording session without creating a new file.
 
+## Mute Recording
+
+Mute or unmute the audio during recording:
+
+```kotlin
+cameraController.muteRecording(isMuted = true)
+```
+
+- `isMuted` state is available via `cameraController.isMuted`.
+
+!!! warning "iOS limitation"
+    Mute recording is **not supported on iOS**. Calling `muteRecording` on iOS always returns `Result.failure`. Audio input is enabled automatically when switching to `CaptureMode.Video` and cannot be toggled during recording.
+
 ## Android-Specific API
 
 On Android, `CameraController.startRecording` supports additional options to provide more control over file handling:

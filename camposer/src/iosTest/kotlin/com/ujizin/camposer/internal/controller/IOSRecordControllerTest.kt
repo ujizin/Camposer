@@ -35,13 +35,11 @@ import kotlin.test.assertTrue
 @OptIn(ExperimentalForeignApi::class)
 internal class IOSRecordControllerTest {
   @Test
-  fun test_stop_does_not_duplicate_audio_cleanup_when_delegate_finishes() {
+  fun test_stop_does_not_duplicate_cleanup_when_delegate_finishes() {
     val output = TestMovieFileOutput()
     val cameraController = TestIOSCameraController(output)
     val recordController = IOSRecordController(cameraController)
     var callbackCount = 0
-
-    assertFalse(cameraController.isAudioEnabled)
 
     recordController.start(
       filename = "/video/video.mp4",
@@ -50,21 +48,16 @@ internal class IOSRecordControllerTest {
       onVideoCaptured = { callbackCount++ },
     )
 
-    assertTrue(cameraController.isAudioEnabled)
     assertTrue(recordController.isRecording.value)
 
     recordController.stop()
 
-    assertFalse(cameraController.isAudioEnabled)
     assertFalse(recordController.isRecording.value)
-    assertFalse(recordController.isMuted.value)
 
     output.finishRecording()
 
-    assertFalse(cameraController.isAudioEnabled)
     assertEquals(1, callbackCount)
     assertFalse(recordController.isRecording.value)
-    assertFalse(recordController.isMuted.value)
   }
 
   @Test
@@ -81,9 +74,7 @@ internal class IOSRecordControllerTest {
       onVideoCaptured = { capturedResult = it },
     )
 
-    assertTrue(cameraController.isAudioEnabled)
     assertTrue(recordController.isRecording.value)
-    assertFalse(recordController.isMuted.value)
 
     output.finishRecording(
       error = NSError.errorWithDomain(
@@ -97,8 +88,6 @@ internal class IOSRecordControllerTest {
     assertTrue(result.isSuccess)
     assertEquals("/video/video.mp4", result.getOrNull())
     assertFalse(recordController.isRecording.value)
-    assertFalse(recordController.isMuted.value)
-    assertFalse(cameraController.isAudioEnabled)
   }
 }
 
@@ -152,8 +141,7 @@ private class TestIOSCameraController(
   override val isTorchAvailable: Boolean = false
   override val hasTorch: Boolean = false
 
-  private val _isMuted = MutableStateFlow(false)
-  override val isMuted: StateFlow<Boolean> = _isMuted
+  override val isMuted: StateFlow<Boolean> = MutableStateFlow(false)
   override val isRecording: StateFlow<Boolean> = MutableStateFlow(false)
 
   override fun isZeroShutterLagSupported(output: AVCaptureOutput): Boolean = false
@@ -246,10 +234,8 @@ private class TestIOSCameraController(
 
   override fun stopRecording(): Result<Boolean> = error("Unused in test")
 
-  override fun muteRecording(isMuted: Boolean): Result<Boolean> {
-    _isMuted.value = isMuted
-    return Result.success(isMuted)
-  }
+  override fun muteRecording(isMuted: Boolean): Result<Boolean> =
+    Result.failure(UnsupportedOperationException("Mute recording is not supported on iOS"))
 
   override fun detachPreviewLayer() = Unit
 
