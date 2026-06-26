@@ -525,6 +525,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#mute-recording" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mute Recording
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#android-specific-api" class="md-nav__link">
     <span class="md-ellipsis">
       Android-Specific API
@@ -925,6 +934,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#mute-recording" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mute Recording
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#android-specific-api" class="md-nav__link">
     <span class="md-ellipsis">
       Android-Specific API
@@ -991,6 +1009,17 @@
 <ul>
 <li><code>resumeRecording</code> continues the same recording session without creating a new file.</li>
 </ul>
+<h2 id="mute-recording">Mute Recording</h2>
+<p>Mute or unmute the audio during recording:</p>
+<div class="language-kotlin highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">cameraController</span><span class="p">.</span><span class="na">muteRecording</span><span class="p">(</span><span class="n">isMuted</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">)</span>
+</span></code></pre></div>
+<ul>
+<li><code>isMuted</code> state is available via <code>cameraController.isMuted</code>.</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">iOS limitation</p>
+<p>Mute recording is <strong>not supported on iOS</strong>. Calling <code>muteRecording</code> on iOS always returns <code>Result.failure</code>. Audio input is enabled automatically when switching to <code>CaptureMode.Video</code> and cannot be toggled during recording.</p>
+</div>
 <h2 id="android-specific-api">Android-Specific API</h2>
 <p>On Android, <code>CameraController.startRecording</code> supports additional options to provide more control over file handling:</p>
 <ul>

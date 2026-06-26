@@ -18,7 +18,6 @@
         }
       }
     </script>
-<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
 <script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../../styles/style.css" rel="Stylesheet">
 <link href="../../../styles/main.css" rel="Stylesheet">
@@ -45,7 +44,7 @@
         <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
                 <button class="platform-tag platform-selector jvm-like" data-active="" aria-pressed="true" data-filter=":camposer/androidMain">android</button>
                 <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true" data-filter=":camposer/commonMain">common</button>
-                <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true" data-filter=":camposer/iosMain">ios</button>
+                <button class="platform-tag platform-selector native-like" data-active="" aria-pressed="true" data-filter=":camposer/iosMain">ios</button>
             <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
                 <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
                 <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
@@ -68,7 +67,7 @@
                                 common
                             </label>
                         </li>
-                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                        <li role="option" class="dropdown--option platform-selector-option native-like" tabindex="0">
                             <label class="checkbox">
                                 <input type="checkbox" class="checkbox--input" id=":camposer/iosMain" data-filter=":camposer/iosMain">
                                 <span class="checkbox--icon"></span>
@@ -106,25 +105,25 @@
         </nav>
         <div id="resizer" class="resizer" data-item-type="BAR"></div>
         <div id="main" data-item-type="SECTION" role="main">
-<div class="main-content" data-page-type="classlike" id="content" pageids="Camposer::com.ujizin.camposer.state.properties.format/CamFormat///PointingToDeclaration//-1103401433">
+<div class="main-content" data-page-type="classlike" id="content" pageids="Camposer::com.ujizin.camposer.state.properties.format/CamFormat///PointingToDeclaration//-325251717">
   <div class="breadcrumbs"><a href="../../index.html">Camposer</a><span class="delimiter">/</span><a href="../index.html">com.ujizin.camposer.state.properties.format</a><span class="delimiter">/</span><span class="current">CamFormat</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Cam</span><wbr><span><span>Format</span></span></h1>
     <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
       <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":camposer/androidMain" data-filterable-set=":camposer/androidMain" data-active="" data-toggle=":camposer/androidMain">android</button><button class="platform-bookmark" data-filterable-current=":camposer/commonMain" data-filterable-set=":camposer/commonMain" data-toggle=":camposer/commonMain">common</button><button class="platform-bookmark" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain" data-toggle=":camposer/iosMain">ios</button></div>
-<div class="content sourceset-dependent-content" data-togglable=":camposer/androidMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Stable.html"><span class="token annotation builtin">Stable</span></a></div></div><span class="token keyword">actual </span><span class="token keyword">class </span><a href="index.html">CamFormat</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">configs<span class="token operator">: </span><a href="../../com.ujizin.camposer.state.properties.format.config/-camera-format-config/index.html">CameraFormatConfig</a></span></span><span class="token punctuation">)</span></div></div><div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Stable.html"><span class="token annotation builtin">Stable</span></a></div></div><span class="token keyword">expect </span><span class="token keyword">class </span><a href="index.html">CamFormat</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">configs<span class="token operator">: </span><a href="../../com.ujizin.camposer.state.properties.format.config/-camera-format-config/index.html">CameraFormatConfig</a></span></span><span class="token punctuation">)</span></div><p class="paragraph">A class representing the camera format configuration.</p><p class="paragraph">This class encapsulates a list of <a href="../../com.ujizin.camposer.state.properties.format.config/-camera-format-config/index.html">CameraFormatConfig</a> that determines the resolution and quality settings for the camera stream. The configurations are applied based on priority order: the first configuration is attempted, followed by subsequent ones as fallbacks.</p><p class="paragraph">You can use predefined formats via the companion object extensions:</p><ul><li><p class="paragraph"><a href="../-ultra-high.html">CamFormat.Companion.UltraHigh</a></p></li><li><p class="paragraph"><a href="../-high.html">CamFormat.Companion.High</a></p></li><li><p class="paragraph"><a href="../-medium.html">CamFormat.Companion.Medium</a></p></li><li><p class="paragraph"><a href="../-low.html">CamFormat.Companion.Low</a></p></li><li><p class="paragraph"><a href="../-default.html">CamFormat.Companion.Default</a></p></li></ul><p class="paragraph">Or create a custom format by providing specific <a href="../../com.ujizin.camposer.state.properties.format.config/-camera-format-config/index.html">CameraFormatConfig</a>s to the constructor.</p><h4 class="tableheader">See also</h4><div class="table"><div class="table-row table-row_content" data-filterable-current=":camposer/commonMain" data-filterable-set=":camposer/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../com.ujizin.camposer.state.properties.format.config/-camera-format-config/index.html"><span>Camera</span><wbr><span>Format</span><wbr><span><span>Config</span></span></a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":camposer/commonMain" data-filterable-set=":camposer/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../com.ujizin.camposer.state.properties.format.config/-resolution-config/index.html"><span>Resolution</span><wbr><span><span>Config</span></span></a></div></span></div><div></div></div></div></div></div><div class="content sourceset-dependent-content" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">class </span><a href="index.html">CamFormat</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">configs<span class="token operator">: </span><a href="../../../camposer/com.ujizin.camposer.state.properties.format.config/-camera-format-config/index.html">CameraFormatConfig</a></span></span><span class="token punctuation">)</span></div></div>    </div>
+<div class="content sourceset-dependent-content" data-togglable=":camposer/androidMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Stable.html"><span class="token annotation builtin">Stable</span></a></div></div><span class="token keyword">actual </span><span class="token keyword">class </span><a href="index.html">CamFormat</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">configs<span class="token operator">: </span><a href="../../com.ujizin.camposer.state.properties.format.config/-camera-format-config/index.html">CameraFormatConfig</a></span></span><span class="token punctuation">)</span></div><p class="paragraph">A class representing the camera format configuration.</p><p class="paragraph">This class encapsulates a list of <a href="../../com.ujizin.camposer.state.properties.format.config/-camera-format-config/index.html">CameraFormatConfig</a> that determines the resolution and quality settings for the camera stream. The configurations are applied based on priority order: the first configuration is attempted, followed by subsequent ones as fallbacks.</p><p class="paragraph">You can use predefined formats via the companion object extensions:</p><ul><li><p class="paragraph"><a href="../-ultra-high.html">CamFormat.Companion.UltraHigh</a></p></li><li><p class="paragraph"><a href="../-high.html">CamFormat.Companion.High</a></p></li><li><p class="paragraph"><a href="../-medium.html">CamFormat.Companion.Medium</a></p></li><li><p class="paragraph"><a href="../-low.html">CamFormat.Companion.Low</a></p></li><li><p class="paragraph"><a href="../-default.html">CamFormat.Companion.Default</a></p></li></ul><p class="paragraph">Or create a custom format by providing specific <a href="../../com.ujizin.camposer.state.properties.format.config/-camera-format-config/index.html">CameraFormatConfig</a>s to the constructor.</p><h4 class="tableheader">See also</h4><div class="table"><div class="table-row table-row_content" data-filterable-current=":camposer/androidMain" data-filterable-set=":camposer/androidMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../com.ujizin.camposer.state.properties.format.config/-camera-format-config/index.html"><span>Camera</span><wbr><span>Format</span><wbr><span><span>Config</span></span></a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":camposer/androidMain" data-filterable-set=":camposer/androidMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../com.ujizin.camposer.state.properties.format.config/-resolution-config/index.html"><span>Resolution</span><wbr><span><span>Config</span></span></a></div></span></div><div></div></div></div></div></div><div class="content sourceset-dependent-content" data-active="" data-togglable=":camposer/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Stable.html"><span class="token annotation builtin">Stable</span></a></div></div><span class="token keyword">expect </span><span class="token keyword">class </span><a href="index.html">CamFormat</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">configs<span class="token operator">: </span><a href="../../com.ujizin.camposer.state.properties.format.config/-camera-format-config/index.html">CameraFormatConfig</a></span></span><span class="token punctuation">)</span></div><p class="paragraph">A class representing the camera format configuration.</p><p class="paragraph">This class encapsulates a list of <a href="../../com.ujizin.camposer.state.properties.format.config/-camera-format-config/index.html">CameraFormatConfig</a> that determines the resolution and quality settings for the camera stream. The configurations are applied based on priority order: the first configuration is attempted, followed by subsequent ones as fallbacks.</p><p class="paragraph">You can use predefined formats via the companion object extensions:</p><ul><li><p class="paragraph"><a href="../-ultra-high.html">CamFormat.Companion.UltraHigh</a></p></li><li><p class="paragraph"><a href="../-high.html">CamFormat.Companion.High</a></p></li><li><p class="paragraph"><a href="../-medium.html">CamFormat.Companion.Medium</a></p></li><li><p class="paragraph"><a href="../-low.html">CamFormat.Companion.Low</a></p></li><li><p class="paragraph"><a href="../-default.html">CamFormat.Companion.Default</a></p></li></ul><p class="paragraph">Or create a custom format by providing specific <a href="../../com.ujizin.camposer.state.properties.format.config/-camera-format-config/index.html">CameraFormatConfig</a>s to the constructor.</p><h4 class="tableheader">See also</h4><div class="table"><div class="table-row table-row_content" data-filterable-current=":camposer/commonMain" data-filterable-set=":camposer/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../com.ujizin.camposer.state.properties.format.config/-camera-format-config/index.html"><span>Camera</span><wbr><span>Format</span><wbr><span><span>Config</span></span></a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":camposer/commonMain" data-filterable-set=":camposer/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../com.ujizin.camposer.state.properties.format.config/-resolution-config/index.html"><span>Resolution</span><wbr><span><span>Config</span></span></a></div></span></div><div></div></div></div></div></div><div class="content sourceset-dependent-content" data-togglable=":camposer/iosMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">class </span><a href="index.html">CamFormat</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">configs<span class="token operator">: </span><a href="../../../camposer/com.ujizin.camposer.state.properties.format.config/-camera-format-config/index.html">CameraFormatConfig</a></span></span><span class="token punctuation">)</span></div><p class="paragraph">A class representing the camera format configuration.</p><p class="paragraph">This class encapsulates a list of <a href="../../../camposer/com.ujizin.camposer.state.properties.format.config/-camera-format-config/index.html">CameraFormatConfig</a> that determines the resolution and quality settings for the camera stream. The configurations are applied based on priority order: the first configuration is attempted, followed by subsequent ones as fallbacks.</p><p class="paragraph">You can use predefined formats via the companion object extensions:</p><ul><li><p class="paragraph"><a href="../../../camposer/com.ujizin.camposer.state.properties.format/index.html">CamFormat.Companion.UltraHigh</a></p></li><li><p class="paragraph"><a href="../../../camposer/com.ujizin.camposer.state.properties.format/index.html">CamFormat.Companion.High</a></p></li><li><p class="paragraph"><a href="../../../camposer/com.ujizin.camposer.state.properties.format/index.html">CamFormat.Companion.Medium</a></p></li><li><p class="paragraph"><a href="../../../camposer/com.ujizin.camposer.state.properties.format/index.html">CamFormat.Companion.Low</a></p></li><li><p class="paragraph"><a href="../../../camposer/com.ujizin.camposer.state.properties.format/index.html">CamFormat.Companion.Default</a></p></li></ul><p class="paragraph">Or create a custom format by providing specific <a href="../../../camposer/com.ujizin.camposer.state.properties.format.config/-camera-format-config/index.html">CameraFormatConfig</a>s to the constructor.</p><h4 class="tableheader">See also</h4><div class="table"><div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../camposer/com.ujizin.camposer.state.properties.format.config/-camera-format-config/index.html"><span>Camera</span><wbr><span>Format</span><wbr><span><span>Config</span></span></a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":camposer/iosMain" data-filterable-set=":camposer/iosMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../camposer/com.ujizin.camposer.state.properties.format.config/-resolution-config/index.html"><span>Resolution</span><wbr><span><span>Config</span></span></a></div></span></div><div></div></div></div></div></div>    </div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
     <div class="tabs-section-body">
       <div data-togglable="CONSTRUCTOR">
         <h2 class="tableheader">Constructors</h2>
-        <div class="table"><a data-name="409388899%2FConstructors%2F-1103401433" anchor-label="CamFormat" id="409388899%2FConstructors%2F-1103401433" data-filterable-set=":camposer/commonMain,:camposer/androidMain,:camposer/iosMain"></a>
+        <div class="table"><a data-name="-1547031305%2FConstructors%2F-325251717" anchor-label="CamFormat" id="-1547031305%2FConstructors%2F-325251717" data-filterable-set=":camposer/commonMain,:camposer/androidMain,:camposer/iosMain"></a>
           <div class="table-row table-row_content" data-togglable="CONSTRUCTOR" data-filterable-current=":camposer/commonMain,:camposer/androidMain,:camposer/iosMain" data-filterable-set=":camposer/commonMain,:camposer/androidMain,:camposer/iosMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-cam-format.html"><span>Cam</span><wbr><span><span>Format</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="409388899%2FConstructors%2F-1103401433"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1547031305%2FConstructors%2F-325251717"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
@@ -140,12 +139,12 @@
       </div>
       <div data-togglable="TYPE">
         <h2 class="tableheader">Types</h2>
-        <div class="table"><a data-name="1887711917%2FClasslikes%2F-1103401433" anchor-label="Companion" id="1887711917%2FClasslikes%2F-1103401433" data-filterable-set=":camposer/commonMain,:camposer/androidMain,:camposer/iosMain"></a>
+        <div class="table"><a data-name="1887711917%2FClasslikes%2F-325251717" anchor-label="Companion" id="1887711917%2FClasslikes%2F-325251717" data-filterable-set=":camposer/commonMain,:camposer/androidMain,:camposer/iosMain"></a>
           <div class="table-row table-row_content" data-filterable-current=":camposer/commonMain,:camposer/androidMain,:camposer/iosMain" data-filterable-set=":camposer/commonMain,:camposer/androidMain,:camposer/iosMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-companion/index.html"><span><span>Companion</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1887711917%2FClasslikes%2F-1103401433"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1887711917%2FClasslikes%2F-325251717"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
@@ -161,12 +160,12 @@
       </div>
       <div data-togglable="PROPERTY">
         <h2 class="tableheader">Properties</h2>
-        <div class="table"><a data-name="1117070165%2FProperties%2F-1103401433" anchor-label="configs" id="1117070165%2FProperties%2F-1103401433" data-filterable-set=":camposer/commonMain,:camposer/androidMain,:camposer/iosMain"></a>
+        <div class="table"><a data-name="1117070165%2FProperties%2F-325251717" anchor-label="configs" id="1117070165%2FProperties%2F-325251717" data-filterable-set=":camposer/commonMain,:camposer/androidMain,:camposer/iosMain"></a>
           <div class="table-row table-row_content" data-filterable-current=":camposer/commonMain,:camposer/androidMain,:camposer/iosMain" data-filterable-set=":camposer/commonMain,:camposer/androidMain,:camposer/iosMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="configs.html"><span><span>configs</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1117070165%2FProperties%2F-1103401433"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1117070165%2FProperties%2F-325251717"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
@@ -182,12 +181,12 @@
       </div>
       <div data-togglable="FUNCTION">
         <h2 class="tableheader">Functions</h2>
-        <div class="table"><a data-name="50508045%2FFunctions%2F-1103401433" anchor-label="equals" id="50508045%2FFunctions%2F-1103401433" data-filterable-set=":camposer/commonMain,:camposer/androidMain,:camposer/iosMain"></a>
+        <div class="table"><a data-name="50508045%2FFunctions%2F-325251717" anchor-label="equals" id="50508045%2FFunctions%2F-325251717" data-filterable-set=":camposer/commonMain,:camposer/androidMain,:camposer/iosMain"></a>
           <div class="table-row table-row_content" data-filterable-current=":camposer/commonMain,:camposer/androidMain,:camposer/iosMain" data-filterable-set=":camposer/commonMain,:camposer/androidMain,:camposer/iosMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="equals.html"><span><span>equals</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="50508045%2FFunctions%2F-1103401433"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="50508045%2FFunctions%2F-325251717"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
@@ -199,12 +198,12 @@
               </div>
             </div>
           </div>
-<a data-name="-924015303%2FFunctions%2F-1103401433" anchor-label="hashCode" id="-924015303%2FFunctions%2F-1103401433" data-filterable-set=":camposer/commonMain,:camposer/androidMain,:camposer/iosMain"></a>
+<a data-name="-924015303%2FFunctions%2F-325251717" anchor-label="hashCode" id="-924015303%2FFunctions%2F-325251717" data-filterable-set=":camposer/commonMain,:camposer/androidMain,:camposer/iosMain"></a>
           <div class="table-row table-row_content" data-filterable-current=":camposer/commonMain,:camposer/androidMain,:camposer/iosMain" data-filterable-set=":camposer/commonMain,:camposer/androidMain,:camposer/iosMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="hash-code.html"><span>hash</span><wbr><span><span>Code</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-924015303%2FFunctions%2F-1103401433"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-924015303%2FFunctions%2F-325251717"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
@@ -216,12 +215,12 @@
               </div>
             </div>
           </div>
-<a data-name="-1102181368%2FFunctions%2F-1103401433" anchor-label="toString" id="-1102181368%2FFunctions%2F-1103401433" data-filterable-set=":camposer/commonMain,:camposer/androidMain,:camposer/iosMain"></a>
+<a data-name="-1102181368%2FFunctions%2F-325251717" anchor-label="toString" id="-1102181368%2FFunctions%2F-325251717" data-filterable-set=":camposer/commonMain,:camposer/androidMain,:camposer/iosMain"></a>
           <div class="table-row table-row_content" data-filterable-current=":camposer/commonMain,:camposer/androidMain,:camposer/iosMain" data-filterable-set=":camposer/commonMain,:camposer/androidMain,:camposer/iosMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="to-string.html"><span>to</span><wbr><span><span>String</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1102181368%2FFunctions%2F-1103401433"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1102181368%2FFunctions%2F-325251717"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
