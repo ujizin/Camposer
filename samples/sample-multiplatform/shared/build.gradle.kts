@@ -9,7 +9,7 @@ plugins {
 kotlin {
   androidLibrary {
     namespace = "com.ujizin.camposer.shared"
-    compileSdk = 37
+    compileSdk = 36
     minSdk = 23
 
     androidResources { enable = true }
@@ -25,6 +25,12 @@ kotlin {
   }
 
   val xcfName = "sharedKit"
+
+  iosX64 {
+    binaries.framework {
+      baseName = xcfName
+    }
+  }
 
   iosArm64 {
     binaries.framework {

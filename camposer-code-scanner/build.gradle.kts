@@ -22,7 +22,9 @@ apply(from = "$rootDir/scripts/publish-module.gradle")
 kotlin {
   explicitApi()
 
-  abiValidation()
+  abiValidation {
+    enabled.set(true)
+  }
 
   androidLibrary {
     namespace = "com.ujizin.camposer.code_scanner"
@@ -41,6 +43,7 @@ kotlin {
   }
 
   listOf(
+    iosX64(),
     iosArm64(),
     iosSimulatorArm64(),
   ).forEach { iosTarget ->

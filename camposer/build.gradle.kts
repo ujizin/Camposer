@@ -34,7 +34,9 @@ kotlin {
 
   explicitApi()
 
-  abiValidation()
+  abiValidation {
+    enabled.set(true)
+  }
 
   androidLibrary {
     namespace = "com.ujizin.camposer"
@@ -49,7 +51,7 @@ kotlin {
     compilerOptions { jvmTarget.set(JvmTarget.JVM_17) }
   }
 
-  listOf(iosArm64(), iosSimulatorArm64()).forEach { iosTarget ->
+  listOf(iosX64(), iosArm64(), iosSimulatorArm64()).forEach { iosTarget ->
     iosTarget.binaries.framework {
       baseName = "Camposer"
       isStatic = true

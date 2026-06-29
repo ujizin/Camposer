@@ -1,37 +1,37 @@
 [versions]
 
-agp = "9.2.1"
+agp = "9.0.1"
 camposer = "1.0.0"
-kotlin = "2.4.0"
-compose-multiplatform = "1.11.1"
-compose-bom = "2026.06.00"
+kotlin = "2.3.0"
+compose-multiplatform = "1.10.1"
+compose-bom = "2026.01.00"
 exoplayer = "2.19.1"
 zxing = "3.5.4"
-cloudy = "0.6.0"
-appcompat = "1.13.0"
-material = "1.14.0"
+cloudy = "0.5.0"
+appcompat = "1.12.2"
+material = "1.13.0"
 material3 = "1.9.0"
-lifecycle = "2.11.0"
-kmp-lifecycle = "2.10.0"
-navigation = "2.9.8"
-kotlinx-serialization = "1.11.0"
+lifecycle = "2.10.0"
+kmp-lifecycle = "2.9.6"
+navigation = "2.9.6"
+kotlinx-serialization = "1.10.0"
 accompanist = "0.37.3"
 coil = "2.7.0"
-koin = "4.2.2"
-datastore = "1.2.1"
+koin = "4.1.1"
+datastore = "1.2.0"
 
 # kmp
-kotlinx-io = "0.9.0"
+kotlinx-io = "0.8.2"
 core-ktx = "1.17.0"
 multiplatform-nav3-ui = "1.0.0-alpha06"
 moko-permissions = "0.20.1"
-coil3 = "3.5.0"
+coil3 = "3.3.0"
 filekit = "0.12.0"
 
 [libraries]
 
-camposer = { module = "io.github.ujizin:camposer" }
-camposer-code-scanner = { module = "io.github.ujizin:camposer-code-scanner" }
+camposer = { module = "io.github.ujizin:camposer", version.ref = "camposer" }
+camposer-code-scanner = { module = "io.github.ujizin:camposer-code-scanner", version.ref = "camposer" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
 koin = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }

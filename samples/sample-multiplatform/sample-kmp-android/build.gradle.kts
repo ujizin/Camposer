@@ -6,7 +6,7 @@ plugins {
 android {
   namespace = "com.ujizin.camposer.sample.sample_kmp_android"
   compileSdk {
-    version = release(37)
+    version = release(36)
   }
 
   defaultConfig {
