@@ -26,7 +26,7 @@ concurrency:
 
 jobs:
   test:
-    runs-on: macos-26
+    runs-on: macos-latest
 
     steps:
       - name: Check out code

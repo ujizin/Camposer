@@ -11,7 +11,7 @@ concurrency:
 jobs:
   publish:
     name: Release build and publish
-    runs-on: macos-26
+    runs-on: macos-latest
     steps:
       - name: Check out code
         uses: actions/checkout@v6.0.1
