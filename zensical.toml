@@ -1,0 +1,95 @@
+[project]
+site_name = "Camposer"
+site_url = "https://ujizin.github.io/Camposer/"
+site_description = "Camera library for Jetpack Compose 📸✨"
+repo_name = "Camposer"
+repo_url = "https://github.com/ujizin/camposer"
+extra_css = ["assets/stylesheets/extra.css"]
+nav = [
+  { "Overview" = "index.md" },
+  { "Getting Started" = "getting-started.md" },
+  { "Camera Session" = "camera-session.md" },
+  { "Camera Selector" = "camera-selector.md" },
+  { "Capture Mode" = "camera-capture-mode.md" },
+  { "Camera Controller" = [
+    "camera-controller/camera-controller.md",
+    "camera-controller/take-picture.md",
+    "camera-controller/record-video.md",
+  ] },
+  { "Camera Format" = "camera-format.md" },
+  { "Mirror Mode" = "mirror-mode.md" },
+  { "Flash Mode & Torch" = "flash-mode.md" },
+  { "Focus on Tap" = "focus-on-tap.md" },
+  { "Zoom" = "zoom.md" },
+  { "Exposure Compensation" = "exposure-compensation.md" },
+  { "Orientation Strategy" = "orientation-strategy.md" },
+  { "Image Capture Strategy" = "image-capture-strategy.md" },
+  { "Scale Type" = "scale-type.md" },
+  { "Implementation Mode" = "implementation-mode.md" },
+  { "Image Analyzer" = [
+    "image-analyzer/code-analyzer.md",
+    "image-analyzer/image-analyzer.md",
+  ] },
+  { "API docs" = "./api/index.html" },
+]
+
+[project.theme]
+logo = "assets/ic_launcher_round.png"
+favicon = "assets/ic_launcher_round.png"
+features = [
+  "navigation.footer",
+  "content.code.copy",
+  "content.code.annotate",
+]
+
+[project.theme.font]
+text = "Inter"
+
+# Palette toggle for light mode
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+primary = "deep purple"
+
+[project.theme.palette.toggle]
+icon = "lucide/moon"
+name = "Switch to dark mode"
+
+# Palette toggle for dark mode
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+primary = "deep purple"
+
+[project.theme.palette.toggle]
+icon = "lucide/sun"
+name = "Switch to light mode"
+
+[project.markdown_extensions.smarty]
+
+[project.markdown_extensions.pymdownx.highlight]
+anchor_linenums = true
+line_spans = "__span"
+pygments_lang_class = true
+
+[project.markdown_extensions.pymdownx.inlinehilite]
+
+[project.markdown_extensions.pymdownx.snippets]
+
+[project.markdown_extensions.pymdownx.superfences]
+
+[project.markdown_extensions.footnotes]
+
+[project.markdown_extensions.pymdownx.betterem]
+smart_enable = "all"
+
+[project.markdown_extensions.pymdownx.caret]
+
+[project.markdown_extensions.pymdownx.details]
+
+[project.markdown_extensions.pymdownx.tabbed]
+alternate_style = true
+
+[project.markdown_extensions.tables]
+
+[project.markdown_extensions.admonition]
