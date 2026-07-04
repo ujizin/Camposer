@@ -99,7 +99,7 @@ internal actual class SessionTopologyApplier(
       cameraInfo = cameraInfo,
       iosCameraController = iOSCameraController,
       onDeviceFormatUpdated = {
-        captureMode.findOutput()?.let { cameraInfo.rebind(output = it) }
+        captureMode.findOutput()?.let { cameraInfo.updateInfo(output = it) }
       },
       onStabilizationModeChanged = {
         setVideoStabilizationMode(it)
