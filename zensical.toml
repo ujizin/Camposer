@@ -34,6 +34,8 @@ nav = [
 ]
 
 [project.theme]
+# Pin explicitly: Zensical is pre-1.0 and the default variant could change.
+variant = "modern"
 logo = "assets/ic_launcher_round.png"
 favicon = "assets/ic_launcher_round.png"
 features = [

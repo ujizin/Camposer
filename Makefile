@@ -1,9 +1,12 @@
+# Override when the default python3 cannot create venvs,
+# e.g. make PYTHON=/path/to/python3.12 docs-serve
+PYTHON ?= python3
 VENV := .venv
 PIP := $(VENV)/bin/pip
 ZENSICAL := $(VENV)/bin/zensical
 
 $(VENV)/bin/pip:
-	python3 -m venv $(VENV)
+	$(PYTHON) -m venv $(VENV)
 
 .PHONY: docs-deps
 docs-deps: $(VENV)/bin/pip
