@@ -86,7 +86,7 @@ camposer/src/
 - **Group ID:** `io.github.ujizin`
 - **Version:** `buildSrc/src/main/kotlin/ujizin/camposer/Config.kt`
 - **Formatting:** ktlint via Spotless (`build.gradle.kts` + `.editorconfig`)
-- **Docs site:** MkDocs Material (`mkdocs.yml`) → `ujizin.github.io/Camposer`
+- **Docs site:** Zensical (`zensical.toml`) → `ujizin.github.io/Camposer`
 - **Samples:** `samples/sample-android/` and `samples/sample-multiplatform/`
 
 ## Documentation
