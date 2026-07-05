@@ -165,24 +165,29 @@
   color: var(--camposer-header-fg);
 }
 
-.md-search__input::placeholder {
-  color: rgba(248, 243, 255, 0.75);
+/* Modern theme search trigger is a button styled with page-level tokens
+   (--md-default-fg-color), which are dark in light mode. Our header stays
+   dark purple in both schemes, so pin the button to header colors. */
+.md-search__button {
+  background-color: rgba(248, 243, 255, 0.14);
+  color: var(--camposer-header-fg);
 }
 
-/* On mobile the search expands to a full-screen overlay whose background is
-   --md-default-bg-color (white in light mode). Our global header icon rules set
-   near-white colors that are invisible on white. Restore Material's default dark
-   colors specifically for search form elements in that context. */
-@media screen and (max-width: 59.984375em) {
-  [data-md-color-scheme="default"] .md-search__form .md-icon,
-  [data-md-color-scheme="default"] .md-search__input ~ .md-search__icon,
-  [data-md-color-scheme="default"] .md-search__input + .md-search__icon {
-    color: var(--md-default-fg-color--light);
-  }
+.md-search__button:hover,
+.md-search__button:focus {
+  background-color: rgba(248, 243, 255, 0.24);
+  color: var(--camposer-header-fg);
+}
 
-  [data-md-color-scheme="default"] .md-search__input::placeholder {
-    color: var(--md-default-fg-color--light);
-  }
+/* Magnifier icon (mask) */
+.md-search__button::before {
+  background-color: var(--camposer-header-fg);
+}
+
+/* Ctrl+K / ⌘K badge */
+.md-search__button::after {
+  background: rgba(248, 243, 255, 0.18);
+  color: var(--camposer-header-fg);
 }
 
 :root {
@@ -199,24 +204,6 @@ select:focus-visible,
   outline: 2px solid var(--camposer-accent) !important;
   outline-offset: 2px;
   box-shadow: 0 0 0 2px var(--camposer-accent-soft);
-}
-
-/* Search uses a dedicated focus style to avoid offset shadow artifacts */
-.md-search__input:focus-visible,
-.md-search__icon:focus-visible,
-.md-search__form:focus-visible {
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-.md-search__form {
-  box-shadow: none;
-}
-
-.md-search__form:focus-within {
-  outline: 1px solid var(--camposer-accent);
-  outline-offset: 0;
-  box-shadow: none;
 }
 
 .md-main__inner {
@@ -280,49 +267,24 @@ select:focus-visible,
   scrollbar-gutter: stable;
 }
 
+/* No display override here: the modern theme hides .md-nav__title by default
+   (display:none) and only shows the drawer brand row on mobile. Forcing
+   display:flex globally resurrected the logo + site name in the desktop
+   sidebar at natural image size. Secondary (toc) titles get display:flex
+   from the theme's own rule; the mobile drawer sets it in the media block. */
 .md-nav--primary .md-nav__title,
 .md-nav--secondary .md-nav__title {
-  display: flex;
   align-items: center;
   gap: 0.45rem;
-  padding-top: 0.55rem;
-  padding-bottom: 0.55rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding: 0.55rem 1rem;
   font-weight: 700;
   color: var(--camposer-accent);
-  background: transparent;
-  border-bottom: none;
-  box-shadow: none;
-  position: static !important;
-  top: auto !important;
-  z-index: auto !important;
-}
-
-.md-nav__title .md-nav__button,
-.md-nav__title .md-nav__icon,
-.md-nav__title .md-ellipsis {
-  color: var(--camposer-accent);
-}
-
-.md-nav__title .md-nav__button,
-.md-nav__title .md-nav__icon {
-  flex: 0 0 auto;
-  line-height: 1;
-}
-
-.md-nav__title .md-ellipsis {
-  line-height: 1.2;
 }
 
 .md-nav__title {
   background: transparent !important;
   border-bottom: none !important;
   box-shadow: none !important;
-  position: static !important;
-  top: auto !important;
-  z-index: auto !important;
-  isolation: auto;
 }
 
 .md-nav__title + .md-nav__list {
@@ -386,96 +348,10 @@ select:focus-visible,
 }
 
 @media screen and (max-width: 76.2344em) {
-  /* Restore positioning context so the absolute-positioned back arrow
-     (.md-nav__icon) is positioned relative to its title container.
-     The global rule sets position:static which breaks this. */
-  .md-nav__title {
-    position: relative !important;
-  }
-
-  .md-nav__link {
-    margin: 0;
-    padding: 0;
-    border-radius: 0;
-    transition: background-color 120ms ease, color 120ms ease;
-  }
-  /* Fix mobile drawer brand row: keep logo + title aligned and visible */
+  /* Zensical modern theme lays out the drawer title (logo sizing, padding)
+     and hides section titles itself — only brand the drawer title color. */
   .md-nav--primary .md-nav__title[for="__drawer"] {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    min-height: 3.4rem;
-    padding: 2.7rem 2.8rem;
-    color: var(--camposer-accent) !important;
-    line-height: 1.2;
-    overflow: hidden;
-  }
-
-  .md-nav--primary .md-nav__title[for="__drawer"] .md-nav__button,
-  .md-nav--primary .md-nav__title[for="__drawer"] .md-nav__icon {
-    margin: 0;
-    flex: 0 0 auto;
-  }
-
-  /* Logo anchor — fixed-size flex item, prevents shrinking/overlap */
-  .md-nav--primary .md-nav__title[for="__drawer"] .md-logo,
-  .md-nav--primary .md-nav__title[for="__drawer"] .md-nav__button.md-logo {
-    flex: 0 0 2rem;
-    width: 2.3rem;
-    height: 5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .md-nav--primary .md-nav__title[for="__drawer"] .md-logo img,
-  .md-nav--primary .md-nav__title[for="__drawer"] .md-nav__button.md-logo img {
-    width: 2rem;
-    height: 2rem;
-    max-width: 2rem;
-    max-height: 2rem;
-    display: block;
-  }
-
-  /* Drawer header site name: fill remaining space and truncate if too long */
-  .md-nav--primary .md-nav__title[for="__drawer"] .md-ellipsis {
-    flex: 1;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  /* Section nav titles: ellipsis can overflow (back arrow + text) */
-  .md-nav__title:not([for="__drawer"]) .md-ellipsis {
-    overflow: visible;
-    text-overflow: clip;
-  }
-
-  /* Section nav title (back arrow + section name).
-     Material positions .md-nav__icon absolutely at left:0.4rem + margin:0.2rem.
-     Switch from flex to block and add padding-left to clear the icon. */
-  .md-nav--primary .md-nav__title:not([for="__drawer"]) {
-    display: block;
-    padding-left: 2.2rem;
-    padding-right: 1rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  /* Vertically center the back arrow icon in the section title */
-  .md-nav--primary .md-nav__title:not([for="__drawer"]) .md-nav__icon {
-      top: 19px;
-  }
-
-  .md-nav__title + .md-nav__list {
-    padding-top: 0.4rem;
-  }
-
-  /* Keep first item from touching the repository/source block */
-  .md-nav--primary .md-nav__source + .md-nav__list {
-    margin-top: 0.35rem;
+    color: var(--camposer-accent);
   }
 
   .md-sidebar__scrollwrap {
