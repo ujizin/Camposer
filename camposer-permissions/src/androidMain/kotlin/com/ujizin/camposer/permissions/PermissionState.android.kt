@@ -12,6 +12,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,8 +25,7 @@ import androidx.lifecycle.compose.LifecycleResumeEffect
 @Composable
 public actual fun rememberCameraPermissionState(
   onPermissionResult: (Boolean) -> Unit,
-): PermissionState =
-  rememberPermissionState(android.Manifest.permission.CAMERA, onPermissionResult)
+): PermissionState = rememberPermissionState(android.Manifest.permission.CAMERA, onPermissionResult)
 
 @Composable
 public actual fun rememberAudioPermissionState(
@@ -39,8 +39,8 @@ private fun rememberPermissionState(
   onPermissionResult: (Boolean) -> Unit,
 ): PermissionState {
   val context = LocalContext.current
-  val state = remember(permission) { AndroidPermissionState(permission, context) }
-  state.onPermissionResult = onPermissionResult
+  val state = remember(permission, context) { AndroidPermissionState(permission, context) }
+  SideEffect { state.onPermissionResult = onPermissionResult }
 
   val launcher = rememberLauncherForActivityResult(
     ActivityResultContracts.RequestPermission(),
@@ -85,7 +85,10 @@ internal class AndroidPermissionState(
 
   fun onRequestResult(granted: Boolean) {
     status = when {
-      granted -> PermissionStatus.Granted
+      granted -> {
+        PermissionStatus.Granted
+      }
+
       else -> {
         val activity = context.findActivity()
         val canRequestAgain = activity
