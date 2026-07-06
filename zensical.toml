@@ -30,6 +30,7 @@ nav = [
     "image-analyzer/code-analyzer.md",
     "image-analyzer/image-analyzer.md",
   ] },
+  { "Permissions" = "permissions.md" },
   { "API docs" = "./api/index.html" },
 ]
 
