@@ -4,7 +4,6 @@ package com.ujizin.camposer.permissions
  * Represents the status of a camera or microphone permission.
  */
 public sealed interface PermissionStatus {
-
   /** Permission is granted. */
   public data object Granted : PermissionStatus
 
@@ -16,7 +15,9 @@ public sealed interface PermissionStatus {
    * When `false`, the user must grant the permission from the app settings,
    * see [PermissionState.openAppSettings].
    */
-  public data class Denied(val canRequestAgain: Boolean) : PermissionStatus
+  public data class Denied(
+    val canRequestAgain: Boolean,
+  ) : PermissionStatus
 }
 
 /** Returns `true` when the permission is granted. */

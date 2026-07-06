@@ -11,7 +11,6 @@ import androidx.compose.runtime.Stable
  */
 @Stable
 public interface PermissionState {
-
   /** Current [PermissionStatus]. Backed by Compose state. */
   public val status: PermissionStatus
 
