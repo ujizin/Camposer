@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ujizin.camposer.permissions.PermissionStatus
 import com.ujizin.camposer.permissions.isGranted
@@ -57,7 +58,7 @@ fun PermissionsScreen(
 }
 
 @Composable
-fun PermissionsContent(
+private fun PermissionsContent(
   modifier: Modifier,
   isCameraGranted: Boolean,
   isRecordAudioGranted: Boolean,
@@ -80,6 +81,19 @@ fun PermissionsContent(
       onClick = onRecordAudioPermissionClick
     )
   }
+}
+
+@Preview(showSystemUi = true)
+@Composable
+private fun PermissionsContentPreview() {
+  PermissionsContent(
+    modifier = Modifier.fillMaxSize()
+      .padding(20.dp),
+    isCameraGranted = false,
+    isRecordAudioGranted = false,
+    onRecordAudioPermissionClick = {},
+    onCameraPermissionClick = {},
+  )
 }
 
 @Composable
