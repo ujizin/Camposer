@@ -2,6 +2,7 @@ package com.ujizin.camposer.permissions
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,7 +38,7 @@ private fun rememberPermissionState(
   onPermissionResult: (Boolean) -> Unit,
 ): PermissionState {
   val state = remember(mediaType) { IOSPermissionState(mediaType) }
-  state.onPermissionResult = onPermissionResult
+  SideEffect { state.onPermissionResult = onPermissionResult }
 
   DisposableEffect(state) {
     val observer = NSNotificationCenter.defaultCenter.addObserverForName(
