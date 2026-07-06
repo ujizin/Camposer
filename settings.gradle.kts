@@ -17,4 +17,5 @@ rootProject.name = "Camposer"
 
 include(":camposer")
 include(":camposer-code-scanner")
+include(":camposer-permissions")
 include(":detekt-rules")

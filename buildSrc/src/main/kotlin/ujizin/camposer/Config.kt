@@ -9,5 +9,6 @@ object Config {
   object Artifact {
     val camposerId = "camposer"
     val camposerCodeScannerId = "camposer-code-scanner"
+    val camposerPermissionsId = "camposer-permissions"
   }
 }
