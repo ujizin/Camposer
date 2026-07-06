@@ -1,0 +1,46 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <io.github.ujizin:camposer-permissions>
+abstract interface com.ujizin.camposer.permissions/PermissionState { // com.ujizin.camposer.permissions/PermissionState|null[0]
+    abstract val status // com.ujizin.camposer.permissions/PermissionState.status|{}status[0]
+        abstract fun <get-status>(): com.ujizin.camposer.permissions/PermissionStatus // com.ujizin.camposer.permissions/PermissionState.status.<get-status>|<get-status>(){}[0]
+
+    abstract fun launchPermissionRequest() // com.ujizin.camposer.permissions/PermissionState.launchPermissionRequest|launchPermissionRequest(){}[0]
+    abstract fun openAppSettings() // com.ujizin.camposer.permissions/PermissionState.openAppSettings|openAppSettings(){}[0]
+}
+
+sealed interface com.ujizin.camposer.permissions/PermissionStatus { // com.ujizin.camposer.permissions/PermissionStatus|null[0]
+    final class Denied : com.ujizin.camposer.permissions/PermissionStatus { // com.ujizin.camposer.permissions/PermissionStatus.Denied|null[0]
+        constructor <init>(kotlin/Boolean) // com.ujizin.camposer.permissions/PermissionStatus.Denied.<init>|<init>(kotlin.Boolean){}[0]
+
+        final val canRequestAgain // com.ujizin.camposer.permissions/PermissionStatus.Denied.canRequestAgain|{}canRequestAgain[0]
+            final fun <get-canRequestAgain>(): kotlin/Boolean // com.ujizin.camposer.permissions/PermissionStatus.Denied.canRequestAgain.<get-canRequestAgain>|<get-canRequestAgain>(){}[0]
+
+        final fun component1(): kotlin/Boolean // com.ujizin.camposer.permissions/PermissionStatus.Denied.component1|component1(){}[0]
+        final fun copy(kotlin/Boolean = ...): com.ujizin.camposer.permissions/PermissionStatus.Denied // com.ujizin.camposer.permissions/PermissionStatus.Denied.copy|copy(kotlin.Boolean){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.ujizin.camposer.permissions/PermissionStatus.Denied.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.ujizin.camposer.permissions/PermissionStatus.Denied.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.ujizin.camposer.permissions/PermissionStatus.Denied.toString|toString(){}[0]
+    }
+
+    final object Granted : com.ujizin.camposer.permissions/PermissionStatus { // com.ujizin.camposer.permissions/PermissionStatus.Granted|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.ujizin.camposer.permissions/PermissionStatus.Granted.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.ujizin.camposer.permissions/PermissionStatus.Granted.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.ujizin.camposer.permissions/PermissionStatus.Granted.toString|toString(){}[0]
+    }
+}
+
+final val com.ujizin.camposer.permissions/com_ujizin_camposer_permissions_PermissionStatus_Denied$stableprop // com.ujizin.camposer.permissions/com_ujizin_camposer_permissions_PermissionStatus_Denied$stableprop|#static{}com_ujizin_camposer_permissions_PermissionStatus_Denied$stableprop[0]
+final val com.ujizin.camposer.permissions/com_ujizin_camposer_permissions_PermissionStatus_Granted$stableprop // com.ujizin.camposer.permissions/com_ujizin_camposer_permissions_PermissionStatus_Granted$stableprop|#static{}com_ujizin_camposer_permissions_PermissionStatus_Granted$stableprop[0]
+final val com.ujizin.camposer.permissions/isGranted // com.ujizin.camposer.permissions/isGranted|@com.ujizin.camposer.permissions.PermissionStatus{}isGranted[0]
+    final fun (com.ujizin.camposer.permissions/PermissionStatus).<get-isGranted>(): kotlin/Boolean // com.ujizin.camposer.permissions/isGranted.<get-isGranted>|<get-isGranted>@com.ujizin.camposer.permissions.PermissionStatus(){}[0]
+
+final fun com.ujizin.camposer.permissions/com_ujizin_camposer_permissions_PermissionStatus_Denied$stableprop_getter(): kotlin/Int // com.ujizin.camposer.permissions/com_ujizin_camposer_permissions_PermissionStatus_Denied$stableprop_getter|com_ujizin_camposer_permissions_PermissionStatus_Denied$stableprop_getter(){}[0]
+final fun com.ujizin.camposer.permissions/com_ujizin_camposer_permissions_PermissionStatus_Granted$stableprop_getter(): kotlin/Int // com.ujizin.camposer.permissions/com_ujizin_camposer_permissions_PermissionStatus_Granted$stableprop_getter|com_ujizin_camposer_permissions_PermissionStatus_Granted$stableprop_getter(){}[0]
+final fun com.ujizin.camposer.permissions/rememberAudioPermissionState(kotlin/Function1<kotlin/Boolean, kotlin/Unit>?, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int): com.ujizin.camposer.permissions/PermissionState // com.ujizin.camposer.permissions/rememberAudioPermissionState|rememberAudioPermissionState(kotlin.Function1<kotlin.Boolean,kotlin.Unit>?;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
+final fun com.ujizin.camposer.permissions/rememberCameraPermissionState(kotlin/Function1<kotlin/Boolean, kotlin/Unit>?, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int): com.ujizin.camposer.permissions/PermissionState // com.ujizin.camposer.permissions/rememberCameraPermissionState|rememberCameraPermissionState(kotlin.Function1<kotlin.Boolean,kotlin.Unit>?;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]

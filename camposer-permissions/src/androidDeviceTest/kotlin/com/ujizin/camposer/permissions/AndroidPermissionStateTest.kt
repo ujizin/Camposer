@@ -8,7 +8,6 @@ import org.junit.Rule
 import org.junit.Test
 
 class AndroidPermissionStateTest {
-
   @get:Rule
   val grantPermissionRule: GrantPermissionRule =
     GrantPermissionRule.grant(Manifest.permission.CAMERA)
