@@ -18,7 +18,8 @@ public interface PermissionState {
    * Launches the system permission dialog when possible.
    *
    * When the permission can no longer be requested
-   * ([PermissionStatus.Denied.canRequestAgain] is `false`), this is a no-op;
+   * ([PermissionStatus.Denied.canRequestAgain] is `false`), no dialog is shown
+   * and the request may complete immediately with a denied result;
    * use [openAppSettings] instead.
    */
   public fun launchPermissionRequest()
