@@ -51,11 +51,7 @@ kotlin {
       implementation(libs.camposer.code.scanner)
 
       // Permissions
-      api(libs.moko.permissions)
-      api(libs.moko.permissions.compose)
-
-      implementation(libs.moko.permissions.camera)
-      implementation(libs.moko.permissions.microphone)
+      implementation(libs.camposer.permissions)
 
       implementation(libs.kotlinx.io)
 

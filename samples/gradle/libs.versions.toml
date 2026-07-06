@@ -24,7 +24,6 @@ datastore = "1.2.1"
 kotlinx-io = "0.9.0"
 core-ktx = "1.17.0"
 multiplatform-nav3-ui = "1.0.0-alpha06"
-moko-permissions = "0.20.1"
 coil3 = "3.5.0"
 filekit = "0.12.0"
 
@@ -32,6 +31,7 @@ filekit = "0.12.0"
 
 camposer = { module = "io.github.ujizin:camposer" }
 camposer-code-scanner = { module = "io.github.ujizin:camposer-code-scanner" }
+camposer-permissions = { module = "io.github.ujizin:camposer-permissions" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
 koin = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
@@ -61,10 +61,6 @@ cloudy = { module = "com.github.skydoves:cloudy", version.ref = "cloudy" }
 jetbrains-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "kmp-lifecycle" }
 jetbrains-navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "multiplatform-nav3-ui" }
 
-moko-permissions = { module = "dev.icerock.moko:permissions", version.ref = "moko-permissions" }
-moko-permissions-compose = { module = "dev.icerock.moko:permissions-compose", version.ref = "moko-permissions" }
-moko-permissions-camera = { module = "dev.icerock.moko:permissions-camera", version.ref = "moko-permissions" }
-moko-permissions-microphone = { module = "dev.icerock.moko:permissions-microphone", version.ref = "moko-permissions" }
 
 coil = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 coil-video = { module = "io.coil-kt:coil-video", version.ref = "coil" }
