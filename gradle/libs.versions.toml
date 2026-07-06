@@ -23,6 +23,11 @@ maven-publish = "0.36.0"
 mlkit-barcode = "17.3.0"
 camera-mlkit-vision = "1.5.3"
 
+# Camposer permissions
+
+androidx-activity-compose = "1.11.0"
+androidx-lifecycle-compose = "2.9.4"
+
 [libraries]
 
 compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose-multiplatform" }
@@ -48,6 +53,9 @@ mlkit-barcode-scanning = { module = "com.google.mlkit:barcode-scanning", version
 # buildSrc only
 binary-compatibility-validator = { module = "org.jetbrains.kotlinx:binary-compatibility-validator", version.ref = "binary-compatibility-validator" }
 androidx-camera-mlkit-vision = { group = "androidx.camera", name = "camera-mlkit-vision", version.ref = "camera-mlkit-vision" }
+
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
+androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle-compose" }
 
 [bundles]
 
