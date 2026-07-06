@@ -9,62 +9,58 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.LifecycleEventEffect
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import dev.icerock.moko.permissions.PermissionsController
-import dev.icerock.moko.permissions.compose.BindEffect
-import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
+import com.ujizin.camposer.permissions.PermissionStatus
+import com.ujizin.camposer.permissions.isGranted
+import com.ujizin.camposer.permissions.rememberAudioPermissionState
+import com.ujizin.camposer.permissions.rememberCameraPermissionState
 
 @Composable
 fun PermissionsScreen(
   onAllPermissionGranted: () -> Unit,
 ) {
-  val factory = rememberPermissionsControllerFactory()
-  val controller: PermissionsController =
-    remember(factory) { factory.createPermissionsController() }
+  val cameraPermission = rememberCameraPermissionState()
+  val audioPermission = rememberAudioPermissionState()
+  val isAllGranted = cameraPermission.status.isGranted && audioPermission.status.isGranted
 
-  BindEffect(controller)
-
-  val viewModel = viewModel {
-    PermissionsViewModel(controller)
+  LaunchedEffect(isAllGranted) {
+    if (isAllGranted) onAllPermissionGranted()
   }
 
-  val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-  LaunchedEffect(uiState.isAllPermissionGranted) {
-    if (uiState.isAllPermissionGranted) {
-      onAllPermissionGranted()
-    }
-  }
-
-  LifecycleEventEffect(Lifecycle.Event.ON_RESUME, onEvent = viewModel::onResume)
-
-  if (uiState.isLoading || uiState.isAllPermissionGranted) {
-    return
-  }
+  if (isAllGranted) return
 
   PermissionsContent(
     modifier = Modifier
       .fillMaxSize()
       .padding(20.dp),
-    uiState = uiState,
-    onRecordAudioPermissionClick = viewModel::provideRecordAudioPermission,
-    onCameraPermissionClick = viewModel::provideCameraPermission,
+    isCameraGranted = cameraPermission.status.isGranted,
+    isRecordAudioGranted = audioPermission.status.isGranted,
+    onCameraPermissionClick = {
+      val status = cameraPermission.status
+      if (status is PermissionStatus.Denied && !status.canRequestAgain) {
+        cameraPermission.openAppSettings()
+      } else {
+        cameraPermission.launchPermissionRequest()
+      }
+    },
+    onRecordAudioPermissionClick = {
+      val status = audioPermission.status
+      if (status is PermissionStatus.Denied && !status.canRequestAgain) {
+        audioPermission.openAppSettings()
+      } else {
+        audioPermission.launchPermissionRequest()
+      }
+    },
   )
 }
 
 @Composable
 fun PermissionsContent(
   modifier: Modifier,
-  uiState: PermissionsUiState,
+  isCameraGranted: Boolean,
+  isRecordAudioGranted: Boolean,
   onRecordAudioPermissionClick: () -> Unit,
   onCameraPermissionClick: () -> Unit,
 ) {
@@ -75,12 +71,12 @@ fun PermissionsContent(
   ) {
     PermissionButton(
       modifier = Modifier.fillMaxWidth(),
-      text = "Camera Granted: ${uiState.isCameraGranted}",
+      text = "Camera Granted: $isCameraGranted",
       onClick = onCameraPermissionClick
     )
     PermissionButton(
       modifier = Modifier.fillMaxWidth(),
-      text = "Record Audio Granted: ${uiState.isRecordAudioGranted}",
+      text = "Record Audio Granted: $isRecordAudioGranted",
       onClick = onRecordAudioPermissionClick
     )
   }
@@ -98,19 +94,4 @@ private fun PermissionButton(
   ) {
     Text(text)
   }
-}
-
-@Preview(showSystemUi = true)
-@Composable
-private fun PermissionsContentPreview() {
-  PermissionsContent(
-    modifier = Modifier.fillMaxSize()
-      .padding(20.dp),
-    uiState = PermissionsUiState(
-      isCameraGranted = false,
-      isRecordAudioGranted = false
-    ),
-    onRecordAudioPermissionClick = {},
-    onCameraPermissionClick = {},
-  )
 }
