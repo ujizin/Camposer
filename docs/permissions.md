@@ -57,6 +57,9 @@ when (val status = cameraPermission.status) {
 
 Both `rememberCameraPermissionState` and `rememberAudioPermissionState` accept an optional `onPermissionResult: (Boolean) -> Unit` callback that is invoked only when the user responds to an explicit permission request. The `status` property refreshes automatically when the app returns to the foreground.
 
+!!! note
+    On Android, `canRequestAgain` is only reliable after the first permission request result. If the user permanently denied the permission in a previous app session, the initial status reports `Denied(canRequestAgain = true)` until `launchPermissionRequest()` completes — the system auto-denies and the state then updates to `canRequestAgain = false`. This is an Android platform limitation: there is no API to query the "don't ask again" state without requesting.
+
 ### Combining permissions
 
 There is no combined camera-and-audio state. Check both states in your own code:
