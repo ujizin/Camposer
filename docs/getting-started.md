@@ -4,7 +4,7 @@
 
 Before using Camposer, you must request Camera permission, and Audio/Microphone permission if recording video.
 
-Camposer does not provide an API for requesting permissions. You can handle this manually or use a third-party library such as [moko-permissions](https://github.com/icerockdev/moko-permissions).
+You can use the optional [camposer-permissions](permissions.md) module to request camera and microphone permissions in Compose. Alternatively, handle permissions manually or use a third-party library such as [moko-permissions](https://github.com/icerockdev/moko-permissions).
 
 Ensure permissions are granted before creating or displaying the `CameraPreview` composable to avoid crashes or undefined behavior.
 
