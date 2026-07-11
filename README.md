@@ -36,6 +36,8 @@ sourceSets {
     implementation("io.github.ujizin:camposer:<version>")
     // Required when you want to use code analysis features (e.g., QR code scanning).
     implementation("io.github.ujizin:camposer-code-scanner:<version>")
+    // Optional: camera/microphone permission handling in Compose.
+    implementation("io.github.ujizin:camposer-permissions:<version>")
   }
 }
 
