@@ -11,7 +11,7 @@ on:
       - '.editorconfig'
       - 'License'
   pull_request:
-    branches: [ '*' ]
+    branches: [ '**' ]
     paths-ignore:
       - 'docs/**'
       - '**.md'
