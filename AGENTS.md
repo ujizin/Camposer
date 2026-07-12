@@ -1,6 +1,6 @@
 # AGENTS.md — Camposer
 
-Compose Multiplatform camera library. Android target uses CameraX; iOS target uses AVFoundation. Two published modules: `:camposer` (core) and `:camposer-code-scanner` (optional ML Kit / Vision barcode scanning).
+Compose Multiplatform camera library. Android target uses CameraX; iOS target uses AVFoundation. Three published modules: `:camposer` (core), `:camposer-code-scanner` (ML Kit / Vision barcode scanning), and `:camposer-permissions` (camera/microphone runtime permissions for Compose).
 
 ## Architecture
 
