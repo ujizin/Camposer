@@ -3,28 +3,22 @@ name: Build
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'camposer/**'
-      - 'camposer-code-scanner/**'
-      - 'detekt-rules/**'
-      - 'config/detekt/**'
-      - '.github/workflows/**'
-      - 'gradle/**'
-      - 'gradle.properties'
-      - '*.gradle.kts'
-      - 'samples/**'
+    paths-ignore:
+      - 'docs/**'
+      - '**.md'
+      - 'mkdocs.yml'
+      - '.agents/**'
+      - '.editorconfig'
+      - 'License'
   pull_request:
     branches: [ '*' ]
-    paths:
-      - 'camposer/**'
-      - 'camposer-code-scanner/**'
-      - 'detekt-rules/**'
-      - 'config/detekt/**'
-      - '.github/workflows/**'
-      - 'gradle/**'
-      - 'gradle.properties'
-      - '*.gradle.kts'
-      - 'samples/**'
+    paths-ignore:
+      - 'docs/**'
+      - '**.md'
+      - 'mkdocs.yml'
+      - '.agents/**'
+      - '.editorconfig'
+      - 'License'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -53,7 +47,7 @@ jobs:
         run: ./gradlew spotlessCheck
 
       - name: Detekt
-        run: ./gradlew detekt :camposer:detektCommonMain :camposer-code-scanner:detektCommonMain :camposer-permissions:detektCommonMain
+        run: ./gradlew detekt
 
 
   abi_check:

@@ -1,0 +1,38 @@
+public abstract interface class com/ujizin/camposer/permissions/PermissionState {
+	public abstract fun getStatus ()Lcom/ujizin/camposer/permissions/PermissionStatus;
+	public abstract fun launchPermissionRequest ()V
+	public abstract fun openAppSettings ()V
+}
+
+public final class com/ujizin/camposer/permissions/PermissionState_androidKt {
+	public static final fun rememberAudioPermissionState (Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)Lcom/ujizin/camposer/permissions/PermissionState;
+	public static final fun rememberCameraPermissionState (Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)Lcom/ujizin/camposer/permissions/PermissionState;
+}
+
+public abstract interface class com/ujizin/camposer/permissions/PermissionStatus {
+}
+
+public final class com/ujizin/camposer/permissions/PermissionStatus$Denied : com/ujizin/camposer/permissions/PermissionStatus {
+	public static final field $stable I
+	public fun <init> (Z)V
+	public final fun component1 ()Z
+	public final fun copy (Z)Lcom/ujizin/camposer/permissions/PermissionStatus$Denied;
+	public static synthetic fun copy$default (Lcom/ujizin/camposer/permissions/PermissionStatus$Denied;ZILjava/lang/Object;)Lcom/ujizin/camposer/permissions/PermissionStatus$Denied;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCanRequestAgain ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/ujizin/camposer/permissions/PermissionStatus$Granted : com/ujizin/camposer/permissions/PermissionStatus {
+	public static final field $stable I
+	public static final field INSTANCE Lcom/ujizin/camposer/permissions/PermissionStatus$Granted;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/ujizin/camposer/permissions/PermissionStatusKt {
+	public static final fun isGranted (Lcom/ujizin/camposer/permissions/PermissionStatus;)Z
+}
+
