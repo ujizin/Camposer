@@ -9,6 +9,7 @@ plugins {
   alias(libs.plugins.compose.multiplatform)
   alias(libs.plugins.compose.compiler)
   alias(libs.plugins.dokka)
+  id("camposer.android-abi-validation")
 }
 
 extra.apply {
