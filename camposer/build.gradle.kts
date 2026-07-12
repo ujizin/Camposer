@@ -11,6 +11,7 @@ plugins {
   alias(libs.plugins.dokka)
   alias(libs.plugins.compose.multiplatform)
   alias(libs.plugins.compose.compiler)
+  id("camposer.android-abi-validation")
 }
 
 extra.apply {
