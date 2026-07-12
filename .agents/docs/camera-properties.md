@@ -297,5 +297,5 @@ androidDeviceTest actual + iosTest actual).
 | Missing `FakeCameraTest` platform actual | Same | Same |
 | State write before hardware write in applier | Potential stale UI / race | Always hardware → then state |
 | Missing idempotency guard in engine impl | Property re-applied on every update cycle | Add `if (cameraState.x.value == x) return` |
-| Public API added without ABI check | CI breaks on `checkLegacyAbi` | Run `./gradlew checkLegacyAbi` before committing |
+| Public API added without ABI check | CI breaks on `checkKotlinAbi` | Run `./gradlew checkKotlinAbi` before committing |
 | Platform mapping extension in `commonMain` | Compile error — no CameraX/AVFoundation in common | Put mapping extensions in `androidMain` / `iosMain` |

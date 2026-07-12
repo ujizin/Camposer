@@ -88,8 +88,8 @@ if (cameraState.yourProperty.value == yourProperty) return
 
 If any `public` declaration was added, removed, or signature-changed:
 
-- `./gradlew checkLegacyAbi` must be run before commit
-- If intentional: `./gradlew updateLegacyAbi` and commit updated baseline
+- `./gradlew checkKotlinAbi` must be run before commit
+- If intentional: `./gradlew updateKotlinAbi` and commit updated baseline
 - If accidental: revert the change
 
 🔴 Critical if public API changed without ABI check.
@@ -153,7 +153,7 @@ Save to `.agents/reviews/review-YYYY-MM-DD.md`:
 - [x] Architectural invariants
 - [x] Applier ordering
 - [x] Engine idempotency guards
-- [ ] Public API — run checkLegacyAbi before committing
+- [ ] Public API — run checkKotlinAbi before committing
 - [x] Test coverage
 - [x] Platform mapping exhaustiveness
 

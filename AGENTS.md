@@ -14,11 +14,11 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for full codemap, data flow diagrams, and
 
 ```bash
 make spotlessApply         # ./gradlew spotlessApply — fix formatting (required before commit)
-make checkLegacyAbi        # ./gradlew checkLegacyAbi — verify no accidental public API breakage
+make checkKotlinAbi        # ./gradlew checkKotlinAbi — verify no accidental public API breakage
 make build                 # ./gradlew build — full build, all platforms
 make iosTest               # ./gradlew iosSimulatorArm64Test — fastest test run (~2-3 min, macOS)
 make androidTest           # ./gradlew connectedAndroidTest — requires running emulator or device
-make updateLegacyAbi       # ./gradlew updateLegacyAbi — only after intentional public API change
+make updateKotlinAbi       # ./gradlew updateKotlinAbi — only after intentional public API change
 ```
 
 ## Development Workflow
@@ -26,13 +26,13 @@ make updateLegacyAbi       # ./gradlew updateLegacyAbi — only after intentiona
 ```bash
 # 1. Make changes
 # 2. Fix formatting and verify build
-./gradlew spotlessApply && ./gradlew checkLegacyAbi && ./gradlew build
+./gradlew spotlessApply && ./gradlew checkKotlinAbi && ./gradlew build
 # 3. Run tests (macOS)
 ./gradlew iosSimulatorArm64Test
 # 4. Run Android instrumented tests if Android-specific logic changed
 ./gradlew connectedAndroidTest
 # 5. Update ABI baseline only if public API was intentionally changed
-./gradlew updateLegacyAbi
+./gradlew updateKotlinAbi
 ```
 
 ## Do's and Don'ts
@@ -40,7 +40,7 @@ make updateLegacyAbi       # ./gradlew updateLegacyAbi — only after intentiona
 ### Always
 
 - Run `./gradlew spotlessApply` before committing
-- Run `./gradlew checkLegacyAbi` when touching any public class or function
+- Run `./gradlew checkKotlinAbi` when touching any public class or function
 - Update all **3 files** when modifying `CameraEngine`, `FakeCameraEngine`, `FakeCameraTest`, or `FakeCameraSession` (expect + androidDeviceTest actual + iosTest actual)
 - Mark every new public declaration with `public` — explicit API mode is enforced
 - Delegate hardware writes through the applier that owns that concern
@@ -53,7 +53,7 @@ make updateLegacyAbi       # ./gradlew updateLegacyAbi — only after intentiona
 - Call platform APIs directly from `CameraEngineImpl` — delegate to an applier
 - Skip the idempotency guard (`if (cameraState.x.value == x) return`) in engine impls
 - Add platform-specific mapping extensions (`.mode`, `.avValue`) to `commonMain`
-- Add or remove public API without running `checkLegacyAbi`
+- Add or remove public API without running `checkKotlinAbi`
 
 ## Key Files
 
