@@ -11,7 +11,7 @@ on:
       - 'gradle.properties'
       - '*.gradle.kts'
   pull_request:
-    branches: [ '*' ]
+    branches: [ '**' ]
     paths:
       - 'camposer/**'
       - 'camposer-code-scanner/**'
