@@ -134,7 +134,7 @@ and the engine impl readable.
 sessions can coexist (though hardware may not support it). There is no static camera registry.
 
 **Public API requires explicit `public` modifier.** `explicitApi()` is enforced in the Gradle
-build. Every public declaration is intentional. ABI is validated by `checkLegacyAbi` in CI —
+build. Every public declaration is intentional. ABI is validated by `checkKotlinAbi` in CI —
 adding or removing public API without updating the baseline breaks the build.
 
 ## Boundaries

@@ -67,7 +67,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: API check
-        run: ./gradlew checkLegacyAbi
+        run: ./gradlew checkKotlinAbi
 
   build:
     name: Build
