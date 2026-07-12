@@ -1,8 +1,6 @@
 package com.ujizin.camposer.permissions
 
-import android.app.Activity
 import android.content.Context
-import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -20,7 +18,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.compose.LifecycleResumeEffect
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
+import com.ujizin.camposer.permissions.internal.findActivity
 
 @Composable
 public actual fun rememberCameraPermissionState(
@@ -51,9 +51,8 @@ private fun rememberPermissionState(
     onDispose { state.launcher = null }
   }
 
-  LifecycleResumeEffect(state) {
+  LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
     state.refreshStatus()
-    onPauseOrDispose { }
   }
 
   return state
@@ -110,13 +109,4 @@ internal class AndroidPermissionState(
       PackageManager.PERMISSION_GRANTED
     return if (granted) PermissionStatus.Granted else PermissionStatus.Denied(canRequestAgain)
   }
-}
-
-private fun Context.findActivity(): Activity? {
-  var current: Context = this
-  while (current is ContextWrapper) {
-    if (current is Activity) return current
-    current = current.baseContext
-  }
-  return null
 }
