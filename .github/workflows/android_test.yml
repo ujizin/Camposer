@@ -6,6 +6,7 @@ on:
     paths:
       - 'camposer/**'
       - 'camposer-code-scanner/**'
+      - 'camposer-permissions/**'
       - '.github/workflows/**'
       - 'gradle/**'
       - 'gradle.properties'
@@ -15,6 +16,7 @@ on:
     paths:
       - 'camposer/**'
       - 'camposer-code-scanner/**'
+      - 'camposer-permissions/**'
       - '.github/workflows/**'
       - 'gradle/**'
       - 'gradle.properties'

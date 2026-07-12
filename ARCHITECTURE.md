@@ -116,6 +116,14 @@ Code scanner extension (`:camposer-code-scanner`):
 Optional module. Plugs into the `ImageAnalyzer` pipeline. Android uses ML Kit; iOS uses the Vision
 framework. No dependency on this module from `:camposer`.
 
+Permissions extension (`:camposer-permissions`):
+
+Compose API for camera/microphone runtime permissions (`PermissionState`,
+`PermissionStatus`, `rememberCameraPermissionState`/`rememberAudioPermissionState`). Android uses
+the ActivityResult API; iOS uses `AVCaptureDevice` authorization. Status auto-refreshes when the
+app returns to the foreground. No dependency between this module and `:camposer` in either
+direction.
+
 ## Architectural Invariants
 
 These are constraints that must hold. Violations will likely compile but break things subtly.
