@@ -32,15 +32,15 @@ public final class com/ujizin/camposer/CaptureResult$Success : com/ujizin/campos
 public final class com/ujizin/camposer/ComposableSingletons$CameraPreviewKt {
 	public static final field INSTANCE Lcom/ujizin/camposer/ComposableSingletons$CameraPreviewKt;
 	public fun <init> ()V
-	public final fun getLambda$-622473080$camposer ()Lkotlin/jvm/functions/Function3;
-	public final fun getLambda$-639164538$camposer ()Lkotlin/jvm/functions/Function2;
-	public final fun getLambda$985373892$camposer ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda$-622473080$io_github_ujizin_camposer ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda$-639164538$io_github_ujizin_camposer ()Lkotlin/jvm/functions/Function2;
+	public final fun getLambda$985373892$io_github_ujizin_camposer ()Lkotlin/jvm/functions/Function3;
 }
 
 public final class com/ujizin/camposer/ComposableSingletons$CameraPreview_androidKt {
 	public static final field INSTANCE Lcom/ujizin/camposer/ComposableSingletons$CameraPreview_androidKt;
 	public fun <init> ()V
-	public final fun getLambda$1109182449$camposer ()Lkotlin/jvm/functions/Function2;
+	public final fun getLambda$1109182449$io_github_ujizin_camposer ()Lkotlin/jvm/functions/Function2;
 }
 
 public final class com/ujizin/camposer/controller/camera/CameraController : com/ujizin/camposer/controller/camera/CommonCameraController {
@@ -520,7 +520,7 @@ public final class com/ujizin/camposer/state/properties/selector/CameraId {
 public final class com/ujizin/camposer/ui/focus/ComposableSingletons$FocusTapKt {
 	public static final field INSTANCE Lcom/ujizin/camposer/ui/focus/ComposableSingletons$FocusTapKt;
 	public fun <init> ()V
-	public final fun getLambda$-1519716410$camposer ()Lkotlin/jvm/functions/Function2;
+	public final fun getLambda$-1519716410$io_github_ujizin_camposer ()Lkotlin/jvm/functions/Function2;
 }
 
 public final class com/ujizin/camposer/ui/focus/FocusTapKt {
