@@ -40,7 +40,5 @@ val androidApiDump = tasks.register<Copy>("androidApiDump") {
     into(layout.projectDirectory.dir("api/android"))
 }
 
-tasks.matching { it.name == "checkLegacyAbi" || it.name == "checkKotlinAbi" }
-    .configureEach { dependsOn(androidApiCheck) }
-tasks.matching { it.name == "updateLegacyAbi" || it.name == "updateKotlinAbi" }
-    .configureEach { dependsOn(androidApiDump) }
+tasks.matching { it.name == "checkKotlinAbi" }.configureEach { dependsOn(androidApiCheck) }
+tasks.matching { it.name == "updateKotlinAbi" }.configureEach { dependsOn(androidApiDump) }
