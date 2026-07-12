@@ -47,7 +47,7 @@ internal class CameraXControllerWrapper(
   override val contentResolver: ContentResolver = context.contentResolver
   override val mainExecutor = context.compatMainExecutor
 
-  private var cameraLifecycleOwner = CameraLifecycleOwner(lifecycleOwner)
+  private val cameraLifecycleOwner = CameraLifecycleOwner(lifecycleOwner)
 
   private val cameraXController by lazy { LifecycleCameraController(context) }
 

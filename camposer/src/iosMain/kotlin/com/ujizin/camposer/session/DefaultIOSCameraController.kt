@@ -84,6 +84,8 @@ import platform.foundation.NSKeyValueObservingProtocol
 
 private const val CENTER = 0.5
 
+@OptIn(ExperimentalForeignApi::class)
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class DefaultIOSCameraController internal constructor(
   override val captureSession: AVCaptureSession,
   internal val previewManager: PreviewManager,

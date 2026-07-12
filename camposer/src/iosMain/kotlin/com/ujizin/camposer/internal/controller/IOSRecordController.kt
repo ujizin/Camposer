@@ -101,6 +101,7 @@ internal class IOSRecordController(
     return Result.success(true)
   }
 
+  @Suppress("UnusedParameter")
   fun mute(isMuted: Boolean): Result<Boolean> = Result.failure(MuteNotSupportedException())
 
   private fun clearRecord() {
