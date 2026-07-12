@@ -14,6 +14,7 @@ camerax = "1.5.3"
 coroutines = "1.11.0"
 compose-multiplatform = "1.11.1"
 binary-compatibility-validator = "0.18.1"
+asm = "9.6" # keep in sync with binary-compatibility-validator's ASM requirement
 maven-publish = "0.36.0"
 
 # Camposer scanner
@@ -39,6 +40,9 @@ androidx-core-testing = { module = "androidx.arch.core:core-testing", version.re
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 
 mlkit-barcode-scanning = { module = "com.google.mlkit:barcode-scanning", version.ref = "mlkit-barcode" }
+
+# buildSrc only
+binary-compatibility-validator = { module = "org.jetbrains.kotlinx:binary-compatibility-validator", version.ref = "binary-compatibility-validator" }
 androidx-camera-mlkit-vision = { group = "androidx.camera", name = "camera-mlkit-vision", version.ref = "camera-mlkit-vision" }
 
 [bundles]
@@ -63,5 +67,4 @@ dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 gradle-nexus = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "gradle-nexus" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binary-compatibility-validator" }
 maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publish" }

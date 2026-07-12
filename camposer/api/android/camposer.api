@@ -1,10 +1,5 @@
-public final class androidx/lifecycle/compose/CameraInfoLifecycleExtKt {
-	public static final fun collectAsStateWithLifecycle (Lcom/ujizin/camposer/info/CameraInfo;Landroidx/lifecycle/Lifecycle;Landroidx/lifecycle/Lifecycle$State;Lkotlin/coroutines/CoroutineContext;Landroidx/compose/runtime/Composer;II)Landroidx/compose/runtime/State;
-	public static final fun collectAsStateWithLifecycle (Lcom/ujizin/camposer/info/CameraInfo;Landroidx/lifecycle/LifecycleOwner;Landroidx/lifecycle/Lifecycle$State;Lkotlin/coroutines/CoroutineContext;Landroidx/compose/runtime/Composer;II)Landroidx/compose/runtime/State;
-}
-
 public final class com/ujizin/camposer/CameraPreviewKt {
-	public static final fun CameraPreview (Landroidx/compose/ui/Modifier;Lcom/ujizin/camposer/session/CameraSession;Lcom/ujizin/camposer/state/properties/selector/CamSelector;Lcom/ujizin/camposer/state/properties/CaptureMode;Lcom/ujizin/camposer/state/properties/ImageCaptureStrategy;Lcom/ujizin/camposer/state/properties/ScaleType;Lcom/ujizin/camposer/state/properties/ImageAnalyzer;Lcom/ujizin/camposer/state/properties/format/CamFormat;Lcom/ujizin/camposer/state/properties/ImplementationMode;ZZZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;III)V
+	public static final fun CameraPreview-2KItM9w (Landroidx/compose/ui/Modifier;Lcom/ujizin/camposer/session/CameraSession;Lcom/ujizin/camposer/state/properties/selector/CamSelector;Lcom/ujizin/camposer/state/properties/CaptureMode;Lcom/ujizin/camposer/state/properties/ImageCaptureStrategy;Lcom/ujizin/camposer/state/properties/ScaleType;Lcom/ujizin/camposer/state/properties/ImageAnalyzer;Lcom/ujizin/camposer/state/properties/format/CamFormat;Lcom/ujizin/camposer/state/properties/ImplementationMode;ZZZJLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;III)V
 }
 
 public abstract interface class com/ujizin/camposer/CaptureResult {
@@ -37,15 +32,15 @@ public final class com/ujizin/camposer/CaptureResult$Success : com/ujizin/campos
 public final class com/ujizin/camposer/ComposableSingletons$CameraPreviewKt {
 	public static final field INSTANCE Lcom/ujizin/camposer/ComposableSingletons$CameraPreviewKt;
 	public fun <init> ()V
-	public final fun getLambda$-1918373457$camposer ()Lkotlin/jvm/functions/Function2;
-	public final fun getLambda$1375384941$camposer ()Lkotlin/jvm/functions/Function3;
-	public final fun getLambda$465046577$camposer ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda$-622473080$camposer ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda$-639164538$camposer ()Lkotlin/jvm/functions/Function2;
+	public final fun getLambda$985373892$camposer ()Lkotlin/jvm/functions/Function3;
 }
 
 public final class com/ujizin/camposer/ComposableSingletons$CameraPreview_androidKt {
 	public static final field INSTANCE Lcom/ujizin/camposer/ComposableSingletons$CameraPreview_androidKt;
 	public fun <init> ()V
-	public final fun getLambda$54539048$camposer ()Lkotlin/jvm/functions/Function2;
+	public final fun getLambda$1109182449$camposer ()Lkotlin/jvm/functions/Function2;
 }
 
 public final class com/ujizin/camposer/controller/camera/CameraController : com/ujizin/camposer/controller/camera/CommonCameraController {
@@ -61,12 +56,13 @@ public final class com/ujizin/camposer/controller/camera/CameraController : com/
 
 public abstract class com/ujizin/camposer/controller/camera/CommonCameraController : com/ujizin/camposer/controller/camera/CameraControllerContract {
 	public static final field $stable I
+	public fun <init> ()V
 	public fun getInfo ()Lcom/ujizin/camposer/info/CameraInfo;
 	protected final fun getRecordController ()Lcom/ujizin/camposer/controller/record/RecordController;
 	public fun getState ()Lcom/ujizin/camposer/state/CameraState;
 	protected final fun getTakePictureCommand ()Lcom/ujizin/camposer/controller/takepicture/TakePictureCommand;
-	public fun isMuted ()Z
-	public fun isRecording ()Z
+	public fun isMuted ()Lkotlinx/coroutines/flow/StateFlow;
+	public fun isRecording ()Lkotlinx/coroutines/flow/StateFlow;
 	public fun isRunning ()Lkotlinx/coroutines/flow/StateFlow;
 	public fun muteRecording-IoAF18A (Z)Ljava/lang/Object;
 	public fun pauseRecording-d1pmJ48 ()Ljava/lang/Object;
@@ -117,8 +113,8 @@ public final class com/ujizin/camposer/controller/record/AndroidRecordController
 }
 
 public abstract interface class com/ujizin/camposer/controller/record/RecordController {
-	public abstract fun isMuted ()Z
-	public abstract fun isRecording ()Z
+	public abstract fun isMuted ()Lkotlinx/coroutines/flow/StateFlow;
+	public abstract fun isRecording ()Lkotlinx/coroutines/flow/StateFlow;
 	public abstract fun muteRecording-IoAF18A (Z)Ljava/lang/Object;
 	public abstract fun pauseRecording-d1pmJ48 ()Ljava/lang/Object;
 	public abstract fun resumeRecording-d1pmJ48 ()Ljava/lang/Object;
@@ -198,6 +194,11 @@ public final class com/ujizin/camposer/info/CameraInfoState {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/ujizin/camposer/lifecycle/compose/CameraInfoLifecycleExtKt {
+	public static final fun collectStateWithLifecycle (Lcom/ujizin/camposer/info/CameraInfo;Landroidx/lifecycle/Lifecycle;Landroidx/lifecycle/Lifecycle$State;Lkotlin/coroutines/CoroutineContext;Landroidx/compose/runtime/Composer;II)Landroidx/compose/runtime/State;
+	public static final fun collectStateWithLifecycle (Lcom/ujizin/camposer/info/CameraInfo;Landroidx/lifecycle/LifecycleOwner;Landroidx/lifecycle/Lifecycle$State;Lkotlin/coroutines/CoroutineContext;Landroidx/compose/runtime/Composer;II)Landroidx/compose/runtime/State;
+}
+
 public final class com/ujizin/camposer/manager/CameraDevice {
 	public static final field $stable I
 	public fun equals (Ljava/lang/Object;)Z
@@ -241,7 +242,7 @@ public final class com/ujizin/camposer/manager/CameraDevicesManager_androidKt {
 
 public final class com/ujizin/camposer/session/CameraSession {
 	public static final field $stable I
-	public fun <init> (Landroid/content/Context;Lcom/ujizin/camposer/controller/camera/CameraController;)V
+	public fun <init> (Landroid/content/Context;Landroidx/lifecycle/LifecycleOwner;Lcom/ujizin/camposer/controller/camera/CameraController;)V
 	public final fun getCameraXController ()Landroidx/camera/view/LifecycleCameraController;
 	public final fun getController ()Lcom/ujizin/camposer/controller/camera/CameraController;
 	public final fun getHasInitializationError ()Z
@@ -250,7 +251,7 @@ public final class com/ujizin/camposer/session/CameraSession {
 	public final fun getState ()Lcom/ujizin/camposer/state/CameraState;
 	public final fun isInitialized ()Z
 	public final fun isStreaming ()Z
-	public final fun retryInitialization ()Z
+	public final fun retryInitialization ()V
 	public final fun setPreviewView (Landroidx/camera/view/PreviewView;)V
 }
 
