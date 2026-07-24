@@ -23,6 +23,7 @@ dokka {
   dependencies {
     dokka(project(":camposer"))
     dokka(project(":camposer-code-scanner"))
+    dokka(project(":camposer-permissions"))
   }
 }
 
