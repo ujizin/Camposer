@@ -64,6 +64,7 @@ internal class AndroidPermissionState(
 ) : PermissionState {
   var launcher: ActivityResultLauncher<String>? = null
   var onPermissionResult: (Boolean) -> Unit = {}
+  private var hasPreviouslyDenied = false
 
   override var status: PermissionStatus by mutableStateOf(
     checkStatus(canRequestAgain = true),
@@ -90,9 +91,11 @@ internal class AndroidPermissionState(
 
       else -> {
         val activity = context.findActivity()
-        val canRequestAgain = activity
+        val shouldShowRationale = activity
           ?.let { ActivityCompat.shouldShowRequestPermissionRationale(it, permission) }
-          ?: true
+          ?: false
+        val canRequestAgain = shouldShowRationale || !hasPreviouslyDenied
+        hasPreviouslyDenied = true
         PermissionStatus.Denied(canRequestAgain)
       }
     }
