@@ -7,6 +7,7 @@ import com.ujizin.camposer.internal.core.camerax.CameraXController
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.FlashMode
+import com.ujizin.camposer.state.properties.OrientationStrategy
 import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import com.ujizin.camposer.state.properties.format.CamFormat
 import com.ujizin.camposer.state.properties.mode
@@ -21,6 +22,9 @@ internal actual class SessionTopologyApplier(
 ) : CameraStateApplier {
   override fun onCameraInitialized() {
     cameraXController.setEnabledUseCases(getUseCases())
+    cameraXController.setAutoRotationEnabled(
+      cameraState.orientationStrategy.value == OrientationStrategy.Device,
+    )
     applyCamSelector(cameraState.camSelector.value)
   }
 
@@ -41,6 +45,11 @@ internal actual class SessionTopologyApplier(
     cameraInfo.updateInfo()
     resetConfig()
     cameraState.updateCamSelector(camSelector)
+  }
+
+  fun applyOrientationStrategy(orientationStrategy: OrientationStrategy) {
+    cameraXController.setAutoRotationEnabled(orientationStrategy == OrientationStrategy.Device)
+    cameraState.updateOrientationStrategy(orientationStrategy)
   }
 
   actual fun applyCamFormat(camFormat: CamFormat) {

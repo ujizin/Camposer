@@ -10,9 +10,6 @@ It defines whether rotation is applied via metadata (e.g., EXIF tags) or by phys
 ## Orientation Options
 
 - **Preview**: Matches the camera preview’s UI orientation. Provides a “what you see is what you get” result, regardless of device rotation.
-    
-    !!! warning
-        Unfortunately, Preview mode is currently supported only on iOS.
 
 - **Device**: Matches the device’s physical orientation. The output reflects how the device is held, even if the UI is locked.
 

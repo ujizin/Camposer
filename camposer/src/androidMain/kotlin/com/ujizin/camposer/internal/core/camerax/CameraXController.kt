@@ -72,6 +72,8 @@ internal interface CameraXController {
 
   fun setZoomRatio(zoomRatio: Float)
 
+  fun setAutoRotationEnabled(enabled: Boolean)
+
   fun startRecording(
     fileDescriptorOutputOptions: FileDescriptorOutputOptions,
     audioConfig: AudioConfig,

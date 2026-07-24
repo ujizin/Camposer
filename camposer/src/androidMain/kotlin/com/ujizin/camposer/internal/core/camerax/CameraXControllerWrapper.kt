@@ -222,6 +222,10 @@ internal class CameraXControllerWrapper(
 
   override fun setZoomRatio(zoomRatio: Float) = onMain { cameraXController.setZoomRatio(zoomRatio) }
 
+  override fun setAutoRotationEnabled(enabled: Boolean) {
+    cameraXController.setAutoRotationEnabled(enabled)
+  }
+
   override fun takePicture(
     outputFileOptions: ImageCapture.OutputFileOptions,
     mainExecutor: Executor,
