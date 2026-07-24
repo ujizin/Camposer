@@ -14,6 +14,7 @@ import com.ujizin.camposer.internal.core.applier.SessionTopologyApplier
 import com.ujizin.camposer.internal.core.applier.VideoApplier
 import com.ujizin.camposer.internal.core.camerax.CameraXController
 import com.ujizin.camposer.state.CameraState
+import com.ujizin.camposer.state.properties.OrientationStrategy
 import com.ujizin.camposer.state.properties.selector.CamPosition
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -67,6 +68,11 @@ internal actual class CameraEngineImpl(
   override fun onCameraInitialized() {
     cameraXController.lifecycleOwner.lifecycle.addObserver(CameraLifecycleObserver())
     super.onCameraInitialized()
+  }
+
+  actual override fun updateOrientationStrategy(orientationStrategy: OrientationStrategy) {
+    if (cameraState.orientationStrategy.value == orientationStrategy) return
+    sessionTopologyApplier.applyOrientationStrategy(orientationStrategy)
   }
 
   actual override fun isMirrorEnabled(): Boolean =

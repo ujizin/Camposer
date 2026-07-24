@@ -67,6 +67,8 @@ internal class FakeCameraXController : CameraXController {
     private set
   var isTorchEnabled: Boolean = false
     private set
+  var isAutoRotationEnabled: Boolean = true
+    private set
 
   var isZSLSupported: Boolean = true
     internal set
@@ -217,6 +219,10 @@ internal class FakeCameraXController : CameraXController {
 
   override fun setZoomRatio(zoomRatio: Float) {
     fakeZoomRatio = zoomRatio
+  }
+
+  override fun setAutoRotationEnabled(enabled: Boolean) {
+    isAutoRotationEnabled = enabled
   }
 
   override fun startRecording(
