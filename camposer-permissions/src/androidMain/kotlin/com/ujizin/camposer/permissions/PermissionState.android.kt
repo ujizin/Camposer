@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,13 +59,13 @@ private fun rememberPermissionState(
   return state
 }
 
+@Stable
 internal class AndroidPermissionState(
   private val permission: String,
   private val context: Context,
 ) : PermissionState {
   var launcher: ActivityResultLauncher<String>? = null
   var onPermissionResult: (Boolean) -> Unit = {}
-  private var hasPreviouslyDenied = false
 
   override var status: PermissionStatus by mutableStateOf(
     checkStatus(canRequestAgain = true),
@@ -84,27 +85,27 @@ internal class AndroidPermissionState(
   }
 
   fun onRequestResult(granted: Boolean) {
-    status = when {
-      granted -> {
-        PermissionStatus.Granted
-      }
-
-      else -> {
-        val activity = context.findActivity()
-        val shouldShowRationale = activity
-          ?.let { ActivityCompat.shouldShowRequestPermissionRationale(it, permission) }
-          ?: false
-        val canRequestAgain = shouldShowRationale || !hasPreviouslyDenied
-        hasPreviouslyDenied = true
-        PermissionStatus.Denied(canRequestAgain)
-      }
+    status = if (granted) {
+      PermissionStatus.Granted
+    } else {
+      PermissionStatus.Denied(canRequestAgain = computeCanRequestAgain())
     }
     onPermissionResult(granted)
   }
 
   fun refreshStatus() {
-    val canRequestAgain = (status as? PermissionStatus.Denied)?.canRequestAgain ?: true
-    status = checkStatus(canRequestAgain)
+    val granted = ContextCompat.checkSelfPermission(context, permission) ==
+      PackageManager.PERMISSION_GRANTED
+    status = if (granted) {
+      PermissionStatus.Granted
+    } else {
+      PermissionStatus.Denied(canRequestAgain = computeCanRequestAgain())
+    }
+  }
+
+  private fun computeCanRequestAgain(): Boolean {
+    val activity = context.findActivity() ?: return true
+    return ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)
   }
 
   private fun checkStatus(canRequestAgain: Boolean): PermissionStatus {
