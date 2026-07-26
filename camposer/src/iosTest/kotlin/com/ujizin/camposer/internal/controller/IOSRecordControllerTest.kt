@@ -125,6 +125,8 @@ private class TestIOSCameraController(
     startRunning()
   }
 
+  override val isCameraAuthorized: Boolean = true
+
   override val captureDeviceInput: AVCaptureDeviceInput
     get() = error("Unused in test")
 

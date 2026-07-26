@@ -29,6 +29,8 @@ public interface IOSCameraController {
   public val captureDevice: AVCaptureDevice
 
   // Props
+  public val isCameraAuthorized: Boolean
+
   public val isFocusSupported: Boolean
   public val zoomRange: Pair<Float, Float>
   public val fpsRange: Pair<Int, Int>

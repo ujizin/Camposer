@@ -180,6 +180,8 @@ public abstract class CommonCameraController<
     takePictureCommand: TPC,
     cameraEngine: CameraEngine,
   ) {
+    if (this.cameraEngine != null) return
+
     this.recordController = recordController
     this.takePictureCommand = takePictureCommand
     this.cameraEngine = cameraEngine

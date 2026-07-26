@@ -3,6 +3,7 @@ package com.ujizin.camposer.internal.core.applier
 import com.ujizin.camposer.info.CameraInfo
 import com.ujizin.camposer.internal.core.ios.IOSCameraController
 import com.ujizin.camposer.internal.extensions.firstIsInstanceOrNull
+import com.ujizin.camposer.internal.utils.Logger
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.properties.CaptureMode
 import com.ujizin.camposer.state.properties.FlashMode
@@ -16,6 +17,7 @@ import com.ujizin.camposer.state.properties.quality
 import com.ujizin.camposer.state.properties.selector.CamSelector
 import com.ujizin.camposer.state.properties.selector.getCaptureDevice
 import com.ujizin.camposer.state.properties.value
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
@@ -191,7 +193,16 @@ internal actual class SessionTopologyApplier(
   private fun lockedLaunch(block: suspend CoroutineScope.() -> Unit): Job =
     cameraState.launch {
       sessionTopologyMutex.withLock {
-        withContext(NonCancellable, block)
+        try {
+          withContext(NonCancellable, block)
+        } catch (e: CancellationException) {
+          throw e
+        } catch (
+          @Suppress("TooGenericExceptionCaught") e: Exception,
+        ) {
+          // Never crash the app from a background applier; surface via log instead.
+          Logger.error("Failed to apply session topology", e)
+        }
       }
     }
 }

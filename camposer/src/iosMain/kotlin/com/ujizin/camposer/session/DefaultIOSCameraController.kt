@@ -7,6 +7,7 @@ import com.ujizin.camposer.internal.controller.IOSRecordController
 import com.ujizin.camposer.internal.core.ios.IOSCameraController
 import com.ujizin.camposer.internal.error.AudioInputNotFoundException
 import com.ujizin.camposer.internal.extensions.firstIsInstanceOrNull
+import com.ujizin.camposer.internal.extensions.isCameraAuthorized
 import com.ujizin.camposer.internal.extensions.isFlashModeSupported
 import com.ujizin.camposer.internal.extensions.toDeviceInput
 import com.ujizin.camposer.internal.extensions.tryAddInput
@@ -107,6 +108,9 @@ public class DefaultIOSCameraController internal constructor(
   internal val orientationListener: OrientationManager = OrientationManager()
 
   private var runningObserver: NSObject? = null
+
+  override val isCameraAuthorized: Boolean
+    get() = isCameraAuthorized()
 
   override val isFocusSupported: Boolean
     get() = captureDevice.isFocusPointOfInterestSupported() ||

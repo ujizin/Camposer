@@ -39,6 +39,9 @@ internal class NSDataNotFoundException : CameraException("NSData not found")
 
 internal class CameraNotRunningException : CameraException("Camera is not running")
 
+internal class CameraPermissionDeniedException :
+  CameraException("Camera permission is not granted")
+
 internal class VideoOutputNotFoundException : CameraException("Video output not found")
 
 internal class PhotoOutputNotFoundException : CameraException("Photo output not found")
