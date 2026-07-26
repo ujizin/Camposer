@@ -30,6 +30,7 @@ import platform.UIKit.UIView
 
 @OptIn(ExperimentalForeignApi::class)
 class FakeIosCameraController : IOSCameraController {
+  var fakeIsCameraAuthorized = true
   val fakeOutputs = mutableListOf<AVCaptureOutput>()
   var fakeIsFocusSupported = false
     private set
@@ -83,6 +84,9 @@ class FakeIosCameraController : IOSCameraController {
 
   override val captureDevice: AVCaptureDevice
     get() = fakeCaptureDevice!!
+
+  override val isCameraAuthorized: Boolean
+    get() = fakeIsCameraAuthorized
 
   override val zoomRange: Pair<Float, Float>
     get() = 0F to 30F

@@ -13,6 +13,7 @@ import com.ujizin.camposer.internal.core.CameraEngine
 import com.ujizin.camposer.internal.core.CameraEngineImpl
 import com.ujizin.camposer.internal.core.IOSCameraEngine
 import com.ujizin.camposer.internal.core.ios.IOSCameraController
+import com.ujizin.camposer.internal.error.CameraPermissionDeniedException
 import com.ujizin.camposer.internal.utils.Logger
 import com.ujizin.camposer.manager.PreviewManager
 import com.ujizin.camposer.state.CameraState
@@ -82,6 +83,10 @@ public actual class CameraSession internal constructor(
           cameraEngine = cameraEngine,
         )
 
+        if (!isCameraAuthorized) {
+          throw CameraPermissionDeniedException()
+        }
+
         setCaptureDevice(
           device = iosCameraController.getCaptureDevice(state.camSelector.value),
         )
@@ -112,6 +117,7 @@ public actual class CameraSession internal constructor(
 
   @OptIn(ExperimentalForeignApi::class)
   internal fun startCamera() {
+    if (!isInitialized) return
     if (iosCameraController.captureSession.isRunning()) return
     iosCameraController.start(
       captureOutput = state.captureMode.value.createOutput(),
@@ -124,10 +130,13 @@ public actual class CameraSession internal constructor(
     iosCameraController.renderPreviewLayer(view = view)
   }
 
-  internal fun setFocusPoint(focusPoint: CValue<CGPoint>) =
+  internal fun setFocusPoint(focusPoint: CValue<CGPoint>) {
+    if (!isInitialized) return
     iosCameraController.setFocusPoint(focusPoint)
+  }
 
   internal fun recoveryState() {
+    if (!isInitialized) return
     iosCameraController.setTorchEnabled(state.isTorchEnabled.value)
   }
 

@@ -1,7 +1,9 @@
 package com.ujizin.camposer.internal.extensions
 
+import com.ujizin.camposer.internal.error.CameraException
 import com.ujizin.camposer.internal.utils.executeWithErrorHandling
 import kotlinx.cinterop.ExperimentalForeignApi
+import platform.AVFoundation.AVAuthorizationStatusAuthorized
 import platform.AVFoundation.AVCaptureDevice
 import platform.AVFoundation.AVCaptureDeviceInput
 import platform.AVFoundation.AVCaptureFlashMode
@@ -14,10 +16,15 @@ import platform.AVFoundation.AVCaptureVideoOrientationLandscapeRight
 import platform.AVFoundation.AVCaptureVideoOrientationPortrait
 import platform.AVFoundation.AVCaptureVideoOrientationPortraitUpsideDown
 import platform.AVFoundation.AVMediaTypeVideo
+import platform.AVFoundation.authorizationStatusForMediaType
 import platform.UIKit.UIInterfaceOrientation
 import platform.UIKit.UIInterfaceOrientationLandscapeLeft
 import platform.UIKit.UIInterfaceOrientationLandscapeRight
 import platform.UIKit.UIInterfaceOrientationPortraitUpsideDown
+
+internal fun isCameraAuthorized(): Boolean =
+  AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo) ==
+    AVAuthorizationStatusAuthorized
 
 internal fun AVCaptureSession.tryAddInput(input: AVCaptureDeviceInput): Boolean {
   if (inputs.contains(input)) return true
@@ -50,8 +57,8 @@ internal fun AVCaptureDevice.toDeviceInput(): AVCaptureDeviceInput =
     AVCaptureDeviceInput.deviceInputWithDevice(
       this,
       ptr,
-    )!!
-  }
+    )
+  } ?: throw CameraException("Unable to create device input for $this")
 
 @OptIn(ExperimentalForeignApi::class)
 internal fun AVCaptureDevice.withConfigurationLock(block: AVCaptureDevice.() -> Unit) =
