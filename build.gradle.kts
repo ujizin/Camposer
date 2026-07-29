@@ -9,9 +9,44 @@ plugins {
   alias(libs.plugins.spotless) apply false
   alias(libs.plugins.maven.publish) apply false
   alias(libs.plugins.detekt) apply false
+  alias(libs.plugins.kover)
   alias(libs.plugins.gradle.nexus)
   alias(libs.plugins.kotlin.serialization)
   alias(libs.plugins.dokka)
+}
+
+kover {
+  reports {
+    filters {
+      excludes {
+        classes(
+          "androidx.**",
+          "*.BuildConfig",
+          "**.ComposableSingletons*",
+          "**.*_androidKt*",
+          "com.ujizin.camposer.ui.**",
+          "com.ujizin.camposer.extensions.**",
+          "com.ujizin.camposer.internal.utils.Logger",
+          "com.ujizin.camposer.internal.core.camerax.CameraXControllerWrapper",
+          "com.ujizin.camposer.internal.LifecycleStateKt",
+          // CameraLifecycleOwner — lifecycle plumbing, only exercised on a real device
+          "com.ujizin.camposer.internal.CameraLifecycleOwner",
+          // CameraPreview composables — only reachable from androidDeviceTest
+          "com.ujizin.camposer.CameraPreviewKt*",
+          // PinchToZoomController — gesture/touch, requires Android runtime
+          "com.ujizin.camposer.internal.zoom.PinchToZoomController*",
+          // Compose lifecycle extensions
+          "com.ujizin.camposer.lifecycle.**",
+        )
+      }
+    }
+  }
+}
+
+dependencies {
+  kover(project(":camposer"))
+  kover(project(":camposer-code-scanner"))
+  kover(project(":camposer-permissions"))
 }
 
 dokka {

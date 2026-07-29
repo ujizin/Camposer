@@ -10,6 +10,7 @@ plugins {
   alias(libs.plugins.compose.compiler)
   alias(libs.plugins.dokka)
   id("camposer.android-abi-validation")
+  alias(libs.plugins.kover)
 }
 
 extra.apply {
@@ -30,7 +31,8 @@ kotlin {
     compileSdk = Config.compileSdk
     minSdk = Config.minSdk
 
-    withHostTestBuilder {
+    withHostTestBuilder {}.configure {
+      isReturnDefaultValues = true
     }
 
     withDeviceTestBuilder {
