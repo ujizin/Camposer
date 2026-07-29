@@ -34,6 +34,8 @@ import kotlin.math.min
 internal object CameraUtils {
   private const val TAG = "CamUtils"
   private const val DEFAULT_MIN_FOV = 100F
+  private const val DEFAULT_MIN_FPS = 1
+  private const val DEFAULT_MAX_FPS = 30
   private const val FOCUS_CENTER = 0.5f
   private const val RESOLUTION_QCIF = 176 * 144
   private const val RESOLUTION_QVGA = 320 * 240
@@ -150,8 +152,8 @@ internal object CameraUtils {
   ): List<CameraData> {
     val frameRateRanges = listOf(supportedFrameRateRanges).flatten()
 
-    var minFps = frameRateRanges.minOf { it.lower }
-    var maxFps = frameRateRanges.maxOf { it.upper }
+    var minFps = frameRateRanges.minOfOrNull { it.lower } ?: DEFAULT_MIN_FPS
+    var maxFps = frameRateRanges.maxOfOrNull { it.upper } ?: DEFAULT_MAX_FPS
 
     return cameraSizes.mapNotNull { videoSize ->
       try {
@@ -266,7 +268,7 @@ internal object CameraUtils {
     return closestProfile
   }
 
-  private fun getResolutionForCamcorderProfileQuality(camcorderProfile: Int): Int =
+  internal fun getResolutionForCamcorderProfileQuality(camcorderProfile: Int): Int =
     when (camcorderProfile) {
       CamcorderProfile.QUALITY_QCIF -> RESOLUTION_QCIF
       CamcorderProfile.QUALITY_QVGA -> RESOLUTION_QVGA

@@ -66,6 +66,10 @@ internal interface CameraXController {
 
   fun setEnabledUseCases(useCases: Int)
 
+  fun setVideoFrameRate(frameRate: Int) {
+    videoCaptureTargetFrameRate = Range(frameRate, frameRate)
+  }
+
   fun enableTorch(isTorchEnabled: Boolean)
 
   fun setExposureCompensationIndex(exposureCompensationIndex: Int)
