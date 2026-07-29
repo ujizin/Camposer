@@ -26,7 +26,7 @@ internal class RecordEvent(
   internal constructor(
     isFinalized: Boolean,
     hasError: Boolean,
-    outputUri: Uri,
+    outputUri: Uri?,
     isStarted: Boolean = false,
   ) : this(null) {
     this.isStarted = isStarted

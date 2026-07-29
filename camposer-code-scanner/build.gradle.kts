@@ -10,6 +10,7 @@ plugins {
   alias(libs.plugins.compose.compiler)
   alias(libs.plugins.dokka)
   id("camposer.android-abi-validation")
+  alias(libs.plugins.kover)
 }
 
 extra.apply {
@@ -70,6 +71,18 @@ kotlin {
     iosMain {
       dependencies {
       }
+    }
+
+    getByName("androidHostTest").dependencies {
+      implementation(kotlin("test"))
+    }
+
+    commonTest.dependencies {
+      implementation(kotlin("test"))
+    }
+
+    getByName("androidDeviceTest").dependencies {
+      implementation(libs.androidx.test.rules)
     }
   }
 }

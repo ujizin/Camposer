@@ -21,6 +21,9 @@ docs/api
 site
 .venv
 
+# IDE compiled output
+**/bin/
+
 # AI agent review output
 .agents/reviews/*
 .agents/settings.local.json

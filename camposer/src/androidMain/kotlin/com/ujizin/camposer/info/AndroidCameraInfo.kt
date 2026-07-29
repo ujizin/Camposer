@@ -51,10 +51,11 @@ internal class AndroidCameraInfo(
     get() = controller.cameraInfo?.let(CameraUtils::getVideoResolutions).orEmpty()
 
   internal val minFPS: Int
-    get() = controller.cameraInfo?.supportedFrameRateRanges?.minOf { it.lower } ?: 1
+    get() = controller.cameraInfo?.supportedFrameRateRanges?.minOfOrNull { it.lower } ?: 1
 
   internal val maxFPS: Int
-    get() = controller.cameraInfo?.supportedFrameRateRanges?.maxOf { it.upper } ?: DEFAULT_MAX_FPS
+    get() = controller.cameraInfo?.supportedFrameRateRanges?.maxOfOrNull { it.upper }
+      ?: DEFAULT_MAX_FPS
 
   companion object {
     private const val INITIAL_ZOOM_VALUE = 1F

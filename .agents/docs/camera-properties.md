@@ -101,9 +101,9 @@ pattern as the production code, which means **every interface change requires up
 files**:
 
 ```text
-commonTest/kotlin/.../fake/FakeCameraEngine.kt          ← expect declaration
-androidDeviceTest/kotlin/.../fake/FakeCameraEngine.android.kt  ← Android actual
-iosTest/kotlin/.../fake/FakeCameraEngine.ios.kt         ← iOS actual
+commonTest/kotlin/.../fake/FakeCameraEngine.kt           ← expect declaration
+androidSharedTest/kotlin/.../fake/FakeCameraEngine.android.kt  ← Android actual (shared JVM + device)
+iosTest/kotlin/.../fake/FakeCameraEngine.ios.kt          ← iOS actual
 ```
 
 The Android actual typically delegates to `CameraEngineImpl` via `by` delegation, so adding the
@@ -277,7 +277,7 @@ override fun setYourProperty(yourProperty: YourProperty): Result<Unit> {
 ```
 
 If you add a capability flag, update `FakeCameraTest` across all three files (expect +
-androidDeviceTest actual + iosTest actual).
+androidSharedTest actual + iosTest actual).
 
 **9. Add to `FakeCameraEngine`** — same as Type A step 6.
 
@@ -293,7 +293,7 @@ androidDeviceTest actual + iosTest actual).
 
 | Mistake | Symptom | Fix |
 |---------|---------|-----|
-| Missing `FakeCameraEngine` platform actual | Build failure: `expect has no actual` | Update all 3 files: common expect + android actual + ios actual |
+| Missing `FakeCameraEngine` platform actual | Build failure: `expect has no actual` | Update all 3 files: common expect + androidSharedTest actual + iosTest actual |
 | Missing `FakeCameraTest` platform actual | Same | Same |
 | State write before hardware write in applier | Potential stale UI / race | Always hardware → then state |
 | Missing idempotency guard in engine impl | Property re-applied on every update cycle | Add `if (cameraState.x.value == x) return` |

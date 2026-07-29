@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalForeignApi::class)
+
 package com.ujizin.camposer.session
 
 import androidx.annotation.RestrictTo
