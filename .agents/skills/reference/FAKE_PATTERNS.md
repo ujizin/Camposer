@@ -13,7 +13,7 @@ Holds hardware capability flags and records hardware calls for assertion.
 | File | Role |
 |------|------|
 | `camposer/src/commonTest/kotlin/com/ujizin/camposer/fake/FakeCameraTest.kt` | `expect` — capability flags + assert methods |
-| `camposer/src/androidDeviceTest/kotlin/com/ujizin/camposer/fake/FakeCameraTest.android.kt` | `actual` — wraps `FakeCameraXController` |
+| `camposer/src/androidSharedTest/kotlin/com/ujizin/camposer/fake/FakeCameraTest.android.kt` | `actual` — wraps `FakeCameraXController` |
 | `camposer/src/iosTest/kotlin/com/ujizin/camposer/fake/FakeCameraTest.ios.kt` | `actual` — wraps `FakeIosCameraController` |
 
 **Capability flags** (set BEFORE `initCameraSession()`):
@@ -48,7 +48,7 @@ Fake engine wired to `FakeCameraTest`. Android actual delegates to `CameraEngine
 | File | Role |
 |------|------|
 | `camposer/src/commonTest/kotlin/com/ujizin/camposer/fake/FakeCameraEngine.kt` | `expect` — mirrors `CameraEngine` interface |
-| `camposer/src/androidDeviceTest/kotlin/com/ujizin/camposer/fake/FakeCameraEngine.android.kt` | `actual` — `by CameraEngineImpl(...)` delegation |
+| `camposer/src/androidSharedTest/kotlin/com/ujizin/camposer/fake/FakeCameraEngine.android.kt` | `actual` — `by CameraEngineImpl(...)` delegation |
 | `camposer/src/iosTest/kotlin/com/ujizin/camposer/fake/FakeCameraEngine.ios.kt` | `actual` — explicit method implementations |
 
 Android actual pattern (delegation — no changes needed for new methods):
@@ -76,7 +76,7 @@ Factory function that wires `FakeCameraTest` + `FakeCameraEngine` into a `Camera
 | File | Role |
 |------|------|
 | `camposer/src/commonTest/kotlin/com/ujizin/camposer/fake/FakeCameraSession.kt` | `expect fun createCameraSession(...)` |
-| `camposer/src/androidDeviceTest/kotlin/com/ujizin/camposer/fake/FakeCameraSession.android.kt` | `actual` |
+| `camposer/src/androidSharedTest/kotlin/com/ujizin/camposer/fake/FakeCameraSession.android.kt` | `actual` |
 | `camposer/src/iosTest/kotlin/com/ujizin/camposer/fake/FakeCameraSession.ios.kt` | `actual` |
 
 Usage in tests (via `CameraSessionTest` base class):
@@ -96,9 +96,9 @@ val cameraSession by lazy {
 
 | Touch this | Update these |
 |-----------|--------------|
-| `FakeCameraTest.kt` (expect) | `FakeCameraTest.android.kt` + `FakeCameraTest.ios.kt` |
-| `FakeCameraEngine.kt` (expect) | `FakeCameraEngine.android.kt` (Android: auto via `by`) + `FakeCameraEngine.ios.kt` (explicit) |
-| `FakeCameraSession.kt` (expect) | `FakeCameraSession.android.kt` + `FakeCameraSession.ios.kt` |
+| `FakeCameraTest.kt` (expect) | `androidSharedTest/.../FakeCameraTest.android.kt` + `iosTest/.../FakeCameraTest.ios.kt` |
+| `FakeCameraEngine.kt` (expect) | `androidSharedTest/.../FakeCameraEngine.android.kt` (Android: auto via `by`) + `iosTest/.../FakeCameraEngine.ios.kt` (explicit) |
+| `FakeCameraSession.kt` (expect) | `androidSharedTest/.../FakeCameraSession.android.kt` + `iosTest/.../FakeCameraSession.ios.kt` |
 
 ---
 
@@ -107,8 +107,8 @@ val cameraSession by lazy {
 When a new property has a hardware capability check (e.g. `isXxxSupported`):
 
 1. Add `var isXxxSupported: Boolean` to `FakeCameraTest.kt` (expect)
-2. Add field + default in `FakeCameraTest.android.kt` (actual)
-3. Add field + default in `FakeCameraTest.ios.kt` (actual)
+2. Add field + default in `androidSharedTest/.../FakeCameraTest.android.kt` (Android actual)
+3. Add field + default in `iosTest/.../FakeCameraTest.ios.kt` (iOS actual)
 4. Add `fun assertXxx(expected: XxxType)` to all three files
 
 Platform actuals also wire the flag into the fake controller (`FakeCameraXController` / `FakeIosCameraController`) so the engine reads it during `initCameraSession()`.

@@ -43,7 +43,7 @@ make updateKotlinAbi       # ./gradlew updateKotlinAbi — only after intentiona
 - Run `./gradlew spotlessApply` before committing
 - Run `./gradlew checkKotlinAbi` when touching any public class or function
 - Run `./gradlew :camposer:detektCommonMain` when touching any `commonMain` file
-- Update all **3 files** when modifying `CameraEngine`, `FakeCameraEngine`, `FakeCameraTest`, or `FakeCameraSession` (expect + androidDeviceTest actual + iosTest actual)
+- Update all **3 files** when modifying `CameraEngine`, `FakeCameraEngine`, `FakeCameraTest`, or `FakeCameraSession` (expect + androidSharedTest actual + iosTest actual)
 - Mark every new public declaration with `public` — explicit API mode is enforced
 - Delegate hardware writes through the applier that owns that concern
 - Write state (`cameraState.update*()`) **after** the hardware write in appliers
@@ -128,7 +128,7 @@ Agent commands live in `.agents/commands/`. Claude Code auto-discovers them as `
 **Missing any platform file = build failure.** Each fake is split across 3 files (see [ARCHITECTURE.md § Cross-Cutting Concerns](ARCHITECTURE.md)):
 
 - `camposer/src/commonTest/.../fake/FakeCameraEngine.kt` (expect)
-- `camposer/src/androidDeviceTest/.../fake/FakeCameraEngine.android.kt` (actual)
+- `camposer/src/androidSharedTest/.../fake/FakeCameraEngine.android.kt` (actual — shared by JVM host test + device test)
 - `camposer/src/iosTest/.../fake/FakeCameraEngine.ios.kt` (actual)
 
 Always create/update all 3 when adding or changing a fake.
