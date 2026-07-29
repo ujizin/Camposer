@@ -2,7 +2,7 @@ package com.ujizin.camposer.fake
 
 import com.ujizin.camposer.internal.core.camerax.RecordingWrapper
 
-class FakeRecordingWrapper(
+internal class FakeRecordingWrapper(
   private val onRecord: () -> Unit,
 ) : RecordingWrapper {
   var isRecording = false
@@ -27,6 +27,7 @@ class FakeRecordingWrapper(
   }
 
   override fun stop() {
+    isRunning = false
     isRecording = false
     onRecord()
   }

@@ -47,4 +47,8 @@ internal expect class FakeCameraTest(
   fun assertIsRecording(expected: Boolean)
 
   fun assertVideoStabilization(expected: VideoStabilizationMode)
+
+  fun assertTorchEnabled(expected: Boolean)
+
+  fun assertFrameRate(expected: Int)
 }

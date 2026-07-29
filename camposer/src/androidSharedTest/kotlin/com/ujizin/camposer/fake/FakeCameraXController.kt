@@ -11,8 +11,8 @@ import androidx.camera.core.ExposureState
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY
+import androidx.camera.core.TorchState
 import androidx.camera.core.ZoomState
-import androidx.camera.core.impl.utils.executor.CameraXExecutors
 import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.video.FileDescriptorOutputOptions
 import androidx.camera.video.FileOutputOptions
@@ -23,20 +23,16 @@ import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
 import androidx.camera.view.video.AudioConfig
-import androidx.core.net.toUri
 import androidx.core.util.Consumer
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.liveData
 import com.ujizin.camposer.fake.data.dummyImageProxy
 import com.ujizin.camposer.internal.core.camerax.CameraXController
 import com.ujizin.camposer.internal.core.camerax.RecordEvent
 import com.ujizin.camposer.internal.core.camerax.RecordingWrapper
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import java.util.concurrent.Executor
 
 internal class FakeCameraXController : CameraXController {
@@ -48,7 +44,15 @@ internal class FakeCameraXController : CameraXController {
   override var previewResolutionSelector: ResolutionSelector? = null
   override var imageCaptureResolutionSelector: ResolutionSelector? = null
   override var imageAnalysisResolutionSelector: ResolutionSelector? = null
-  override var videoCaptureQualitySelector: QualitySelector = QualitySelector.from(Quality.UHD)
+
+  private var _videoCaptureQualitySelector: QualitySelector? = null
+  override var videoCaptureQualitySelector: QualitySelector
+    get() = _videoCaptureQualitySelector
+      ?: QualitySelector.from(Quality.UHD).also { _videoCaptureQualitySelector = it }
+    set(value) {
+      _videoCaptureQualitySelector = value
+    }
+
   override var cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
   override var videoCaptureTargetFrameRate: Range<Int> = Range(0, 0)
   override var imageCaptureFlashMode: Int = ImageCapture.FLASH_MODE_OFF
@@ -70,6 +74,9 @@ internal class FakeCameraXController : CameraXController {
   var isAutoRotationEnabled: Boolean = true
     private set
 
+  var lastSetFrameRate: Int = -1
+    private set
+
   var isZSLSupported: Boolean = true
     internal set
 
@@ -83,7 +90,7 @@ internal class FakeCameraXController : CameraXController {
   var isRecording = false
     internal set
 
-  private var exposureState: ExposureState = object : ExposureState {
+  private val exposureState: ExposureState = object : ExposureState {
     override fun getExposureCompensationIndex(): Int = fakeExposureCompensationIndex
 
     override fun getExposureCompensationRange(): Range<Int> =
@@ -122,13 +129,12 @@ internal class FakeCameraXController : CameraXController {
   override val contentResolver: ContentResolver
     get() = TODO("Fake Won't be implemented")
 
-  override val mainExecutor: Executor
-    get() = CameraXExecutors.directExecutor()
+  override val mainExecutor: Executor = Executor { it.run() }
 
-  override val zoomState = MutableLiveData<ZoomState>().apply {
-    runBlocking(Dispatchers.Main) {
-      // Post value does not work ._.
-      value = object : ZoomState {
+  // getValue() is overridden so tests can read .value from any thread.
+  override val zoomState: LiveData<ZoomState> = object : LiveData<ZoomState>() {
+    override fun getValue(): ZoomState =
+      object : ZoomState {
         override fun getZoomRatio(): Float = fakeZoomRatio
 
         override fun getMinZoomRatio(): Float = fakeMinZoom
@@ -137,7 +143,6 @@ internal class FakeCameraXController : CameraXController {
 
         override fun getLinearZoom(): Float = fakeZoomRatio
       }
-    }
   }
 
   override val cameraInfo: CameraInfo
@@ -150,13 +155,14 @@ internal class FakeCameraXController : CameraXController {
 
       override fun hasFlashUnit(): Boolean = hasFlashUnit
 
-      override fun getTorchState(): LiveData<Int?> = liveData { emit(imageCaptureFlashMode) }
+      override fun getTorchState(): LiveData<Int?> =
+        MutableLiveData(if (isTorchEnabled) TorchState.ON else TorchState.OFF)
 
       override fun getZoomState(): LiveData<ZoomState> = this@FakeCameraXController.zoomState
 
       override fun getExposureState(): ExposureState = this@FakeCameraXController.exposureState
 
-      override fun getCameraState(): LiveData<CameraState?> = liveData { null }
+      override fun getCameraState(): LiveData<CameraState?> = MutableLiveData(null)
 
       override fun getImplementationType(): String = "Performance"
 
@@ -203,10 +209,12 @@ internal class FakeCameraXController : CameraXController {
     this.useCases = useCases
   }
 
+  override fun setVideoFrameRate(frameRate: Int) {
+    lastSetFrameRate = frameRate
+  }
+
   override fun enableTorch(isTorchEnabled: Boolean) {
-    mainExecutor.execute {
-      this.isTorchEnabled = isTorchEnabled
-    }
+    this.isTorchEnabled = isTorchEnabled
   }
 
   override fun setExposureCompensationIndex(exposureCompensationIndex: Int) {
@@ -254,7 +262,7 @@ internal class FakeCameraXController : CameraXController {
     consumerEvent: Consumer<RecordEvent>,
   ): RecordingWrapper =
     createRecording(
-      outputUri = fileOutputOptions.file.toUri(),
+      outputUri = Uri.fromFile(fileOutputOptions.file),
       consumerEvent = consumerEvent,
     )
 
@@ -263,7 +271,7 @@ internal class FakeCameraXController : CameraXController {
     mainExecutor: Executor,
     callback: ImageCapture.OnImageSavedCallback,
   ) {
-    val savedUri: Uri = outputFileOptions.file?.toUri() ?: Uri.EMPTY
+    val savedUri: Uri? = outputFileOptions.file?.let { Uri.fromFile(it) }
     callback.onImageSaved(ImageCapture.OutputFileResults(savedUri))
   }
 
@@ -280,7 +288,7 @@ internal class FakeCameraXController : CameraXController {
   }
 
   private fun createRecording(
-    outputUri: Uri,
+    outputUri: Uri?,
     consumerEvent: Consumer<RecordEvent>,
   ): RecordingWrapper {
     isRecording = true

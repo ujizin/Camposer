@@ -16,8 +16,6 @@ import com.ujizin.camposer.state.properties.selector.CamSelector
 import com.ujizin.camposer.state.properties.toAndroidStabilizationFlags
 import com.ujizin.camposer.state.properties.value
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlin.math.roundToInt
 import kotlin.test.assertEquals
 
@@ -76,10 +74,9 @@ internal actual class FakeCameraTest(
     assertEquals(expected.value, cameraXController.useCases)
   }
 
-  actual fun assertZoomRatio(expected: Float) =
-    runBlocking(Dispatchers.Main) {
-      assertEquals(expected, cameraXController.zoomState.value?.zoomRatio)
-    }
+  actual fun assertZoomRatio(expected: Float) {
+    assertEquals(expected, cameraXController.zoomState.value?.zoomRatio)
+  }
 
   actual fun assertFlashMode(expected: FlashMode) {
     assertEquals(expected.mode, cameraXController.imageCaptureFlashMode)
@@ -117,5 +114,13 @@ internal actual class FakeCameraTest(
       expected.toAndroidStabilizationFlags()
     assertEquals(isVideoStabilizationEnabled, cameraXController.isVideoStabilizationEnabled)
     assertEquals(isPreviewStabilizationEnabled, cameraXController.isPreviewStabilizationEnabled)
+  }
+
+  actual fun assertTorchEnabled(expected: Boolean) {
+    assertEquals(expected, cameraXController.isTorchEnabled)
+  }
+
+  actual fun assertFrameRate(expected: Int) {
+    assertEquals(expected, cameraXController.lastSetFrameRate)
   }
 }
