@@ -13,15 +13,38 @@ import androidx.camera.video.MediaStoreOutputOptions
 import androidx.camera.view.video.AudioConfig
 import androidx.compose.runtime.Stable
 import com.ujizin.camposer.CaptureResult
+import com.ujizin.camposer.annotation.InternalCamposerApi
+import com.ujizin.camposer.controller.record.AndroidRecordController
+import com.ujizin.camposer.controller.takepicture.AndroidTakePictureCommand
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import java.io.File
 
 @Stable
+@OptIn(InternalCamposerApi::class)
 public actual class CameraController internal actual constructor(
   dispatcher: CoroutineDispatcher,
-) : AndroidCameraController(dispatcher) {
+) : CommonCameraController(dispatcher),
+  AndroidRecordController,
+  AndroidTakePictureCommand {
   public actual constructor() : this(Dispatchers.Main)
+
+  /**
+   * The Android-typed record controller.
+   *
+   * Safe: [CommonCameraController.initialize] is internal and its only Android caller is
+   * `CameraSession.android.kt`, which always passes a `DefaultRecordController` — an
+   * [AndroidRecordController].
+   */
+  private val androidRecordController: AndroidRecordController?
+    get() = recordController as AndroidRecordController?
+
+  /**
+   * The Android-typed take picture command. Safe for the same reason as
+   * [androidRecordController].
+   */
+  private val androidTakePictureCommand: AndroidTakePictureCommand?
+    get() = takePictureCommand as AndroidTakePictureCommand?
 
   @RequiresPermission(Manifest.permission.RECORD_AUDIO)
   override fun startRecording(
@@ -29,7 +52,7 @@ public actual class CameraController internal actual constructor(
     audioConfig: AudioConfig,
     onResult: (CaptureResult<Uri?>) -> Unit,
   ): Unit =
-    recordController.runBind {
+    androidRecordController.runBind {
       startRecording(
         fileOutputOptions = fileOutputOptions,
         audioConfig = audioConfig,
@@ -44,7 +67,7 @@ public actual class CameraController internal actual constructor(
     audioConfig: AudioConfig,
     onResult: (CaptureResult<Uri?>) -> Unit,
   ): Unit =
-    recordController.runBind {
+    androidRecordController.runBind {
       startRecording(
         fileDescriptorOutputOptions = fileDescriptorOutputOptions,
         audioConfig = audioConfig,
@@ -58,7 +81,7 @@ public actual class CameraController internal actual constructor(
     audioConfig: AudioConfig,
     onResult: (CaptureResult<Uri?>) -> Unit,
   ): Unit =
-    recordController.runBind {
+    androidRecordController.runBind {
       startRecording(
         mediaStoreOutputOptions = mediaStoreOutputOptions,
         audioConfig = audioConfig,
@@ -71,7 +94,7 @@ public actual class CameraController internal actual constructor(
     saveCollection: Uri,
     onResult: (CaptureResult<Uri?>) -> Unit,
   ): Unit =
-    takePictureCommand.runBind {
+    androidTakePictureCommand.runBind {
       takePicture(
         contentValues = contentValues,
         saveCollection = saveCollection,
@@ -83,7 +106,7 @@ public actual class CameraController internal actual constructor(
     file: File,
     onResult: (CaptureResult<Uri?>) -> Unit,
   ): Unit =
-    takePictureCommand.runBind {
+    androidTakePictureCommand.runBind {
       takePicture(
         file = file,
         onResult = onResult,
@@ -94,7 +117,7 @@ public actual class CameraController internal actual constructor(
     outputFileOptions: ImageCapture.OutputFileOptions,
     onResult: (CaptureResult<Uri?>) -> Unit,
   ): Unit =
-    takePictureCommand.runBind {
+    androidTakePictureCommand.runBind {
       takePicture(
         outputFileOptions = outputFileOptions,
         onResult = onResult,
