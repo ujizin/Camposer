@@ -43,7 +43,10 @@ public final class com/ujizin/camposer/ComposableSingletons$CameraPreview_androi
 	public final fun getLambda$1109182449$io_github_ujizin_camposer ()Lkotlin/jvm/functions/Function2;
 }
 
-public final class com/ujizin/camposer/controller/camera/CameraController : com/ujizin/camposer/controller/camera/CommonCameraController {
+public abstract interface annotation class com/ujizin/camposer/annotation/InternalCamposerApi : java/lang/annotation/Annotation {
+}
+
+public final class com/ujizin/camposer/controller/camera/CameraController : com/ujizin/camposer/controller/camera/CommonCameraController, com/ujizin/camposer/controller/record/AndroidRecordController, com/ujizin/camposer/controller/takepicture/AndroidTakePictureCommand {
 	public static final field $stable I
 	public fun <init> ()V
 	public fun startRecording (Landroidx/camera/video/FileDescriptorOutputOptions;Landroidx/camera/view/video/AudioConfig;Lkotlin/jvm/functions/Function1;)V
@@ -52,37 +55,37 @@ public final class com/ujizin/camposer/controller/camera/CameraController : com/
 	public fun takePicture (Landroid/content/ContentValues;Landroid/net/Uri;Lkotlin/jvm/functions/Function1;)V
 	public fun takePicture (Landroidx/camera/core/ImageCapture$OutputFileOptions;Lkotlin/jvm/functions/Function1;)V
 	public fun takePicture (Ljava/io/File;Lkotlin/jvm/functions/Function1;)V
+	public fun toggleRecording (Landroidx/camera/video/FileDescriptorOutputOptions;Landroidx/camera/view/video/AudioConfig;Lkotlin/jvm/functions/Function1;)V
+	public fun toggleRecording (Landroidx/camera/video/FileOutputOptions;Landroidx/camera/view/video/AudioConfig;Lkotlin/jvm/functions/Function1;)V
+	public fun toggleRecording (Landroidx/camera/video/MediaStoreOutputOptions;Landroidx/camera/view/video/AudioConfig;Lkotlin/jvm/functions/Function1;)V
 }
 
-public abstract class com/ujizin/camposer/controller/camera/CommonCameraController : com/ujizin/camposer/controller/camera/CameraControllerContract {
+public abstract class com/ujizin/camposer/controller/camera/CommonCameraController : com/ujizin/camposer/controller/record/RecordController, com/ujizin/camposer/controller/takepicture/TakePictureCommand {
 	public static final field $stable I
 	public fun <init> ()V
-	public fun getInfo ()Lcom/ujizin/camposer/info/CameraInfo;
+	public final fun getInfo ()Lcom/ujizin/camposer/info/CameraInfo;
 	protected final fun getRecordController ()Lcom/ujizin/camposer/controller/record/RecordController;
-	public fun getState ()Lcom/ujizin/camposer/state/CameraState;
+	public final fun getState ()Lcom/ujizin/camposer/state/CameraState;
 	protected final fun getTakePictureCommand ()Lcom/ujizin/camposer/controller/takepicture/TakePictureCommand;
 	public fun isMuted ()Lkotlinx/coroutines/flow/StateFlow;
 	public fun isRecording ()Lkotlinx/coroutines/flow/StateFlow;
-	public fun isRunning ()Lkotlinx/coroutines/flow/StateFlow;
+	public final fun isRunning ()Lkotlinx/coroutines/flow/StateFlow;
 	public fun muteRecording-IoAF18A (Z)Ljava/lang/Object;
 	public fun pauseRecording-d1pmJ48 ()Ljava/lang/Object;
 	public fun resumeRecording-d1pmJ48 ()Ljava/lang/Object;
 	protected final fun runBind (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
-	public fun setExposureCompensation (F)V
-	public fun setFlashMode-IoAF18A (Lcom/ujizin/camposer/state/properties/FlashMode;)Ljava/lang/Object;
-	public fun setMirrorMode (Lcom/ujizin/camposer/state/properties/MirrorMode;)V
-	public fun setOrientationStrategy (Lcom/ujizin/camposer/state/properties/OrientationStrategy;)V
-	public fun setTorchEnabled-IoAF18A (Z)Ljava/lang/Object;
-	public fun setVideoFrameRate-IoAF18A (I)Ljava/lang/Object;
-	public fun setVideoStabilizationEnabled-IoAF18A (Lcom/ujizin/camposer/state/properties/VideoStabilizationMode;)Ljava/lang/Object;
-	public fun setZoomRatio (F)V
+	public final fun setExposureCompensation (F)V
+	public final fun setFlashMode-IoAF18A (Lcom/ujizin/camposer/state/properties/FlashMode;)Ljava/lang/Object;
+	public final fun setMirrorMode (Lcom/ujizin/camposer/state/properties/MirrorMode;)V
+	public final fun setOrientationStrategy (Lcom/ujizin/camposer/state/properties/OrientationStrategy;)V
+	public final fun setTorchEnabled-IoAF18A (Z)Ljava/lang/Object;
+	public final fun setVideoFrameRate-IoAF18A (I)Ljava/lang/Object;
+	public final fun setVideoStabilizationEnabled-IoAF18A (Lcom/ujizin/camposer/state/properties/VideoStabilizationMode;)Ljava/lang/Object;
+	public final fun setZoomRatio (F)V
 	public fun startRecording (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
 	public fun stopRecording-d1pmJ48 ()Ljava/lang/Object;
 	public fun takePicture (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
 	public fun takePicture (Lkotlin/jvm/functions/Function1;)V
-	public fun toggleRecording (Landroidx/camera/video/FileDescriptorOutputOptions;Landroidx/camera/view/video/AudioConfig;Lkotlin/jvm/functions/Function1;)V
-	public fun toggleRecording (Landroidx/camera/video/FileOutputOptions;Landroidx/camera/view/video/AudioConfig;Lkotlin/jvm/functions/Function1;)V
-	public fun toggleRecording (Landroidx/camera/video/MediaStoreOutputOptions;Landroidx/camera/view/video/AudioConfig;Lkotlin/jvm/functions/Function1;)V
 }
 
 public abstract interface class com/ujizin/camposer/controller/record/AndroidRecordController : com/ujizin/camposer/controller/record/RecordController {

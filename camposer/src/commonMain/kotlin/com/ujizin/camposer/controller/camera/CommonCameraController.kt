@@ -1,6 +1,7 @@
 package com.ujizin.camposer.controller.camera
 
 import com.ujizin.camposer.CaptureResult
+import com.ujizin.camposer.annotation.InternalCamposerApi
 import com.ujizin.camposer.controller.record.RecordController
 import com.ujizin.camposer.controller.takepicture.TakePictureCommand
 import com.ujizin.camposer.info.CameraInfo
@@ -31,18 +32,19 @@ import kotlinx.coroutines.flow.update
  * It handles the lifecycle of camera operations, ensuring that commands are queued or executed based on
  * whether the camera session is currently running in common module.
  *
- * This class is intended to be used internally. Please use [CameraController] instead.
+ * This class is an implementation detail. Please use [CameraController] instead.
+ *
+ * @suppress
  */
-public abstract class CommonCameraController<
-  RC : RecordController,
-  TPC : TakePictureCommand,
-> internal constructor(
+@InternalCamposerApi
+public abstract class CommonCameraController internal constructor(
   dispatcher: CoroutineDispatcher = Dispatchers.Main,
-) : CameraControllerContract {
-  protected var recordController: RC? = null
+) : RecordController,
+  TakePictureCommand {
+  protected var recordController: RecordController? = null
     private set
 
-  protected var takePictureCommand: TPC? = null
+  protected var takePictureCommand: TakePictureCommand? = null
     private set
 
   private var cameraEngine: CameraEngine? = null
@@ -52,12 +54,12 @@ public abstract class CommonCameraController<
   private val mainScope = CoroutineScope(dispatcher + SupervisorJob())
 
   private val _isRunning = MutableStateFlow(false)
-  public override val isRunning: StateFlow<Boolean> = _isRunning.asStateFlow()
+  public val isRunning: StateFlow<Boolean> = _isRunning.asStateFlow()
 
-  override val state: CameraState?
+  public val state: CameraState?
     get() = cameraEngine?.cameraState
 
-  override val info: CameraInfo?
+  public val info: CameraInfo?
     get() = cameraEngine?.cameraInfo
 
   private val _isMuted = MutableStateFlow(false)
@@ -90,7 +92,7 @@ public abstract class CommonCameraController<
     onImageCaptured: (CaptureResult<String>) -> Unit,
   ): Unit = takePictureCommand.runBind { takePicture(filename, onImageCaptured) }
 
-  override fun setZoomRatio(zoomRatio: Float) {
+  public fun setZoomRatio(zoomRatio: Float) {
     if (!isRunning.value) {
       pendingBundle[ZOOM_KEY] = zoomRatio
       return
@@ -99,7 +101,7 @@ public abstract class CommonCameraController<
     cameraEngine.runBind { updateZoomRatio(zoomRatio) }
   }
 
-  override fun setExposureCompensation(exposureCompensation: Float) {
+  public fun setExposureCompensation(exposureCompensation: Float) {
     if (!isRunning.value) {
       pendingBundle[EXPOSURE_COMPENSATION_KEY] = exposureCompensation
       return
@@ -107,7 +109,7 @@ public abstract class CommonCameraController<
     cameraEngine.runBind { updateExposureCompensation(exposureCompensation) }
   }
 
-  override fun setMirrorMode(mirrorMode: MirrorMode) {
+  public fun setMirrorMode(mirrorMode: MirrorMode) {
     if (!isRunning.value) {
       pendingBundle[MIRROR_MODE_KEY] = mirrorMode
       return
@@ -116,7 +118,7 @@ public abstract class CommonCameraController<
     cameraEngine.runBind { updateMirrorMode(mirrorMode) }
   }
 
-  override fun setFlashMode(flashMode: FlashMode): Result<Unit> =
+  public fun setFlashMode(flashMode: FlashMode): Result<Unit> =
     runCatching {
       if (!isRunning.value) {
         pendingBundle[FLASH_MODE_KEY] = flashMode
@@ -128,7 +130,7 @@ public abstract class CommonCameraController<
       cameraEngine.runBind { updateFlashMode(flashMode) }
     }
 
-  override fun setTorchEnabled(isTorchEnabled: Boolean): Result<Unit> =
+  public fun setTorchEnabled(isTorchEnabled: Boolean): Result<Unit> =
     runCatching {
       if (!isRunning.value) {
         pendingBundle[TORCH_KEY] = isTorchEnabled
@@ -141,7 +143,7 @@ public abstract class CommonCameraController<
       cameraEngine.runBind { updateTorchEnabled(isTorchEnabled) }
     }
 
-  override fun setVideoFrameRate(frameRate: Int): Result<Unit> =
+  public fun setVideoFrameRate(frameRate: Int): Result<Unit> =
     runCatching {
       if (!isRunning.value) {
         pendingBundle[FRAME_RATE_KEY] = frameRate
@@ -156,7 +158,7 @@ public abstract class CommonCameraController<
       cameraEngine.runBind { updateFrameRate(frameRate) }
     }
 
-  override fun setVideoStabilizationEnabled(mode: VideoStabilizationMode): Result<Unit> =
+  public fun setVideoStabilizationEnabled(mode: VideoStabilizationMode): Result<Unit> =
     runCatching {
       if (!isRunning.value) {
         pendingBundle[VIDEO_STABILIZATION_KEY] = mode
@@ -171,13 +173,13 @@ public abstract class CommonCameraController<
       cameraEngine.runBind { updateVideoStabilizationMode(mode) }
     }
 
-  override fun setOrientationStrategy(strategy: OrientationStrategy) {
+  public fun setOrientationStrategy(strategy: OrientationStrategy) {
     cameraEngine.runBind { updateOrientationStrategy(strategy) }
   }
 
   internal fun initialize(
-    recordController: RC,
-    takePictureCommand: TPC,
+    recordController: RecordController,
+    takePictureCommand: TakePictureCommand,
     cameraEngine: CameraEngine,
   ) {
     if (this.cameraEngine != null) return
