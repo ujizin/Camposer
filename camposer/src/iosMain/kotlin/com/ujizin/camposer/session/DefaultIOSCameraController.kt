@@ -38,6 +38,7 @@ import platform.AVFoundation.AVCaptureOutput
 import platform.AVFoundation.AVCapturePhotoOutput
 import platform.AVFoundation.AVCapturePhotoQualityPrioritization
 import platform.AVFoundation.AVCaptureSession
+import platform.AVFoundation.AVCaptureSessionPresetInputPriority
 import platform.AVFoundation.AVCaptureTorchModeOff
 import platform.AVFoundation.AVCaptureTorchModeOn
 import platform.AVFoundation.AVCaptureVideoOrientation
@@ -265,6 +266,13 @@ public class DefaultIOSCameraController internal constructor(
 
   override fun setDeviceFormat(format: AVCaptureDeviceFormat) {
     if (!captureDevice.formats().contains(format)) {
+      return
+    }
+
+    // Writing the same format again is skipped only when the session already keeps the device
+    // format. With any other preset, the write is what makes the session keep it.
+    val isFormatKept = captureSession.sessionPreset == AVCaptureSessionPresetInputPriority
+    if (isFormatKept && captureDevice.activeFormat == format) {
       return
     }
 

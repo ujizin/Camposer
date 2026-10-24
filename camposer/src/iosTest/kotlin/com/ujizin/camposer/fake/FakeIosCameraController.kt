@@ -16,6 +16,7 @@ import platform.AVFoundation.AVCaptureDeviceType
 import platform.AVFoundation.AVCaptureFlashMode
 import platform.AVFoundation.AVCaptureFlashModeOff
 import platform.AVFoundation.AVCaptureOutput
+import platform.AVFoundation.AVCapturePhotoOutput
 import platform.AVFoundation.AVCapturePhotoQualityPrioritization
 import platform.AVFoundation.AVCapturePhotoQualityPrioritizationBalanced
 import platform.AVFoundation.AVCaptureSession
@@ -117,7 +118,7 @@ class FakeIosCameraController : IOSCameraController {
     device: AVCaptureDevice,
     onRunningChanged: (Boolean) -> Unit,
   ) {
-    fakeOutputs.add(captureOutput)
+    addOutput(captureOutput)
     fakeCaptureDevice = device
     onRunningChanged(true)
   }
@@ -132,6 +133,7 @@ class FakeIosCameraController : IOSCameraController {
   }
 
   override fun addOutput(output: AVCaptureOutput) {
+    if (fakeOutputs.contains(output)) return
     fakeOutputs.add(output)
   }
 
@@ -196,6 +198,7 @@ class FakeIosCameraController : IOSCameraController {
     quality: AVCapturePhotoQualityPrioritization,
     highResolutionEnabled: Boolean,
   ) {
+    if (fakeOutputs.none { it is AVCapturePhotoOutput }) return
     fakeQuality = quality
     isFakeHighResolutionEnabled = highResolutionEnabled
   }

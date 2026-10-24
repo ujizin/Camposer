@@ -113,11 +113,24 @@ public actual class CameraSession internal constructor(
   @OptIn(ExperimentalForeignApi::class)
   internal fun startCamera() {
     if (iosCameraController.captureSession.isRunning()) return
+    val iosCameraEngine = cameraEngine as? IOSCameraEngine
+    val captureOutput = state.captureMode.value.createOutput()
+    val device = iosCameraController.getCaptureDevice(state.camSelector.value)
+
+    iosCameraController.withSessionConfiguration {
+      iosCameraController.setCaptureDevice(device)
+      iosCameraController.addOutput(captureOutput)
+      iosCameraEngine?.applySessionConfig()
+    }
+
     iosCameraController.start(
-      captureOutput = state.captureMode.value.createOutput(),
-      device = iosCameraController.getCaptureDevice(state.camSelector.value),
+      captureOutput = captureOutput,
+      device = device,
       onRunningChanged = { isStreaming = it },
     )
+
+    // Starting the session can reset the device to the session preset format.
+    iosCameraEngine?.applySessionConfig()
   }
 
   internal fun renderCamera(view: UIView) {
