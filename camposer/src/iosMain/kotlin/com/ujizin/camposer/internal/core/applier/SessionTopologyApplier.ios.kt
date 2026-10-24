@@ -87,6 +87,16 @@ internal class SessionTopologyApplier(
     }
   }
 
+  // The session graph is only complete once the output is attached, so anything written to the
+  // device or the output before the camera starts has to be written again here.
+  fun applySessionConfig() {
+    setCamFormat(
+      camFormat = cameraState.camFormat.value,
+      captureMode = cameraState.captureMode.value,
+    )
+    setImageCaptureStrategy(cameraState.imageCaptureStrategy.value)
+  }
+
   private fun setCamFormat(
     camFormat: CamFormat,
     captureMode: CaptureMode,

@@ -119,6 +119,8 @@ internal class IOSTakePictureCommand(
       mapOf(AVVideoCodecKey to AVVideoCodecJPEG),
     )
     settings.setFlashMode(flashMode)
+    // A photo prioritization above the output maximum makes the capture call raise an exception.
+    settings.setPhotoQualityPrioritization(cameraOutput.maxPhotoQualityPrioritization)
 
     cameraOutput.capturePhotoWithSettings(settings, delegate)
   }
