@@ -42,3 +42,8 @@ CameraPreview(
     }
 }
 ```
+
+!!! note "Desktop (JVM)"
+    Desktop webcams have no flash or torch. `isFlashSupported` and `isTorchSupported` are always
+    `false`, and `setFlashMode`/`setTorchEnabled` return `Result.failure` for anything other than
+    `FlashMode.Off` and `false`.

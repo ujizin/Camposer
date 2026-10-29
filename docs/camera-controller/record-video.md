@@ -70,6 +70,11 @@ cameraController.muteRecording(isMuted = true)
 !!! warning "iOS limitation"
     Mute recording is **not supported on iOS**. Calling `muteRecording` on iOS always returns `Result.failure`. Audio input is enabled automatically when switching to `CaptureMode.Video` and cannot be toggled during recording.
 
+!!! note "Desktop (JVM)"
+    Recordings are encoded with FFmpeg as H.264 video and AAC audio. The container is chosen by
+    the file extension (`.mp4` and `.mov` are good choices). Pause, resume and mute are supported.
+    When no microphone is available the video is recorded without an audio track.
+
 ## Android-Specific API
 
 On Android, `CameraController.startRecording` supports additional options to provide more control over file handling:

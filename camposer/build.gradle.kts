@@ -23,6 +23,8 @@ extra.apply {
 
 apply(from = "$rootDir/scripts/publish-module.gradle")
 
+val jvmNativePlatforms = listOf("linux-x86_64", "macosx-arm64", "macosx-x86_64", "windows-x86_64")
+
 kotlin {
   applyDefaultHierarchyTemplate()
 
@@ -57,6 +59,10 @@ kotlin {
     compilerOptions { jvmTarget.set(JvmTarget.JVM_17) }
   }
 
+  jvm {
+    compilerOptions { jvmTarget.set(JvmTarget.JVM_17) }
+  }
+
   listOf(iosArm64(), iosSimulatorArm64()).forEach { iosTarget ->
     iosTarget.binaries.framework {
       baseName = "Camposer"
@@ -80,6 +86,31 @@ kotlin {
     }
 
     iosMain.dependencies {}
+
+    jvmMain.dependencies {
+      implementation(libs.javacv)
+      // Native binaries for every supported desktop platform. One dependency runs everywhere.
+      val javacppVersion = libs.versions.javacpp.get()
+      val opencvVersion = libs.versions.javacv.opencv
+        .get()
+      val openblasVersion = libs.versions.javacv.openblas
+        .get()
+      val ffmpegVersion = libs.versions.javacv.ffmpeg
+        .get()
+      jvmNativePlatforms.forEach { platform ->
+        implementation("org.bytedeco:javacpp:$javacppVersion:$platform")
+        implementation("org.bytedeco:opencv:$opencvVersion:$platform")
+        implementation("org.bytedeco:openblas:$openblasVersion:$platform")
+        implementation("org.bytedeco:ffmpeg:$ffmpegVersion:$platform")
+      }
+    }
+
+    jvmTest.dependencies {
+      implementation(kotlin("test"))
+      implementation(libs.kotlinx.coroutines.test)
+      // Skia runtime for the host so ImageBitmap-backed code can run in unit tests.
+      implementation(compose.desktop.currentOs)
+    }
 
     commonTest.dependencies {
       implementation(kotlin("test"))

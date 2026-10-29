@@ -7,12 +7,13 @@
   <a href="https://search.maven.org/search?q=g:%22io.github.ujizin%22%20AND%20a:%22camposer%22">
   <img src="https://img.shields.io/maven-metadata/v.svg?color=dark-green&label=Maven%20Central&metadataUrl=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fio%2Fgithub%2Fujizin%2Fcamposer%2Fmaven-metadata.xml"/></a>
   <img alt="Static Badge" src="https://img.shields.io/badge/Platform-Android-3DDC84?logo=android">
-  <img alt="Static Badge" src="https://img.shields.io/badge/Platform-iOS-F5F5F7?logo=ios"> <br/>
+  <img alt="Static Badge" src="https://img.shields.io/badge/Platform-iOS-F5F5F7?logo=ios">
+  <img alt="Static Badge" src="https://img.shields.io/badge/Platform-Desktop-5C6BC0?logo=openjdk"> <br/>
   <a href="https://androidweekly.net/issues/issue-546"><img src="https://androidweekly.net/issues/issue-546/badge"/></a>
   <a href="https://ujizin.github.io/Camposer/"><img src="https://img.shields.io/badge/docs-Zensical-526CFE"/></a>
 </p>
 
-<p align="center">📸 A Compose Multiplatform camera library for taking photos, recording videos, controlling flash/torch, zooming, and more.</p>
+<p align="center">📸 A Compose Multiplatform camera library for Android, iOS and Desktop: taking photos, recording videos, controlling flash/torch, zooming, and more.</p>
 <br>
 <p align="center">
 <img src="https://user-images.githubusercontent.com/51065868/201734193-053dd4f5-c9cb-4a62-9692-1a62264911a5.gif" width="175"/> <img src="https://user-images.githubusercontent.com/51065868/201736304-f1f1b5fa-3f3d-4c12-9d40-a790e0d4d82b.gif" width="175"/>

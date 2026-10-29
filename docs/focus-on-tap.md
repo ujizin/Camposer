@@ -53,3 +53,7 @@ CameraPreview(
     }
 )
 ```
+
+!!! note "Desktop (JVM)"
+    Desktop backends expose no focus control. `isFocusSupported` is always `false` and taps on
+    the preview are ignored.

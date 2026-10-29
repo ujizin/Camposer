@@ -30,3 +30,9 @@ CameraPreview(
     }
 }
 ```
+
+!!! note "Desktop (JVM)"
+    On desktop the preview is flipped too, so what you see matches the captured file.
+    `MirrorMode.OnlyInFront` mirrors only when the selector position is `CamPosition.Front`;
+    devices picked from `rememberCameraDeviceState()` report `CamPosition.Unknown`, so use
+    `MirrorMode.On` to mirror them.

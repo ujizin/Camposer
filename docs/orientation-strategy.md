@@ -38,3 +38,7 @@ CameraPreview(
     }
 }
 ```
+
+!!! note "Desktop (JVM)"
+    Desktop computers have no orientation sensor and the preview never rotates. The strategy is
+    stored but has no effect; pictures and videos keep the orientation of the webcam frames.

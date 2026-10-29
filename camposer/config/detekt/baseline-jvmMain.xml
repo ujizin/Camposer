@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>LongParameterList:CameraPreview.jvm.kt$( modifier: Modifier, cameraSession: CameraSession, camSelector: CamSelector, captureMode: CaptureMode, camFormat: CamFormat, imageCaptureStrategy: ImageCaptureStrategy, scaleType: ScaleType, imageAnalyzer: ImageAnalyzer?, implementationMode: ImplementationMode, isImageAnalysisEnabled: Boolean, isFocusOnTapEnabled: Boolean, isPinchToZoomEnabled: Boolean, previewBackgroundColor: Color, onTapFocus: (Offset) -> Unit, onSwitchCamera: (ImageBitmap) -> Unit, content: @Composable () -> Unit, )</ID>
+    <ID>LongParameterList:PreviewGeometry.kt$PreviewGeometry$( val imageWidth: Int, val imageHeight: Int, val canvasWidth: Float, val canvasHeight: Float, val scale: Float, val offsetX: Float, val offsetY: Float, val isMirrored: Boolean, val density: Float, )</ID>
+    <ID>SpreadOperator:CamFormat.jvm.kt$CamFormat$(*Default.configs.toTypedArray())</ID>
+    <ID>TooManyFunctions:DefaultJvmCameraController.kt$DefaultJvmCameraController : JvmCameraController</ID>
+    <ID>TooManyFunctions:JvmCameraController.kt$JvmCameraController</ID>
+    <ID>TooManyFunctions:JvmRecordController.kt$JvmRecordController</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -24,6 +24,8 @@ kotlin {
     }
   }
 
+  jvm()
+
   val xcfName = "sharedKit"
 
   iosArm64 {
@@ -69,6 +71,12 @@ kotlin {
     }
 
     iosMain.dependencies {
+    }
+
+    jvmMain.dependencies {
+      implementation(compose.desktop.currentOs)
+      // Reads the first frame of recorded videos for the thumbnail.
+      implementation(libs.javacv)
     }
   }
 }

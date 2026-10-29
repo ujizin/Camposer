@@ -1,5 +1,6 @@
 @file:OptIn(ExperimentalAbiValidation::class)
 
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 import ujizin.camposer.Config
 
@@ -43,6 +44,10 @@ kotlin {
     }
   }
 
+  jvm {
+    compilerOptions { jvmTarget.set(JvmTarget.JVM_17) }
+  }
+
   listOf(
     iosArm64(),
     iosSimulatorArm64(),
@@ -75,6 +80,12 @@ kotlin {
 
     iosMain {
       dependencies {
+      }
+    }
+
+    jvmTest {
+      dependencies {
+        implementation(kotlin("test"))
       }
     }
 

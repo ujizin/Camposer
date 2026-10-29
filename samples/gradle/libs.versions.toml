@@ -26,6 +26,7 @@ core-ktx = "1.17.0"
 multiplatform-nav3-ui = "1.0.0-alpha06"
 coil3 = "3.5.0"
 filekit = "0.12.0"
+javacv = "1.5.14"
 
 [libraries]
 
@@ -69,6 +70,7 @@ coil-video = { module = "io.coil-kt:coil-video", version.ref = "coil" }
 kotlinx-io = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kotlinx-io" }
 filekit-core = { module = "io.github.vinceglb:filekit-core", version.ref = "filekit" }
 filekit-dialogs = { module = "io.github.vinceglb:filekit-dialogs", version.ref = "filekit" }
+javacv = { module = "org.bytedeco:javacv", version.ref = "javacv" }
 
 ## KMP Compose
 compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose-multiplatform" }

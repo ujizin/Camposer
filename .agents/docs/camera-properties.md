@@ -20,7 +20,7 @@ Every property follows the same three-layer model:
 [ CameraEngine → CameraEngineImpl (expect/actual) ]
           │ dispatches to platform
           ▼
-[ Platform: CameraX (Android) | AVFoundation (iOS) ]
+[ Platform: CameraX (Android) | AVFoundation (iOS) | JavaCV (Desktop) ]
 ```
 
 `CameraState` is the single source of truth. Hardware writes happen *before* the state update —
@@ -97,21 +97,24 @@ just to avoid creating a new file.
 ## Fake Infrastructure
 
 Tests use fake implementations of the engine layer. These fakes use the same `expect/actual`
-pattern as the production code, which means **every interface change requires updating three
+pattern as the production code, which means **every interface change requires updating four
 files**:
 
 ```text
 commonTest/kotlin/.../fake/FakeCameraEngine.kt           ← expect declaration
 androidSharedTest/kotlin/.../fake/FakeCameraEngine.android.kt  ← Android actual (shared JVM + device)
 iosTest/kotlin/.../fake/FakeCameraEngine.ios.kt          ← iOS actual
+jvmTest/kotlin/.../fake/FakeCameraEngine.jvm.kt          ← Desktop actual
 ```
 
 The Android actual typically delegates to `CameraEngineImpl` via `by` delegation, so adding the
 method to the interface and the Android engine impl is sufficient. The iOS actual may need a
 manual implementation — check whether it uses delegation or explicit overrides.
 
-The same three-file rule applies to `FakeCameraTest` when a property adds a hardware capability
-check (`isFlashSupported`, etc.).
+The same four-file rule applies to `FakeCameraTest` when a property adds a hardware capability
+check (`isFlashSupported`, etc.). On desktop, properties that webcams cannot apply (flash, torch,
+zoom, stabilization) are state-only; `FakeCameraTest.jvm.kt` asserts those through the engine
+state and everything else through `FakeJvmCameraController`.
 
 ---
 
@@ -276,8 +279,8 @@ override fun setYourProperty(yourProperty: YourProperty): Result<Unit> {
 }
 ```
 
-If you add a capability flag, update `FakeCameraTest` across all three files (expect +
-androidSharedTest actual + iosTest actual).
+If you add a capability flag, update `FakeCameraTest` across all four files (expect +
+androidSharedTest actual + iosTest actual + jvmTest actual).
 
 **9. Add to `FakeCameraEngine`** — same as Type A step 6.
 
@@ -293,7 +296,7 @@ androidSharedTest actual + iosTest actual).
 
 | Mistake | Symptom | Fix |
 |---------|---------|-----|
-| Missing `FakeCameraEngine` platform actual | Build failure: `expect has no actual` | Update all 3 files: common expect + androidSharedTest actual + iosTest actual |
+| Missing `FakeCameraEngine` platform actual | Build failure: `expect has no actual` | Update all 4 files: common expect + androidSharedTest actual + iosTest actual + jvmTest actual |
 | Missing `FakeCameraTest` platform actual | Same | Same |
 | State write before hardware write in applier | Potential stale UI / race | Always hardware → then state |
 | Missing idempotency guard in engine impl | Property re-applied on every update cycle | Add `if (cameraState.x.value == x) return` |

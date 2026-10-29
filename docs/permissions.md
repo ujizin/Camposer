@@ -67,3 +67,10 @@ There is no combined camera-and-audio state. Check both states in your own code:
 ```kotlin
 val hasAll = cameraPermission.status.isGranted && audioPermission.status.isGranted
 ```
+
+!!! note "Desktop (JVM)"
+    Desktop has no runtime permission dialog that an application can drive; the operating system
+    grants access when the device opens (macOS shows its own prompt on first use). The desktop
+    implementation always reports `PermissionStatus.Granted`, `launchPermissionRequest()` calls
+    `onPermissionResult(true)` and `openAppSettings()` does nothing. This lets shared permission
+    screens work unchanged across platforms.

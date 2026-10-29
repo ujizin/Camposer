@@ -1,0 +1,49 @@
+name: Desktop Test
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'camposer/**'
+      - 'camposer-code-scanner/**'
+      - 'camposer-permissions/**'
+      - '.github/workflows/**'
+      - 'gradle/**'
+      - 'gradle.properties'
+      - '*.gradle.kts'
+  pull_request:
+    branches: [ '**' ]
+    paths:
+      - 'camposer/**'
+      - 'camposer-code-scanner/**'
+      - 'camposer-permissions/**'
+      - '.github/workflows/**'
+      - 'gradle/**'
+      - 'gradle.properties'
+      - '*.gradle.kts'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6.0.1
+      - name: Set up JDK
+        uses: actions/setup-java@v5.1.0
+        with:
+          distribution: 'zulu'
+          java-version: 21
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Gradle cache
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Run desktop tests
+        run: ./gradlew :camposer:jvmTest :camposer-code-scanner:jvmTest :camposer-permissions:jvmTest

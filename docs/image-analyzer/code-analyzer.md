@@ -57,3 +57,8 @@ CameraPreview(
     imageAnalyzer = codeImageAnalyzer,
 )
 ```
+
+!!! note "Desktop (JVM)"
+    Desktop decodes with [ZXing](https://github.com/zxing/zxing). Every code type listed above is
+    supported. Corner points and the frame rectangle are reported in the preview coordinate
+    space in dp, like on Android and iOS.

@@ -46,6 +46,24 @@ actual class OCRImageAnalyzer(
 }
 ```
 
+### Desktop (JVM)
+
+On desktop the analyzer receives a `CameraFrame`. `frame.image` is a `TYPE_3BYTE_BGR`
+`BufferedImage`, and `frame.toPreviewPosition(x, y)` maps a pixel of the image to the preview
+coordinate space in dp. Frames are delivered on a background thread; frames that arrive while
+the analyzer is busy are dropped.
+
+```kotlin
+actual class OCRImageAnalyzer(
+    private val listener: OCRListener
+): ImageAnalyzer.Analyzer {
+    override fun analyze(frame: CameraFrame) {
+        // code to analyze frame.image ...
+        listener.onAnalyzed(result)
+    }
+}
+```
+
 ## Using remember to Attach the Analyzer (Example)
 
 ### Common
@@ -89,6 +107,15 @@ public actual fun cameraSession.rememberOCRAnalyzer(
         )
     )
 }
+```
+
+### Desktop (JVM)
+
+```kotlin
+@Composable
+public actual fun cameraSession.rememberOCRAnalyzer(
+    ocrAnalyzer: OCRAnalyzer,
+) = rememberImageAnalyzer(OCRImageAnalyzer(ocrAnalyzer))
 ```
 
 ### Attaching the Analyzer in Compose (Example)

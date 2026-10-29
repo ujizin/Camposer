@@ -57,3 +57,10 @@ CameraPreview(
     }
 }
 ```
+
+!!! note "Desktop (JVM)"
+    On desktop the value is an EV offset in stops, from `-3` to `+3`, relative to the automatic
+    exposure the backend reported when the camera opened. `0` restores automatic exposure.
+    Exposure control is available with the Windows (Media Foundation, DirectShow) and Linux
+    (V4L2) backends. macOS (AVFoundation) exposes no exposure control through OpenCV, so
+    `isExposureSupported` is `false` there.

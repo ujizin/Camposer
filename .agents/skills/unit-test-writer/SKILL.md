@@ -9,7 +9,7 @@ Camposer tests run in `commonTest` against fake implementations of the camera en
 
 ## Test Infrastructure
 
-For full fake class details, file paths, and the 3-file rule see [reference/FAKE_PATTERNS.md](../reference/FAKE_PATTERNS.md).
+For full fake class details, file paths, and the 4-file rule (expect + Android + iOS + JVM actuals) see the Fake Infrastructure section of [CLAUDE.md](../../../CLAUDE.md).
 
 | Class | Role |
 |-------|------|

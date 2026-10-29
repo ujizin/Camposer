@@ -67,3 +67,10 @@ The camera format uses a scoring and fallback mechanism. Based on the example ab
 
 !!! info
     Support for some configurations on Android depends on CameraX. Having these features available in the device’s native camera does not necessarily mean they are supported by CameraX.
+
+!!! note "Desktop (JVM)"
+    Desktop backends cannot enumerate the formats a webcam supports. Camposer scores a list of
+    common resolutions (from 320 × 240 up to 3840 × 2160) and asks the backend for the best match;
+    the backend then snaps to the nearest resolution it can deliver. `FrameRateConfig` is applied
+    only when present. `VideoStabilizationConfig` is ignored and `cameraInfo.state.videoFormats`
+    reports the single format the backend currently delivers.

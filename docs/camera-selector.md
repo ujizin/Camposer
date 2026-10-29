@@ -93,6 +93,18 @@ fun CameraPreviewScreen() {
 }
 ```
 
+## Desktop (JVM)
+
+Desktop webcams have no physical position. `CamSelector.Front` and `CamSelector.Back` both open
+the default device (index `0`), and `CamLensType` is ignored. To pick another webcam, build the
+selector from a `CameraDevice` returned by `rememberCameraDeviceState()`; the device index is
+taken from `CameraDevice.cameraId`.
+
+!!! note
+    Desktop backends cannot list devices without opening them, so discovery briefly opens each
+    webcam. Devices are discovered once per `rememberCameraDeviceState()` call; connecting a new
+    webcam is not detected automatically.
+
 ## External Camera (Experimental)
 
 Camposer also supports external cameras, such as [Continuity Camera Devices](https://support.apple.com/en-us/102546) on iOS, UVC cameras (mostly supported on iPad), or cameras supported by CameraX on Android.

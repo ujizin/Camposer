@@ -37,6 +37,13 @@ kover {
           "com.ujizin.camposer.internal.zoom.PinchToZoomController*",
           // Compose lifecycle extensions
           "com.ujizin.camposer.lifecycle.**",
+          // Desktop hardware bindings — OpenCV, FFmpeg and Java Sound need a real device
+          "com.ujizin.camposer.internal.core.jvm.OpenCvVideoSource*",
+          "com.ujizin.camposer.internal.core.jvm.MatFrame*",
+          "com.ujizin.camposer.internal.record.FFmpegVideoRecorder*",
+          "com.ujizin.camposer.internal.record.JavaSoundAudioCapture*",
+          // Desktop preview composable — draws on a Skia canvas, only reachable from a window
+          "com.ujizin.camposer.CameraPreview_jvmKt*",
         )
       }
     }
@@ -131,13 +138,24 @@ subprojects {
       tasks.named<io.gitlab.arturbosch.detekt.DetektCreateBaselineTask>("detektBaselineAndroidMain") {
         baseline = file("$projectDir/config/detekt/baseline-androidMain.xml")
       }
+      // The detekt plugin registers detektJvmMain itself for the jvm target; only add the baseline.
+      tasks.findByName("detektJvmMain")?.let { task ->
+        (task as io.gitlab.arturbosch.detekt.Detekt).baseline =
+          file("$projectDir/config/detekt/baseline-jvmMain.xml")
+      }
+      tasks.findByName("detektBaselineJvmMain")?.let { task ->
+        (task as io.gitlab.arturbosch.detekt.DetektCreateBaselineTask).baseline =
+          file("$projectDir/config/detekt/baseline-jvmMain.xml")
+      }
       tasks.named("detekt") {
         dependsOn("detektCommonMain", "detektAndroidMain")
         if (tasks.findByName("detektIosMain") != null) dependsOn("detektIosMain")
+        if (tasks.findByName("detektJvmMain") != null) dependsOn("detektJvmMain")
       }
       tasks.named("detektBaseline") {
         dependsOn("detektBaselineCommonMain", "detektBaselineAndroidMain")
         if (tasks.findByName("detektBaselineIosMain") != null) dependsOn("detektBaselineIosMain")
+        if (tasks.findByName("detektBaselineJvmMain") != null) dependsOn("detektBaselineJvmMain")
       }
     }
   }

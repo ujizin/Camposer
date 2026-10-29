@@ -5,7 +5,7 @@
     <p class="camposer-hero__eyebrow">Camposer</p>
     <p class="camposer-hero__title">Kotlin Multiplatform Camera Library</p>
     <p class="camposer-hero__description">
-        Camposer is a Compose Multiplatform camera library that gives you a modern camera stack for Android and iOS:
+        Camposer is a Compose Multiplatform camera library that gives you a modern camera stack for Android, iOS and Desktop:
         photo capture, video recording, flash/torch controls, zoom, focus, stabilization, and analyzers.
     </p>
 </div>
@@ -18,6 +18,7 @@ Camposer is a **Kotlin Multiplatform** library supporting:
 |----------|--------|
 |  **Android** | ✅ Supported
 |  **iOS** | ✅ Supported
+|  **Desktop (JVM)** | ✅ Supported (macOS, Windows, Linux)
 
 ## Features
 

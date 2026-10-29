@@ -4,11 +4,11 @@ The imageCaptureStrategy parameter defines how the camera optimizes the photo ca
 
 ## Available Strategies
 
-| Strategy | Android | iOS |
-|-----------|----------------|--------------|
-| **`ImageCaptureStrategy.MinLatency`** | `ImageCapture.CAPTURE_MODE_ZERO_SHUTTER_LAG` (Fallback to Balanced if not supported)| `AVCapturePhotoQualityPrioritizationSpeed` |
-| **`ImageCaptureStrategy.MaxQuality`** | `ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY` | `AVCapturePhotoQualityPrioritizationQuality` *(High Resolution enabled)* |
-| **`ImageCaptureStrategy.Balanced`** | `ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY` | `AVCapturePhotoQualityPrioritizationBalanced` |
+| Strategy | Android | iOS | Desktop (JVM) |
+|-----------|----------------|--------------|--------------|
+| **`ImageCaptureStrategy.MinLatency`** | `ImageCapture.CAPTURE_MODE_ZERO_SHUTTER_LAG` (Fallback to Balanced if not supported)| `AVCapturePhotoQualityPrioritizationSpeed` | JPEG quality 75 |
+| **`ImageCaptureStrategy.MaxQuality`** | `ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY` | `AVCapturePhotoQualityPrioritizationQuality` *(High Resolution enabled)* | JPEG quality 100 |
+| **`ImageCaptureStrategy.Balanced`** | `ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY` | `AVCapturePhotoQualityPrioritizationBalanced` | JPEG quality 90 |
 
 ### Strategy Descriptions
 

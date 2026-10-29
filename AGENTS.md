@@ -1,10 +1,10 @@
 # AGENTS.md — Camposer
 
-Compose Multiplatform camera library. Android target uses CameraX; iOS target uses AVFoundation. Three published modules: `:camposer` (core), `:camposer-code-scanner` (ML Kit / Vision barcode scanning), and `:camposer-permissions` (camera/microphone runtime permissions for Compose).
+Compose Multiplatform camera library. Android target uses CameraX; iOS target uses AVFoundation; Desktop (JVM) target uses OpenCV and FFmpeg through JavaCV. Three published modules: `:camposer` (core), `:camposer-code-scanner` (ML Kit / Vision barcode scanning), and `:camposer-permissions` (camera/microphone runtime permissions for Compose).
 
 ## Architecture
 
-KMP `expect/actual` is the primary abstraction. `commonMain` holds all interfaces, state, and composables — zero platform imports allowed there. Platform-specific code lives in `androidMain` (CameraX) and `iosMain` (AVFoundation).
+KMP `expect/actual` is the primary abstraction. `commonMain` holds all interfaces, state, and composables — zero platform imports allowed there. Platform-specific code lives in `androidMain` (CameraX), `iosMain` (AVFoundation) and `jvmMain` (JavaCV).
 
 State flows one direction: `CameraState` (MutableStateFlow) → `CameraEngine` → platform appliers → hardware. Appliers own the hardware write; state write always happens after.
 
@@ -19,6 +19,7 @@ make detekt                # ./gradlew detekt :camposer:detektCommonMain — KMP
 make build                 # ./gradlew build — full build, all platforms
 make iosTest               # ./gradlew iosSimulatorArm64Test — fastest test run (~2-3 min, macOS)
 make androidTest           # ./gradlew connectedAndroidTest — requires running emulator or device
+./gradlew :camposer:jvmTest  # desktop unit tests — fastest run on any OS (~1 min, no hardware)
 make updateKotlinAbi       # ./gradlew updateKotlinAbi — only after intentional public API change
 ```
 
@@ -28,7 +29,8 @@ make updateKotlinAbi       # ./gradlew updateKotlinAbi — only after intentiona
 # 1. Make changes
 # 2. Fix formatting and verify build
 ./gradlew spotlessApply && ./gradlew checkKotlinAbi && ./gradlew build
-# 3. Run tests (macOS)
+# 3. Run tests (any OS, then macOS)
+./gradlew :camposer:jvmTest
 ./gradlew iosSimulatorArm64Test
 # 4. Run Android instrumented tests if Android-specific logic changed
 ./gradlew connectedAndroidTest
@@ -43,14 +45,14 @@ make updateKotlinAbi       # ./gradlew updateKotlinAbi — only after intentiona
 - Run `./gradlew spotlessApply` before committing
 - Run `./gradlew checkKotlinAbi` when touching any public class or function
 - Run `./gradlew :camposer:detektCommonMain` when touching any `commonMain` file
-- Update all **3 files** when modifying `CameraEngine`, `FakeCameraEngine`, `FakeCameraTest`, or `FakeCameraSession` (expect + androidSharedTest actual + iosTest actual)
+- Update all **4 files** when modifying `CameraEngine`, `FakeCameraEngine`, `FakeCameraTest`, or `FakeCameraSession` (expect + androidSharedTest actual + iosTest actual + jvmTest actual)
 - Mark every new public declaration with `public` — explicit API mode is enforced
 - Delegate hardware writes through the applier that owns that concern
 - Write state (`cameraState.update*()`) **after** the hardware write in appliers
 
 ### Never
 
-- Add CameraX or AVFoundation imports to `commonMain`
+- Add CameraX, AVFoundation or JavaCV imports to `commonMain`
 - Expose `CameraEngine` through any public type — it is always internal
 - Call platform APIs directly from `CameraEngineImpl` — delegate to an applier
 - Skip the idempotency guard (`if (cameraState.x.value == x) return`) in `CameraEngineCore` (commonMain)
@@ -80,6 +82,12 @@ camposer/src/
     internal/core/
       CameraEngineImpl.ios.kt            actual — delegates to IOSCameraEngine
       IOSCameraEngine.kt                 AVFoundation hardware logic
+
+  jvmMain/kotlin/com/ujizin/camposer/
+    internal/core/
+      CameraEngineImpl.jvm.kt            actual — delegates to JvmCameraEngine
+      jvm/JvmCameraController.kt         interface over the desktop webcam
+      jvm/DefaultJvmCameraController.kt  OpenCV capture loop, FFmpeg recording, JPEG pictures
 ```
 
 ## Key Configuration
@@ -114,21 +122,23 @@ Agent commands live in `.agents/commands/`. Claude Code auto-discovers them as `
 | Source set | Requires | Speed | When to run |
 |------------|----------|-------|-------------|
 | `commonTest` | compiles into each platform — no standalone JVM runner | — | always via platform tasks |
+| `jvmTest` | nothing (plain JVM) | ~1 min | fastest smoke test on any OS; runs all `commonTest` through the JVM fakes |
 | `iosSimulatorArm64Test` | macOS + Xcode | ~2-3 min | fastest smoke test on macOS |
 | `androidDeviceTest` | running emulator or device | ~5-10 min | when Android-specific logic changes |
 
-**No standalone JVM test runner.** `commonTest` code is compiled into the platform test binary; you cannot run it directly with `./gradlew test`. The fastest smoke test on macOS is:
+**No standalone JVM test runner for `commonTest`.** `commonTest` code is compiled into each platform test binary; you cannot run it directly with `./gradlew test`. The fastest smoke test on any OS is the desktop target, which runs every `commonTest` against the JVM fakes:
 
 ```bash
-./gradlew iosSimulatorArm64Test
+./gradlew :camposer:jvmTest
 ```
 
 ## Fake Infrastructure Pattern
 
-**Missing any platform file = build failure.** Each fake is split across 3 files (see [ARCHITECTURE.md § Cross-Cutting Concerns](ARCHITECTURE.md)):
+**Missing any platform file = build failure.** Each fake is split across 4 files (see [ARCHITECTURE.md § Cross-Cutting Concerns](ARCHITECTURE.md)):
 
 - `camposer/src/commonTest/.../fake/FakeCameraEngine.kt` (expect)
 - `camposer/src/androidSharedTest/.../fake/FakeCameraEngine.android.kt` (actual — shared by JVM host test + device test)
 - `camposer/src/iosTest/.../fake/FakeCameraEngine.ios.kt` (actual)
+- `camposer/src/jvmTest/.../fake/FakeCameraEngine.jvm.kt` (actual — desktop)
 
-Always create/update all 3 when adding or changing a fake.
+Always create/update all 4 when adding or changing a fake.

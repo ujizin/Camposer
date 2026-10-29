@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The implementationMode property affects **Android only**. It determines how the camera preview is rendered:
+The implementationMode property affects **Android only**. On iOS and Desktop it is stored but has no effect. It determines how the camera preview is rendered:
 
 `ImplementationMode.Performance` (default) – Uses `SurfaceView`. High performance, minimal transformations (scaling/rotation) supported. Best for performance-critical apps.
 

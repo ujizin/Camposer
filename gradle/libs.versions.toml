@@ -18,11 +18,17 @@ asm = "9.6" # keep in sync with binary-compatibility-validator's ASM requirement
 detekt = "1.23.8"
 kover = "0.9.8"
 maven-publish = "0.36.0"
+javacv = "1.5.14"
+javacpp = "1.5.14"
+javacv-opencv = "4.14.0-1.5.14"
+javacv-ffmpeg = "8.1.2-1.5.14"
+javacv-openblas = "0.3.34-1.5.14"
 
 # Camposer scanner
 
 mlkit-barcode = "17.3.0"
 camera-mlkit-vision = "1.5.3"
+zxing = "3.5.4"
 
 # Camposer permissions
 
@@ -46,10 +52,15 @@ androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-
 androidx-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "androidx-arch-core" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 
+# Desktop (JVM) camera backend. Platform natives are declared in camposer/build.gradle.kts
+# with a classifier, using the javacpp, javacv-opencv, javacv-openblas and javacv-ffmpeg versions.
+javacv = { module = "org.bytedeco:javacv", version.ref = "javacv" }
+
 detekt-api  = { module = "io.gitlab.arturbosch.detekt:detekt-api",  version.ref = "detekt" }
 detekt-test = { module = "io.gitlab.arturbosch.detekt:detekt-test", version.ref = "detekt" }
 
 mlkit-barcode-scanning = { module = "com.google.mlkit:barcode-scanning", version.ref = "mlkit-barcode" }
+zxing-core = { module = "com.google.zxing:core", version.ref = "zxing" }
 
 # buildSrc only
 binary-compatibility-validator = { module = "org.jetbrains.kotlinx:binary-compatibility-validator", version.ref = "binary-compatibility-validator" }

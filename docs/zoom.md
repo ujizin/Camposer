@@ -39,3 +39,7 @@ The `cameraSession` object exposes several properties that may be useful when im
 `cameraSession.info.state.value.maxZoom` – Returns the maximum zoom level for the current [CamSelector](./camera-selector.md).
 
 `cameraSession.info.state.value.isZoomSupported` – Returns true if zoom is supported by the current [CamSelector](./camera-selector.md), false otherwise.
+
+!!! note "Desktop (JVM)"
+    Desktop webcams have no optical zoom. `isZoomSupported` is `false`, `minZoom` and `maxZoom`
+    are both `1`, and pinch to zoom is not installed on the preview.

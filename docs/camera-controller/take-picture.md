@@ -19,6 +19,10 @@ cameraController.takePicture { result ->
 }
 ```
 
+!!! note "Desktop (JVM)"
+    Pictures are the latest preview frame encoded as JPEG at the webcam resolution. The JPEG
+    quality follows the [Image Capture Strategy](../image-capture-strategy.md).
+
 ## Android-Specific API
 
 On Android, `CameraController.takePicture` supports additional options to provide more control over file handling:

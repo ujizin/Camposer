@@ -25,5 +25,6 @@ includeBuild("..")
 include(
   ":sample-android",
   ":sample-multiplatform:sample-kmp-android",
+  ":sample-multiplatform:sample-kmp-desktop",
   ":sample-multiplatform:shared",
 )
