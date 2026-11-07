@@ -8,6 +8,9 @@ import com.ujizin.camposer.internal.error.PhotoOutputNotFoundException
 import com.ujizin.camposer.internal.extensions.firstIsInstanceOrNull
 import com.ujizin.camposer.internal.extensions.setMirrorEnabled
 import com.ujizin.camposer.internal.extensions.toByteArray
+import com.ujizin.camposer.internal.utils.logIssue105
+import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.useContents
 import platform.AVFoundation.AVCaptureFlashMode
 import platform.AVFoundation.AVCapturePhoto
 import platform.AVFoundation.AVCapturePhotoCaptureDelegateProtocol
@@ -94,6 +97,7 @@ internal class IOSTakePictureCommand(
     videoMediaType?.videoOrientation = videoOrientation
 
     val delegate = object : NSObject(), AVCapturePhotoCaptureDelegateProtocol {
+      @OptIn(ExperimentalForeignApi::class)
       override fun captureOutput(
         output: AVCapturePhotoOutput,
         didFinishProcessingPhoto: AVCapturePhoto,
@@ -108,6 +112,12 @@ internal class IOSTakePictureCommand(
           }
         }
 
+        val photoSize = didFinishProcessingPhoto.resolvedSettings.photoDimensions
+          .useContents { "${width}x$height" }
+        logIssue105(
+          "photo=$photoSize bytes=${result.getOrNull()?.length} " +
+            "maxPrioritization=${output.maxPhotoQualityPrioritization}",
+        )
         onPictureCaptured(result)
         takePictureDelegate = null
       }

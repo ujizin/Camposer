@@ -14,6 +14,7 @@ import com.ujizin.camposer.internal.core.CameraEngineImpl
 import com.ujizin.camposer.internal.core.IOSCameraEngine
 import com.ujizin.camposer.internal.core.ios.IOSCameraController
 import com.ujizin.camposer.internal.utils.Logger
+import com.ujizin.camposer.internal.utils.logIssue105
 import com.ujizin.camposer.manager.PreviewManager
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.properties.createOutput
@@ -117,20 +118,27 @@ public actual class CameraSession internal constructor(
     val captureOutput = state.captureMode.value.createOutput()
     val device = iosCameraController.getCaptureDevice(state.camSelector.value)
 
+    val session = iosCameraController.captureSession
+    logIssue105("requested camFormat=${state.camFormat.value.configs}")
+    logIssue105("1 before start", session, device)
+
     iosCameraController.withSessionConfiguration {
       iosCameraController.setCaptureDevice(device)
       iosCameraController.addOutput(captureOutput)
       iosCameraEngine?.applySessionConfig()
     }
+    logIssue105("2 after write before start", session, device)
 
     iosCameraController.start(
       captureOutput = captureOutput,
       device = device,
       onRunningChanged = { isStreaming = it },
     )
+    logIssue105("3 after start, before second write", session, device)
 
     // Starting the session can reset the device to the session preset format.
     iosCameraEngine?.applySessionConfig()
+    logIssue105("4 after second write", session, device)
   }
 
   internal fun renderCamera(view: UIView) {
