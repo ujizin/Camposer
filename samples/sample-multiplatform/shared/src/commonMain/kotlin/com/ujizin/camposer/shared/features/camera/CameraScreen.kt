@@ -39,6 +39,7 @@ import com.ujizin.camposer.state.properties.VideoStabilizationMode
 import com.ujizin.camposer.state.properties.format.CamFormat
 import com.ujizin.camposer.state.properties.format.config.AspectRatioConfig
 import com.ujizin.camposer.state.properties.format.config.FrameRateConfig
+import com.ujizin.camposer.state.properties.format.config.ResolutionConfig
 import com.ujizin.camposer.state.properties.format.config.VideoStabilizationConfig
 
 @Composable
@@ -93,6 +94,11 @@ fun CameraScreen(
     )
   }
 
+  // TEMP: issue #105 repro, the reporter's format. Do not merge.
+  val issue105Format = remember {
+    CamFormat(AspectRatioConfig(4f / 3f), ResolutionConfig(1920, 1440))
+  }
+
   LaunchedEffect(Unit, uiState.camSelector) {
     cameraViewModel.initializeOrientationStrategy()
     with(cameraViewModel.cameraController) {
@@ -110,12 +116,8 @@ fun CameraScreen(
     modifier = Modifier.fillMaxSize()
       .keepScreenOn(),
     cameraSession = cameraSession,
-    camFormat = camFormat,
-    scaleType = if (uiState.aspectRatioOption == AspectRatioOption.Full) {
-      ScaleType.FillCenter
-    } else {
-      ScaleType.FitCenter
-    },
+    camFormat = issue105Format,
+    scaleType = ScaleType.FitCenter,
     camSelector = uiState.camSelector,
     captureMode = uiState.captureMode,
     implementationMode = ImplementationMode.Compatible,

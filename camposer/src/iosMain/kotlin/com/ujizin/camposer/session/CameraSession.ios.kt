@@ -14,6 +14,7 @@ import com.ujizin.camposer.internal.core.CameraEngineImpl
 import com.ujizin.camposer.internal.core.IOSCameraEngine
 import com.ujizin.camposer.internal.core.ios.IOSCameraController
 import com.ujizin.camposer.internal.utils.Logger
+import com.ujizin.camposer.internal.utils.logIssue105
 import com.ujizin.camposer.manager.PreviewManager
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.properties.createOutput
@@ -113,11 +114,16 @@ public actual class CameraSession internal constructor(
   @OptIn(ExperimentalForeignApi::class)
   internal fun startCamera() {
     if (iosCameraController.captureSession.isRunning()) return
+    val session = iosCameraController.captureSession
+    val device = iosCameraController.getCaptureDevice(state.camSelector.value)
+    logIssue105("requested camFormat=${state.camFormat.value.configs}")
+    logIssue105("1 before start", session, device)
     iosCameraController.start(
       captureOutput = state.captureMode.value.createOutput(),
-      device = iosCameraController.getCaptureDevice(state.camSelector.value),
+      device = device,
       onRunningChanged = { isStreaming = it },
     )
+    logIssue105("3 after start", session, device)
   }
 
   internal fun renderCamera(view: UIView) {
