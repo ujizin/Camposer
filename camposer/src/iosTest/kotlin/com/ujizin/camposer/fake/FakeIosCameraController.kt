@@ -16,6 +16,7 @@ import platform.AVFoundation.AVCaptureDeviceType
 import platform.AVFoundation.AVCaptureFlashMode
 import platform.AVFoundation.AVCaptureFlashModeOff
 import platform.AVFoundation.AVCaptureOutput
+import platform.AVFoundation.AVCapturePhotoOutput
 import platform.AVFoundation.AVCapturePhotoQualityPrioritization
 import platform.AVFoundation.AVCapturePhotoQualityPrioritizationBalanced
 import platform.AVFoundation.AVCaptureSession
@@ -71,6 +72,8 @@ class FakeIosCameraController : IOSCameraController {
     internal set
   var fakeIsZSLSupported: Boolean = true
     internal set
+  var fakeFormats: List<AVCaptureDeviceFormat> = emptyList()
+    internal set
 
   private val mutableFakeIsRecording = MutableStateFlow(false)
 
@@ -117,8 +120,10 @@ class FakeIosCameraController : IOSCameraController {
     device: AVCaptureDevice,
     onRunningChanged: (Boolean) -> Unit,
   ) {
-    fakeOutputs.add(captureOutput)
+    addOutput(captureOutput)
     fakeCaptureDevice = device
+    // AVCaptureSession applies its preset when it starts, which replaces the active device format.
+    fakeDeviceFormat = null
     onRunningChanged(true)
   }
 
@@ -132,6 +137,7 @@ class FakeIosCameraController : IOSCameraController {
   }
 
   override fun addOutput(output: AVCaptureOutput) {
+    if (fakeOutputs.contains(output)) return
     fakeOutputs.add(output)
   }
 
@@ -196,6 +202,7 @@ class FakeIosCameraController : IOSCameraController {
     quality: AVCapturePhotoQualityPrioritization,
     highResolutionEnabled: Boolean,
   ) {
+    if (fakeOutputs.none { it is AVCapturePhotoOutput }) return
     fakeQuality = quality
     isFakeHighResolutionEnabled = highResolutionEnabled
   }
@@ -207,7 +214,9 @@ class FakeIosCameraController : IOSCameraController {
   ): AVCaptureDevice {
     this.position = position
 
+    val formats = fakeFormats
     return object : AVCaptureDevice() {
+      override fun formats(): List<*> = formats
     }
   }
 

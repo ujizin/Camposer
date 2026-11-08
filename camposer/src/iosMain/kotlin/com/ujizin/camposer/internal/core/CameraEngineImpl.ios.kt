@@ -179,6 +179,10 @@ internal actual class CameraEngineImpl(
   actual override fun isMirrorEnabled(): Boolean =
     cameraState.mirrorMode.value.isMirrorEnabled(iOSCameraController.getCurrentPosition())
 
+  override fun applySessionConfig() {
+    sessionTopologyApplier.applySessionConfig()
+  }
+
   override fun getCurrentVideoOrientation() =
     when (cameraState.orientationStrategy.value) {
       OrientationStrategy.Device -> iOSCameraController.getCurrentDeviceOrientation()

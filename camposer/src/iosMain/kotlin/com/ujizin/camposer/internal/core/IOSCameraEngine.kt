@@ -7,4 +7,6 @@ internal interface IOSCameraEngine : CameraEngine {
   val iOSCameraController: IOSCameraController
 
   fun getCurrentVideoOrientation(): AVCaptureVideoOrientation
+
+  fun applySessionConfig()
 }
