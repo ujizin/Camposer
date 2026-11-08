@@ -72,6 +72,8 @@ class FakeIosCameraController : IOSCameraController {
     internal set
   var fakeIsZSLSupported: Boolean = true
     internal set
+  var fakeFormats: List<AVCaptureDeviceFormat> = emptyList()
+    internal set
 
   private val mutableFakeIsRecording = MutableStateFlow(false)
 
@@ -120,6 +122,8 @@ class FakeIosCameraController : IOSCameraController {
   ) {
     addOutput(captureOutput)
     fakeCaptureDevice = device
+    // AVCaptureSession applies its preset when it starts, which replaces the active device format.
+    fakeDeviceFormat = null
     onRunningChanged(true)
   }
 
@@ -210,7 +214,9 @@ class FakeIosCameraController : IOSCameraController {
   ): AVCaptureDevice {
     this.position = position
 
+    val formats = fakeFormats
     return object : AVCaptureDevice() {
+      override fun formats(): List<*> = formats
     }
   }
 
